@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Mirai.Application.WorkItems.Commands.AddComment;
 using Mirai.Application.WorkItems.Commands.CreateWorkItem;
 using Mirai.Application.WorkItems.Queries.GetWorkItem;
+using Mirai.Application.WorkItems.Queries.ListWorkItems;
 using Mirai.Contracts.WorkItems;
 using Mirai.Domain.WorkItems;
 
@@ -75,6 +76,23 @@ public class WorkItemsController(ISender _mediator) : ApiController
             Problem);
     }
 
+    /// <summary>
+    /// List all work items belonging to a project.
+    /// </summary>
+    /// <param name="projectId">The ID of the project to list work items for.</param>
+    [HttpGet(ApiEndpoints.WorkItems.List)]
+    [ProducesResponseType(typeof(IEnumerable<WorkItemResponse>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> ListWorkItems(Guid projectId)
+    {
+        var query = new ListWorkItemsQuery(projectId);
+
+        var result = await _mediator.Send(query);
+
+        return result.Match(
+            workItems => Ok(workItems.ConvertAll(ToDto)),
+            Problem);
+    }
+
     private static WorkItemResponse ToDto(WorkItem workItem)
     {
         return new(
@@ -84,7 +102,13 @@ public class WorkItemsController(ISender _mediator) : ApiController
             workItem.Description,
             workItem.Status.ToString(),
             workItem.Type.ToString(),
+            workItem.Comments.Select(ToDto).ToList(),
             workItem.CreatedAt,
             workItem.UpdatedAt);
+    }
+
+    private static CommentResponse ToDto(WorkItemComment comment)
+    {
+        return new(comment.Id, comment.Content, comment.CreatedAt);
     }
 }

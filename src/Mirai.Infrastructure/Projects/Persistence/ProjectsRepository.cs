@@ -27,15 +27,15 @@ public class ProjectsRepository(AppDbContext dbContext) : IProjectsRepository
         return _dbContext.Projects.ToListAsync(cancellationToken);
     }
 
-    public Task<Project> UpdateAsync(Project project, CancellationToken cancellationToken)
+    public async Task UpdateAsync(Project project, CancellationToken cancellationToken)
     {
         _dbContext.Update(project);
-        return Task.FromResult(project);
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public Task RemoveAsync(Project project, CancellationToken cancellationToken)
+    public async Task RemoveAsync(Project project, CancellationToken cancellationToken)
     {
         _dbContext.Remove(project);
-        return _dbContext.SaveChangesAsync(cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }

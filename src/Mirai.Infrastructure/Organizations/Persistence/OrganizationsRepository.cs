@@ -27,15 +27,15 @@ public class OrganizationsRepository(AppDbContext dbContext) : IOrganizationsRep
         return _dbContext.Organizations.ToListAsync(cancellationToken);
     }
 
-    public Task RemoveAsync(Organization organization, CancellationToken cancellationToken)
+    public async Task RemoveAsync(Organization organization, CancellationToken cancellationToken)
     {
         _dbContext.Remove(organization);
-        return _dbContext.SaveChangesAsync(cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public Task UpdateAsync(Organization organization, CancellationToken cancellationToken)
+    public async Task UpdateAsync(Organization organization, CancellationToken cancellationToken)
     {
         _dbContext.Update(organization);
-        return _dbContext.SaveChangesAsync(cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }
