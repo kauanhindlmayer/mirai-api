@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Mirai.Application.WorkItems.Commands.CreateWorkItem;
+using Mirai.Application.WorkItems.Queries.GetWorkItem;
 using Mirai.Contracts.WorkItems;
 using Mirai.Domain.WorkItems;
 
@@ -41,16 +42,15 @@ public class WorkItemsController(ISender _mediator) : ApiController
     [HttpGet(ApiEndpoints.WorkItems.Get)]
     [ProducesResponseType(typeof(WorkItemResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public IActionResult GetWorkItem(Guid workItemId)
+    public async Task<IActionResult> GetWorkItem(Guid workItemId)
     {
-        // var query = new GetWorkItemQuery(workItemId);
+        var query = new GetWorkItemQuery(workItemId);
 
-        // var result = await _mediator.Send(query);
+        var result = await _mediator.Send(query);
 
-        // return result.Match(
-        //     workItem => Ok(ToDto(workItem)),
-        //     Problem);
-        return Ok();
+        return result.Match(
+            workItem => Ok(ToDto(workItem)),
+            Problem);
     }
 
     private static WorkItemResponse ToDto(WorkItem workItem)
