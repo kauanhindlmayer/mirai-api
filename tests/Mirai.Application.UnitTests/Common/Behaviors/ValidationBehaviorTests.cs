@@ -2,22 +2,22 @@ using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
 using Mirai.Application.Common.Behaviors;
-using Mirai.Application.Reminders.Commands.SetReminder;
-using Mirai.Domain.Reminders;
+using Mirai.Application.Organizations.Commands.CreateOrganization;
+using Mirai.Domain.Organizations;
+using TestCommon.Organizations;
 
 namespace Mirai.Application.UnitTests.Common.Behaviors;
 
 public class ValidationBehaviorTests
 {
-    private readonly ValidationBehavior<SetReminderCommand, ErrorOr<Reminder>> _validationBehavior;
-    private readonly IValidator<SetReminderCommand> _mockValidator;
-    private readonly RequestHandlerDelegate<ErrorOr<Reminder>> _mockNextBehavior;
+    private readonly ValidationBehavior<CreateOrganizationCommand, ErrorOr<Organization>> _validationBehavior;
+    private readonly IValidator<CreateOrganizationCommand> _mockValidator;
+    private readonly RequestHandlerDelegate<ErrorOr<Organization>> _mockNextBehavior;
 
     public ValidationBehaviorTests()
     {
-        _mockNextBehavior = Substitute.For<RequestHandlerDelegate<ErrorOr<Reminder>>>();
-        _mockValidator = Substitute.For<IValidator<SetReminderCommand>>();
-
+        _mockNextBehavior = Substitute.For<RequestHandlerDelegate<ErrorOr<Organization>>>();
+        _mockValidator = Substitute.For<IValidator<CreateOrganizationCommand>>();
         _validationBehavior = new(_mockValidator);
     }
 
@@ -25,36 +25,36 @@ public class ValidationBehaviorTests
     public async Task InvokeValidationBehavior_WhenValidatorResultIsValid_ShouldInvokeNextBehavior()
     {
         // Arrange
-        var setReminderCommand = ReminderCommandFactory.CreateSetReminderCommand();
-        var reminder = ReminderFactory.CreateReminder();
+        var createOrganizationCommand = OrganizationCommandFactory.CreateCreateOrganizationCommand();
+        var organization = OrganizationFactory.CreateOrganization();
 
         _mockValidator
-            .ValidateAsync(setReminderCommand, Arg.Any<CancellationToken>())
+            .ValidateAsync(createOrganizationCommand, Arg.Any<CancellationToken>())
             .Returns(new ValidationResult());
 
-        _mockNextBehavior.Invoke().Returns(reminder);
+        _mockNextBehavior.Invoke().Returns(organization);
 
         // Act
-        var result = await _validationBehavior.Handle(setReminderCommand, _mockNextBehavior, default);
+        var result = await _validationBehavior.Handle(createOrganizationCommand, _mockNextBehavior, default);
 
         // Assert
         result.IsError.Should().BeFalse();
-        result.Value.Should().BeEquivalentTo(reminder);
+        result.Value.Should().BeEquivalentTo(organization);
     }
 
     [Fact]
     public async Task InvokeValidationBehavior_WhenValidatorResultIsNotValid_ShouldReturnListOfErrors()
     {
         // Arrange
-        var setReminderCommand = ReminderCommandFactory.CreateSetReminderCommand();
+        var createOrganizationCommand = OrganizationCommandFactory.CreateCreateOrganizationCommand();
         List<ValidationFailure> validationFailures = [new(propertyName: "foo", errorMessage: "bad foo")];
 
         _mockValidator
-            .ValidateAsync(setReminderCommand, Arg.Any<CancellationToken>())
+            .ValidateAsync(createOrganizationCommand, Arg.Any<CancellationToken>())
             .Returns(new ValidationResult(validationFailures));
 
         // Act
-        var result = await _validationBehavior.Handle(setReminderCommand, _mockNextBehavior, default);
+        var result = await _validationBehavior.Handle(createOrganizationCommand, _mockNextBehavior, default);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -66,17 +66,17 @@ public class ValidationBehaviorTests
     public async Task InvokeValidationBehavior_WhenNoValidator_ShouldInvokeNextBehavior()
     {
         // Arrange
-        var setReminderCommand = ReminderCommandFactory.CreateSetReminderCommand();
-        var validationBehavior = new ValidationBehavior<SetReminderCommand, ErrorOr<Reminder>>();
+        var createOrganizationCommand = OrganizationCommandFactory.CreateCreateOrganizationCommand();
+        var validationBehavior = new ValidationBehavior<CreateOrganizationCommand, ErrorOr<Organization>>();
 
-        var reminder = ReminderFactory.CreateReminder();
-        _mockNextBehavior.Invoke().Returns(reminder);
+        var organization = OrganizationFactory.CreateOrganization();
+        _mockNextBehavior.Invoke().Returns(organization);
 
         // Act
-        var result = await validationBehavior.Handle(setReminderCommand, _mockNextBehavior, default);
+        var result = await validationBehavior.Handle(createOrganizationCommand, _mockNextBehavior, default);
 
         // Assert
         result.IsError.Should().BeFalse();
-        result.Value.Should().Be(reminder);
+        result.Value.Should().Be(organization);
     }
 }
