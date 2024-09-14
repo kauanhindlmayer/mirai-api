@@ -1,0 +1,4 @@
+@organizationId = f93e6bd1-42cb-4375-83de-64705adf34ad
+
+GET {{host}}/organizations/{{organizationId}}
+Content-Type: application/json
