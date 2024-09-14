@@ -4,6 +4,12 @@ public static class ApiEndpoints
 {
     private const string ApiBase = "/api";
 
+    public static class Authentication
+    {
+        public const string Register = $"{ApiBase}/register";
+        public const string Login = $"{ApiBase}/login";
+    }
+
     public static class Organizations
     {
         public const string Create = Base;

@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Mirai.Application.Common.Interfaces;
 using Mirai.Domain.Users;
 using Mirai.Infrastructure.Common.Persistence;
@@ -19,6 +20,11 @@ public class UsersRepository(AppDbContext _dbContext) : IUsersRepository
         return await _dbContext.Users.FindAsync(userId, cancellationToken);
     }
 
+    public async Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
+    }
+
     public async Task RemoveAsync(User user, CancellationToken cancellationToken)
     {
         _dbContext.Remove(user);
@@ -29,5 +35,10 @@ public class UsersRepository(AppDbContext _dbContext) : IUsersRepository
     {
         _dbContext.Update(user);
         await _dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public Task<bool> ExistsByEmailAsync(string email, CancellationToken cancellationToken)
+    {
+        return _dbContext.Users.AnyAsync(u => u.Email == email, cancellationToken);
     }
 }

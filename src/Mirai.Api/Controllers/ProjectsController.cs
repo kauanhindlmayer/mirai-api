@@ -1,5 +1,4 @@
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Mirai.Application.Projects.Commands.CreateProject;
 using Mirai.Application.Projects.Queries.GetProject;
@@ -9,7 +8,6 @@ using Mirai.Domain.Projects;
 
 namespace Mirai.Api.Controllers;
 
-[AllowAnonymous]
 public class ProjectsController(ISender _mediator) : ApiController
 {
     /// <summary>

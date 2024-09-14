@@ -1,5 +1,4 @@
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Mirai.Application.Organizations.Commands.CreateOrganization;
 using Mirai.Application.Organizations.Commands.DeleteOrganization;
@@ -11,7 +10,6 @@ using Mirai.Domain.Organizations;
 
 namespace Mirai.Api.Controllers;
 
-[AllowAnonymous]
 public class OrganizationsController(ISender _mediator) : ApiController
 {
     /// <summary>

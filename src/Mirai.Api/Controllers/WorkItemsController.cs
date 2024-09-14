@@ -1,5 +1,4 @@
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Mirai.Application.WorkItems.Commands.AddComment;
 using Mirai.Application.WorkItems.Commands.CreateWorkItem;
@@ -9,7 +8,6 @@ using Mirai.Domain.WorkItems;
 
 namespace Mirai.Api.Controllers;
 
-[AllowAnonymous]
 public class WorkItemsController(ISender _mediator) : ApiController
 {
     /// <summary>
@@ -54,6 +52,11 @@ public class WorkItemsController(ISender _mediator) : ApiController
             Problem);
     }
 
+    /// <summary>
+    /// Add a comment to a work item.
+    /// </summary>
+    /// <param name="workItemId">The ID of the work item to add a comment to.</param>
+    /// <param name="request">The details of the comment to add.</param>
     [HttpPost(ApiEndpoints.WorkItems.AddComment)]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
