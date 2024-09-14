@@ -20,5 +20,10 @@ public class OrganizationConfigurations : IEntityTypeConfiguration<Organization>
 
         builder.Property(u => u.Description)
             .HasMaxLength(500);
+
+        builder.HasMany(u => u.Projects)
+            .WithOne()
+            .HasForeignKey(p => p.OrganizationId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

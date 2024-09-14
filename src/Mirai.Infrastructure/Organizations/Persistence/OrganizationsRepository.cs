@@ -17,7 +17,9 @@ public class OrganizationsRepository(AppDbContext dbContext) : IOrganizationsRep
 
     public async Task<Organization?> GetByIdAsync(Guid organizationId, CancellationToken cancellationToken)
     {
-        return await _dbContext.Organizations.FindAsync(organizationId, cancellationToken);
+        return await _dbContext.Organizations
+            .Include(o => o.Projects)
+            .FirstOrDefaultAsync(o => o.Id == organizationId, cancellationToken);
     }
 
     public Task<List<Organization>> ListAsync(CancellationToken cancellationToken)

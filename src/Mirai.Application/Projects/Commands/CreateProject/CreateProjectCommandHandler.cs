@@ -5,16 +5,31 @@ using Mirai.Domain.Projects;
 
 namespace Mirai.Application.Projects.Commands.CreateProject;
 
-public class CreateProjectCommandHandler(IProjectsRepository _projectsRepository)
+public class CreateProjectCommandHandler(IOrganizationsRepository _organizationsRepository)
     : IRequestHandler<CreateProjectCommand, ErrorOr<Project>>
 {
     public async Task<ErrorOr<Project>> Handle(
         CreateProjectCommand request,
         CancellationToken cancellationToken)
     {
-        var project = new Project(request.Name, request.Description, request.OrganizationId);
+        var organization = await _organizationsRepository.GetByIdAsync(request.OrganizationId, cancellationToken);
+        if (organization is null)
+        {
+            return Error.NotFound(description: "Organization not found");
+        }
 
-        await _projectsRepository.AddAsync(project, cancellationToken);
+        var project = new Project(
+            name: request.Name,
+            description: request.Description,
+            organizationId: request.OrganizationId);
+
+        var result = organization.AddProject(project);
+        if (result.IsError)
+        {
+            return result.Errors;
+        }
+
+        await _organizationsRepository.UpdateAsync(organization, cancellationToken);
 
         return project;
     }
