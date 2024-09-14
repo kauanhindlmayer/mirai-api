@@ -9,16 +9,10 @@ public class ProjectsRepository(AppDbContext dbContext) : IProjectsRepository
 {
     private readonly AppDbContext _dbContext = dbContext;
 
-    public Task<Project> AddAsync(Project project, CancellationToken cancellationToken)
+    public async Task AddAsync(Project project, CancellationToken cancellationToken)
     {
-        _dbContext.Projects.Add(project);
-        return Task.FromResult(project);
-    }
-
-    public Task DeleteAsync(Project project, CancellationToken cancellationToken)
-    {
-        _dbContext.Remove(project);
-        return _dbContext.SaveChangesAsync(cancellationToken);
+        await _dbContext.AddAsync(project, cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
     public async Task<Project?> GetByIdAsync(Guid projectId, CancellationToken cancellationToken)
@@ -35,5 +29,11 @@ public class ProjectsRepository(AppDbContext dbContext) : IProjectsRepository
     {
         _dbContext.Update(project);
         return Task.FromResult(project);
+    }
+
+    public Task RemoveAsync(Project project, CancellationToken cancellationToken)
+    {
+        _dbContext.Remove(project);
+        return _dbContext.SaveChangesAsync(cancellationToken);
     }
 }

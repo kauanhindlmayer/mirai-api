@@ -1,0 +1,7 @@
+POST {{host}}/projects
+Content-Type: application/json
+
+{
+  "name": "Organization",
+  "description": "Organization description",
+}

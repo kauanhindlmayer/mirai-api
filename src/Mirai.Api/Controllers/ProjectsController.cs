@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Mirai.Application.Projects.Commands.CreateProject;
 using Mirai.Application.Projects.Queries.GetProject;
+using Mirai.Application.Projects.Queries.ListProjects;
 using Mirai.Contracts.Projects;
 using Mirai.Domain.Projects;
 
@@ -47,6 +48,22 @@ public class ProjectsController(ISender _mediator) : ApiController
 
         return result.Match(
             project => Ok(ToDto(project)),
+            Problem);
+    }
+
+    /// <summary>
+    /// List all projects.
+    /// </summary>
+    [HttpGet(ApiEndpoints.Projects.List)]
+    [ProducesResponseType(typeof(IEnumerable<ProjectResponse>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> ListProjects()
+    {
+        var query = new ListProjectsQuery();
+
+        var result = await _mediator.Send(query);
+
+        return result.Match(
+            projects => Ok(projects.ConvertAll(ToDto)),
             Problem);
     }
 

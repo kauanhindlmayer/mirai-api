@@ -1,0 +1,4 @@
+@projectId = 1
+
+POST {{host}}/projects/{{projectId}}
+Content-Type: application/json
