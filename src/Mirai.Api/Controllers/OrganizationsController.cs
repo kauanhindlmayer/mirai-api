@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Mirai.Application.Organizations.Commands.CreateOrganization;
+using Mirai.Application.Organizations.Commands.DeleteOrganization;
 using Mirai.Application.Organizations.Commands.UpdateOrganization;
 using Mirai.Application.Organizations.Queries.GetOrganization;
 using Mirai.Application.Organizations.Queries.ListOrganizations;
@@ -89,6 +90,25 @@ public class OrganizationsController(ISender _mediator) : ApiController
 
         return result.Match(
             organization => Ok(ToDto(organization)),
+            Problem);
+    }
+
+    /// <summary>
+    /// Delete an organization.
+    /// </summary>
+    /// <param name="organizationId">The ID of the organization to delete.</param>
+    /// <returns>No content.</returns>
+    [HttpDelete(ApiEndpoints.Organizations.Delete)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteOrganization(Guid organizationId)
+    {
+        var command = new DeleteOrganizationCommand(organizationId);
+
+        var result = await _mediator.Send(command);
+
+        return result.Match(
+            _ => NoContent(),
             Problem);
     }
 
