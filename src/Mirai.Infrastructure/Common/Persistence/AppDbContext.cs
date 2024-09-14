@@ -23,6 +23,8 @@ public class AppDbContext(
 
     public DbSet<WorkItem> WorkItems { get; set; } = null!;
 
+    public DbSet<WorkItemComment> WorkItemComments { get; set; } = null!;
+
     public async override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         var domainEvents = ChangeTracker.Entries<Entity>()

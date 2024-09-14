@@ -1,4 +1,4 @@
-namespace Mirai.Infrastructure.Security.CurrentUserProvider;
+namespace Mirai.Application.Common.Models;
 
 public record CurrentUser(
     Guid Id,

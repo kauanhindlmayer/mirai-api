@@ -2,7 +2,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 using Microsoft.AspNetCore.Http;
-
+using Mirai.Application.Common.Interfaces;
+using Mirai.Application.Common.Models;
 using Throw;
 
 namespace Mirai.Infrastructure.Security.CurrentUserProvider;

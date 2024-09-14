@@ -1,8 +1,8 @@
 using ErrorOr;
+using Mirai.Application.Common.Models;
 using Mirai.Application.Common.Security.Policies;
 using Mirai.Application.Common.Security.Request;
 using Mirai.Application.Common.Security.Roles;
-using Mirai.Infrastructure.Security.CurrentUserProvider;
 
 namespace Mirai.Infrastructure.Security.PolicyEnforcer;
 

@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Mirai.Application.WorkItems.Commands.AddComment;
 using Mirai.Application.WorkItems.Commands.CreateWorkItem;
 using Mirai.Application.WorkItems.Queries.GetWorkItem;
 using Mirai.Contracts.WorkItems;
@@ -50,6 +51,24 @@ public class WorkItemsController(ISender _mediator) : ApiController
 
         return result.Match(
             workItem => Ok(ToDto(workItem)),
+            Problem);
+    }
+
+    [HttpPost(ApiEndpoints.WorkItems.AddComment)]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> AddComment(Guid workItemId, AddCommentRequest request)
+    {
+        var command = new AddCommentCommand(workItemId, request.Content);
+
+        var result = await _mediator.Send(command);
+
+        return result.Match(
+            _ => CreatedAtAction(
+                actionName: nameof(GetWorkItem),
+                routeValues: new { WorkItemId = workItemId },
+                value: null),
             Problem);
     }
 

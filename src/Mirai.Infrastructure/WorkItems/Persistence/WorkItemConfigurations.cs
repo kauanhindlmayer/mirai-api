@@ -45,5 +45,9 @@ public class WorkItemConfigurations : IEntityTypeConfiguration<WorkItem>
         builder.HasMany(p => p.ChildWorkItems)
             .WithOne(p => p.ParentWorkItem)
             .HasForeignKey(p => p.ParentWorkItemId);
+
+        builder.HasMany(p => p.Comments)
+            .WithOne(c => c.WorkItem)
+            .HasForeignKey(c => c.WorkItemId);
     }
 }

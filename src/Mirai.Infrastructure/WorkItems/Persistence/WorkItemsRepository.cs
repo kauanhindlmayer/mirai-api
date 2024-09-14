@@ -17,7 +17,9 @@ public class WorkItemsRepository(AppDbContext dbContext) : IWorkItemsRepository
 
     public async Task<WorkItem?> GetByIdAsync(Guid workItemId, CancellationToken cancellationToken)
     {
-        return await _dbContext.WorkItems.FindAsync(workItemId, cancellationToken);
+        return await _dbContext.WorkItems
+            .Include(wi => wi.Comments)
+            .FirstOrDefaultAsync(wi => wi.Id == workItemId, cancellationToken);
     }
 
     public async Task<List<WorkItem>> ListAsync(CancellationToken cancellationToken)

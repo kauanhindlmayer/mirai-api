@@ -1,4 +1,5 @@
-using Mirai.Infrastructure.Security.CurrentUserProvider;
+using Mirai.Application.Common.Interfaces;
+using Mirai.Application.Common.Models;
 
 namespace TestCommon.Security;
 

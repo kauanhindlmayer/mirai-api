@@ -1,3 +1,4 @@
+using ErrorOr;
 using Mirai.Domain.Common;
 using Mirai.Domain.Projects;
 using Mirai.Domain.Users;
@@ -17,6 +18,7 @@ public class WorkItem : Entity
     public Guid? ParentWorkItemId { get; private set; }
     public WorkItem? ParentWorkItem { get; private set; }
     public ICollection<WorkItem> ChildWorkItems { get; private set; } = [];
+    public ICollection<WorkItemComment> Comments { get; private set; } = [];
 
     public WorkItem(
         Guid projectId,
@@ -31,5 +33,21 @@ public class WorkItem : Entity
 
     private WorkItem()
     {
+    }
+
+    public void UpdateAssignee(Guid assigneeId)
+    {
+        AssigneeId = assigneeId;
+    }
+
+    public ErrorOr<Success> AddComment(WorkItemComment comment)
+    {
+        if (Status == WorkItemStatus.Closed)
+        {
+            return Error.Validation("Cannot add comment to a closed work item");
+        }
+
+        Comments.Add(comment);
+        return Result.Success;
     }
 }
