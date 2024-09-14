@@ -1,4 +1,5 @@
 using Mirai.Domain.Common;
+using Mirai.Domain.WorkItems;
 
 namespace Mirai.Domain.Users;
 
@@ -13,6 +14,8 @@ public class User : Entity
     public string Email { get; private set; } = null!;
 
     public string PasswordHash { get; private set; } = null!;
+
+    public ICollection<WorkItem> WorkItems { get; private set; } = [];
 
     public User(string firstName, string lastName, string email, string passwordHash)
     {

@@ -1,7 +1,6 @@
 using FluentValidation;
-using Mirai.Application.Projects.Commands.CreateProject;
 
-namespace Mirai.Application.Organizations.Commands.CreateOrganization;
+namespace Mirai.Application.Projects.Commands.CreateProject;
 
 public class CreateProjectCommandValidator : AbstractValidator<CreateProjectCommand>
 {

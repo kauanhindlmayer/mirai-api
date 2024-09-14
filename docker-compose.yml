@@ -1,8 +1,8 @@
-version: '3.8'
+version: "3.8"
 
 services:
   api:
-    container_name: clean-architecture-api
+    container_name: mirai-api
     build:
       context: .
       dockerfile: Dockerfile

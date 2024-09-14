@@ -22,5 +22,13 @@ public class ProjectConfigurations : IEntityTypeConfiguration<Project>
 
         builder.Property(p => p.OrganizationId)
             .IsRequired();
+
+        builder.HasOne(p => p.Organization)
+            .WithMany(o => o.Projects)
+            .HasForeignKey(p => p.OrganizationId);
+
+        builder.HasMany(p => p.WorkItems)
+            .WithOne(w => w.Project)
+            .HasForeignKey(w => w.ProjectId);
     }
 }

@@ -17,7 +17,9 @@ public class ProjectsRepository(AppDbContext dbContext) : IProjectsRepository
 
     public async Task<Project?> GetByIdAsync(Guid projectId, CancellationToken cancellationToken)
     {
-        return await _dbContext.Projects.FindAsync(projectId, cancellationToken);
+        return await _dbContext.Projects
+            .Include(p => p.WorkItems)
+            .FirstOrDefaultAsync(p => p.Id == projectId, cancellationToken);
     }
 
     public Task<List<Project>> ListAsync(CancellationToken cancellationToken)

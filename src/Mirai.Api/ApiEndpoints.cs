@@ -23,4 +23,14 @@ public static class ApiEndpoints
         public const string Delete = $"{Base}/{{projectId:guid}}";
         private const string Base = $"{ApiBase}/projects";
     }
+
+    public static class WorkItems
+    {
+        public const string Create = Base;
+        public const string Get = $"{Base}/{{workItemId:guid}}";
+        public const string List = $"{Base}/projects/{{projectId:guid}}";
+        public const string Update = $"{Base}/{{workItemId:guid}}";
+        public const string Delete = $"{Base}/{{workItemId:guid}}";
+        private const string Base = $"{ApiBase}/work-items";
+    }
 }
