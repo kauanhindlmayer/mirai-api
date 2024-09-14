@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Mirai.Application.Organizations.Commands.CreateOrganization;
+using Mirai.Application.Organizations.Commands.UpdateOrganization;
 using Mirai.Application.Organizations.Queries.GetOrganization;
 using Mirai.Application.Organizations.Queries.ListOrganizations;
 using Mirai.Contracts.Organizations;
@@ -56,9 +57,25 @@ public class OrganizationsController(ISender _mediator) : ApiController
             Problem);
     }
 
+    [HttpPut(ApiEndpoints.Organizations.Update)]
+    [ProducesResponseType(typeof(OrganizationResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateOrganization(Guid organizationId, UpdateOrganizationRequest request)
+    {
+        var command = new UpdateOrganizationCommand(organizationId, request.Name, request.Description);
+
+        var result = await _mediator.Send(command);
+
+        return result.Match(
+            organization => Ok(ToDto(organization)),
+            Problem);
+    }
+
     private static OrganizationResponse ToDto(Organization organization)
     {
         return new(
+            organization.Id,
             organization.Name,
             organization.Description,
             organization.CreatedAt,

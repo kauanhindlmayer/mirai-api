@@ -16,4 +16,10 @@ public class Organization : Entity
     private Organization()
     {
     }
+
+    public void Update(string name, string? description)
+    {
+        Name = name;
+        Description = description;
+    }
 }

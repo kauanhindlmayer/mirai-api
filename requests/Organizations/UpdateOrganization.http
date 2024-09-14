@@ -1,0 +1,9 @@
+@organizationId = 1
+
+PUT {{host}}/organizations/{{organizationId}}
+Content-Type: application/json
+
+{
+  "name": "Organization",
+  "description": "Organization description",
+}
