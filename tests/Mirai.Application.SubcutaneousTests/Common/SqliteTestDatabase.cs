@@ -1,6 +1,6 @@
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using Mirai.Infrastructure.Common;
+using Mirai.Infrastructure.Common.Persistence;
 
 namespace Mirai.Application.SubcutaneousTests.Common;
 

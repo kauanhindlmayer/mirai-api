@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Mirai.Application.Common.Interfaces;
 using Mirai.Domain.Organizations;
-using Mirai.Infrastructure.Common;
+using Mirai.Infrastructure.Common.Persistence;
 
 namespace Mirai.Infrastructure.Organizations.Persistence;
 

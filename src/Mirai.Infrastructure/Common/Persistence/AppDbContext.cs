@@ -3,10 +3,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Mirai.Domain.Common;
 using Mirai.Domain.Organizations;
+using Mirai.Domain.Projects;
 using Mirai.Domain.Users;
 using Mirai.Infrastructure.Common.Middleware;
 
-namespace Mirai.Infrastructure.Common;
+namespace Mirai.Infrastructure.Common.Persistence;
 
 public class AppDbContext(
     DbContextOptions options,
@@ -16,6 +17,8 @@ public class AppDbContext(
     public DbSet<User> Users { get; set; } = null!;
 
     public DbSet<Organization> Organizations { get; set; } = null!;
+
+    public DbSet<Project> Projects { get; set; } = null!;
 
     public async override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

@@ -3,8 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Mirai.Application.Common.Interfaces;
-using Mirai.Infrastructure.Common;
+using Mirai.Infrastructure.Common.Persistence;
 using Mirai.Infrastructure.Organizations.Persistence;
+using Mirai.Infrastructure.Projects.Persistence;
 using Mirai.Infrastructure.Security;
 using Mirai.Infrastructure.Security.CurrentUserProvider;
 using Mirai.Infrastructure.Security.PolicyEnforcer;
@@ -41,6 +42,7 @@ public static class DependencyInjection
         services.AddDbContext<AppDbContext>(options => options.UseSqlite("Data Source = Mirai.sqlite"));
 
         services.AddScoped<IOrganizationsRepository, OrganizationsRepository>();
+        services.AddScoped<IProjectsRepository, ProjectsRepository>();
         services.AddScoped<IUsersRepository, UsersRepository>();
 
         return services;

@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Mirai.Api;
-using Mirai.Infrastructure.Common;
+using Mirai.Infrastructure.Common.Persistence;
 using Mirai.Infrastructure.Security.CurrentUserProvider;
 
 namespace Mirai.Application.SubcutaneousTests.Common;

@@ -1,6 +1,6 @@
 using Mirai.Application.Common.Interfaces;
 using Mirai.Domain.Users;
-using Mirai.Infrastructure.Common;
+using Mirai.Infrastructure.Common.Persistence;
 
 namespace Mirai.Infrastructure.Users.Persistence;
 

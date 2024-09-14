@@ -8,7 +8,7 @@ public class Project : Entity
     public string Name { get; private set; } = null!;
     public string? Description { get; private set; }
 
-    public Project(string name, string description, Guid organizationId)
+    public Project(string name, string? description, Guid organizationId)
     {
         Name = name;
         Description = description;

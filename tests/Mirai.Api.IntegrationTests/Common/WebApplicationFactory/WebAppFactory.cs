@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Mirai.Infrastructure.Common;
+using Mirai.Infrastructure.Common.Persistence;
 
 namespace Mirai.Api.IntegrationTests.Common.WebApplicationFactory;
 

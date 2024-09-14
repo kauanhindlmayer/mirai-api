@@ -13,4 +13,14 @@ public static class ApiEndpoints
         public const string Delete = $"{Base}/{{organizationId:guid}}";
         private const string Base = $"{ApiBase}/organizations";
     }
+
+    public static class Projects
+    {
+        public const string Create = Base;
+        public const string Get = $"{Base}/{{projectId:guid}}";
+        public const string List = Base;
+        public const string Update = $"{Base}/{{projectId:guid}}";
+        public const string Delete = $"{Base}/{{projectId:guid}}";
+        private const string Base = $"{ApiBase}/projects";
+    }
 }

@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Mirai.Domain.Common;
+using Mirai.Infrastructure.Common.Persistence;
 
 namespace Mirai.Infrastructure.Common.Middleware;
 
