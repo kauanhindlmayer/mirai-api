@@ -1,57 +1,38 @@
-using System.Net.Http.Headers;
-
-using Mirai.Api.IntegrationTests.Common.Subscriptions;
-using Mirai.Api.IntegrationTests.Common.Tokens;
-using Mirai.Contracts.Subscriptions;
-using Mirai.Contracts.Tokens;
+using Mirai.Api.IntegrationTests.Common.Organizations;
+using Mirai.Contracts.Organizations;
 
 namespace Mirai.Api.IntegrationTests.Common;
 
 public class AppHttpClient(HttpClient _httpClient)
 {
-    public async Task<SubscriptionResponse> CreateSubscriptionAndExpectSuccessAsync(
-        Guid? userId = null,
-        CreateSubscriptionRequest? createSubscriptionRequest = null,
-        string? token = null)
+    public async Task<OrganizationResponse> GetOrganizationAndExpectSuccessAsync(Guid id)
     {
-        var response = await CreateSubscriptionAsync(userId, createSubscriptionRequest, token);
+        var response = await GetOrganizationAsync(id);
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var organizationResponse = await response.Content.ReadFromJsonAsync<OrganizationResponse>();
+        organizationResponse.Should().NotBeNull();
+        return organizationResponse!;
+    }
 
+    public async Task<HttpResponseMessage> GetOrganizationAsync(Guid id)
+    {
+        return await _httpClient.GetAsync($"api/organizations/{id}");
+    }
+
+    public async Task<OrganizationResponse> CreateOrganizationAndExpectSuccessAsync(
+        CreateOrganizationRequest? createOrganizationRequest = null)
+    {
+        var response = await CreateOrganizationAsync(createOrganizationRequest);
         response.StatusCode.Should().Be(HttpStatusCode.Created);
-
-        var subscriptionResponse = await response.Content.ReadFromJsonAsync<SubscriptionResponse>();
-
-        subscriptionResponse.Should().NotBeNull();
-
-        return subscriptionResponse!;
+        var organizationResponse = await response.Content.ReadFromJsonAsync<OrganizationResponse>();
+        organizationResponse.Should().NotBeNull();
+        return organizationResponse!;
     }
 
-    public async Task<string> GenerateTokenAsync(
-        GenerateTokenRequest? generateTokenRequest = null)
+    public async Task<HttpResponseMessage> CreateOrganizationAsync(
+        CreateOrganizationRequest? createOrganizationRequest = null)
     {
-        generateTokenRequest ??= TokenRequestFactory.CreateGenerateTokenRequest();
-
-        var response = await _httpClient.PostAsJsonAsync("tokens/generate", generateTokenRequest);
-
-        response.Should().BeSuccessful();
-
-        var tokenResponse = await response.Content.ReadFromJsonAsync<TokenResponse>();
-
-        tokenResponse.Should().NotBeNull();
-
-        return tokenResponse!.Token;
-    }
-
-    public async Task<HttpResponseMessage> CreateSubscriptionAsync(
-        Guid? userId = null,
-        CreateSubscriptionRequest? createSubscriptionRequest = null,
-        string? token = null)
-    {
-        userId ??= Constants.User.Id;
-        createSubscriptionRequest ??= SubscriptionRequestFactory.CreateCreateSubscriptionRequest();
-        token ??= await GenerateTokenAsync();
-
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-        return await _httpClient.PostAsJsonAsync($"users/{userId}/subscriptions", createSubscriptionRequest);
+        createOrganizationRequest ??= OrganizationRequestFactory.CreateOrganizationRequest();
+        return await _httpClient.PostAsJsonAsync($"api/organizations", createOrganizationRequest);
     }
 }
