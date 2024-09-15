@@ -18,10 +18,11 @@ public class OrganizationsControllerTests
     public async Task CreateOrganization_WhenRequestIsValid_ShouldReturnCreatedOrganization()
     {
         // Arrange
-        var createOrganizationRequest = OrganizationRequestFactory.CreateOrganizationRequest();
+        var createOrganizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest();
+        var token = await _client.GenerateTokenAsync();
 
         // Act
-        var response = await _client.CreateOrganizationAndExpectSuccessAsync(createOrganizationRequest);
+        var response = await _client.CreateOrganizationAndExpectSuccessAsync(createOrganizationRequest, token);
 
         // Assert
         response.Id.Should().NotBeEmpty();
@@ -33,7 +34,7 @@ public class OrganizationsControllerTests
     public async Task CreateOrganization_WhenNameIsMissing_ShouldReturnBadRequest()
     {
         // Arrange
-        var createOrganizationRequest = OrganizationRequestFactory.CreateOrganizationRequest(name: string.Empty);
+        var createOrganizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest(name: string.Empty);
 
         // Act
         var response = await _client.CreateOrganizationAsync(createOrganizationRequest);
@@ -46,7 +47,7 @@ public class OrganizationsControllerTests
     public async Task CreateOrganization_WhenNameIsTooLong_ShouldReturnBadRequest()
     {
         // Arrange
-        var createOrganizationRequest = OrganizationRequestFactory.CreateOrganizationRequest(name: new string('a', 256));
+        var createOrganizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest(name: new string('a', 256));
 
         // Act
         var response = await _client.CreateOrganizationAsync(createOrganizationRequest);
@@ -59,7 +60,7 @@ public class OrganizationsControllerTests
     public async Task CreateOrganization_WhenDescriptionIsTooLong_ShouldReturnBadRequest()
     {
         // Arrange
-        var createOrganizationRequest = OrganizationRequestFactory.CreateOrganizationRequest(description: new string('a', 501));
+        var createOrganizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest(description: new string('a', 501));
 
         // Act
         var response = await _client.CreateOrganizationAsync(createOrganizationRequest);
@@ -72,11 +73,12 @@ public class OrganizationsControllerTests
     public async Task GetOrganization_WhenOrganizationExists_ShouldReturnOrganization()
     {
         // Arrange
-        var createOrganizationRequest = OrganizationRequestFactory.CreateOrganizationRequest();
-        var createdOrganization = await _client.CreateOrganizationAndExpectSuccessAsync(createOrganizationRequest);
+        var token = await _client.GenerateTokenAsync();
+        var createOrganizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest();
+        var createdOrganization = await _client.CreateOrganizationAndExpectSuccessAsync(createOrganizationRequest, token);
 
         // Act
-        var response = await _client.GetOrganizationAndExpectSuccessAsync(createdOrganization.Id);
+        var response = await _client.GetOrganizationAndExpectSuccessAsync(createdOrganization.Id, token);
 
         // Assert
         response.Should().NotBeNull();

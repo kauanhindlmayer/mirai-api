@@ -80,7 +80,7 @@ public class WorkItemsController(ISender _mediator) : ApiController
     /// List all work items belonging to a project.
     /// </summary>
     /// <param name="projectId">The ID of the project to list work items for.</param>
-    [HttpGet(ApiEndpoints.WorkItems.List)]
+    [HttpGet(ApiEndpoints.Projects.ListWorkItems)]
     [ProducesResponseType(typeof(IEnumerable<WorkItemResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> ListWorkItems(Guid projectId)
     {

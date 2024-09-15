@@ -4,9 +4,6 @@ using Mirai.Infrastructure.Common.Persistence;
 
 namespace Mirai.Api.IntegrationTests.Common.WebApplicationFactory;
 
-/// <summary>
-/// We're using SQLite so no need to spin an actual database.
-/// </summary>
 public class SqliteTestDatabase : IDisposable
 {
     public SqliteConnection Connection { get; }
