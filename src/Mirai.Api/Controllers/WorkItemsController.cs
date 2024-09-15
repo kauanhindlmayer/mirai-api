@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Mirai.Application.WorkItems.Commands.AddComment;
+using Mirai.Application.WorkItems.Commands.AssignWorkItem;
 using Mirai.Application.WorkItems.Commands.CreateWorkItem;
 using Mirai.Application.WorkItems.Queries.GetWorkItem;
 using Mirai.Application.WorkItems.Queries.ListWorkItems;
@@ -91,6 +92,22 @@ public class WorkItemsController(ISender _mediator) : ApiController
         return result.Match(
             workItems => Ok(workItems.ConvertAll(ToDto)),
             Problem);
+    }
+
+    /// <summary>
+    /// Assign a work item to a user.
+    /// </summary>
+    /// <param name="workItemId">The ID of the work item to assign.</param>
+    /// <param name="request">The details of the assignment.</param>
+    [HttpPatch(ApiEndpoints.WorkItems.Assign)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> AssignWorkItem(Guid workItemId, AssignWorkItemRequest request)
+    {
+        var command = new AssignWorkItemCommand(workItemId, request.AssigneeId);
+        var result = await _mediator.Send(command);
+        return result.Match(_ => NoContent(), Problem);
     }
 
     private static WorkItemResponse ToDto(WorkItem workItem)

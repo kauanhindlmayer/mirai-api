@@ -35,7 +35,7 @@ public class WorkItem : Entity
     {
     }
 
-    public void UpdateAssignee(Guid assigneeId)
+    public void Assign(Guid assigneeId)
     {
         AssigneeId = assigneeId;
     }
