@@ -19,6 +19,7 @@ public class ProjectsRepository(AppDbContext dbContext) : IProjectsRepository
     {
         return await _dbContext.Projects
             .Include(p => p.WorkItems)
+            .Include(p => p.WikiPages)
             .FirstOrDefaultAsync(p => p.Id == projectId, cancellationToken);
     }
 

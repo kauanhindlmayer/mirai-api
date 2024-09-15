@@ -5,10 +5,13 @@ public record WikiPageDetailResponse(
     Guid ProjectId,
     string Title,
     string Content,
+    List<WikiPageCommentResponse> Comments,
     DateTime CreatedAt,
     DateTime? UpdatedAt);
 
-public record WikiPageSummaryResponse(
+public record WikiPageCommentResponse(
     Guid Id,
-    Guid ProjectId,
-    string Title);
+    Guid UserId,
+    string Content,
+    DateTime CreatedAt,
+    DateTime? UpdatedAt);

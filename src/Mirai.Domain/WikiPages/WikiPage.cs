@@ -13,11 +13,12 @@ public class WikiPage : Entity
     public ICollection<WikiPage> SubWikiPages { get; private set; } = [];
     public ICollection<WikiPageComment> Comments { get; private set; } = [];
 
-    public WikiPage(Guid projectId, string title, string content)
+    public WikiPage(Guid projectId, string title, string content, Guid? parentWikiPageId)
     {
         ProjectId = projectId;
         Title = title;
         Content = content;
+        ParentWikiPageId = parentWikiPageId;
     }
 
     private WikiPage()
