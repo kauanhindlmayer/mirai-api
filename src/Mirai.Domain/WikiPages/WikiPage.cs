@@ -24,4 +24,9 @@ public class WikiPage : Entity
     private WikiPage()
     {
     }
+
+    public void AddComment(WikiPageComment comment)
+    {
+        Comments.Add(comment);
+    }
 }

@@ -1,9 +1,11 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Mirai.Application.WikiPages.Commands.AddComment;
 using Mirai.Application.WikiPages.Commands.CreateWikiPage;
 using Mirai.Application.WikiPages.Queries.GetWikiPage;
 using Mirai.Application.WikiPages.Queries.ListWikiPages;
 using Mirai.Contracts.WikiPages;
+using Mirai.Contracts.WorkItems;
 using Mirai.Domain.WikiPages;
 
 namespace Mirai.Api.Controllers;
@@ -68,6 +70,29 @@ public class WikiPagesController(ISender _mediator) : ApiController
 
         return result.Match(
             wikiPages => Ok(wikiPages.ConvertAll(ToSummaryDto)),
+            Problem);
+    }
+
+    /// <summary>
+    /// Add a comment to a wiki page.
+    /// </summary>
+    /// <param name="wikiPageId">The ID of the wiki page to add a comment to.</param>
+    /// <param name="request">The details of the comment to add.</param>
+    [HttpPost(ApiEndpoints.WikiPages.AddComment)]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> AddComment(Guid wikiPageId, AddCommentRequest request)
+    {
+        var command = new AddCommentCommand(wikiPageId, request.Content);
+
+        var result = await _mediator.Send(command);
+
+        return result.Match(
+            _ => CreatedAtAction(
+                actionName: nameof(GetWikiPage),
+                routeValues: new { WikiPageId = wikiPageId },
+                value: null),
             Problem);
     }
 
