@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Mirai.Application.WikiPages.Commands.AddComment;
 using Mirai.Application.WikiPages.Commands.CreateWikiPage;
+using Mirai.Application.WikiPages.Commands.DeleteWikiPage;
 using Mirai.Application.WikiPages.Queries.GetWikiPage;
 using Mirai.Application.WikiPages.Queries.ListWikiPages;
 using Mirai.Contracts.WikiPages;
@@ -94,6 +95,20 @@ public class WikiPagesController(ISender _mediator) : ApiController
                 routeValues: new { WikiPageId = wikiPageId },
                 value: null),
             Problem);
+    }
+
+    /// <summary>
+    /// Delete a wiki page by its ID.
+    /// </summary>
+    /// <param name="wikiPageId">The ID of the wiki page to delete.</param>
+    [HttpDelete(ApiEndpoints.WikiPages.Delete)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteWikiPage(Guid wikiPageId)
+    {
+        var command = new DeleteWikiPageCommand(wikiPageId);
+        var result = await _mediator.Send(command);
+        return result.Match(_ => NoContent(), Problem);
     }
 
     private static WikiPageDetailResponse ToDto(WikiPage wikiPage)

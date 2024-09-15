@@ -50,7 +50,7 @@ public static class ApiEndpoints
         public const string Update = $"{Base}/{{wikiPageId:guid}}";
         public const string Delete = $"{Base}/{{wikiPageId:guid}}";
         public const string AddComment = $"{Base}/{{wikiPageId:guid}}/comments";
-        public const string CreateSubPage = $"{Base}/{{wikiPageId:guid}}/sub-pages";
+        public const string Move = $"{Base}/{{wikiPageId:guid}}/move";
         private const string Base = $"{ApiBase}/wiki-pages";
     }
 }
