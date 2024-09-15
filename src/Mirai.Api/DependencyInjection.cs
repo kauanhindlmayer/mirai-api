@@ -19,6 +19,7 @@ public static class DependencyInjection
     {
         services.AddSwaggerGen(options =>
         {
+            options.CustomSchemaIds(type => type.ToString());
             options.SwaggerDoc("v1", new OpenApiInfo
             {
                 Title = "Mirai.Api",

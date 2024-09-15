@@ -1,3 +1,5 @@
+using Mirai.Contracts.Common;
+
 namespace Mirai.Contracts.WorkItems;
 
 public record WorkItemResponse(
@@ -5,8 +7,8 @@ public record WorkItemResponse(
     Guid ProjectId,
     string Title,
     string? Description,
-    string Status,
-    string Type,
+    WorkItemStatus Status,
+    WorkItemType Type,
     List<CommentResponse> Comments,
     DateTime CreatedAt,
     DateTime? UpdatedAt);

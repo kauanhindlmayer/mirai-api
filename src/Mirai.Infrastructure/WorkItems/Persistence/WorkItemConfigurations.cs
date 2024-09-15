@@ -20,9 +20,15 @@ public class WorkItemConfigurations : IEntityTypeConfiguration<WorkItem>
         builder.Property(p => p.Description);
 
         builder.Property(p => p.Type)
+            .HasConversion(
+                v => v.Name,
+                v => WorkItemType.FromName(v, false))
             .IsRequired();
 
         builder.Property(p => p.Status)
+            .HasConversion(
+                v => v.Name,
+                v => WorkItemStatus.FromName(v, false))
             .IsRequired();
 
         builder.Property(p => p.AssigneeId);

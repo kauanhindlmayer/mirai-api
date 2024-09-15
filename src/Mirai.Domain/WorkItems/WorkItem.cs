@@ -9,8 +9,8 @@ public class WorkItem : Entity
 {
     public string Title { get; private set; } = null!;
     public string? Description { get; private set; }
-    public WorkItemType Type { get; private set; }
-    public WorkItemStatus Status { get; private set; }
+    public WorkItemType Type { get; private set; } = null!;
+    public WorkItemStatus Status { get; private set; } = null!;
     public Guid? AssigneeId { get; private set; }
     public User? Assignee { get; private set; }
     public Guid ProjectId { get; private set; }

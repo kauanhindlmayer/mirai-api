@@ -4,5 +4,5 @@ using Mirai.Domain.WorkItems;
 
 namespace Mirai.Application.WorkItems.Commands.CreateWorkItem;
 
-public record CreateWorkItemCommand(Guid ProjectId, string Type, string Title)
+public record CreateWorkItemCommand(Guid ProjectId, WorkItemType Type, string Title)
     : IRequest<ErrorOr<WorkItem>>;

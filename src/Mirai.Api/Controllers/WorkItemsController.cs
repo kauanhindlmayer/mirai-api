@@ -7,6 +7,10 @@ using Mirai.Application.WorkItems.Queries.GetWorkItem;
 using Mirai.Application.WorkItems.Queries.ListWorkItems;
 using Mirai.Contracts.WorkItems;
 using Mirai.Domain.WorkItems;
+using DomainWorkItemStatus = Mirai.Domain.WorkItems.WorkItemStatus;
+using DomainWorkItemType = Mirai.Domain.WorkItems.WorkItemType;
+using WorkItemStatus = Mirai.Contracts.Common.WorkItemStatus;
+using WorkItemType = Mirai.Contracts.Common.WorkItemType;
 
 namespace Mirai.Api.Controllers;
 
@@ -21,9 +25,16 @@ public class WorkItemsController(ISender _mediator) : ApiController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateWorkItem(CreateWorkItemRequest request)
     {
+        if (!DomainWorkItemType.TryFromName(request.Type.ToString(), out var type))
+        {
+            return Problem(
+                statusCode: StatusCodes.Status400BadRequest,
+                detail: "Invalid work item type");
+        }
+
         var command = new CreateWorkItemCommand(
             ProjectId: request.ProjectId,
-            Type: request.Type,
+            Type: type,
             Title: request.Title);
 
         var result = await _mediator.Send(command);
@@ -117,11 +128,37 @@ public class WorkItemsController(ISender _mediator) : ApiController
             workItem.ProjectId,
             workItem.Title,
             workItem.Description,
-            workItem.Status.ToString(),
-            workItem.Type.ToString(),
+            ToDto(workItem.Status),
+            ToDto(workItem.Type),
             workItem.Comments.Select(ToDto).ToList(),
             workItem.CreatedAt,
             workItem.UpdatedAt);
+    }
+
+    private static WorkItemType ToDto(DomainWorkItemType workItemType)
+    {
+        return workItemType.Name switch
+        {
+            nameof(DomainWorkItemType.UserStory) => WorkItemType.UserStory,
+            nameof(DomainWorkItemType.Bug) => WorkItemType.Bug,
+            nameof(DomainWorkItemType.Defect) => WorkItemType.Defect,
+            nameof(DomainWorkItemType.Epic) => WorkItemType.Epic,
+            nameof(DomainWorkItemType.Feature) => WorkItemType.Feature,
+            _ => throw new InvalidOperationException(),
+        };
+    }
+
+    private static WorkItemStatus ToDto(DomainWorkItemStatus workItemStatus)
+    {
+        return workItemStatus.Name switch
+        {
+            nameof(DomainWorkItemStatus.New) => WorkItemStatus.New,
+            nameof(DomainWorkItemStatus.InProgress) => WorkItemStatus.InProgress,
+            nameof(DomainWorkItemStatus.Closed) => WorkItemStatus.Closed,
+            nameof(DomainWorkItemStatus.Resolved) => WorkItemStatus.Resolved,
+            nameof(DomainWorkItemStatus.Reopened) => WorkItemStatus.Reopened,
+            _ => throw new InvalidOperationException(),
+        };
     }
 
     private static CommentResponse ToDto(WorkItemComment comment)
