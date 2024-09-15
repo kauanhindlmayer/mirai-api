@@ -25,6 +25,12 @@ public class WikiPage : Entity
     {
     }
 
+    public void Update(string title, string content)
+    {
+        Title = title;
+        Content = content;
+    }
+
     public void AddComment(WikiPageComment comment)
     {
         Comments.Add(comment);

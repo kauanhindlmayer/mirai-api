@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Mirai.Application.WikiPages.Commands.AddComment;
 using Mirai.Application.WikiPages.Commands.CreateWikiPage;
 using Mirai.Application.WikiPages.Commands.DeleteWikiPage;
+using Mirai.Application.WikiPages.Commands.UpdateWikiPage;
 using Mirai.Application.WikiPages.Queries.GetWikiPage;
 using Mirai.Application.WikiPages.Queries.ListWikiPages;
 using Mirai.Contracts.WikiPages;
@@ -109,6 +110,26 @@ public class WikiPagesController(ISender _mediator) : ApiController
         var command = new DeleteWikiPageCommand(wikiPageId);
         var result = await _mediator.Send(command);
         return result.Match(_ => NoContent(), Problem);
+    }
+
+    /// <summary>
+    /// Update a wiki page by its ID.
+    /// </summary>
+    /// <param name="wikiPageId">The ID of the wiki page to update.</param>
+    /// <param name="request">The details of the wiki page to update.</param>
+    [HttpPut(ApiEndpoints.WikiPages.Update)]
+    [ProducesResponseType(typeof(WikiPageDetailResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateWikiPage(Guid wikiPageId, UpdateWikiPageRequest request)
+    {
+        var command = new UpdateWikiPageCommand(
+            WikiPageId: wikiPageId,
+            Title: request.Title,
+            Content: request.Content);
+
+        var result = await _mediator.Send(command);
+
+        return result.Match(wikiPage => Ok(ToDto(wikiPage)), Problem);
     }
 
     private static WikiPageDetailResponse ToDto(WikiPage wikiPage)
