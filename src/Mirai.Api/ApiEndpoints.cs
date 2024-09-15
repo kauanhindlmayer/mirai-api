@@ -40,4 +40,16 @@ public static class ApiEndpoints
         public const string AddComment = $"{Base}/{{workItemId:guid}}/comments";
         private const string Base = $"{ApiBase}/work-items";
     }
+
+    public static class WikiPages
+    {
+        public const string Create = Base;
+        public const string Get = $"{Base}/{{wikiPageId:guid}}";
+        public const string List = Base;
+        public const string Update = $"{Base}/{{wikiPageId:guid}}";
+        public const string Delete = $"{Base}/{{wikiPageId:guid}}";
+        public const string AddComment = $"{Base}/{{wikiPageId:guid}}/comments";
+        public const string CreateSubPage = $"{Base}/{{wikiPageId:guid}}/sub-pages";
+        private const string Base = $"{ApiBase}/wiki-pages";
+    }
 }

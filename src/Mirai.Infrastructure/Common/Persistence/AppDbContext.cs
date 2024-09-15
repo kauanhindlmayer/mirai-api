@@ -5,6 +5,7 @@ using Mirai.Domain.Common;
 using Mirai.Domain.Organizations;
 using Mirai.Domain.Projects;
 using Mirai.Domain.Users;
+using Mirai.Domain.WikiPages;
 using Mirai.Domain.WorkItems;
 using Mirai.Infrastructure.Common.Middleware;
 
@@ -15,15 +16,17 @@ public class AppDbContext(
     IHttpContextAccessor _httpContextAccessor,
     IPublisher _publisher) : DbContext(options)
 {
-    public DbSet<User> Users { get; set; } = null!;
+    public DbSet<User> Users { get; init; }
 
-    public DbSet<Organization> Organizations { get; set; } = null!;
+    public DbSet<Organization> Organizations { get; init; }
 
-    public DbSet<Project> Projects { get; set; } = null!;
+    public DbSet<Project> Projects { get; init; }
 
-    public DbSet<WorkItem> WorkItems { get; set; } = null!;
+    public DbSet<WorkItem> WorkItems { get; init; }
 
-    public DbSet<WorkItemComment> WorkItemComments { get; set; } = null!;
+    public DbSet<WorkItemComment> WorkItemComments { get; init; }
+
+    public DbSet<WikiPage> WikiPages { get; init; }
 
     public async override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
