@@ -18,7 +18,7 @@ public class GetProjectQueryHandler(IProjectsRepository _projectsRepository)
 
         if (project is null)
         {
-            return Error.NotFound(description: "Project not found");
+            return ProjectErrors.ProjectNotFound;
         }
 
         return project;

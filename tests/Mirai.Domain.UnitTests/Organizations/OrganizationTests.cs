@@ -1,4 +1,4 @@
-using Mirai.Domain.Organizations;
+using Mirai.Domain.Projects;
 using TestCommon.Organizations;
 using TestCommon.Projects;
 
@@ -20,7 +20,7 @@ public class OrganizationTests
         // Assert
         result.IsError.Should().BeTrue();
         result.Errors.Should().HaveCount(1);
-        result.Errors.First().Should().BeEquivalentTo(OrganizationErrors.ProjectWithSameNameAlreadyExists);
+        result.Errors.First().Should().BeEquivalentTo(ProjectErrors.ProjectWithSameNameAlreadyExists);
     }
 
     [Fact]

@@ -30,7 +30,7 @@ public class Organization : Entity
     {
         if (Projects.Any(p => p.Name == project.Name))
         {
-            return OrganizationErrors.ProjectWithSameNameAlreadyExists;
+            return ProjectErrors.ProjectWithSameNameAlreadyExists;
         }
 
         Projects.Add(project);

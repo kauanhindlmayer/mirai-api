@@ -1,6 +1,7 @@
 using ErrorOr;
 using MediatR;
 using Mirai.Application.Common.Interfaces;
+using Mirai.Domain.Organizations;
 using Mirai.Domain.Projects;
 
 namespace Mirai.Application.Projects.Commands.CreateProject;
@@ -15,7 +16,7 @@ public class CreateProjectCommandHandler(IOrganizationsRepository _organizations
         var organization = await _organizationsRepository.GetByIdAsync(request.OrganizationId, cancellationToken);
         if (organization is null)
         {
-            return Error.NotFound(description: "Organization not found");
+            return OrganizationErrors.OrganizationNotFound;
         }
 
         var project = new Project(

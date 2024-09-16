@@ -1,6 +1,4 @@
-using Mirai.Application.Organizations.Queries.GetOrganization;
 using Mirai.Application.Organizations.Queries.ListOrganizations;
-using Mirai.Domain.Organizations;
 using TestCommon.Organizations;
 
 namespace Mirai.Application.SubcutaneousTests.Organizations.Queries.ListOrganizations;
