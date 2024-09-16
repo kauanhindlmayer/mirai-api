@@ -1,6 +1,7 @@
 using ErrorOr;
 using MediatR;
 using Mirai.Application.Common.Interfaces;
+using Mirai.Domain.Projects;
 using Mirai.Domain.WikiPages;
 
 namespace Mirai.Application.WikiPages.Commands.CreateWikiPage;
@@ -15,15 +16,16 @@ public class CreateWikiPageCommandHandler(IProjectsRepository _projectsRepositor
         var project = await _projectsRepository.GetByIdAsync(request.ProjectId, cancellationToken);
         if (project is null)
         {
-            return Error.NotFound(description: "Project not found");
+            return ProjectErrors.ProjectNotFound;
         }
 
         if (request.ParentWikiPageId.HasValue)
         {
-            var parentWikiPage = project.WikiPages.FirstOrDefault(wikiPage => wikiPage.Id == request.ParentWikiPageId);
-            if (parentWikiPage is null)
+            var parentWikiPage = project.WikiPages.FirstOrDefault(wikiPage =>
+                wikiPage.Id == request.ParentWikiPageId);
+            if (parentWikiPage is null || parentWikiPage.ProjectId != request.ProjectId)
             {
-                return Error.NotFound(description: "Parent Wiki Page not found");
+                return WikiPageErrors.ParentWikiPageNotFound;
             }
         }
 
