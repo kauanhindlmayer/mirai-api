@@ -12,6 +12,6 @@ public class ListProjectsQueryHandler(IProjectsRepository _projectsRepository)
         ListProjectsQuery request,
         CancellationToken cancellationToken)
     {
-        return await _projectsRepository.ListAsync(cancellationToken);
+        return await _projectsRepository.ListAsync(request.OrganizationId, cancellationToken);
     }
 }

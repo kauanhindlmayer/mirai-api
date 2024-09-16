@@ -50,13 +50,14 @@ public class ProjectsController(ISender _mediator) : ApiController
     }
 
     /// <summary>
-    /// List all projects.
+    /// List all projects in an organization.
     /// </summary>
-    [HttpGet(ApiEndpoints.Projects.List)]
+    /// <param name="organizationId">The organization ID.</param>
+    [HttpGet(ApiEndpoints.Organizations.ListProjects)]
     [ProducesResponseType(typeof(IEnumerable<ProjectResponse>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> ListProjects()
+    public async Task<IActionResult> ListProjects(Guid organizationId)
     {
-        var query = new ListProjectsQuery();
+        var query = new ListProjectsQuery(organizationId);
 
         var result = await _mediator.Send(query);
 

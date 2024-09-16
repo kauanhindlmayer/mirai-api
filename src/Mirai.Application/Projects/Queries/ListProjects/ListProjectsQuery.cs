@@ -4,4 +4,4 @@ using Mirai.Domain.Projects;
 
 namespace Mirai.Application.Projects.Queries.ListProjects;
 
-public record ListProjectsQuery() : IRequest<ErrorOr<List<Project>>>;
+public record ListProjectsQuery(Guid OrganizationId) : IRequest<ErrorOr<List<Project>>>;

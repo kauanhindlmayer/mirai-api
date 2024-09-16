@@ -23,9 +23,12 @@ public class ProjectsRepository(AppDbContext dbContext) : IProjectsRepository
             .FirstOrDefaultAsync(p => p.Id == projectId, cancellationToken);
     }
 
-    public Task<List<Project>> ListAsync(CancellationToken cancellationToken)
+    public Task<List<Project>> ListAsync(Guid organizationId, CancellationToken cancellationToken)
     {
-        return _dbContext.Projects.ToListAsync(cancellationToken);
+        return _dbContext.Projects
+            .AsNoTracking()
+            .Where(p => p.OrganizationId == organizationId)
+            .ToListAsync(cancellationToken);
     }
 
     public async Task UpdateAsync(Project project, CancellationToken cancellationToken)
