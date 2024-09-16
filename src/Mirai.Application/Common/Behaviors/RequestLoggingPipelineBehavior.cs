@@ -26,14 +26,14 @@ public class RequestLoggingPipelineBehavior<TRequest, TResponse>(
         {
             using (LogContext.PushProperty("Error", result.Errors!.First(), true))
             {
-                _logger.LogInformation(
+                _logger.LogWarning(
                     "Request {@RequestName} failed with error",
                     typeof(TRequest).Name);
             }
         }
         else
         {
-            _logger.LogWarning(
+            _logger.LogInformation(
                 "Request {@RequestName} succeeded",
                 typeof(TRequest).Name);
         }
