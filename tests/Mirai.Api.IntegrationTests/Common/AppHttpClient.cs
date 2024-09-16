@@ -71,6 +71,50 @@ public class AppHttpClient(HttpClient _httpClient)
         return await _httpClient.PostAsJsonAsync($"api/organizations", createOrganizationRequest);
     }
 
+    public async Task<OrganizationResponse> UpdateOrganizationAndExpectSuccessAsync(
+        Guid id,
+        UpdateOrganizationRequest? updateOrganizationRequest = null,
+        string? token = null)
+    {
+        var response = await UpdateOrganizationAsync(id, updateOrganizationRequest, token);
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var organizationResponse = await response.Content.ReadFromJsonAsync<OrganizationResponse>();
+        organizationResponse.Should().NotBeNull();
+        return organizationResponse!;
+    }
+
+    public async Task<HttpResponseMessage> UpdateOrganizationAsync(Guid id, UpdateOrganizationRequest? updateOrganizationRequest, string? token = null)
+    {
+        updateOrganizationRequest ??= OrganizationRequestFactory.CreateUpdateOrganizationRequest();
+        token ??= await GenerateTokenAsync();
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var response = await _httpClient.PutAsJsonAsync($"api/organizations/{id}", updateOrganizationRequest);
+        return response;
+    }
+
+    public async Task<List<OrganizationResponse>> ListOrganizationsAndExpectSuccessAsync(string? token = null)
+    {
+        var response = await ListOrganizationsAsync(token);
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var organizations = await response.Content.ReadFromJsonAsync<List<OrganizationResponse>>();
+        organizations.Should().NotBeNull();
+        return organizations!;
+    }
+
+    public async Task<HttpResponseMessage> ListOrganizationsAsync(string? token = null)
+    {
+        token ??= await GenerateTokenAsync();
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        return await _httpClient.GetAsync("api/organizations");
+    }
+
+    public async Task<HttpResponseMessage> DeleteOrganizationAsync(Guid id, string? token = null)
+    {
+        token ??= await GenerateTokenAsync();
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        return await _httpClient.DeleteAsync($"api/organizations/{id}");
+    }
+
     public async Task<string> GenerateTokenAsync(RegisterRequest? registerRequest = null)
     {
         registerRequest ??= AuthenticationRequestFactory.CreateRegisterRequest();

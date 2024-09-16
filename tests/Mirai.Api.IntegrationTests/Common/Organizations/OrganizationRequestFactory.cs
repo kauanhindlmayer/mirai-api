@@ -10,4 +10,11 @@ public static class OrganizationRequestFactory
     {
         return new(name, description);
     }
+
+    public static UpdateOrganizationRequest CreateUpdateOrganizationRequest(
+        string name = Constants.Organization.UpdatedName,
+        string description = Constants.Organization.UpdatedDescription)
+    {
+        return new(name, description);
+    }
 }
