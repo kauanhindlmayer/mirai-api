@@ -12,7 +12,14 @@ public class CreateOrganizationCommandHandler(IOrganizationsRepository _organiza
         CreateOrganizationCommand request,
         CancellationToken cancellationToken)
     {
-        var organization = new Organization(request.Name, request.Description);
+        if (await _organizationsRepository.ExistsByNameAsync(request.Name, cancellationToken))
+        {
+            return OrganizationErrors.OrganizationWithSameNameAlreadyExists;
+        }
+
+        var organization = new Organization(
+            name: request.Name,
+            description: request.Description);
 
         await _organizationsRepository.AddAsync(organization, cancellationToken);
 

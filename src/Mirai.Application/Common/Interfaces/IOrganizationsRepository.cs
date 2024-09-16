@@ -9,4 +9,5 @@ public interface IOrganizationsRepository
     Task<List<Organization>> ListAsync(CancellationToken cancellationToken);
     Task RemoveAsync(Organization organization, CancellationToken cancellationToken);
     Task UpdateAsync(Organization organization, CancellationToken cancellationToken);
+    Task<bool> ExistsByNameAsync(string name, CancellationToken cancellationToken);
 }

@@ -24,7 +24,9 @@ public class OrganizationsRepository(AppDbContext dbContext) : IOrganizationsRep
 
     public Task<List<Organization>> ListAsync(CancellationToken cancellationToken)
     {
-        return _dbContext.Organizations.ToListAsync(cancellationToken);
+        return _dbContext.Organizations
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
     }
 
     public async Task RemoveAsync(Organization organization, CancellationToken cancellationToken)
@@ -37,5 +39,12 @@ public class OrganizationsRepository(AppDbContext dbContext) : IOrganizationsRep
     {
         _dbContext.Update(organization);
         await _dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public Task<bool> ExistsByNameAsync(string name, CancellationToken cancellationToken)
+    {
+        return _dbContext.Organizations
+            .AsNoTracking()
+            .AnyAsync(o => o.Name == name, cancellationToken);
     }
 }
