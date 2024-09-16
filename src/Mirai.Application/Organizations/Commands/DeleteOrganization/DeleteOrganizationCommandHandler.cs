@@ -15,7 +15,7 @@ public class DeleteOrganizationCommandHandler(IOrganizationsRepository _organiza
         var organization = await _organizationsRepository.GetByIdAsync(request.OrganizationId, cancellationToken);
         if (organization is null)
         {
-            return Error.NotFound(description: $"Organization not found");
+            return OrganizationErrors.OrganizationNotFound;
         }
 
         await _organizationsRepository.RemoveAsync(organization, cancellationToken);

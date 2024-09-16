@@ -19,7 +19,7 @@ public class GetOrganizationQueryHandler(IOrganizationsRepository _organizations
 
         if (organization is null)
         {
-            return Error.NotFound(description: "Organization not found");
+            return OrganizationErrors.OrganizationNotFound;
         }
 
         return organization;

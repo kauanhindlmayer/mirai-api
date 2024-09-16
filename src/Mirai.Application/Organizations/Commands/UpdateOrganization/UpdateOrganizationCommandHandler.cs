@@ -15,7 +15,7 @@ public class UpdateOrganizationCommandHandler(IOrganizationsRepository _organiza
         var organization = await _organizationsRepository.GetByIdAsync(request.Id, cancellationToken);
         if (organization is null)
         {
-            return Error.NotFound(description: "Organization not found");
+            return OrganizationErrors.OrganizationNotFound;
         }
 
         organization.Update(request.Name, request.Description);
