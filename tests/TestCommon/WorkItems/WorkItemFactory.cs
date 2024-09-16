@@ -7,12 +7,12 @@ public static class WorkItemFactory
 {
     public static WorkItem CreateWorkItem(
         Guid? projectId = null,
-        WorkItemType type = WorkItemType.UserStory,
+        WorkItemType? type = null,
         string title = Constants.WorkItem.Title)
     {
         return new(
             projectId: projectId ?? Constants.WorkItem.ProjectId,
-            type: type,
+            type: type ?? WorkItemType.UserStory,
             title: title);
     }
 }
