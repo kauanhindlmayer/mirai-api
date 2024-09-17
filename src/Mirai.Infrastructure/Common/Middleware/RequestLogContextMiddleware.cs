@@ -1,6 +1,7 @@
+using Microsoft.AspNetCore.Http;
 using Serilog.Context;
 
-namespace Mirai.Api.Middlewares;
+namespace Mirai.Infrastructure.Common.Middleware;
 
 public class RequestLogContextMiddleware(RequestDelegate next)
 {

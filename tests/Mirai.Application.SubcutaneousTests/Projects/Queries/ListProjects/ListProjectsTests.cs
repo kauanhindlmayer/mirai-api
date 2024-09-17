@@ -20,19 +20,22 @@ public class ListProjectsTests(WebAppFactory webAppFactory)
         var createProjectResult = await _mediator.Send(createProjectRequest);
 
         // Act
-        var listProjectsRequest = new ListProjectsQuery();
+        var listProjectsRequest = new ListProjectsQuery(organization.Value.Id);
         var result = await _mediator.Send(listProjectsRequest);
 
         // Assert
         result.IsError.Should().BeFalse();
-        result.Value.Should().ContainSingle().Which.Should().BeEquivalentTo(createProjectResult.Value);
+        result.Value.Should().HaveCount(1);
+        result.Value.First().Id.Should().Be(createProjectResult.Value.Id);
     }
 
     [Fact]
     public async Task ListProjects_WhenNoProjectsExist_ShouldReturnEmptyList()
     {
         // Act
-        var listProjectsRequest = new ListProjectsQuery();
+        var createOrganizationRequest = OrganizationCommandFactory.CreateCreateOrganizationCommand();
+        var organization = await _mediator.Send(createOrganizationRequest);
+        var listProjectsRequest = new ListProjectsQuery(organization.Value.Id);
         var result = await _mediator.Send(listProjectsRequest);
 
         // Assert

@@ -1,5 +1,4 @@
 using Mirai.Api;
-using Mirai.Api.Middlewares;
 using Mirai.Application;
 using Mirai.Infrastructure;
 using Serilog;
@@ -26,9 +25,7 @@ var app = builder.Build();
         app.UseSwaggerUI();
     }
 
-    app.UseMiddleware<RequestLogContextMiddleware>();
     app.UseSerilogRequestLogging();
-
     app.UseHttpsRedirection();
     app.UseAuthorization();
     app.MapControllers();
