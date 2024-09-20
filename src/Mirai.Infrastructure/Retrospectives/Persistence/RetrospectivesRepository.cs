@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Mirai.Application.Common.Interfaces;
 using Mirai.Domain.Retrospectives;
 using Mirai.Infrastructure.Common.Persistence;
@@ -12,5 +13,12 @@ public class RetrospectivesRepository(AppDbContext dbContext) : IRetrospectivesR
     {
         await _dbContext.Retrospectives.AddAsync(retrospective, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public Task<Retrospective?> GetByIdAsync(Guid retrospectiveId, CancellationToken cancellationToken)
+    {
+        return _dbContext.Retrospectives
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id == retrospectiveId, cancellationToken);
     }
 }

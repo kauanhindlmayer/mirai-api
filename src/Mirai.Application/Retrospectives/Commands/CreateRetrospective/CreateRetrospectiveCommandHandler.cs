@@ -12,7 +12,10 @@ public class CreateRetrospectiveCommandHandler(IRetrospectivesRepository _retros
         CreateRetrospectiveCommand request,
         CancellationToken cancellationToken)
     {
-        var retrospective = new Retrospective(request.Title, request.Description);
+        var retrospective = new Retrospective(
+            request.Title,
+            request.Description,
+            request.ProjectId);
         await _retrospectivesRepository.AddAsync(retrospective, cancellationToken);
         return retrospective;
     }

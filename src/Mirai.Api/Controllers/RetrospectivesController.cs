@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Mirai.Application.Retrospectives.Commands.CreateRetrospective;
+using Mirai.Application.Retrospectives.Queries.GetRetrospective;
 using Mirai.Contracts.Retrospectives;
 using Mirai.Domain.Retrospectives;
 
@@ -26,9 +27,27 @@ public class RetrospectivesController(ISender _mediator) : ApiController
 
         return result.Match(
             retrospective => CreatedAtAction(
-                actionName: "GetRetrospective", // nameof(GetRetrospective),
+                actionName: nameof(GetRetrospective),
                 routeValues: new { RetrospectiveId = retrospective.Id },
                 value: ToDto(retrospective)),
+            Problem);
+    }
+
+    /// <summary>
+    /// Get a retrospective session by ID.
+    /// </summary>
+    /// <param name="retrospectiveId">The retrospective session ID.</param>
+    [HttpGet(ApiEndpoints.Retrospectives.Get)]
+    [ProducesResponseType(typeof(RetrospectiveResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetRetrospective(Guid retrospectiveId)
+    {
+        var query = new GetRetrospectiveQuery(retrospectiveId);
+
+        var result = await _mediator.Send(query);
+
+        return result.Match(
+            retrospective => Ok(ToDto(retrospective)),
             Problem);
     }
 

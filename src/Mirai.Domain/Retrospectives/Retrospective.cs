@@ -11,10 +11,11 @@ public class Retrospective : Entity
     public Project Project { get; private set; } = null!;
     public ICollection<RetrospectiveColumn> Columns { get; set; } = [];
 
-    public Retrospective(string title, string description)
+    public Retrospective(string title, string description, Guid projectId)
     {
         Title = title;
         Description = description;
+        ProjectId = projectId;
     }
 
     private Retrospective()
