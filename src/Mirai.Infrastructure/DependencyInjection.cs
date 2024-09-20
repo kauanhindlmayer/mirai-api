@@ -7,6 +7,7 @@ using Mirai.Application.Common.Interfaces;
 using Mirai.Infrastructure.Common.Persistence;
 using Mirai.Infrastructure.Organizations.Persistence;
 using Mirai.Infrastructure.Projects.Persistence;
+using Mirai.Infrastructure.Retrospectives.Persistence;
 using Mirai.Infrastructure.Security;
 using Mirai.Infrastructure.Security.CurrentUserProvider;
 using Mirai.Infrastructure.Security.PolicyEnforcer;
@@ -48,6 +49,7 @@ public static class DependencyInjection
         services.AddScoped<IProjectsRepository, ProjectsRepository>();
         services.AddScoped<IWorkItemsRepository, WorkItemsRepository>();
         services.AddScoped<IWikiPagesRepository, WikiPagesRepository>();
+        services.AddScoped<IRetrospectivesRepository, RetrospectivesRepository>();
         services.AddScoped<IUsersRepository, UsersRepository>();
 
         return services;

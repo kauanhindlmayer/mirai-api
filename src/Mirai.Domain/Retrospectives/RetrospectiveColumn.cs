@@ -1,0 +1,25 @@
+using Mirai.Domain.Common;
+
+namespace Mirai.Domain.Retrospectives;
+
+public class RetrospectiveColumn : Entity
+{
+    public string Title { get; private set; } = null!;
+    public Guid RetrospectiveId { get; private set; }
+    public Retrospective Retrospective { get; private set; } = null!;
+    public List<RetrospectiveItem> Items { get; private set; } = [];
+
+    public RetrospectiveColumn(string title)
+    {
+        Title = title;
+    }
+
+    private RetrospectiveColumn()
+    {
+    }
+
+    public void AddItem(RetrospectiveItem item)
+    {
+        Items.Add(item);
+    }
+}

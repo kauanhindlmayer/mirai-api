@@ -54,4 +54,15 @@ public static class ApiEndpoints
         public const string Move = $"{Base}/{{wikiPageId:guid}}/move";
         private const string Base = $"{ApiBase}/wiki-pages";
     }
+
+    public static class Retrospectives
+    {
+        public const string Create = Base;
+        public const string Get = $"{Base}/{{retrospectiveId:guid}}";
+        public const string Update = $"{Base}/{{retrospectiveId:guid}}";
+        public const string Delete = $"{Base}/{{retrospectiveId:guid}}";
+        public const string AddColumn = $"{Base}/{{retrospectiveId:guid}}/columns";
+        public const string AddItem = $"{Base}/{{retrospectiveId:guid}}/columns/{{columnId:guid}}/items";
+        private const string Base = $"{ApiBase}/retrospectives";
+    }
 }
