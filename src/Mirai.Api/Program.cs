@@ -1,5 +1,4 @@
 using Mirai.Api;
-using Mirai.Api.Hubs;
 using Mirai.Application;
 using Mirai.Infrastructure;
 using Serilog;

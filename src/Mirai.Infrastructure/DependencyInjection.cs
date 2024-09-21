@@ -29,7 +29,7 @@ public static class DependencyInjection
             .AddServices()
             .AddAuthorization()
             .AddAuthentication(configuration)
-            .AddPersistence();
+            .AddPersistence(configuration);
 
         return services;
     }
@@ -41,9 +41,10 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IServiceCollection AddPersistence(this IServiceCollection services)
+    private static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<AppDbContext>(options => options.UseSqlite("Data Source = Mirai.sqlite"));
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
         services.AddScoped<IOrganizationsRepository, OrganizationsRepository>();
         services.AddScoped<IProjectsRepository, ProjectsRepository>();
