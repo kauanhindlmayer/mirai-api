@@ -9,6 +9,7 @@ public static class RequestPipeline
     {
         app.UseMiddleware<RequestLogContextMiddleware>();
         app.UseMiddleware<EventualConsistencyMiddleware>();
+
         return app;
     }
 }

@@ -8,4 +8,4 @@ public record AddItemCommand(
     string Description,
     Guid RetrospectiveId,
     Guid RetrospectiveColumnId)
-    : IRequest<ErrorOr<Retrospective>>;
+    : IRequest<ErrorOr<RetrospectiveItem>>;

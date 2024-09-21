@@ -8,9 +8,9 @@ namespace Mirai.Application.Retrospectives.Commands.AddItem;
 public class AddItemCommandHandler(
     IRetrospectivesRepository _retrospectivesRepository,
     ICurrentUserProvider _currentUserProvider)
-    : IRequestHandler<AddItemCommand, ErrorOr<Retrospective>>
+    : IRequestHandler<AddItemCommand, ErrorOr<RetrospectiveItem>>
 {
-    public async Task<ErrorOr<Retrospective>> Handle(
+    public async Task<ErrorOr<RetrospectiveItem>> Handle(
         AddItemCommand request,
         CancellationToken cancellationToken)
     {
@@ -39,6 +39,6 @@ public class AddItemCommandHandler(
 
         await _retrospectivesRepository.UpdateAsync(retrospective, cancellationToken);
 
-        return retrospective;
+        return retrospectiveItem;
     }
 }

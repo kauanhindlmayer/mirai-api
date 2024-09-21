@@ -1,4 +1,5 @@
 using Mirai.Api;
+using Mirai.Api.Hubs;
 using Mirai.Application;
 using Mirai.Infrastructure;
 using Serilog;
@@ -17,6 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 {
     app.UseExceptionHandler();
+    app.UsePresentation();
     app.UseInfrastructure();
 
     if (app.Environment.IsDevelopment())

@@ -1,5 +1,6 @@
 using System.Reflection;
 using Microsoft.OpenApi.Models;
+using Mirai.Api.Hubs;
 
 namespace Mirai.Api;
 
@@ -11,6 +12,7 @@ public static class DependencyInjection
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
         services.AddProblemDetails();
+        services.AddSignalR();
 
         return services;
     }
@@ -53,5 +55,11 @@ public static class DependencyInjection
         });
 
         return services;
+    }
+
+    public static WebApplication UsePresentation(this WebApplication app)
+    {
+        app.MapHub<RetrospectiveHub>("/hubs/retrospective");
+        return app;
     }
 }
