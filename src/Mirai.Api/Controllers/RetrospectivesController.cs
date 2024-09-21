@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Mirai.Application.Retrospectives.Commands.AddColumn;
 using Mirai.Application.Retrospectives.Commands.CreateRetrospective;
 using Mirai.Application.Retrospectives.Queries.GetRetrospective;
 using Mirai.Contracts.Retrospectives;
@@ -48,6 +49,28 @@ public class RetrospectivesController(ISender _mediator) : ApiController
 
         return result.Match(
             retrospective => Ok(ToDto(retrospective)),
+            Problem);
+    }
+
+    /// <summary>
+    /// Add a column to a retrospective session.
+    /// </summary>
+    /// <param name="retrospectiveId">The ID of the retrospective session to add the column to.</param>
+    /// <param name="request">The details of the column to add.</param>
+    [HttpPost(ApiEndpoints.Retrospectives.AddColumn)]
+    [ProducesResponseType(typeof(RetrospectiveResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> AddColumn(Guid retrospectiveId, AddColumnRequest request)
+    {
+        var query = new AddColumnCommand(request.Title, retrospectiveId);
+
+        var result = await _mediator.Send(query);
+
+        return result.Match(
+            retrospective => CreatedAtAction(
+                actionName: nameof(GetRetrospective),
+                routeValues: new { RetrospectiveId = retrospective.Id },
+                value: ToDto(retrospective)),
             Problem);
     }
 

@@ -9,9 +9,10 @@ public class RetrospectiveColumn : Entity
     public Retrospective Retrospective { get; private set; } = null!;
     public List<RetrospectiveItem> Items { get; private set; } = [];
 
-    public RetrospectiveColumn(string title)
+    public RetrospectiveColumn(string title, Guid retrospectiveId)
     {
         Title = title;
+        RetrospectiveId = retrospectiveId;
     }
 
     private RetrospectiveColumn()

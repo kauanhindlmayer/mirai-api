@@ -16,7 +16,9 @@ public class CreateRetrospectiveCommandHandler(IRetrospectivesRepository _retros
             request.Title,
             request.Description,
             request.ProjectId);
+
         await _retrospectivesRepository.AddAsync(retrospective, cancellationToken);
+
         return retrospective;
     }
 }

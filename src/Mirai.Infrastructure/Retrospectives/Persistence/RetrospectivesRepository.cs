@@ -18,7 +18,27 @@ public class RetrospectivesRepository(AppDbContext dbContext) : IRetrospectivesR
     public Task<Retrospective?> GetByIdAsync(Guid retrospectiveId, CancellationToken cancellationToken)
     {
         return _dbContext.Retrospectives
-            .AsNoTracking()
+            .Include(x => x.Columns)
             .FirstOrDefaultAsync(x => x.Id == retrospectiveId, cancellationToken);
+    }
+
+    public Task<List<Retrospective>> ListAsync(Guid projectId, CancellationToken cancellationToken)
+    {
+        return _dbContext.Retrospectives
+            .AsNoTracking()
+            .Where(x => x.ProjectId == projectId)
+            .ToListAsync(cancellationToken);
+    }
+
+    public Task UpdateAsync(Retrospective retrospective, CancellationToken cancellationToken)
+    {
+        _dbContext.Retrospectives.Update(retrospective);
+        return _dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public Task RemoveAsync(Retrospective retrospective, CancellationToken cancellationToken)
+    {
+        _dbContext.Retrospectives.Remove(retrospective);
+        return _dbContext.SaveChangesAsync(cancellationToken);
     }
 }
