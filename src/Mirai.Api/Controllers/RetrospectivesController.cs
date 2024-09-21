@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Mirai.Application.Retrospectives.Commands.AddColumn;
+using Mirai.Application.Retrospectives.Commands.AddItem;
 using Mirai.Application.Retrospectives.Commands.CreateRetrospective;
 using Mirai.Application.Retrospectives.Queries.GetRetrospective;
 using Mirai.Contracts.Retrospectives;
@@ -26,12 +27,7 @@ public class RetrospectivesController(ISender _mediator) : ApiController
 
         var result = await _mediator.Send(command);
 
-        return result.Match(
-            retrospective => CreatedAtAction(
-                actionName: nameof(GetRetrospective),
-                routeValues: new { RetrospectiveId = retrospective.Id },
-                value: ToDto(retrospective)),
-            Problem);
+        return result.Match(BuildRetrospectiveCreatedResult, Problem);
     }
 
     /// <summary>
@@ -62,16 +58,33 @@ public class RetrospectivesController(ISender _mediator) : ApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> AddColumn(Guid retrospectiveId, AddColumnRequest request)
     {
-        var query = new AddColumnCommand(request.Title, retrospectiveId);
+        var command = new AddColumnCommand(request.Title, retrospectiveId);
+        var result = await _mediator.Send(command);
+        return result.Match(BuildRetrospectiveCreatedResult, Problem);
+    }
 
-        var result = await _mediator.Send(query);
+    /// <summary>
+    /// Add an item to a column in a retrospective session.
+    /// </summary>
+    /// <param name="retrospectiveId">The ID of the retrospective session to add the item to.</param>
+    /// <param name="columnId">The ID of the column to add the item to.</param>
+    /// <param name="request">The details of the item to add.</param>
+    [HttpPost(ApiEndpoints.Retrospectives.AddItem)]
+    [ProducesResponseType(typeof(RetrospectiveResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> AddItem(Guid retrospectiveId, Guid columnId, AddItemRequest request)
+    {
+        var command = new AddItemCommand(request.Description, retrospectiveId, columnId);
+        var result = await _mediator.Send(command);
+        return result.Match(BuildRetrospectiveCreatedResult, Problem);
+    }
 
-        return result.Match(
-            retrospective => CreatedAtAction(
-                actionName: nameof(GetRetrospective),
-                routeValues: new { RetrospectiveId = retrospective.Id },
-                value: ToDto(retrospective)),
-            Problem);
+    private ActionResult BuildRetrospectiveCreatedResult(Retrospective retrospective)
+    {
+        return CreatedAtAction(
+            actionName: nameof(GetRetrospective),
+            routeValues: new { RetrospectiveId = retrospective.Id },
+            value: ToDto(retrospective));
     }
 
     private static RetrospectiveResponse ToDto(Retrospective retrospective)
@@ -80,8 +93,23 @@ public class RetrospectivesController(ISender _mediator) : ApiController
             Id: retrospective.Id,
             Name: retrospective.Title,
             Description: retrospective.Description,
-            Columns: [],
-            CreatedAt: retrospective.CreatedAt,
-            UpdatedAt: retrospective.UpdatedAt);
+            Columns: retrospective.Columns.Select(ToDto).ToList());
+    }
+
+    private static RetrospectiveColumnResponse ToDto(RetrospectiveColumn column)
+    {
+        return new RetrospectiveColumnResponse(
+            Id: column.Id,
+            Title: column.Title,
+            Items: column.Items.Select(ToDto).ToList());
+    }
+
+    private static RetrospectiveItemResponse ToDto(RetrospectiveItem item)
+    {
+        return new RetrospectiveItemResponse(
+            Id: item.Id,
+            Description: item.Description,
+            AuthorId: item.AuthorId,
+            Votes: item.Votes);
     }
 }

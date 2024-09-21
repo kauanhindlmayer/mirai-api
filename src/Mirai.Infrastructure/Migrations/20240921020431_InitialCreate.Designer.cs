@@ -11,8 +11,8 @@ using Mirai.Infrastructure.Common.Persistence;
 namespace Mirai.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240920020401_AddRetrospectiveTable")]
-    partial class AddRetrospectiveTable
+    [Migration("20240921020431_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -109,7 +109,6 @@ namespace Mirai.Infrastructure.Migrations
             modelBuilder.Entity("Mirai.Domain.Retrospectives.RetrospectiveColumn", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreatedAt")
@@ -120,6 +119,7 @@ namespace Mirai.Infrastructure.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
+                        .HasMaxLength(255)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -129,13 +129,15 @@ namespace Mirai.Infrastructure.Migrations
 
                     b.HasIndex("RetrospectiveId");
 
-                    b.ToTable("RetrospectiveColumn");
+                    b.ToTable("RetrospectiveColumns");
                 });
 
             modelBuilder.Entity("Mirai.Domain.Retrospectives.RetrospectiveItem", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("AuthorId")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreatedAt")
@@ -156,9 +158,11 @@ namespace Mirai.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AuthorId");
+
                     b.HasIndex("RetrospectiveColumnId");
 
-                    b.ToTable("RetrospectiveItem");
+                    b.ToTable("RetrospectiveItems");
                 });
 
             modelBuilder.Entity("Mirai.Domain.Users.User", b =>
@@ -389,11 +393,19 @@ namespace Mirai.Infrastructure.Migrations
 
             modelBuilder.Entity("Mirai.Domain.Retrospectives.RetrospectiveItem", b =>
                 {
+                    b.HasOne("Mirai.Domain.Users.User", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Mirai.Domain.Retrospectives.RetrospectiveColumn", "RetrospectiveColumn")
                         .WithMany("Items")
                         .HasForeignKey("RetrospectiveColumnId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Author");
 
                     b.Navigation("RetrospectiveColumn");
                 });

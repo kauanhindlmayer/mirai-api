@@ -132,7 +132,9 @@ namespace Mirai.Infrastructure.Migrations
             modelBuilder.Entity("Mirai.Domain.Retrospectives.RetrospectiveItem", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("AuthorId")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreatedAt")
@@ -152,6 +154,8 @@ namespace Mirai.Infrastructure.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
 
                     b.HasIndex("RetrospectiveColumnId");
 
@@ -386,11 +390,19 @@ namespace Mirai.Infrastructure.Migrations
 
             modelBuilder.Entity("Mirai.Domain.Retrospectives.RetrospectiveItem", b =>
                 {
+                    b.HasOne("Mirai.Domain.Users.User", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Mirai.Domain.Retrospectives.RetrospectiveColumn", "RetrospectiveColumn")
                         .WithMany("Items")
                         .HasForeignKey("RetrospectiveColumnId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Author");
 
                     b.Navigation("RetrospectiveColumn");
                 });

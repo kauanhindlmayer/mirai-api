@@ -19,6 +19,7 @@ public class RetrospectivesRepository(AppDbContext dbContext) : IRetrospectivesR
     {
         return _dbContext.Retrospectives
             .Include(x => x.Columns)
+                .ThenInclude(x => x.Items)
             .FirstOrDefaultAsync(x => x.Id == retrospectiveId, cancellationToken);
     }
 
