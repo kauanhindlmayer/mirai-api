@@ -5,7 +5,7 @@ namespace Mirai.Api.Hubs;
 
 public class RetrospectiveHub : Hub<IRetrospectiveHub>
 {
-    private static int _activeClientsCount;
+    private static int _connectedClientsCount;
 
     public async Task SendRetrospectiveItem(RetrospectiveItemResponse retrospectiveItem)
     {
@@ -14,15 +14,15 @@ public class RetrospectiveHub : Hub<IRetrospectiveHub>
 
     public override async Task OnConnectedAsync()
     {
-        _activeClientsCount++;
-        await Clients.All.UpdateClientsCount(_activeClientsCount);
+        _connectedClientsCount++;
+        await Clients.All.UpdateConnectedClientsCount(_connectedClientsCount);
         await base.OnConnectedAsync();
     }
 
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
-        _activeClientsCount--;
-        await Clients.All.UpdateClientsCount(_activeClientsCount);
+        _connectedClientsCount--;
+        await Clients.All.UpdateConnectedClientsCount(_connectedClientsCount);
         await base.OnDisconnectedAsync(exception);
     }
 }
