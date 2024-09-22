@@ -1,5 +1,5 @@
-using Mirai.Application.Organizations.Commands.CreateOrganization;
 using Mirai.Application.WikiPages.Commands.CreateWikiPage;
+using Mirai.Application.WikiPages.Commands.DeleteWikiPage;
 using Mirai.Application.WikiPages.Commands.UpdateWikiPage;
 using TestCommon.TestConstants;
 
@@ -29,5 +29,10 @@ public static class WikiPageCommandFactory
             WikiPageId: wikiPageId,
             Title: title,
             Content: content);
+    }
+
+    public static DeleteWikiPageCommand CreateDeleteWikiPageCommand(Guid projectId)
+    {
+        return new(projectId);
     }
 }

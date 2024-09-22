@@ -1,6 +1,7 @@
 using ErrorOr;
 using MediatR;
 using Mirai.Application.Common.Interfaces;
+using Mirai.Domain.WikiPages;
 
 namespace Mirai.Application.WikiPages.Commands.DeleteWikiPage;
 
@@ -14,12 +15,12 @@ public class DeleteWikiPageCommandHandler(IWikiPagesRepository _wikiPagesReposit
         var wikiPage = await _wikiPagesRepository.GetByIdAsync(request.WikiPageId, cancellationToken);
         if (wikiPage is null)
         {
-            return Error.NotFound(description: $"WikiPage not found");
+            return WikiPageErrors.WikiPageNotFound;
         }
 
         if (wikiPage.SubWikiPages.Count > 0)
         {
-            return Error.Validation(description: $"WikiPage has sub wiki pages");
+            return WikiPageErrors.WikiPageHasSubWikiPages;
         }
 
         await _wikiPagesRepository.RemoveAsync(wikiPage, cancellationToken);
