@@ -1,8 +1,7 @@
-using System.Collections;
 using ErrorOr;
 using Mirai.Domain.Common;
 using Mirai.Domain.Organizations;
-using Mirai.Domain.Retrospectives;
+using Mirai.Domain.Teams;
 using Mirai.Domain.WikiPages;
 using Mirai.Domain.WorkItems;
 
@@ -16,7 +15,7 @@ public class Project : Entity
     public Organization Organization { get; private set; } = null!;
     public ICollection<WorkItem> WorkItems { get; private set; } = [];
     public ICollection<WikiPage> WikiPages { get; private set; } = [];
-    public ICollection<Retrospective> Retrospectives { get; private set; } = [];
+    public ICollection<Team> Teams { get; private set; } = [];
 
     public Project(string name, string? description, Guid organizationId)
     {
@@ -48,6 +47,17 @@ public class Project : Entity
         }
 
         WikiPages.Add(wikiPage);
+        return Result.Success;
+    }
+
+    public ErrorOr<Success> AddTeam(Team team)
+    {
+        if (Teams.Any(t => t.Name == team.Name))
+        {
+            return ProjectErrors.TeamWithSameNameAlreadyExists;
+        }
+
+        Teams.Add(team);
         return Result.Success;
     }
 }

@@ -19,4 +19,8 @@ public static class ProjectErrors
     public static readonly Error WikiPageWithSameTitleAlreadyExists = Error.Conflict(
         code: "WikiPage.WikiPageWithSameTitleAlreadyExists",
         description: "A wiki page with the same title already exists.");
+
+    public static readonly Error TeamWithSameNameAlreadyExists = Error.Conflict(
+        code: "Team.TeamWithSameNameAlreadyExists",
+        description: "A team with the same name already exists.");
 }

@@ -5,6 +5,7 @@ using Mirai.Domain.Common;
 using Mirai.Domain.Organizations;
 using Mirai.Domain.Projects;
 using Mirai.Domain.Retrospectives;
+using Mirai.Domain.Teams;
 using Mirai.Domain.Users;
 using Mirai.Domain.WikiPages;
 using Mirai.Domain.WorkItems;
@@ -22,6 +23,8 @@ public class AppDbContext(
     public DbSet<Organization> Organizations { get; init; }
 
     public DbSet<Project> Projects { get; init; }
+
+    public DbSet<Team> Teams { get; init; }
 
     public DbSet<WorkItem> WorkItems { get; init; }
 

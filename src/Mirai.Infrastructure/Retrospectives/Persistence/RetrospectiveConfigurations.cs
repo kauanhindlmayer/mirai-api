@@ -20,13 +20,12 @@ public class RetrospectiveConfigurations : IEntityTypeConfiguration<Retrospectiv
         builder.Property(p => p.Description)
             .HasMaxLength(500);
 
-        builder.Property(p => p.ProjectId)
+        builder.Property(p => p.TeamId)
             .IsRequired();
 
-        // TODO: Remove the project id from the retrospective and add a team id
-        builder.HasOne(p => p.Project)
+        builder.HasOne(p => p.Team)
             .WithMany(o => o.Retrospectives)
-            .HasForeignKey(p => p.ProjectId);
+            .HasForeignKey(p => p.TeamId);
 
         builder.HasMany(p => p.Columns)
             .WithOne(c => c.Retrospective)

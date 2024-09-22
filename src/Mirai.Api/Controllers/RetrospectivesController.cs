@@ -27,7 +27,7 @@ public class RetrospectivesController(
         var command = new CreateRetrospectiveCommand(
             Title: request.Title,
             Description: request.Description,
-            ProjectId: request.ProjectId);
+            TeamId: request.TeamId);
 
         var result = await _mediator.Send(command);
 

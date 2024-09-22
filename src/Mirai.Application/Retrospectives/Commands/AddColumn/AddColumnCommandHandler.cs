@@ -25,7 +25,12 @@ public class AddColumnCommandHandler(IRetrospectivesRepository _retrospectivesRe
             title: request.Title,
             retrospectiveId: retrospective.Id);
 
-        retrospective.AddColumn(column);
+        var addColumnResult = retrospective.AddColumn(column);
+        if (addColumnResult.IsError)
+        {
+            return addColumnResult.Errors;
+        }
+
         await _retrospectivesRepository.UpdateAsync(retrospective, cancellationToken);
 
         return retrospective;

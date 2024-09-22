@@ -23,11 +23,11 @@ public class RetrospectivesRepository(AppDbContext dbContext) : IRetrospectivesR
             .FirstOrDefaultAsync(x => x.Id == retrospectiveId, cancellationToken);
     }
 
-    public Task<List<Retrospective>> ListAsync(Guid projectId, CancellationToken cancellationToken)
+    public Task<List<Retrospective>> ListAsync(Guid teamId, CancellationToken cancellationToken)
     {
         return _dbContext.Retrospectives
             .AsNoTracking()
-            .Where(x => x.ProjectId == projectId)
+            .Where(x => x.TeamId == teamId)
             .ToListAsync(cancellationToken);
     }
 

@@ -1,6 +1,7 @@
 using ErrorOr;
 using Mirai.Domain.Common;
 using Mirai.Domain.Projects;
+using Mirai.Domain.Teams;
 
 namespace Mirai.Domain.Retrospectives;
 
@@ -8,24 +9,30 @@ public class Retrospective : Entity
 {
     public string Title { get; private set; } = null!;
     public string Description { get; private set; } = null!;
-    public Guid ProjectId { get; private set; }
-    public Project Project { get; private set; } = null!;
+    public Guid TeamId { get; private set; }
+    public Team Team { get; private set; } = null!;
     public ICollection<RetrospectiveColumn> Columns { get; set; } = [];
 
-    public Retrospective(string title, string description, Guid projectId)
+    public Retrospective(string title, string description, Guid teamId)
     {
         Title = title;
         Description = description;
-        ProjectId = projectId;
+        TeamId = teamId;
     }
 
     private Retrospective()
     {
     }
 
-    public void AddColumn(RetrospectiveColumn column)
+    public ErrorOr<Success> AddColumn(RetrospectiveColumn column)
     {
+        if (Columns.Any(c => c.Title == column.Title))
+        {
+            return RetrospectiveErrors.RetrospectiveColumnAlreadyExists;
+        }
+
         Columns.Add(column);
+        return Result.Success;
     }
 
     public ErrorOr<Success> AddItem(RetrospectiveItem item, Guid columnId)

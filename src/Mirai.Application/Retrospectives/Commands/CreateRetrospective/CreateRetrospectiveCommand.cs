@@ -7,4 +7,4 @@ namespace Mirai.Application.Retrospectives.Commands.CreateRetrospective;
 public record CreateRetrospectiveCommand(
     string Title,
     string Description,
-    Guid ProjectId) : IRequest<ErrorOr<Retrospective>>;
+    Guid TeamId) : IRequest<ErrorOr<Retrospective>>;
