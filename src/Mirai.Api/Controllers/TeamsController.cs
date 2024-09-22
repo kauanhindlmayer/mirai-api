@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Mirai.Application.Teams.Commands.CreateTeam;
+using Mirai.Application.Teams.Queries.GetTeam;
 using Mirai.Contracts.Teams;
 using Mirai.Domain.Teams;
 
@@ -40,15 +41,13 @@ public class TeamsController(ISender _mediator) : ApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetTeam(Guid teamId)
     {
-        // var query = new GetTeamQuery(teamId);
+        var query = new GetTeamQuery(teamId);
 
-        // var result = await _mediator.Send(query);
+        var result = await _mediator.Send(query);
 
-        // return result.Match(
-        //     team => Ok(ToDto(team)),
-        //     Problem);
-        await Task.CompletedTask;
-        return Ok();
+        return result.Match(
+            team => Ok(ToDto(team)),
+            Problem);
     }
 
     private static TeamResponse ToDto(Team team)

@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Mirai.Application.Common.Interfaces;
 using Mirai.Domain.Teams;
 using Mirai.Infrastructure.Common.Persistence;
@@ -14,23 +15,30 @@ public class TeamsRepository(AppDbContext dbContext) : ITeamsRepository
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public Task DeleteAsync(Team team, CancellationToken cancellationToken)
+    public async Task<Team?> GetByIdAsync(Guid teamId, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return await _dbContext.Teams
+            .Include(t => t.Members)
+            .FirstOrDefaultAsync(t => t.Id == teamId, cancellationToken);
     }
 
-    public Task<Team> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<List<Team>> ListAsync(Guid projectId, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return await _dbContext.Teams
+            .AsNoTracking()
+            .Where(t => t.ProjectId == projectId)
+            .ToListAsync(cancellationToken);
     }
 
-    public Task<List<Team>> GetByProjectIdAsync(Guid projectId, CancellationToken cancellationToken)
+    public async Task UpdateAsync(Team team, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        _dbContext.Teams.Update(team);
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public Task UpdateAsync(Team team, CancellationToken cancellationToken)
+    public async Task DeleteAsync(Team team, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        _dbContext.Teams.Remove(team);
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }
