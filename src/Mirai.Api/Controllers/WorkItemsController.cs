@@ -1,10 +1,12 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Mirai.Application.WorkItems.Commands.AddComment;
+using Mirai.Application.WorkItems.Commands.AddTag;
 using Mirai.Application.WorkItems.Commands.AssignWorkItem;
 using Mirai.Application.WorkItems.Commands.CreateWorkItem;
 using Mirai.Application.WorkItems.Queries.GetWorkItem;
 using Mirai.Application.WorkItems.Queries.ListWorkItems;
+using Mirai.Contracts.Tags;
 using Mirai.Contracts.WorkItems;
 using Mirai.Domain.WorkItems;
 using DomainWorkItemStatus = Mirai.Domain.WorkItems.WorkItemStatus;
@@ -117,7 +119,27 @@ public class WorkItemsController(ISender _mediator) : ApiController
     public async Task<IActionResult> AssignWorkItem(Guid workItemId, AssignWorkItemRequest request)
     {
         var command = new AssignWorkItemCommand(workItemId, request.AssigneeId);
+
         var result = await _mediator.Send(command);
+
+        return result.Match(_ => NoContent(), Problem);
+    }
+
+    /// <summary>
+    /// Add a tag to a work item. If the tag does not exist at project level, it will be created.
+    /// </summary>
+    /// <param name="workItemId">The ID of the work item to add a tag to.</param>
+    /// <param name="request">The details of the tag to add.</param>
+    [HttpPost(ApiEndpoints.WorkItems.AddTag)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> AddTagToWorkItem(Guid workItemId, AddTagToWorkItemRequest request)
+    {
+        var command = new AddTagCommand(workItemId, request.TagName);
+
+        var result = await _mediator.Send(command);
+
         return result.Match(_ => NoContent(), Problem);
     }
 
@@ -131,6 +153,7 @@ public class WorkItemsController(ISender _mediator) : ApiController
             ToDto(workItem.Status),
             ToDto(workItem.Type),
             workItem.Comments.Select(ToDto).ToList(),
+            workItem.Tags.Select(ToDto).ToList(),
             workItem.CreatedAt,
             workItem.UpdatedAt);
     }
@@ -164,5 +187,10 @@ public class WorkItemsController(ISender _mediator) : ApiController
     private static CommentResponse ToDto(WorkItemComment comment)
     {
         return new(comment.Id, comment.Content, comment.CreatedAt);
+    }
+
+    private static TagResponse ToDto(Tag tag)
+    {
+        return new(tag.Id, tag.Name);
     }
 }

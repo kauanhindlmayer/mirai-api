@@ -18,6 +18,7 @@ public class WorkItem : Entity
     public Guid? ParentWorkItemId { get; private set; }
     public WorkItem? ParentWorkItem { get; private set; }
     public ICollection<WorkItem> ChildWorkItems { get; private set; } = [];
+    public ICollection<Tag> Tags { get; private set; } = [];
     public ICollection<WorkItemComment> Comments { get; private set; } = [];
 
     public WorkItem(
@@ -44,10 +45,39 @@ public class WorkItem : Entity
     {
         if (Status == WorkItemStatus.Closed)
         {
-            return Error.Validation("Cannot add comment to a closed work item");
+            return WorkItemErrors.CannotAddCommentToClosedWorkItem;
         }
 
         Comments.Add(comment);
+        return Result.Success;
+    }
+
+    public ErrorOr<Success> RemoveComment(Guid commentId)
+    {
+        var comment = Comments.SingleOrDefault(c => c.Id == commentId);
+        if (comment is null)
+        {
+            return WorkItemErrors.WorkItemCommentNotFound;
+        }
+
+        Comments.Remove(comment);
+        return Result.Success;
+    }
+
+    public void AddTag(Tag tag)
+    {
+        Tags.Add(tag);
+    }
+
+    public ErrorOr<Success> RemoveTag(Guid tagId)
+    {
+        var tag = Tags.SingleOrDefault(t => t.Id == tagId);
+        if (tag is null)
+        {
+            return WorkItemErrors.WorkItemTagNotFound;
+        }
+
+        Tags.Remove(tag);
         return Result.Success;
     }
 }

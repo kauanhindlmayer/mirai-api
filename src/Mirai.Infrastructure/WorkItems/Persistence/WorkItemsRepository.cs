@@ -19,6 +19,7 @@ public class WorkItemsRepository(AppDbContext dbContext) : IWorkItemsRepository
     {
         return await _dbContext.WorkItems
             .Include(wi => wi.Comments)
+            .Include(wi => wi.Tags)
             .FirstOrDefaultAsync(wi => wi.Id == workItemId, cancellationToken);
     }
 

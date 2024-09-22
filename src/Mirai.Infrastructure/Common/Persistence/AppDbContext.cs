@@ -38,6 +38,8 @@ public class AppDbContext(
 
     public DbSet<RetrospectiveItem> RetrospectiveItems { get; init; }
 
+    public DbSet<Tag> Tags { get; init; }
+
     public async override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         var domainEvents = ChangeTracker.Entries<Entity>()

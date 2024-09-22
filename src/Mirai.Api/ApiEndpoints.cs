@@ -29,6 +29,8 @@ public static class ApiEndpoints
         public const string Update = $"{Base}/{{projectId:guid}}";
         public const string Delete = $"{Base}/{{projectId:guid}}";
         public const string ListWorkItems = $"{Base}/{{projectId:guid}}/work-items";
+        public const string AddTag = $"{Base}/{{projectId:guid}}/tags";
+        public const string RemoveTag = $"{Base}/{{projectId:guid}}/tags";
         private const string Base = $"{ApiBase}/projects";
     }
 
@@ -40,6 +42,8 @@ public static class ApiEndpoints
         public const string Delete = $"{Base}/{{workItemId:guid}}";
         public const string AddComment = $"{Base}/{{workItemId:guid}}/comments";
         public const string Assign = $"{Base}/{{workItemId:guid}}/assign";
+        public const string AddTag = $"{Base}/{{workItemId:guid}}/tags";
+        public const string RemoveTag = $"{Base}/{{workItemId:guid}}/tags";
         private const string Base = $"{ApiBase}/work-items";
     }
 
