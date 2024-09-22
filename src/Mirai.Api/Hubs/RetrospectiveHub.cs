@@ -12,6 +12,11 @@ public class RetrospectiveHub : Hub<IRetrospectiveHub>
         await Clients.All.SendRetrospectiveItem(retrospectiveItem);
     }
 
+    public async Task DeleteRetrospectiveItem(Guid retrospectiveItemId)
+    {
+        await Clients.All.DeleteRetrospectiveItem(retrospectiveItemId);
+    }
+
     public override async Task OnConnectedAsync()
     {
         _connectedClientsCount++;

@@ -14,6 +14,13 @@ public interface IRetrospectiveHub
     Task SendRetrospectiveItem(RetrospectiveItemResponse retrospectiveItem);
 
     /// <summary>
+    /// Deletes a retrospective item.
+    /// </summary>
+    /// <param name="retrospectiveItemId">The ID of the retrospective item to delete.</param>
+    [SignalRMethod(name: "delete-retrospective-item")]
+    Task DeleteRetrospectiveItem(Guid retrospectiveItemId);
+
+    /// <summary>
     /// Updates the connected clients count for all connected clients.
     /// </summary>
     /// <param name="count">The number of connected clients.</param>
