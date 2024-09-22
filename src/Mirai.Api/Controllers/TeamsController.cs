@@ -1,9 +1,11 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Mirai.Application.Teams.Commands.AddMember;
 using Mirai.Application.Teams.Commands.CreateTeam;
 using Mirai.Application.Teams.Queries.GetTeam;
 using Mirai.Contracts.Teams;
 using Mirai.Domain.Teams;
+using Mirai.Domain.Users;
 
 namespace Mirai.Api.Controllers;
 
@@ -50,13 +52,42 @@ public class TeamsController(ISender _mediator) : ApiController
             Problem);
     }
 
+    /// <summary>
+    /// Add a member to a team.
+    /// </summary>
+    /// <param name="teamId">The ID of the team to add the member to.</param>
+    /// <param name="request">The details of the member to add.</param>
+    [HttpPost(ApiEndpoints.Teams.AddMember)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> AddMember(Guid teamId, AddMemberRequest request)
+    {
+        var command = new AddMemberCommand(
+            TeamId: teamId,
+            MemberId: request.MemberId);
+
+        var result = await _mediator.Send(command);
+
+        return result.Match(
+            _ => NoContent(),
+            Problem);
+    }
+
     private static TeamResponse ToDto(Team team)
     {
-        return new TeamResponse(
+        return new(
             Id: team.Id,
             ProjectId: team.ProjectId,
             Name: team.Name,
+            Members: team.Members.Select(ToDto).ToList(),
             CreatedAt: team.CreatedAt,
             UpdatedAt: team.UpdatedAt);
+    }
+
+    private static MemberResponse ToDto(User user)
+    {
+        return new(
+            Id: user.Id,
+            Name: user.FullName);
     }
 }

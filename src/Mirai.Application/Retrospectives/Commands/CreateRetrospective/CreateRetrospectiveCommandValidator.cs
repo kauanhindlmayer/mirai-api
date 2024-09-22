@@ -13,7 +13,7 @@ public class CreateRetrospectiveCommandValidator : AbstractValidator<CreateRetro
         RuleFor(x => x.Description)
             .NotEmpty();
 
-        RuleFor(x => x.ProjectId)
+        RuleFor(x => x.TeamId)
             .NotEmpty();
     }
 }

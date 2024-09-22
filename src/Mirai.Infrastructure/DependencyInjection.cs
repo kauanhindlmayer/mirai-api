@@ -14,6 +14,7 @@ using Mirai.Infrastructure.Security.PolicyEnforcer;
 using Mirai.Infrastructure.Security.TokenGenerator;
 using Mirai.Infrastructure.Security.TokenValidation;
 using Mirai.Infrastructure.Services;
+using Mirai.Infrastructure.Teams.Persistence;
 using Mirai.Infrastructure.Users.Persistence;
 using Mirai.Infrastructure.WikiPages.Persistence;
 using Mirai.Infrastructure.WorkItems.Persistence;
@@ -51,6 +52,7 @@ public static class DependencyInjection
         services.AddScoped<IWorkItemsRepository, WorkItemsRepository>();
         services.AddScoped<IWikiPagesRepository, WikiPagesRepository>();
         services.AddScoped<IRetrospectivesRepository, RetrospectivesRepository>();
+        services.AddScoped<ITeamsRepository, TeamsRepository>();
         services.AddScoped<IUsersRepository, UsersRepository>();
 
         return services;
