@@ -18,7 +18,7 @@ public class GetRetrospectiveQueryHandler(IRetrospectivesRepository _retrospecti
 
         if (retrospective is null)
         {
-            return Error.NotFound(description: "Retrospective not found");
+            return RetrospectiveErrors.RetrospectiveNotFound;
         }
 
         return retrospective;

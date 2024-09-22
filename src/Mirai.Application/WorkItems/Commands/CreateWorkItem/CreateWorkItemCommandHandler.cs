@@ -1,6 +1,7 @@
 using ErrorOr;
 using MediatR;
 using Mirai.Application.Common.Interfaces;
+using Mirai.Domain.Projects;
 using Mirai.Domain.WorkItems;
 
 namespace Mirai.Application.WorkItems.Commands.CreateWorkItem;
@@ -15,7 +16,7 @@ public class CreateWorkItemCommandHandler(IProjectsRepository _projectsRepositor
         var project = await _projectsRepository.GetByIdAsync(request.ProjectId, cancellationToken);
         if (project is null)
         {
-            return Error.NotFound(description: "Project not found");
+            return ProjectErrors.ProjectNotFound;
         }
 
         var workItem = new WorkItem(

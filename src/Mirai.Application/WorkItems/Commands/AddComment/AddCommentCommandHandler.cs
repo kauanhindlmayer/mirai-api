@@ -1,6 +1,7 @@
 using ErrorOr;
 using MediatR;
 using Mirai.Application.Common.Interfaces;
+using Mirai.Domain.Projects;
 using Mirai.Domain.WorkItems;
 
 namespace Mirai.Application.WorkItems.Commands.AddComment;
@@ -20,7 +21,7 @@ public class AddCommentCommandHandler(
 
         if (workItem is null)
         {
-            return Error.NotFound(description: "Work item not found");
+            return WorkItemErrors.WorkItemNotFound;
         }
 
         var currentUser = _currentUserProvider.GetCurrentUser();

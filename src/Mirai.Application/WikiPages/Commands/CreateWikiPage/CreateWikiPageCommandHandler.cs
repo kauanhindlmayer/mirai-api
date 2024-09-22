@@ -23,6 +23,7 @@ public class CreateWikiPageCommandHandler(IProjectsRepository _projectsRepositor
         {
             var parentWikiPage = project.WikiPages.FirstOrDefault(wikiPage =>
                 wikiPage.Id == request.ParentWikiPageId);
+
             if (parentWikiPage is null || parentWikiPage.ProjectId != request.ProjectId)
             {
                 return WikiPageErrors.ParentWikiPageNotFound;

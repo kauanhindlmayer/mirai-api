@@ -8,5 +8,11 @@
       "host": "http://localhost:5001"
     }
   },
-  "cSpell.words": ["Mediat", "Serilog", "Swashbuckle"]
+  "cSpell.words": [
+    "Authorizeable",
+    "Hasher",
+    "Mediat",
+    "Serilog",
+    "Swashbuckle"
+  ]
 }

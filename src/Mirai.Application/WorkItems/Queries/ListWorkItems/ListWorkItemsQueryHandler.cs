@@ -1,6 +1,7 @@
 using ErrorOr;
 using MediatR;
 using Mirai.Application.Common.Interfaces;
+using Mirai.Domain.Projects;
 using Mirai.Domain.WorkItems;
 
 namespace Mirai.Application.WorkItems.Queries.ListWorkItems;
@@ -18,7 +19,7 @@ public class ListWorkItemsQueryHandler(IProjectsRepository _projectsRepository)
 
         if (project is null)
         {
-            return Error.NotFound(description: "Project not found");
+            return ProjectErrors.ProjectNotFound;
         }
 
         return project.WorkItems.ToList();

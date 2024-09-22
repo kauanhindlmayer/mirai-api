@@ -11,9 +11,11 @@ public class LoginQueryHandler(
     IJwtTokenGenerator jwtTokenGenerator)
     : IRequestHandler<LoginQuery, ErrorOr<AuthenticationResult>>
 {
-    public async Task<ErrorOr<AuthenticationResult>> Handle(LoginQuery query, CancellationToken ct)
+    public async Task<ErrorOr<AuthenticationResult>> Handle(
+        LoginQuery query,
+        CancellationToken cancellationToken)
     {
-        var user = await usersRepository.GetByEmailAsync(query.Email, ct);
+        var user = await usersRepository.GetByEmailAsync(query.Email, cancellationToken);
 
         if (user is null || !user.IsCorrectPasswordHash(query.Password, passwordHasher))
         {

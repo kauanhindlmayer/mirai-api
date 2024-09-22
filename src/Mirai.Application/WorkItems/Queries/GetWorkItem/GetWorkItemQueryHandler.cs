@@ -18,7 +18,7 @@ public class GetWorkItemQueryHandler(IWorkItemsRepository _workItemsRepository)
 
         if (workItem is null)
         {
-            return Error.NotFound(description: "Work Item not found");
+            return WorkItemErrors.WorkItemNotFound;
         }
 
         return workItem;

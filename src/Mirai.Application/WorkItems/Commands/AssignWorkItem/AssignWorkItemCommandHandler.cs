@@ -1,6 +1,7 @@
 using ErrorOr;
 using MediatR;
 using Mirai.Application.Common.Interfaces;
+using Mirai.Domain.WorkItems;
 
 namespace Mirai.Application.WorkItems.Commands.AssignWorkItem;
 
@@ -16,13 +17,13 @@ public class AssignWorkItemCommandHandler(
         var workItem = await _workItemsRepository.GetByIdAsync(request.WorkItemId, cancellationToken);
         if (workItem is null)
         {
-            return Error.NotFound(description: "Work item not found");
+            return WorkItemErrors.WorkItemNotFound;
         }
 
         var assignee = await _usersRepository.GetByIdAsync(request.AssigneeId, cancellationToken);
         if (assignee is null)
         {
-            return Error.NotFound(description: "Assignee not found");
+            return WorkItemErrors.AssigneeNotFound;
         }
 
         workItem.Assign(request.AssigneeId);

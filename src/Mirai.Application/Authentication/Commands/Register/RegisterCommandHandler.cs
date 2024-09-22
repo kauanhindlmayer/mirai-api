@@ -9,7 +9,8 @@ namespace Mirai.Application.Authentication.Commands.Register;
 public class RegisterCommandHandler(
     IUsersRepository usersRepository,
     IPasswordHasher passwordHasher,
-    IJwtTokenGenerator jwtTokenGenerator) : IRequestHandler<RegisterCommand, ErrorOr<AuthenticationResult>>
+    IJwtTokenGenerator jwtTokenGenerator)
+        : IRequestHandler<RegisterCommand, ErrorOr<AuthenticationResult>>
 {
     public async Task<ErrorOr<AuthenticationResult>> Handle(
         RegisterCommand command,
@@ -17,7 +18,7 @@ public class RegisterCommandHandler(
     {
         if (await usersRepository.ExistsByEmailAsync(command.Email, cancellationToken))
         {
-            return Error.Conflict(description: "User already exists");
+            return AuthenticationErrors.UserAlreadyExists;
         }
 
         var hashPasswordResult = passwordHasher.HashPassword(command.Password);

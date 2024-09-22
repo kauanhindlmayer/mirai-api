@@ -55,6 +55,7 @@ public class ProjectsController(ISender _mediator) : ApiController
     /// <param name="organizationId">The organization ID.</param>
     [HttpGet(ApiEndpoints.Organizations.ListProjects)]
     [ProducesResponseType(typeof(IEnumerable<ProjectResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ListProjects(Guid organizationId)
     {
         var query = new ListProjectsQuery(organizationId);

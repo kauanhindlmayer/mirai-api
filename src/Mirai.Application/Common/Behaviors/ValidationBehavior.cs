@@ -1,7 +1,5 @@
 using ErrorOr;
-
 using FluentValidation;
-
 using MediatR;
 
 namespace Mirai.Application.Common.Behaviors;

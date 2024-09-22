@@ -8,5 +8,4 @@ public record CreateWikiPageCommand(
     Guid ProjectId,
     string Title,
     string Content,
-    Guid? ParentWikiPageId)
-    : IRequest<ErrorOr<WikiPage>>;
+    Guid? ParentWikiPageId) : IRequest<ErrorOr<WikiPage>>;

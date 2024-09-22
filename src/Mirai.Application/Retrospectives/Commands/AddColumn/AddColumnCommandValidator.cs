@@ -1,5 +1,4 @@
 using FluentValidation;
-using Mirai.Application.Retrospectives.Commands.CreateRetrospective;
 
 namespace Mirai.Application.Retrospectives.Commands.AddColumn;
 

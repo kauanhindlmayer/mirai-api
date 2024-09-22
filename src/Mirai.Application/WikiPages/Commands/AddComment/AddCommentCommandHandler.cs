@@ -20,7 +20,7 @@ public class AddCommentCommandHandler(
 
         if (wikiPage is null)
         {
-            return Error.NotFound(description: "Work item not found");
+            return WikiPageErrors.WikiPageNotFound;
         }
 
         var currentUser = _currentUserProvider.GetCurrentUser();

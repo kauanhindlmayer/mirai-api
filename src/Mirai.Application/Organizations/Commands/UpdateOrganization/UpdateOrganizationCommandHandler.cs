@@ -12,7 +12,10 @@ public class UpdateOrganizationCommandHandler(IOrganizationsRepository _organiza
         UpdateOrganizationCommand request,
         CancellationToken cancellationToken)
     {
-        var organization = await _organizationsRepository.GetByIdAsync(request.Id, cancellationToken);
+        var organization = await _organizationsRepository.GetByIdAsync(
+            request.Id,
+            cancellationToken);
+
         if (organization is null)
         {
             return OrganizationErrors.OrganizationNotFound;

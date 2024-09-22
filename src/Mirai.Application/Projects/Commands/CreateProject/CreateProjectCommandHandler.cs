@@ -13,7 +13,10 @@ public class CreateProjectCommandHandler(IOrganizationsRepository _organizations
         CreateProjectCommand request,
         CancellationToken cancellationToken)
     {
-        var organization = await _organizationsRepository.GetByIdAsync(request.OrganizationId, cancellationToken);
+        var organization = await _organizationsRepository.GetByIdAsync(
+            request.OrganizationId,
+            cancellationToken);
+
         if (organization is null)
         {
             return OrganizationErrors.OrganizationNotFound;

@@ -1,11 +1,9 @@
 using ErrorOr;
 using MediatR;
 using Mirai.Application.Common.Interfaces;
-using Mirai.Application.Teams.Commands.AddMember;
-using Mirai.Domain.Projects;
 using Mirai.Domain.Teams;
 
-namespace Mirai.Application.Teams.Commands.CreateTeam;
+namespace Mirai.Application.Teams.Commands.AddMember;
 
 public class AddMemberCommandHandler(
     ITeamsRepository _teamsRepository,

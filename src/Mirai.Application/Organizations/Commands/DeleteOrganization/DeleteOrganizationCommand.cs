@@ -3,4 +3,5 @@ using MediatR;
 
 namespace Mirai.Application.Organizations.Commands.DeleteOrganization;
 
-public record DeleteOrganizationCommand(Guid OrganizationId) : IRequest<ErrorOr<Success>>;
+public record DeleteOrganizationCommand(Guid OrganizationId)
+    : IRequest<ErrorOr<Success>>;

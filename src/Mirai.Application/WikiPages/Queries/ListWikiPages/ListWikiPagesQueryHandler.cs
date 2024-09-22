@@ -1,6 +1,7 @@
 using ErrorOr;
 using MediatR;
 using Mirai.Application.Common.Interfaces;
+using Mirai.Domain.Projects;
 using Mirai.Domain.WikiPages;
 
 namespace Mirai.Application.WikiPages.Queries.ListWikiPages;
@@ -18,7 +19,7 @@ public class ListWikiPagesQueryHandler(IProjectsRepository _projectsRepository)
 
         if (project is null)
         {
-            return Error.NotFound(description: "Project not found");
+            return ProjectErrors.ProjectNotFound;
         }
 
         var rootPages = project.WikiPages

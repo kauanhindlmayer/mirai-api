@@ -12,7 +12,10 @@ public class DeleteWikiPageCommandHandler(IWikiPagesRepository _wikiPagesReposit
         DeleteWikiPageCommand request,
         CancellationToken cancellationToken)
     {
-        var wikiPage = await _wikiPagesRepository.GetByIdAsync(request.WikiPageId, cancellationToken);
+        var wikiPage = await _wikiPagesRepository.GetByIdAsync(
+            request.WikiPageId,
+            cancellationToken);
+
         if (wikiPage is null)
         {
             return WikiPageErrors.WikiPageNotFound;
