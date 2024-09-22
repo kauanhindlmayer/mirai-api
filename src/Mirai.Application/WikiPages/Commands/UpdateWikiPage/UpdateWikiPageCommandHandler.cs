@@ -15,7 +15,7 @@ public class UpdateWikiPageCommandHandler(IWikiPagesRepository _wikiPagesReposit
         var wikiPage = await _wikiPagesRepository.GetByIdAsync(request.WikiPageId, cancellationToken);
         if (wikiPage is null)
         {
-            return Error.NotFound(description: "Wiki Page not found");
+            return WikiPageErrors.WikiPageNotFound;
         }
 
         wikiPage.Update(request.Title, request.Content);
