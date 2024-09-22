@@ -1,0 +1,10 @@
+@wikiPageId = e8018058-74ee-4d27-9529-63634270cac0
+
+PUT {{host}}/wiki-pages/{{wikiPageId}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "My new wiki page",
+  "content": "This is a new wiki page",
+}

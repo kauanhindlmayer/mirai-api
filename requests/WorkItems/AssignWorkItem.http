@@ -1,0 +1,9 @@
+@workItemId = b1524aef-0401-42cb-a4ff-38e573de2fb1
+
+POST {{host}}/work-items/{{workItemId}}/assign
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "assigneeId": "b1524aef-0401-42cb-a4ff-38e573de2fb1",
+}

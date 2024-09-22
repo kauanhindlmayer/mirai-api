@@ -1,0 +1,7 @@
+POST {{host}}/register
+Content-Type: application/json
+
+{
+  "email": "svc_test_user@example.com",
+  "password": "2HdG!Ae!$Ib(j9Wp",
+}

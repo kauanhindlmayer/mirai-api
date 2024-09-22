@@ -1,0 +1,9 @@
+POST {{host}}/retrospectives
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "teamId": "c09f852d-9f08-4227-be94-4be43eea1bdc",
+  "title": "My new retrospective",
+  "description": "This is a new retrospective",
+}

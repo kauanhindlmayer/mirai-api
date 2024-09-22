@@ -1,11 +1,12 @@
 # @name create
-POST {{host}}/organizations
+POST {{host}}/work-items
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "name": "Organization",
-  "description": "Organization description",
+  "projectId": "c09f852d-9f08-4227-be94-4be43eea1bdc",
+  "type": "UserStory",
+  "title": "My new wiki page",
 }
 
 ### Get based on location header

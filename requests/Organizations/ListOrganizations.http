@@ -1,2 +1,3 @@
 GET {{host}}/organizations
 Content-Type: application/json
+Authorization: Bearer {{token}}

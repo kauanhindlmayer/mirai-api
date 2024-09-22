@@ -1,0 +1,10 @@
+@retrospectiveId = 8e76e10e-06dc-4463-b689-10e8aea7c589
+@columnId = eda15ff5-ba1f-413a-bd4c-5b4f824c2f87
+
+POST {{host}}/retrospectives/{{retrospectiveId}}/columns/{{columnId}}/items
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "description": "This is a retrospective item",
+}
