@@ -8,26 +8,26 @@ public class RetrospectiveConfigurations : IEntityTypeConfiguration<Retrospectiv
 {
     public void Configure(EntityTypeBuilder<Retrospective> builder)
     {
-        builder.HasKey(p => p.Id);
+        builder.HasKey(r => r.Id);
 
-        builder.Property(p => p.Id)
+        builder.Property(r => r.Id)
             .ValueGeneratedNever();
 
-        builder.Property(p => p.Title)
+        builder.Property(r => r.Title)
             .HasMaxLength(255)
             .IsRequired();
 
-        builder.Property(p => p.Description)
+        builder.Property(r => r.Description)
             .HasMaxLength(500);
 
-        builder.Property(p => p.TeamId)
+        builder.Property(r => r.TeamId)
             .IsRequired();
 
-        builder.HasOne(p => p.Team)
+        builder.HasOne(r => r.Team)
             .WithMany(o => o.Retrospectives)
-            .HasForeignKey(p => p.TeamId);
+            .HasForeignKey(r => r.TeamId);
 
-        builder.HasMany(p => p.Columns)
+        builder.HasMany(r => r.Columns)
             .WithOne(c => c.Retrospective)
             .HasForeignKey(c => c.RetrospectiveId);
     }

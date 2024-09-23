@@ -8,18 +8,18 @@ public class WorkItemCommentConfigurations : IEntityTypeConfiguration<WorkItemCo
 {
     public void Configure(EntityTypeBuilder<WorkItemComment> builder)
     {
-        builder.HasKey(p => p.Id);
+        builder.HasKey(wic => wic.Id);
 
-        builder.Property(p => p.Id)
+        builder.Property(wic => wic.Id)
             .ValueGeneratedNever();
 
-        builder.Property(p => p.WorkItemId)
+        builder.Property(wic => wic.WorkItemId)
             .IsRequired();
 
-        builder.Property(p => p.UserId)
+        builder.Property(wic => wic.UserId)
             .IsRequired();
 
-        builder.Property(p => p.Content)
+        builder.Property(wic => wic.Content)
             .IsRequired();
     }
 }

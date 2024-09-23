@@ -17,7 +17,7 @@ public class UsersRepository(AppDbContext _dbContext) : IUsersRepository
 
     public async Task<User?> GetByIdAsync(Guid userId, CancellationToken cancellationToken)
     {
-        return await _dbContext.Users.FindAsync(userId, cancellationToken);
+        return await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
     }
 
     public async Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken)

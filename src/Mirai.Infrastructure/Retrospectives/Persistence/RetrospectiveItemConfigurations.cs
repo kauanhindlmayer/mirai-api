@@ -8,29 +8,29 @@ public class RetrospectiveItemConfigurations : IEntityTypeConfiguration<Retrospe
 {
     public void Configure(EntityTypeBuilder<RetrospectiveItem> builder)
     {
-        builder.HasKey(p => p.Id);
+        builder.HasKey(ri => ri.Id);
 
-        builder.Property(p => p.Id)
+        builder.Property(ri => ri.Id)
             .ValueGeneratedNever();
 
-        builder.Property(p => p.Description)
+        builder.Property(ri => ri.Description)
             .IsRequired();
 
-        builder.Property(p => p.Votes)
+        builder.Property(ri => ri.Votes)
             .IsRequired();
 
-        builder.Property(p => p.RetrospectiveColumnId)
+        builder.Property(ri => ri.RetrospectiveColumnId)
             .IsRequired();
 
-        builder.HasOne(p => p.RetrospectiveColumn)
+        builder.HasOne(ri => ri.RetrospectiveColumn)
             .WithMany(o => o.Items)
-            .HasForeignKey(p => p.RetrospectiveColumnId);
+            .HasForeignKey(ri => ri.RetrospectiveColumnId);
 
-        builder.Property(p => p.AuthorId)
+        builder.Property(ri => ri.AuthorId)
             .IsRequired();
 
-        builder.HasOne(p => p.Author)
+        builder.HasOne(ri => ri.Author)
             .WithMany()
-            .HasForeignKey(p => p.AuthorId);
+            .HasForeignKey(ri => ri.AuthorId);
     }
 }

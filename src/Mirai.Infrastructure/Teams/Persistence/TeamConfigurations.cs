@@ -8,20 +8,20 @@ public class TeamConfigurations : IEntityTypeConfiguration<Team>
 {
     public void Configure(EntityTypeBuilder<Team> builder)
     {
-        builder.HasKey(p => p.Id);
+        builder.HasKey(t => t.Id);
 
-        builder.Property(p => p.Id)
+        builder.Property(t => t.Id)
             .ValueGeneratedNever();
 
-        builder.Property(p => p.Name)
+        builder.Property(t => t.Name)
             .HasMaxLength(255)
             .IsRequired();
 
-        builder.Property(p => p.ProjectId)
+        builder.Property(t => t.ProjectId)
             .IsRequired();
 
-        builder.HasOne(p => p.Project)
+        builder.HasOne(t => t.Project)
             .WithMany(o => o.Teams)
-            .HasForeignKey(p => p.ProjectId);
+            .HasForeignKey(t => t.ProjectId);
     }
 }

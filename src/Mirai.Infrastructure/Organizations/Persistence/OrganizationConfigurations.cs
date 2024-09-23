@@ -9,19 +9,19 @@ public class OrganizationConfigurations : IEntityTypeConfiguration<Organization>
 {
     public void Configure(EntityTypeBuilder<Organization> builder)
     {
-        builder.HasKey(u => u.Id);
+        builder.HasKey(o => o.Id);
 
-        builder.Property(u => u.Id)
+        builder.Property(o => o.Id)
             .ValueGeneratedNever();
 
-        builder.Property(u => u.Name)
+        builder.Property(o => o.Name)
             .HasMaxLength(255)
             .IsRequired();
 
-        builder.Property(u => u.Description)
+        builder.Property(o => o.Description)
             .HasMaxLength(500);
 
-        builder.HasMany(u => u.Projects)
+        builder.HasMany(o => o.Projects)
             .WithOne()
             .HasForeignKey(p => p.OrganizationId)
             .OnDelete(DeleteBehavior.Cascade);

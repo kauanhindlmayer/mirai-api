@@ -8,12 +8,12 @@ public class TagConfigurations : IEntityTypeConfiguration<Tag>
 {
     public void Configure(EntityTypeBuilder<Tag> builder)
     {
-        builder.HasKey(p => p.Id);
+        builder.HasKey(t => t.Id);
 
-        builder.Property(p => p.Id)
+        builder.Property(t => t.Id)
             .ValueGeneratedNever();
 
-        builder.Property(p => p.Name)
+        builder.Property(t => t.Name)
             .HasMaxLength(50)
             .IsRequired();
     }

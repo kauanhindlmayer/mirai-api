@@ -23,11 +23,6 @@ public class WorkItemsRepository(AppDbContext dbContext) : IWorkItemsRepository
             .FirstOrDefaultAsync(wi => wi.Id == workItemId, cancellationToken);
     }
 
-    public record NextValueResult
-    {
-        public long Value { get; set; }
-    }
-
     // TODO: Refactor this to use a sequence per project.
     public async Task<int> GetNextWorkItemCodeAsync(Guid projectId, CancellationToken cancellationToken)
     {

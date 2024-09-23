@@ -8,18 +8,18 @@ public class WikiPageCommentConfigurations : IEntityTypeConfiguration<WikiPageCo
 {
     public void Configure(EntityTypeBuilder<WikiPageComment> builder)
     {
-        builder.HasKey(p => p.Id);
+        builder.HasKey(wpc => wpc.Id);
 
-        builder.Property(p => p.Id)
+        builder.Property(wpc => wpc.Id)
             .ValueGeneratedNever();
 
-        builder.Property(p => p.WikiPageId)
+        builder.Property(wpc => wpc.WikiPageId)
             .IsRequired();
 
-        builder.Property(p => p.UserId)
+        builder.Property(wpc => wpc.UserId)
             .IsRequired();
 
-        builder.Property(p => p.Content)
+        builder.Property(wpc => wpc.Content)
             .IsRequired();
     }
 }

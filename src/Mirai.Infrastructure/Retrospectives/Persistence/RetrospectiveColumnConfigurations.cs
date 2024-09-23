@@ -8,20 +8,20 @@ public class RetrospectiveColumnConfigurations : IEntityTypeConfiguration<Retros
 {
     public void Configure(EntityTypeBuilder<RetrospectiveColumn> builder)
     {
-        builder.HasKey(p => p.Id);
+        builder.HasKey(rc => rc.Id);
 
-        builder.Property(p => p.Id)
+        builder.Property(rc => rc.Id)
             .ValueGeneratedNever();
 
-        builder.Property(p => p.Title)
+        builder.Property(rc => rc.Title)
             .HasMaxLength(255)
             .IsRequired();
 
-        builder.Property(p => p.RetrospectiveId)
+        builder.Property(rc => rc.RetrospectiveId)
             .IsRequired();
 
-        builder.HasOne(p => p.Retrospective)
+        builder.HasOne(rc => rc.Retrospective)
             .WithMany(o => o.Columns)
-            .HasForeignKey(p => p.RetrospectiveId);
+            .HasForeignKey(rc => rc.RetrospectiveId);
     }
 }
