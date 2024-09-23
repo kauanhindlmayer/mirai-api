@@ -18,6 +18,7 @@ public class WikiPagesRepository(AppDbContext dbContext) : IWikiPagesRepository
     public async Task<WikiPage?> GetByIdAsync(Guid wikiPageId, CancellationToken cancellationToken)
     {
         return await _dbContext.WikiPages
+            .Include(wp => wp.SubWikiPages)
             .Include(wp => wp.Comments)
             .FirstOrDefaultAsync(wp => wp.Id == wikiPageId, cancellationToken);
     }

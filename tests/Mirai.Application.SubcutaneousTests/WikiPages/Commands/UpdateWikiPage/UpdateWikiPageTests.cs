@@ -62,7 +62,7 @@ public class UpdateWikiPageTests(WebAppFactory webAppFactory)
         var wikiPage = await _mediator.Send(createWikiPageRequest);
         var updateWikiPageRequest = WikiPageCommandFactory.CreateUpdateWikiPageCommand(
             wikiPageId: wikiPage.Value.Id,
-            title: new string('a', 101));
+            title: new string('a', 256));
 
         // Act
         var result = await _mediator.Send(updateWikiPageRequest);

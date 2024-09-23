@@ -1,3 +1,4 @@
+using Mirai.Application.WikiPages.Commands.AddComment;
 using Mirai.Application.WikiPages.Commands.CreateWikiPage;
 using Mirai.Application.WikiPages.Commands.DeleteWikiPage;
 using Mirai.Application.WikiPages.Commands.UpdateWikiPage;
@@ -34,5 +35,12 @@ public static class WikiPageCommandFactory
     public static DeleteWikiPageCommand CreateDeleteWikiPageCommand(Guid projectId)
     {
         return new(projectId);
+    }
+
+    public static AddCommentCommand CreateAddCommentCommand(
+        Guid wikiPageId,
+        string content = Constants.WikiPage.CommentContent)
+    {
+        return new(wikiPageId, content);
     }
 }

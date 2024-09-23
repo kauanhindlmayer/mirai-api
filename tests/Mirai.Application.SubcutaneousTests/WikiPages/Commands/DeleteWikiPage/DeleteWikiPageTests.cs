@@ -1,4 +1,3 @@
-using Mirai.Domain.Projects;
 using Mirai.Domain.WikiPages;
 using TestCommon.Organizations;
 using TestCommon.Projects;
@@ -55,8 +54,11 @@ public class DeleteWikiPageTests(WebAppFactory webAppFactory)
         var project = await _mediator.Send(createProjectRequest);
         var createWikiPageRequest = WikiPageCommandFactory.CreateCreateWikiPageCommand(projectId: project.Value.Id);
         var wikiPage = await _mediator.Send(createWikiPageRequest);
-        var createChildWikiPageRequest = WikiPageCommandFactory.CreateCreateWikiPageCommand(projectId: project.Value.Id, parentWikiPageId: wikiPage.Value.Id);
-        var childWikiPage = await _mediator.Send(createChildWikiPageRequest);
+        var createChildWikiPageRequest = WikiPageCommandFactory.CreateCreateWikiPageCommand(
+            projectId: project.Value.Id,
+            title: "Child Wiki Page",
+            parentWikiPageId: wikiPage.Value.Id);
+        await _mediator.Send(createChildWikiPageRequest);
         var deleteWikiPageRequest = WikiPageCommandFactory.CreateDeleteWikiPageCommand(wikiPage.Value.Id);
 
         // Act
