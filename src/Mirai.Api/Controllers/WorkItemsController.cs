@@ -146,17 +146,18 @@ public class WorkItemsController(ISender _mediator) : ApiController
     private static WorkItemResponse ToDto(WorkItem workItem)
     {
         return new(
-            workItem.Id,
-            workItem.ProjectId,
-            workItem.Code,
-            workItem.Title,
-            workItem.Description,
-            ToDto(workItem.Status),
-            ToDto(workItem.Type),
-            workItem.Comments.Select(ToDto).ToList(),
-            workItem.Tags.Select(ToDto).ToList(),
-            workItem.CreatedAt,
-            workItem.UpdatedAt);
+            Id: workItem.Id,
+            ProjectId: workItem.ProjectId,
+            Code: workItem.Code,
+            Title: workItem.Title,
+            Description: workItem.Description,
+            AcceptanceCriteria: workItem.AcceptanceCriteria,
+            Status: ToDto(workItem.Status),
+            Type: ToDto(workItem.Type),
+            Comments: workItem.Comments.Select(ToDto).ToList(),
+            Tags: workItem.Tags.Select(ToDto).ToList(),
+            CreatedAt: workItem.CreatedAt,
+            UpdatedAt: workItem.UpdatedAt);
     }
 
     private static WorkItemType ToDto(DomainWorkItemType workItemType)

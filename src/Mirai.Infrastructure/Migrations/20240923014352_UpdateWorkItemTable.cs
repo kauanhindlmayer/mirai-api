@@ -10,6 +10,23 @@ namespace Mirai.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterColumn<string>(
+                name: "Description",
+                table: "WorkItems",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "",
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)",
+                oldNullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "AcceptanceCriteria",
+                table: "WorkItems",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "");
+
             migrationBuilder.AddColumn<string>(
                 name: "Classification_ValueArea",
                 table: "WorkItems",
@@ -41,6 +58,10 @@ namespace Mirai.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
+                name: "AcceptanceCriteria",
+                table: "WorkItems");
+
+            migrationBuilder.DropColumn(
                 name: "Classification_ValueArea",
                 table: "WorkItems");
 
@@ -55,6 +76,14 @@ namespace Mirai.Infrastructure.Migrations
             migrationBuilder.DropColumn(
                 name: "Planning_StoryPoints",
                 table: "WorkItems");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Description",
+                table: "WorkItems",
+                type: "nvarchar(max)",
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)");
         }
     }
 }

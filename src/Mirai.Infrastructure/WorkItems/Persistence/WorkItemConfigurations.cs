@@ -23,6 +23,8 @@ public class WorkItemConfigurations : IEntityTypeConfiguration<WorkItem>
 
         builder.Property(wi => wi.Description);
 
+        builder.Property(wi => wi.AcceptanceCriteria);
+
         builder.Property(wi => wi.Type)
             .HasConversion(
                 v => v.Name,

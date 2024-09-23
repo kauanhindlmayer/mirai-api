@@ -11,7 +11,8 @@ public class WorkItem : Entity
 {
     public int Code { get; private set; }
     public string Title { get; private set; } = null!;
-    public string? Description { get; private set; }
+    public string Description { get; private set; } = string.Empty;
+    public string AcceptanceCriteria { get; private set; } = string.Empty;
     public WorkItemType Type { get; private set; } = null!;
     public WorkItemStatus Status { get; private set; } = null!;
     public Planning Planning { get; private set; } = new();

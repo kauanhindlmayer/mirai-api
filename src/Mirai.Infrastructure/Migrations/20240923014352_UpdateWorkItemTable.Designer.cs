@@ -13,7 +13,7 @@ using Mirai.Infrastructure.Common.Persistence;
 namespace Mirai.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240923012902_UpdateWorkItemTable")]
+    [Migration("20240923014352_UpdateWorkItemTable")]
     partial class UpdateWorkItemTable
     {
         /// <inheritdoc />
@@ -329,6 +329,10 @@ namespace Mirai.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("AcceptanceCriteria")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid?>("AssigneeId")
                         .HasColumnType("uniqueidentifier");
 
@@ -339,6 +343,7 @@ namespace Mirai.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("ParentWorkItemId")
