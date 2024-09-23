@@ -12,7 +12,7 @@ public record WorkItemResponse(
     WorkItemStatus Status,
     WorkItemType Type,
     List<CommentResponse> Comments,
-    List<TagResponse> Tags,
+    List<string> Tags,
     DateTime CreatedAt,
     DateTime? UpdatedAt);
 
@@ -20,7 +20,3 @@ public record CommentResponse(
     Guid Id,
     string Content,
     DateTime CreatedAt);
-
-public record TagResponse(
-    Guid Id,
-    string Name);

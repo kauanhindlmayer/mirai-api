@@ -4,6 +4,7 @@ using Mirai.Application.WorkItems.Commands.AddComment;
 using Mirai.Application.WorkItems.Commands.AddTag;
 using Mirai.Application.WorkItems.Commands.AssignWorkItem;
 using Mirai.Application.WorkItems.Commands.CreateWorkItem;
+using Mirai.Application.WorkItems.Commands.RemoveTag;
 using Mirai.Application.WorkItems.Queries.GetWorkItem;
 using Mirai.Application.WorkItems.Queries.ListWorkItems;
 using Mirai.Contracts.Tags;
@@ -137,9 +138,22 @@ public class WorkItemsController(ISender _mediator) : ApiController
     public async Task<IActionResult> AddTagToWorkItem(Guid workItemId, AddTagToWorkItemRequest request)
     {
         var command = new AddTagCommand(workItemId, request.TagName);
-
         var result = await _mediator.Send(command);
+        return result.Match(_ => NoContent(), Problem);
+    }
 
+    /// <summary>
+    /// Remove a tag from a work item.
+    /// </summary>
+    /// <param name="workItemId>">The ID of the work item to remove a tag from.</param>
+    /// <param name="tagName">The name of the tag to remove.</param>
+    [HttpDelete(ApiEndpoints.WorkItems.RemoveTag)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> RemoveTagFromWorkItem(Guid workItemId, string tagName)
+    {
+        var command = new RemoveTagCommand(workItemId, tagName);
+        var result = await _mediator.Send(command);
         return result.Match(_ => NoContent(), Problem);
     }
 
@@ -155,7 +169,7 @@ public class WorkItemsController(ISender _mediator) : ApiController
             Status: ToDto(workItem.Status),
             Type: ToDto(workItem.Type),
             Comments: workItem.Comments.Select(ToDto).ToList(),
-            Tags: workItem.Tags.Select(ToDto).ToList(),
+            Tags: workItem.Tags.Select(t => t.Name).ToList(),
             CreatedAt: workItem.CreatedAt,
             UpdatedAt: workItem.UpdatedAt);
     }
@@ -189,10 +203,5 @@ public class WorkItemsController(ISender _mediator) : ApiController
     private static CommentResponse ToDto(WorkItemComment comment)
     {
         return new(comment.Id, comment.Content, comment.CreatedAt);
-    }
-
-    private static TagResponse ToDto(Tag tag)
-    {
-        return new(tag.Id, tag.Name);
     }
 }

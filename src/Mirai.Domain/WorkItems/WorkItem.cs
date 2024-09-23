@@ -77,9 +77,9 @@ public class WorkItem : Entity
         Tags.Add(tag);
     }
 
-    public ErrorOr<Success> RemoveTag(Guid tagId)
+    public ErrorOr<Success> RemoveTag(string tagName)
     {
-        var tag = Tags.SingleOrDefault(t => t.Id == tagId);
+        var tag = Tags.SingleOrDefault(t => t.Name == tagName);
         if (tag is null)
         {
             return WorkItemErrors.WorkItemTagNotFound;
