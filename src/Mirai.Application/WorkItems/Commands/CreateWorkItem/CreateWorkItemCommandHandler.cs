@@ -3,10 +3,13 @@ using MediatR;
 using Mirai.Application.Common.Interfaces;
 using Mirai.Domain.Projects;
 using Mirai.Domain.WorkItems;
+using Mirai.Domain.WorkItems.Enums;
 
 namespace Mirai.Application.WorkItems.Commands.CreateWorkItem;
 
-public class CreateWorkItemCommandHandler(IProjectsRepository _projectsRepository)
+public class CreateWorkItemCommandHandler(
+    IProjectsRepository _projectsRepository,
+    IWorkItemsRepository _workItemsRepository)
     : IRequestHandler<CreateWorkItemCommand, ErrorOr<WorkItem>>
 {
     public async Task<ErrorOr<WorkItem>> Handle(
@@ -19,10 +22,13 @@ public class CreateWorkItemCommandHandler(IProjectsRepository _projectsRepositor
             return ProjectErrors.ProjectNotFound;
         }
 
+        var workItemCode = await _workItemsRepository.GetNextWorkItemCodeAsync(request.ProjectId, cancellationToken);
+
         var workItem = new WorkItem(
             projectId: request.ProjectId,
-            type: WorkItemType.UserStory,
-            title: request.Title);
+            code: workItemCode,
+            title: request.Title,
+            type: WorkItemType.UserStory);
 
         var result = project.AddWorkItem(workItem);
         if (result.IsError)

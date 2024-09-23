@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Mirai.Domain.WorkItems;
+using Mirai.Domain.WorkItems.Enums;
 
 namespace Mirai.Infrastructure.WorkItems.Persistence;
 
@@ -8,55 +9,66 @@ public class WorkItemConfigurations : IEntityTypeConfiguration<WorkItem>
 {
     public void Configure(EntityTypeBuilder<WorkItem> builder)
     {
-        builder.HasKey(p => p.Id);
+        builder.HasKey(wi => wi.Id);
 
-        builder.Property(p => p.Id)
+        builder.Property(wi => wi.Id)
             .ValueGeneratedNever();
 
-        builder.Property(p => p.Title)
+        builder.Property(wi => wi.Code)
+            .IsRequired();
+
+        builder.Property(wi => wi.Title)
             .IsRequired()
             .HasMaxLength(100);
 
-        builder.Property(p => p.Description);
+        builder.Property(wi => wi.Description);
 
-        builder.Property(p => p.Type)
+        builder.Property(wi => wi.Type)
             .HasConversion(
                 v => v.Name,
                 v => WorkItemType.FromName(v, false))
             .IsRequired();
 
-        builder.Property(p => p.Status)
+        builder.Property(wi => wi.Status)
             .HasConversion(
                 v => v.Name,
                 v => WorkItemStatus.FromName(v, false))
             .IsRequired();
 
-        builder.Property(p => p.AssigneeId);
+        builder.ComplexProperty(wi => wi.Planning);
 
-        builder.Property(p => p.ProjectId)
+        builder.ComplexProperty(wi => wi.Classification)
+            .Property(wi => wi.ValueArea)
+            .HasConversion(
+                v => v.Name,
+                v => ValueAreaType.FromName(v, false));
+
+        builder.Property(wi => wi.AssigneeId);
+
+        builder.Property(wi => wi.ProjectId)
             .IsRequired();
 
-        builder.HasOne(p => p.Assignee)
+        builder.HasOne(wi => wi.Assignee)
             .WithMany(u => u.WorkItems)
-            .HasForeignKey(p => p.AssigneeId);
+            .HasForeignKey(wi => wi.AssigneeId);
 
-        builder.HasOne(p => p.Project)
-            .WithMany(p => p.WorkItems)
-            .HasForeignKey(p => p.ProjectId);
+        builder.HasOne(wi => wi.Project)
+            .WithMany(wi => wi.WorkItems)
+            .HasForeignKey(wi => wi.ProjectId);
 
-        builder.HasOne(p => p.ParentWorkItem)
-            .WithMany(p => p.ChildWorkItems)
-            .HasForeignKey(p => p.ParentWorkItemId);
+        builder.HasOne(wi => wi.ParentWorkItem)
+            .WithMany(wi => wi.ChildWorkItems)
+            .HasForeignKey(wi => wi.ParentWorkItemId);
 
-        builder.HasMany(p => p.ChildWorkItems)
-            .WithOne(p => p.ParentWorkItem)
-            .HasForeignKey(p => p.ParentWorkItemId);
+        builder.HasMany(wi => wi.ChildWorkItems)
+            .WithOne(wi => wi.ParentWorkItem)
+            .HasForeignKey(wi => wi.ParentWorkItemId);
 
-        builder.HasMany(p => p.Comments)
+        builder.HasMany(wi => wi.Comments)
             .WithOne(c => c.WorkItem)
             .HasForeignKey(c => c.WorkItemId);
 
-        builder.HasMany(p => p.Tags)
+        builder.HasMany(wi => wi.Tags)
             .WithMany(t => t.WorkItems)
             .UsingEntity(j => j.ToTable("WorkItemTag"));
     }

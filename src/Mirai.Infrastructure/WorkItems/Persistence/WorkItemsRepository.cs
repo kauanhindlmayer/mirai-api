@@ -23,6 +23,21 @@ public class WorkItemsRepository(AppDbContext dbContext) : IWorkItemsRepository
             .FirstOrDefaultAsync(wi => wi.Id == workItemId, cancellationToken);
     }
 
+    public record NextValueResult
+    {
+        public long Value { get; set; }
+    }
+
+    // TODO: Refactor this to use a sequence per project.
+    public async Task<int> GetNextWorkItemCodeAsync(Guid projectId, CancellationToken cancellationToken)
+    {
+        var workItemCount = await _dbContext.WorkItems
+            .AsNoTracking()
+            .Where(wi => wi.ProjectId == projectId)
+            .CountAsync(cancellationToken);
+        return workItemCount + 1;
+    }
+
     public async Task<List<WorkItem>> ListAsync(CancellationToken cancellationToken)
     {
         return await _dbContext.WorkItems.ToListAsync(cancellationToken);

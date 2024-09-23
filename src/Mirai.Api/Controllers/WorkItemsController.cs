@@ -9,8 +9,8 @@ using Mirai.Application.WorkItems.Queries.ListWorkItems;
 using Mirai.Contracts.Tags;
 using Mirai.Contracts.WorkItems;
 using Mirai.Domain.WorkItems;
-using DomainWorkItemStatus = Mirai.Domain.WorkItems.WorkItemStatus;
-using DomainWorkItemType = Mirai.Domain.WorkItems.WorkItemType;
+using DomainWorkItemStatus = Mirai.Domain.WorkItems.Enums.WorkItemStatus;
+using DomainWorkItemType = Mirai.Domain.WorkItems.Enums.WorkItemType;
 using WorkItemStatus = Mirai.Contracts.Common.WorkItemStatus;
 using WorkItemType = Mirai.Contracts.Common.WorkItemType;
 
@@ -148,6 +148,7 @@ public class WorkItemsController(ISender _mediator) : ApiController
         return new(
             workItem.Id,
             workItem.ProjectId,
+            workItem.Code,
             workItem.Title,
             workItem.Description,
             ToDto(workItem.Status),

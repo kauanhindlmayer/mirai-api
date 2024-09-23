@@ -9,4 +9,5 @@ public interface IWorkItemsRepository
     Task<List<WorkItem>> ListAsync(CancellationToken cancellationToken);
     Task RemoveAsync(WorkItem workItem, CancellationToken cancellationToken);
     Task UpdateAsync(WorkItem workItem, CancellationToken cancellationToken);
+    Task<int> GetNextWorkItemCodeAsync(Guid projectId, CancellationToken cancellationToken);
 }

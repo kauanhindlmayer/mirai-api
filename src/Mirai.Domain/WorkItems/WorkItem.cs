@@ -2,15 +2,20 @@ using ErrorOr;
 using Mirai.Domain.Common;
 using Mirai.Domain.Projects;
 using Mirai.Domain.Users;
+using Mirai.Domain.WorkItems.Enums;
+using Mirai.Domain.WorkItems.ValueObjects;
 
 namespace Mirai.Domain.WorkItems;
 
 public class WorkItem : Entity
 {
+    public int Code { get; private set; }
     public string Title { get; private set; } = null!;
     public string? Description { get; private set; }
     public WorkItemType Type { get; private set; } = null!;
     public WorkItemStatus Status { get; private set; } = null!;
+    public Planning Planning { get; private set; } = new();
+    public Classification Classification { get; private set; } = new();
     public Guid? AssigneeId { get; private set; }
     public User? Assignee { get; private set; }
     public Guid ProjectId { get; private set; }
@@ -23,12 +28,14 @@ public class WorkItem : Entity
 
     public WorkItem(
         Guid projectId,
-        WorkItemType type,
-        string title)
+        int code,
+        string title,
+        WorkItemType type)
     {
         ProjectId = projectId;
-        Type = type;
+        Code = code;
         Title = title;
+        Type = type;
         Status = WorkItemStatus.New;
     }
 

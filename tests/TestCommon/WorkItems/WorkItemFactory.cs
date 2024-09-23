@@ -1,4 +1,5 @@
 using Mirai.Domain.WorkItems;
+using Mirai.Domain.WorkItems.Enums;
 using TestCommon.TestConstants;
 
 namespace TestCommon.WorkItems;
@@ -12,7 +13,8 @@ public static class WorkItemFactory
     {
         return new(
             projectId: projectId ?? Constants.WorkItem.ProjectId,
-            type: type ?? WorkItemType.UserStory,
-            title: title);
+            code: Constants.WorkItem.Code,
+            title: title,
+            type: type ?? WorkItemType.UserStory);
     }
 }

@@ -5,6 +5,7 @@ namespace Mirai.Contracts.WorkItems;
 public record WorkItemResponse(
     Guid Id,
     Guid ProjectId,
+    int Code,
     string Title,
     string? Description,
     WorkItemStatus Status,

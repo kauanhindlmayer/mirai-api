@@ -1,6 +1,6 @@
 using Ardalis.SmartEnum;
 
-namespace Mirai.Domain.WorkItems;
+namespace Mirai.Domain.WorkItems.Enums;
 
 public class WorkItemStatus(string name, int value)
     : SmartEnum<WorkItemStatus>(name, value)
