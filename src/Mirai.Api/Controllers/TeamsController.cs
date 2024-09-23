@@ -21,8 +21,8 @@ public class TeamsController(ISender _mediator) : ApiController
     public async Task<IActionResult> CreateTeam(CreateTeamRequest request)
     {
         var command = new CreateTeamCommand(
-            ProjectId: request.ProjectId,
-            Name: request.Name);
+            request.ProjectId,
+            request.Name);
 
         var result = await _mediator.Send(command);
 
@@ -62,9 +62,7 @@ public class TeamsController(ISender _mediator) : ApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> AddMember(Guid teamId, AddMemberRequest request)
     {
-        var command = new AddMemberCommand(
-            TeamId: teamId,
-            MemberId: request.MemberId);
+        var command = new AddMemberCommand(teamId, request.MemberId);
 
         var result = await _mediator.Send(command);
 
@@ -76,18 +74,13 @@ public class TeamsController(ISender _mediator) : ApiController
     private static TeamResponse ToDto(Team team)
     {
         return new(
-            Id: team.Id,
-            ProjectId: team.ProjectId,
-            Name: team.Name,
-            Members: team.Members.Select(ToDto).ToList(),
-            CreatedAt: team.CreatedAt,
-            UpdatedAt: team.UpdatedAt);
+            team.Id,
+            team.ProjectId,
+            team.Name,
+            team.Members.Select(ToDto).ToList(),
+            team.CreatedAt,
+            team.UpdatedAt);
     }
 
-    private static MemberResponse ToDto(User user)
-    {
-        return new(
-            Id: user.Id,
-            Name: user.FullName);
-    }
+    private static MemberResponse ToDto(User user) => new(user.Id, user.FullName);
 }

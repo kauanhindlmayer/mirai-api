@@ -25,10 +25,10 @@ public class WikiPagesController(ISender _mediator) : ApiController
     public async Task<IActionResult> CreateWikiPage(CreateWikiPageRequest request)
     {
         var command = new CreateWikiPageCommand(
-            ProjectId: request.ProjectId,
-            Title: request.Title,
-            Content: request.Content,
-            ParentWikiPageId: request.ParentWikiPageId);
+            request.ProjectId,
+            request.Title,
+            request.Content,
+            request.ParentWikiPageId);
 
         var result = await _mediator.Send(command);
 
@@ -108,8 +108,12 @@ public class WikiPagesController(ISender _mediator) : ApiController
     public async Task<IActionResult> DeleteWikiPage(Guid wikiPageId)
     {
         var command = new DeleteWikiPageCommand(wikiPageId);
+
         var result = await _mediator.Send(command);
-        return result.Match(_ => NoContent(), Problem);
+
+        return result.Match(
+            _ => NoContent(),
+            Problem);
     }
 
     /// <summary>
@@ -123,42 +127,44 @@ public class WikiPagesController(ISender _mediator) : ApiController
     public async Task<IActionResult> UpdateWikiPage(Guid wikiPageId, UpdateWikiPageRequest request)
     {
         var command = new UpdateWikiPageCommand(
-            WikiPageId: wikiPageId,
-            Title: request.Title,
-            Content: request.Content);
+            wikiPageId,
+            request.Title,
+            request.Content);
 
         var result = await _mediator.Send(command);
 
-        return result.Match(wikiPage => Ok(ToDto(wikiPage)), Problem);
+        return result.Match(
+            wikiPage => Ok(ToDto(wikiPage)),
+            Problem);
     }
 
     private static WikiPageDetailResponse ToDto(WikiPage wikiPage)
     {
         return new(
-            Id: wikiPage.Id,
-            ProjectId: wikiPage.ProjectId,
-            Title: wikiPage.Title,
-            Content: wikiPage.Content,
-            Comments: wikiPage.Comments.Select(ToCommentDto).ToList(),
-            CreatedAt: wikiPage.CreatedAt,
-            UpdatedAt: wikiPage.UpdatedAt);
+            wikiPage.Id,
+            wikiPage.ProjectId,
+            wikiPage.Title,
+            wikiPage.Content,
+            wikiPage.Comments.Select(ToCommentDto).ToList(),
+            wikiPage.CreatedAt,
+            wikiPage.UpdatedAt);
     }
 
     private static WikiPageCommentResponse ToCommentDto(WikiPageComment comment)
     {
         return new(
-            Id: comment.Id,
-            UserId: comment.UserId,
-            Content: comment.Content,
-            CreatedAt: comment.CreatedAt,
-            UpdatedAt: comment.UpdatedAt);
+            comment.Id,
+            comment.UserId,
+            comment.Content,
+            comment.CreatedAt,
+            comment.UpdatedAt);
     }
 
     private static WikiPageSummaryResponse ToSummaryDto(WikiPage wikiPage)
     {
         return new(
-            Id: wikiPage.Id,
-            Title: wikiPage.Title,
-            SubPages: wikiPage.SubWikiPages.Select(ToSummaryDto).ToList());
+            wikiPage.Id,
+            wikiPage.Title,
+            wikiPage.SubWikiPages.Select(ToSummaryDto).ToList());
     }
 }

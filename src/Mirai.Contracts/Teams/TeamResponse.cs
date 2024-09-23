@@ -2,8 +2,8 @@ namespace Mirai.Contracts.Teams;
 
 public record TeamResponse(
     Guid Id,
-    string Name,
     Guid ProjectId,
+    string Name,
     List<MemberResponse> Members,
     DateTime CreatedAt,
     DateTime? UpdatedAt);

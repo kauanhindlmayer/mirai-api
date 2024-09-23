@@ -36,9 +36,9 @@ public class WorkItemsController(ISender _mediator) : ApiController
         }
 
         var command = new CreateWorkItemCommand(
-            ProjectId: request.ProjectId,
-            Type: type,
-            Title: request.Title);
+            request.ProjectId,
+            type,
+            request.Title);
 
         var result = await _mediator.Send(command);
 
@@ -123,7 +123,9 @@ public class WorkItemsController(ISender _mediator) : ApiController
 
         var result = await _mediator.Send(command);
 
-        return result.Match(_ => NoContent(), Problem);
+        return result.Match(
+            _ => NoContent(),
+            Problem);
     }
 
     /// <summary>
@@ -135,11 +137,15 @@ public class WorkItemsController(ISender _mediator) : ApiController
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> AddTagToWorkItem(Guid workItemId, AddTagToWorkItemRequest request)
+    public async Task<IActionResult> AddTagToWorkItem(Guid workItemId, CreateTagRequest request)
     {
-        var command = new AddTagCommand(workItemId, request.TagName);
+        var command = new AddTagCommand(workItemId, request.Name);
+
         var result = await _mediator.Send(command);
-        return result.Match(_ => NoContent(), Problem);
+
+        return result.Match(
+            _ => NoContent(),
+            Problem);
     }
 
     /// <summary>
@@ -153,25 +159,29 @@ public class WorkItemsController(ISender _mediator) : ApiController
     public async Task<IActionResult> RemoveTagFromWorkItem(Guid workItemId, string tagName)
     {
         var command = new RemoveTagCommand(workItemId, tagName);
+
         var result = await _mediator.Send(command);
-        return result.Match(_ => NoContent(), Problem);
+
+        return result.Match(
+            _ => NoContent(),
+            Problem);
     }
 
     private static WorkItemResponse ToDto(WorkItem workItem)
     {
         return new(
-            Id: workItem.Id,
-            ProjectId: workItem.ProjectId,
-            Code: workItem.Code,
-            Title: workItem.Title,
-            Description: workItem.Description,
-            AcceptanceCriteria: workItem.AcceptanceCriteria,
-            Status: ToDto(workItem.Status),
-            Type: ToDto(workItem.Type),
-            Comments: workItem.Comments.Select(ToDto).ToList(),
-            Tags: workItem.Tags.Select(t => t.Name).ToList(),
-            CreatedAt: workItem.CreatedAt,
-            UpdatedAt: workItem.UpdatedAt);
+            workItem.Id,
+            workItem.ProjectId,
+            workItem.Code,
+            workItem.Title,
+            workItem.Description,
+            workItem.AcceptanceCriteria,
+            ToDto(workItem.Status),
+            ToDto(workItem.Type),
+            workItem.Comments.Select(ToDto).ToList(),
+            workItem.Tags.Select(t => t.Name).ToList(),
+            workItem.CreatedAt,
+            workItem.UpdatedAt);
     }
 
     private static WorkItemType ToDto(DomainWorkItemType workItemType)
@@ -201,7 +211,5 @@ public class WorkItemsController(ISender _mediator) : ApiController
     }
 
     private static CommentResponse ToDto(WorkItemComment comment)
-    {
-        return new(comment.Id, comment.Content, comment.CreatedAt);
-    }
+        => new(comment.Id, comment.Content, comment.CreatedAt);
 }

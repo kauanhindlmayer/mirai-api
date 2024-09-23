@@ -25,9 +25,9 @@ public class RetrospectivesController(
     public async Task<IActionResult> CreateRetrospective(CreateRetrospectiveRequest request)
     {
         var command = new CreateRetrospectiveCommand(
-            Title: request.Title,
-            Description: request.Description,
-            TeamId: request.TeamId);
+            request.Title,
+            request.Description,
+            request.TeamId);
 
         var result = await _mediator.Send(command);
 
@@ -68,10 +68,13 @@ public class RetrospectivesController(
     public async Task<IActionResult> AddColumn(Guid retrospectiveId, AddColumnRequest request)
     {
         var command = new AddColumnCommand(request.Title, retrospectiveId);
+
         var result = await _mediator.Send(command);
 
         // TODO: Return 201 Created with the new column in the response body.
-        return result.Match(_ => NoContent(), Problem);
+        return result.Match(
+            _ => NoContent(),
+            Problem);
     }
 
     /// <summary>
@@ -100,27 +103,27 @@ public class RetrospectivesController(
 
     private static RetrospectiveResponse ToDto(Retrospective retrospective)
     {
-        return new RetrospectiveResponse(
-            Id: retrospective.Id,
-            Name: retrospective.Title,
-            Description: retrospective.Description,
-            Columns: retrospective.Columns.Select(ToDto).ToList());
+        return new(
+            retrospective.Id,
+            retrospective.Title,
+            retrospective.Description,
+            retrospective.Columns.Select(ToDto).ToList());
     }
 
     private static RetrospectiveColumnResponse ToDto(RetrospectiveColumn column)
     {
-        return new RetrospectiveColumnResponse(
-            Id: column.Id,
-            Title: column.Title,
-            Items: column.Items.Select(ToDto).ToList());
+        return new(
+            column.Id,
+            column.Title,
+            column.Items.Select(ToDto).ToList());
     }
 
     private static RetrospectiveItemResponse ToDto(RetrospectiveItem item)
     {
-        return new RetrospectiveItemResponse(
-            Id: item.Id,
-            Description: item.Description,
-            AuthorId: item.AuthorId,
-            Votes: item.Votes);
+        return new(
+            item.Id,
+            item.Description,
+            item.AuthorId,
+            item.Votes);
     }
 }

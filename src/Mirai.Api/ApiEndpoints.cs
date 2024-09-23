@@ -31,6 +31,7 @@ public static class ApiEndpoints
         public const string ListWorkItems = $"{Base}/{{projectId:guid}}/work-items";
         public const string AddTag = $"{Base}/{{projectId:guid}}/tags";
         public const string RemoveTag = $"{Base}/{{projectId:guid}}/tags";
+        public const string UpdateTag = $"{Base}/{{projectId:guid}}/tags";
         private const string Base = $"{ApiBase}/projects";
     }
 

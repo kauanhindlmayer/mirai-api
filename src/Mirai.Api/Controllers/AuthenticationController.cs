@@ -30,8 +30,8 @@ public class AuthenticationController(ISender mediator) : ApiController
         var result = await mediator.Send(command);
 
         return result.Match(
-            onValue: authenticationResult => Ok(ToDto(authenticationResult)),
-            onError: Problem);
+            authenticationResult => Ok(ToDto(authenticationResult)),
+            Problem);
     }
 
     /// <summary>
@@ -55,13 +55,13 @@ public class AuthenticationController(ISender mediator) : ApiController
         }
 
         return result.Match(
-            onValue: authenticationResult => Ok(ToDto(authenticationResult)),
-            onError: Problem);
+            authenticationResult => Ok(ToDto(authenticationResult)),
+            Problem);
     }
 
     public static AuthenticationResponse ToDto(AuthenticationResult authResult)
     {
-        return new AuthenticationResponse(
+        return new(
             authResult.User.Id,
             authResult.User.FirstName,
             authResult.User.LastName,
