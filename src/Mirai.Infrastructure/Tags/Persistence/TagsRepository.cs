@@ -19,4 +19,10 @@ public class TagsRepository(AppDbContext dbContext) : ITagsRepository
     {
         return _dbContext.Tags.FirstOrDefaultAsync(t => t.Name == name, cancellationToken);
     }
+
+    public async Task RemoveAsync(Tag tag, CancellationToken cancellationToken)
+    {
+        _dbContext.Tags.Remove(tag);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+    }
 }

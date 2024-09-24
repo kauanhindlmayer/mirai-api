@@ -1,11 +1,9 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Mirai.Application.Projects.Commands.CreateProject;
-using Mirai.Application.Projects.Commands.CreateTagCommand;
 using Mirai.Application.Projects.Queries.GetProject;
 using Mirai.Application.Projects.Queries.ListProjects;
 using Mirai.Contracts.Projects;
-using Mirai.Contracts.Tags;
 using Mirai.Domain.Projects;
 
 namespace Mirai.Api.Controllers;
@@ -69,25 +67,6 @@ public class ProjectsController(ISender _mediator) : ApiController
 
         return result.Match(
             projects => Ok(projects.ConvertAll(ToDto)),
-            Problem);
-    }
-
-    /// <summary>
-    /// Add a tag to a project that can be used to categorize work items.
-    /// </summary>
-    /// <param name="projectId">The project ID.</param>
-    /// <param name="request">The tag data.</param>
-    [HttpPost(ApiEndpoints.Projects.AddTag)]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> AddTag(Guid projectId, CreateTagRequest request)
-    {
-        var command = new CreateTagCommand(projectId, request.Name);
-
-        var result = await _mediator.Send(command);
-
-        return result.Match(
-            _ => NoContent(),
             Problem);
     }
 

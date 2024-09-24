@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace Mirai.Application.Projects.Commands.CreateTagCommand;
+namespace Mirai.Application.Projects.Commands.CreateTag;
 
 public class CreateTagCommandValidator : AbstractValidator<CreateTagCommand>
 {

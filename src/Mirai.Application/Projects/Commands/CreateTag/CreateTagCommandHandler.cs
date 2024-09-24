@@ -4,7 +4,7 @@ using Mirai.Application.Common.Interfaces;
 using Mirai.Domain.Projects;
 using Mirai.Domain.WorkItems;
 
-namespace Mirai.Application.Projects.Commands.CreateTagCommand;
+namespace Mirai.Application.Projects.Commands.CreateTag;
 
 public class CreateTagCommandHandler(
     IProjectsRepository _projectsRepository,
