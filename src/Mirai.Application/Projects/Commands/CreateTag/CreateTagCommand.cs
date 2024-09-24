@@ -1,6 +1,6 @@
 using ErrorOr;
 using MediatR;
-using Mirai.Domain.WorkItems;
+using Mirai.Domain.Tags;
 
 namespace Mirai.Application.Projects.Commands.CreateTag;
 

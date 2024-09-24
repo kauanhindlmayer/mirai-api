@@ -1,6 +1,7 @@
 using ErrorOr;
 using Mirai.Domain.Common;
 using Mirai.Domain.Organizations;
+using Mirai.Domain.Tags;
 using Mirai.Domain.Teams;
 using Mirai.Domain.WikiPages;
 using Mirai.Domain.WorkItems;
@@ -16,6 +17,7 @@ public class Project : Entity
     public ICollection<WorkItem> WorkItems { get; private set; } = [];
     public ICollection<WikiPage> WikiPages { get; private set; } = [];
     public ICollection<Team> Teams { get; private set; } = [];
+    public ICollection<Tag> Tags { get; private set; } = [];
 
     public Project(string name, string? description, Guid organizationId)
     {
@@ -58,6 +60,29 @@ public class Project : Entity
         }
 
         Teams.Add(team);
+        return Result.Success;
+    }
+
+    public ErrorOr<Success> AddTag(Tag tag)
+    {
+        if (Tags.Any(t => t.Name == tag.Name))
+        {
+            return TagErrors.TagWithSameNameAlreadyExists;
+        }
+
+        Tags.Add(tag);
+        return Result.Success;
+    }
+
+    public ErrorOr<Success> RemoveTag(string tagName)
+    {
+        var tag = Tags.FirstOrDefault(t => t.Name == tagName);
+        if (tag is null)
+        {
+            return TagErrors.TagNotFound;
+        }
+
+        Tags.Remove(tag);
         return Result.Success;
     }
 }

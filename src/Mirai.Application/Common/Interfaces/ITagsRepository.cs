@@ -1,4 +1,4 @@
-using Mirai.Domain.WorkItems;
+using Mirai.Domain.Tags;
 
 namespace Mirai.Application.Common.Interfaces;
 

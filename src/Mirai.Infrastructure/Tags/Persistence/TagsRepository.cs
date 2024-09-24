@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Mirai.Application.Common.Interfaces;
-using Mirai.Domain.WorkItems;
+using Mirai.Domain.Tags;
 using Mirai.Infrastructure.Common.Persistence;
 
 namespace Mirai.Infrastructure.Tags.Persistence;

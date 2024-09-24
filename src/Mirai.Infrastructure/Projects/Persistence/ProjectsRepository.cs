@@ -15,11 +15,15 @@ public class ProjectsRepository(AppDbContext dbContext) : IProjectsRepository
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
+    // TODO: Refactor to use a specification pattern or inject the dbContext and
+    // load the related entities in the application layer. This method should not
+    // be responsible for loading all the related entities.
     public async Task<Project?> GetByIdAsync(Guid projectId, CancellationToken cancellationToken)
     {
         return await _dbContext.Projects
             .Include(p => p.WorkItems)
             .Include(p => p.WikiPages)
+            .Include(p => p.Tags)
             .FirstOrDefaultAsync(p => p.Id == projectId, cancellationToken);
     }
 

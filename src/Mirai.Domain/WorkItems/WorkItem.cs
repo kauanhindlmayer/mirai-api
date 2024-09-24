@@ -1,6 +1,7 @@
 using ErrorOr;
 using Mirai.Domain.Common;
 using Mirai.Domain.Projects;
+using Mirai.Domain.Tags;
 using Mirai.Domain.Users;
 using Mirai.Domain.WorkItems.Enums;
 using Mirai.Domain.WorkItems.ValueObjects;

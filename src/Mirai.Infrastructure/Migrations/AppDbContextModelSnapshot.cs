@@ -168,6 +168,32 @@ namespace Mirai.Infrastructure.Migrations
                     b.ToTable("RetrospectiveItems");
                 });
 
+            modelBuilder.Entity("Mirai.Domain.Tags.Tag", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("Tags");
+                });
+
             modelBuilder.Entity("Mirai.Domain.Teams.Team", b =>
                 {
                     b.Property<Guid>("Id")
@@ -298,27 +324,6 @@ namespace Mirai.Infrastructure.Migrations
                     b.HasIndex("WikiPageId");
 
                     b.ToTable("WikiPageComment");
-                });
-
-            modelBuilder.Entity("Mirai.Domain.WorkItems.Tag", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Tags");
                 });
 
             modelBuilder.Entity("Mirai.Domain.WorkItems.WorkItem", b =>
@@ -508,6 +513,17 @@ namespace Mirai.Infrastructure.Migrations
                     b.Navigation("RetrospectiveColumn");
                 });
 
+            modelBuilder.Entity("Mirai.Domain.Tags.Tag", b =>
+                {
+                    b.HasOne("Mirai.Domain.Projects.Project", "Project")
+                        .WithMany("Tags")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+                });
+
             modelBuilder.Entity("Mirai.Domain.Teams.Team", b =>
                 {
                     b.HasOne("Mirai.Domain.Projects.Project", "Project")
@@ -620,7 +636,7 @@ namespace Mirai.Infrastructure.Migrations
 
             modelBuilder.Entity("TagWorkItem", b =>
                 {
-                    b.HasOne("Mirai.Domain.WorkItems.Tag", null)
+                    b.HasOne("Mirai.Domain.Tags.Tag", null)
                         .WithMany()
                         .HasForeignKey("TagsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -640,6 +656,8 @@ namespace Mirai.Infrastructure.Migrations
 
             modelBuilder.Entity("Mirai.Domain.Projects.Project", b =>
                 {
+                    b.Navigation("Tags");
+
                     b.Navigation("Teams");
 
                     b.Navigation("WikiPages");

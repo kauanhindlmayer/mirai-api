@@ -2,7 +2,7 @@ using ErrorOr;
 using MediatR;
 using Mirai.Application.Common.Interfaces;
 using Mirai.Domain.Projects;
-using Mirai.Domain.WorkItems;
+using Mirai.Domain.Tags;
 
 namespace Mirai.Application.Projects.Commands.CreateTag;
 
@@ -22,8 +22,14 @@ public class CreateTagCommandHandler(
             return ProjectErrors.ProjectNotFound;
         }
 
-        // TODO: Refactor the tag to make it belong to a project and not be global.
         var tag = new Tag(request.Name);
+
+        var result = project.AddTag(tag);
+        if (result.IsError)
+        {
+            return result.Errors;
+        }
+
         await _tagsRepository.AddAsync(tag, cancellationToken);
 
         return tag;

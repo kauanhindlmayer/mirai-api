@@ -1,27 +1,29 @@
 using ErrorOr;
 using MediatR;
 using Mirai.Application.Common.Interfaces;
+using Mirai.Domain.Projects;
+using Mirai.Domain.Tags;
 
 namespace Mirai.Application.Projects.Commands.DeleteTag;
 
-public class DeleteTagCommandHandler(ITagsRepository _tagsRepository)
+public class DeleteTagCommandHandler(IProjectsRepository _projectsRepository)
     : IRequestHandler<DeleteTagCommand, ErrorOr<Success>>
 {
     public async Task<ErrorOr<Success>> Handle(
         DeleteTagCommand request,
         CancellationToken cancellationToken)
     {
-        var tag = await _tagsRepository.GetByNameAsync(
-            request.TagName,
+        var project = await _projectsRepository.GetByIdAsync(
+            request.ProjectId,
             cancellationToken);
 
-        if (tag is null)
+        if (project is null)
         {
-            return Error.NotFound(description: "Tag not found.");
+            return ProjectErrors.ProjectNotFound;
         }
 
-        // TODO: Refactor the tag to make it belong to a project and not be global.
-        await _tagsRepository.RemoveAsync(tag, cancellationToken);
+        project.RemoveTag(request.TagName);
+        await _projectsRepository.UpdateAsync(project, cancellationToken);
 
         return Result.Success;
     }

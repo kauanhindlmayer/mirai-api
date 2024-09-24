@@ -5,6 +5,7 @@ using Mirai.Domain.Common;
 using Mirai.Domain.Organizations;
 using Mirai.Domain.Projects;
 using Mirai.Domain.Retrospectives;
+using Mirai.Domain.Tags;
 using Mirai.Domain.Teams;
 using Mirai.Domain.Users;
 using Mirai.Domain.WikiPages;
