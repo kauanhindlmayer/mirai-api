@@ -13,7 +13,7 @@ public class ListWorkItemsQueryHandler(IProjectsRepository _projectsRepository)
         ListWorkItemsQuery query,
         CancellationToken cancellationToken)
     {
-        var project = await _projectsRepository.GetByIdAsync(
+        var project = await _projectsRepository.GetByIdWithWorkItemsAsync(
             query.ProjectId,
             cancellationToken);
 

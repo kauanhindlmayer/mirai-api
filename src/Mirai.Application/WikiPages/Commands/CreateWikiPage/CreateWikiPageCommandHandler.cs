@@ -13,7 +13,10 @@ public class CreateWikiPageCommandHandler(IProjectsRepository _projectsRepositor
         CreateWikiPageCommand request,
         CancellationToken cancellationToken)
     {
-        var project = await _projectsRepository.GetByIdAsync(request.ProjectId, cancellationToken);
+        var project = await _projectsRepository.GetByIdWithWikiPagesAsync(
+            request.ProjectId,
+            cancellationToken);
+
         if (project is null)
         {
             return ProjectErrors.ProjectNotFound;
@@ -31,10 +34,10 @@ public class CreateWikiPageCommandHandler(IProjectsRepository _projectsRepositor
         }
 
         var wikiPage = new WikiPage(
-            projectId: request.ProjectId,
-            title: request.Title,
-            content: request.Content,
-            parentWikiPageId: request.ParentWikiPageId);
+            request.ProjectId,
+            request.Title,
+            request.Content,
+            request.ParentWikiPageId);
 
         var result = project.AddWikiPage(wikiPage);
         if (result.IsError)

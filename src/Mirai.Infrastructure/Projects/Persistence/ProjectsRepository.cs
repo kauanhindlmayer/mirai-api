@@ -9,25 +9,34 @@ public class ProjectsRepository(AppDbContext dbContext) : IProjectsRepository
 {
     private readonly AppDbContext _dbContext = dbContext;
 
-    public async Task AddAsync(Project project, CancellationToken cancellationToken)
+    public async Task AddAsync(Project project, CancellationToken cancellationToken = default)
     {
         await _dbContext.AddAsync(project, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    // TODO: Refactor to use a specification pattern or inject the dbContext and
-    // load the related entities in the application layer. This method should not
-    // be responsible for loading all the related entities.
-    public async Task<Project?> GetByIdAsync(Guid projectId, CancellationToken cancellationToken)
+    public async Task<Project?> GetByIdWithWorkItemsAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return await _dbContext.Projects
             .Include(p => p.WorkItems)
-            .Include(p => p.WikiPages)
-            .Include(p => p.Tags)
-            .FirstOrDefaultAsync(p => p.Id == projectId, cancellationToken);
+            .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
     }
 
-    public Task<List<Project>> ListAsync(Guid organizationId, CancellationToken cancellationToken)
+    public async Task<Project?> GetByIdWithWikiPagesAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Projects
+            .Include(p => p.WikiPages)
+            .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
+    }
+
+    public async Task<Project?> GetByIdWithTagsAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Projects
+            .Include(p => p.Tags)
+            .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
+    }
+
+    public Task<List<Project>> ListAsync(Guid organizationId, CancellationToken cancellationToken = default)
     {
         return _dbContext.Projects
             .AsNoTracking()
@@ -35,13 +44,13 @@ public class ProjectsRepository(AppDbContext dbContext) : IProjectsRepository
             .ToListAsync(cancellationToken);
     }
 
-    public async Task UpdateAsync(Project project, CancellationToken cancellationToken)
+    public async Task UpdateAsync(Project project, CancellationToken cancellationToken = default)
     {
         _dbContext.Update(project);
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task RemoveAsync(Project project, CancellationToken cancellationToken)
+    public async Task RemoveAsync(Project project, CancellationToken cancellationToken = default)
     {
         _dbContext.Remove(project);
         await _dbContext.SaveChangesAsync(cancellationToken);

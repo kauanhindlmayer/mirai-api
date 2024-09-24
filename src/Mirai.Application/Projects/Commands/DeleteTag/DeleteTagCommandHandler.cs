@@ -13,7 +13,7 @@ public class DeleteTagCommandHandler(IProjectsRepository _projectsRepository)
         DeleteTagCommand request,
         CancellationToken cancellationToken)
     {
-        var project = await _projectsRepository.GetByIdAsync(
+        var project = await _projectsRepository.GetByIdWithTagsAsync(
             request.ProjectId,
             cancellationToken);
 

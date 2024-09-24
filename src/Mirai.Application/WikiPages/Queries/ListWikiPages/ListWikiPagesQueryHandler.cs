@@ -13,7 +13,7 @@ public class ListWikiPagesQueryHandler(IProjectsRepository _projectsRepository)
         ListWikiPagesQuery query,
         CancellationToken cancellationToken)
     {
-        var project = await _projectsRepository.GetByIdAsync(
+        var project = await _projectsRepository.GetByIdWithWikiPagesAsync(
             query.ProjectId,
             cancellationToken);
 

@@ -4,10 +4,10 @@ namespace Mirai.Application.Common.Interfaces;
 
 public interface IUsersRepository
 {
-    Task AddAsync(User user, CancellationToken cancellationToken);
-    Task<User?> GetByIdAsync(Guid userId, CancellationToken cancellationToken);
-    Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken);
-    Task RemoveAsync(User user, CancellationToken cancellationToken);
-    Task UpdateAsync(User user, CancellationToken cancellationToken);
-    Task<bool> ExistsByEmailAsync(string email, CancellationToken cancellationToken);
+    Task AddAsync(User user, CancellationToken cancellationToken = default);
+    Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default);
+    Task RemoveAsync(User user, CancellationToken cancellationToken = default);
+    Task UpdateAsync(User user, CancellationToken cancellationToken = default);
+    Task<bool> ExistsByEmailAsync(string email, CancellationToken cancellationToken = default);
 }

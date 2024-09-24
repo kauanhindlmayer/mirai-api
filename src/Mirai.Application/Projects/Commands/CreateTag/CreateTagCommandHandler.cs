@@ -13,7 +13,7 @@ public class CreateTagCommandHandler(
 {
     public async Task<ErrorOr<Tag>> Handle(CreateTagCommand request, CancellationToken cancellationToken)
     {
-        var project = await _projectsRepository.GetByIdAsync(
+        var project = await _projectsRepository.GetByIdWithTagsAsync(
             request.ProjectId,
             cancellationToken);
 

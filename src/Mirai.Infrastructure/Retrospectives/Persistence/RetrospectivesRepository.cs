@@ -9,21 +9,21 @@ public class RetrospectivesRepository(AppDbContext dbContext) : IRetrospectivesR
 {
     private readonly AppDbContext _dbContext = dbContext;
 
-    public async Task AddAsync(Retrospective retrospective, CancellationToken cancellationToken)
+    public async Task AddAsync(Retrospective retrospective, CancellationToken cancellationToken = default)
     {
         await _dbContext.Retrospectives.AddAsync(retrospective, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public Task<Retrospective?> GetByIdAsync(Guid retrospectiveId, CancellationToken cancellationToken)
+    public Task<Retrospective?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return _dbContext.Retrospectives
             .Include(x => x.Columns)
                 .ThenInclude(x => x.Items)
-            .FirstOrDefaultAsync(x => x.Id == retrospectiveId, cancellationToken);
+            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
-    public Task<List<Retrospective>> ListAsync(Guid teamId, CancellationToken cancellationToken)
+    public Task<List<Retrospective>> ListAsync(Guid teamId, CancellationToken cancellationToken = default)
     {
         return _dbContext.Retrospectives
             .AsNoTracking()
@@ -31,13 +31,13 @@ public class RetrospectivesRepository(AppDbContext dbContext) : IRetrospectivesR
             .ToListAsync(cancellationToken);
     }
 
-    public Task UpdateAsync(Retrospective retrospective, CancellationToken cancellationToken)
+    public Task UpdateAsync(Retrospective retrospective, CancellationToken cancellationToken = default)
     {
         _dbContext.Retrospectives.Update(retrospective);
         return _dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public Task RemoveAsync(Retrospective retrospective, CancellationToken cancellationToken)
+    public Task RemoveAsync(Retrospective retrospective, CancellationToken cancellationToken = default)
     {
         _dbContext.Retrospectives.Remove(retrospective);
         return _dbContext.SaveChangesAsync(cancellationToken);
