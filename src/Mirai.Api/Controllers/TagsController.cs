@@ -88,9 +88,12 @@ public class TagsController(ISender _mediator) : ApiController
             Problem);
     }
 
-    private static TagResponse ToDto(Tag tag) => new(
-        tag.Id,
-        tag.Name,
-        tag.CreatedAt,
-        tag.UpdatedAt);
+    private static TagResponse ToDto(Tag tag)
+    {
+        return new(
+            tag.Id,
+            tag.Name,
+            tag.CreatedAt,
+            tag.UpdatedAt);
+    }
 }

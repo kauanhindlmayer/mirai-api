@@ -23,6 +23,7 @@ public class DeleteTagCommandHandler(
             return ProjectErrors.ProjectNotFound;
         }
 
+        // TODO: Think about a better name for this method
         var hasWorkItemsAssociated = await _tagsRepository.HasWorkItemsAssociatedAsync(
             project.Id,
             request.TagName,

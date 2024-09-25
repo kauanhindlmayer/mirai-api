@@ -1,4 +1,4 @@
-// using System.Transactions;
+using System.Transactions;
 using MediatR;
 using Mirai.Application.Common.Interfaces;
 
@@ -18,13 +18,10 @@ public sealed class UnitOfWorkBehavior<TRequest, TResponse>(IUnitOfWork _unitOfW
             return await next();
         }
 
-        // TODO: Verify how to use transaction scope
-        // using var transactionScope = new TransactionScope();
         var response = await next();
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        // transactionScope.Complete();
         return response;
     }
 
