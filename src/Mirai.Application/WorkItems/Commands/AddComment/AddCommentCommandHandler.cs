@@ -32,7 +32,7 @@ public class AddCommentCommandHandler(
             request.Content);
 
         workItem.AddComment(comment);
-        await _workItemsRepository.UpdateAsync(workItem, cancellationToken);
+        _workItemsRepository.Update(workItem);
 
         return comment;
     }

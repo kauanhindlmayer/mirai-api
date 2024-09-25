@@ -12,7 +12,6 @@ public class OrganizationsRepository(AppDbContext dbContext) : IOrganizationsRep
     public async Task AddAsync(Organization organization, CancellationToken cancellationToken = default)
     {
         await _dbContext.AddAsync(organization, cancellationToken);
-        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
     public async Task<Organization?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
@@ -29,16 +28,14 @@ public class OrganizationsRepository(AppDbContext dbContext) : IOrganizationsRep
             .ToListAsync(cancellationToken);
     }
 
-    public async Task RemoveAsync(Organization organization, CancellationToken cancellationToken = default)
+    public void Remove(Organization organization)
     {
         _dbContext.Remove(organization);
-        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task UpdateAsync(Organization organization, CancellationToken cancellationToken = default)
+    public void Update(Organization organization)
     {
         _dbContext.Update(organization);
-        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
     public Task<bool> ExistsByNameAsync(string name, CancellationToken cancellationToken = default)

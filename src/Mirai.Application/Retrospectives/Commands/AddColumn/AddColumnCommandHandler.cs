@@ -31,7 +31,7 @@ public class AddColumnCommandHandler(IRetrospectivesRepository _retrospectivesRe
             return addColumnResult.Errors;
         }
 
-        await _retrospectivesRepository.UpdateAsync(retrospective, cancellationToken);
+        _retrospectivesRepository.Update(retrospective);
 
         return retrospective;
     }

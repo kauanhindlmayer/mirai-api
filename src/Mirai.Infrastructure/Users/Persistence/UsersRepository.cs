@@ -12,7 +12,6 @@ public class UsersRepository(AppDbContext _dbContext) : IUsersRepository
     public async Task AddAsync(User user, CancellationToken cancellationToken = default)
     {
         await _dbContext.AddAsync(user, cancellationToken);
-        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
     public async Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
@@ -25,16 +24,14 @@ public class UsersRepository(AppDbContext _dbContext) : IUsersRepository
         return await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
     }
 
-    public async Task RemoveAsync(User user, CancellationToken cancellationToken = default)
-    {
-        _dbContext.Remove(user);
-        await _dbContext.SaveChangesAsync(cancellationToken);
-    }
-
-    public async Task UpdateAsync(User user, CancellationToken cancellationToken = default)
+    public void Update(User user)
     {
         _dbContext.Update(user);
-        await _dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public void Remove(User user)
+    {
+        _dbContext.Remove(user);
     }
 
     public Task<bool> ExistsByEmailAsync(string email, CancellationToken cancellationToken = default)

@@ -6,7 +6,7 @@ using Mirai.Application.Common.Security.Request;
 
 namespace Mirai.Application.Common.Behaviors;
 
-public class AuthorizationBehavior<TRequest, TResponse>(
+public sealed class AuthorizationBehavior<TRequest, TResponse>(
     IAuthorizationService _authorizationService)
         : IPipelineBehavior<TRequest, TResponse>
             where TRequest : IAuthorizeableRequest<TResponse>

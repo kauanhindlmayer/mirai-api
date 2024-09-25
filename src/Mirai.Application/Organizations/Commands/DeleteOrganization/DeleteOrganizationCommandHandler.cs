@@ -22,7 +22,7 @@ public class DeleteOrganizationCommandHandler(
             return OrganizationErrors.OrganizationNotFound;
         }
 
-        await _organizationsRepository.RemoveAsync(organization, cancellationToken);
+        _organizationsRepository.Remove(organization);
 
         return Result.Success;
     }

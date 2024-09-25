@@ -12,7 +12,6 @@ public class WorkItemsRepository(AppDbContext dbContext) : IWorkItemsRepository
     public async Task AddAsync(WorkItem workItem, CancellationToken cancellationToken = default)
     {
         await _dbContext.WorkItems.AddAsync(workItem, cancellationToken);
-        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
     public async Task<WorkItem?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
@@ -38,15 +37,13 @@ public class WorkItemsRepository(AppDbContext dbContext) : IWorkItemsRepository
         return await _dbContext.WorkItems.ToListAsync(cancellationToken);
     }
 
-    public async Task RemoveAsync(WorkItem workItem, CancellationToken cancellationToken = default)
+    public void Remove(WorkItem workItem)
     {
         _dbContext.WorkItems.Remove(workItem);
-        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task UpdateAsync(WorkItem workItem, CancellationToken cancellationToken = default)
+    public void Update(WorkItem workItem)
     {
         _dbContext.WorkItems.Update(workItem);
-        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }

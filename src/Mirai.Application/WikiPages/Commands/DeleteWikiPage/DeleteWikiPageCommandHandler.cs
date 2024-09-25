@@ -26,7 +26,7 @@ public class DeleteWikiPageCommandHandler(IWikiPagesRepository _wikiPagesReposit
             return WikiPageErrors.WikiPageHasSubWikiPages;
         }
 
-        await _wikiPagesRepository.RemoveAsync(wikiPage, cancellationToken);
+        _wikiPagesRepository.Remove(wikiPage);
         return Result.Success;
     }
 }

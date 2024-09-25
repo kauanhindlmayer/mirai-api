@@ -12,7 +12,6 @@ public class RetrospectivesRepository(AppDbContext dbContext) : IRetrospectivesR
     public async Task AddAsync(Retrospective retrospective, CancellationToken cancellationToken = default)
     {
         await _dbContext.Retrospectives.AddAsync(retrospective, cancellationToken);
-        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
     public Task<Retrospective?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
@@ -31,15 +30,13 @@ public class RetrospectivesRepository(AppDbContext dbContext) : IRetrospectivesR
             .ToListAsync(cancellationToken);
     }
 
-    public Task UpdateAsync(Retrospective retrospective, CancellationToken cancellationToken = default)
+    public void Update(Retrospective retrospective)
     {
         _dbContext.Retrospectives.Update(retrospective);
-        return _dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public Task RemoveAsync(Retrospective retrospective, CancellationToken cancellationToken = default)
+    public void Remove(Retrospective retrospective)
     {
         _dbContext.Retrospectives.Remove(retrospective);
-        return _dbContext.SaveChangesAsync(cancellationToken);
     }
 }

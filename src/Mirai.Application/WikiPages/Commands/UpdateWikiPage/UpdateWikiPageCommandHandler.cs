@@ -19,7 +19,7 @@ public class UpdateWikiPageCommandHandler(IWikiPagesRepository _wikiPagesReposit
         }
 
         wikiPage.Update(request.Title, request.Content);
-        await _wikiPagesRepository.UpdateAsync(wikiPage, cancellationToken);
+        _wikiPagesRepository.Update(wikiPage);
 
         return wikiPage;
     }

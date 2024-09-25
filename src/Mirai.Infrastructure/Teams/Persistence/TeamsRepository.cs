@@ -12,7 +12,6 @@ public class TeamsRepository(AppDbContext dbContext) : ITeamsRepository
     public async Task AddAsync(Team team, CancellationToken cancellationToken = default)
     {
         await _dbContext.Teams.AddAsync(team, cancellationToken);
-        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
     public async Task<Team?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
@@ -30,15 +29,13 @@ public class TeamsRepository(AppDbContext dbContext) : ITeamsRepository
             .ToListAsync(cancellationToken);
     }
 
-    public async Task UpdateAsync(Team team, CancellationToken cancellationToken = default)
+    public void Update(Team team)
     {
         _dbContext.Teams.Update(team);
-        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task DeleteAsync(Team team, CancellationToken cancellationToken = default)
+    public void Remove(Team team)
     {
         _dbContext.Teams.Remove(team);
-        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }

@@ -45,7 +45,7 @@ public class CreateWikiPageCommandHandler(IProjectsRepository _projectsRepositor
             return result.Errors;
         }
 
-        await _projectsRepository.UpdateAsync(project, cancellationToken);
+        _projectsRepository.Update(project);
 
         return wikiPage;
     }

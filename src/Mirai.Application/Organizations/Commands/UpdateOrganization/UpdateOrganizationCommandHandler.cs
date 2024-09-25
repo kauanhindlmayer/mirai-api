@@ -22,7 +22,7 @@ public class UpdateOrganizationCommandHandler(IOrganizationsRepository _organiza
         }
 
         organization.Update(request.Name, request.Description);
-        await _organizationsRepository.UpdateAsync(organization, cancellationToken);
+        _organizationsRepository.Update(organization);
 
         return organization;
     }

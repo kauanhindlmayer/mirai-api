@@ -33,7 +33,7 @@ public class CreateProjectCommandHandler(IOrganizationsRepository _organizations
             return result.Errors;
         }
 
-        await _organizationsRepository.UpdateAsync(organization, cancellationToken);
+        _organizationsRepository.Update(organization);
 
         return project;
     }

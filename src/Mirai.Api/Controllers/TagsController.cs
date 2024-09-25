@@ -1,8 +1,10 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Mirai.Application.Projects.Commands.CreateTag;
-using Mirai.Application.Projects.Commands.DeleteTag;
+using Mirai.Application.Tags.Commands.CreateTag;
+using Mirai.Application.Tags.Commands.DeleteTag;
+using Mirai.Application.Tags.Queries.ListTags;
 using Mirai.Contracts.Tags;
+using Mirai.Domain.Tags;
 
 namespace Mirai.Api.Controllers;
 
@@ -32,19 +34,17 @@ public class TagsController(ISender _mediator) : ApiController
     /// </summary>
     /// <param name="projectId">The project ID.</param>
     [HttpGet(ApiEndpoints.Projects.ListTags)]
-    [ProducesResponseType(typeof(List<string>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(List<TagResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ListTags(Guid projectId)
     {
-        // var query = new ListTagsQuery(projectId);
+        var query = new ListTagsQuery(projectId);
 
-        // var result = await _mediator.Send(query);
+        var result = await _mediator.Send(query);
 
-        // return result.Match(
-        //     tags => Ok(tags),
-        //     Problem);
-        await Task.CompletedTask;
-        return Ok(new List<string>());
+        return result.Match(
+            tags => Ok(tags.ConvertAll(ToDto)),
+            Problem);
     }
 
     /// <summary>
@@ -87,4 +87,10 @@ public class TagsController(ISender _mediator) : ApiController
             _ => NoContent(),
             Problem);
     }
+
+    private static TagResponse ToDto(Tag tag) => new(
+        tag.Id,
+        tag.Name,
+        tag.CreatedAt,
+        tag.UpdatedAt);
 }

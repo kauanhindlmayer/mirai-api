@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Mirai.Application.Common.Behaviors;
 
-public class ValidationBehavior<TRequest, TResponse>(IValidator<TRequest>? validator = null)
+public sealed class ValidationBehavior<TRequest, TResponse>(IValidator<TRequest>? validator = null)
     : IPipelineBehavior<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
         where TResponse : IErrorOr

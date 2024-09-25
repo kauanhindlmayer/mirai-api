@@ -21,13 +21,13 @@ public class RemoveTagCommandHandler(IWorkItemsRepository _workItemsRepository)
             return WorkItemErrors.WorkItemNotFound;
         }
 
-        var removeTagResult = workItem.RemoveTag(request.TagName);
-        if (removeTagResult.IsError)
+        var result = workItem.RemoveTag(request.TagName);
+        if (result.IsError)
         {
-            return removeTagResult.Errors;
+            return result.Errors;
         }
 
-        await _workItemsRepository.UpdateAsync(workItem, cancellationToken);
+        _workItemsRepository.Update(workItem);
 
         return Result.Success;
     }

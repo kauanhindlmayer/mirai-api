@@ -31,7 +31,7 @@ public class AddCommentCommandHandler(
             request.Content);
 
         wikiPage.AddComment(comment);
-        await _wikiPagesRepository.UpdateAsync(wikiPage, cancellationToken);
+        _wikiPagesRepository.Update(wikiPage);
 
         return comment;
     }

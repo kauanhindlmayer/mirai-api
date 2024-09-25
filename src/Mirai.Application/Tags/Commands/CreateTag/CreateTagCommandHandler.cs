@@ -4,11 +4,10 @@ using Mirai.Application.Common.Interfaces;
 using Mirai.Domain.Projects;
 using Mirai.Domain.Tags;
 
-namespace Mirai.Application.Projects.Commands.CreateTag;
+namespace Mirai.Application.Tags.Commands.CreateTag;
 
 public class CreateTagCommandHandler(
-    IProjectsRepository _projectsRepository,
-    ITagsRepository _tagsRepository)
+    IProjectsRepository _projectsRepository)
     : IRequestHandler<CreateTagCommand, ErrorOr<Tag>>
 {
     public async Task<ErrorOr<Tag>> Handle(CreateTagCommand request, CancellationToken cancellationToken)
@@ -30,7 +29,7 @@ public class CreateTagCommandHandler(
             return result.Errors;
         }
 
-        await _tagsRepository.AddAsync(tag, cancellationToken);
+        _projectsRepository.Update(project);
 
         return tag;
     }

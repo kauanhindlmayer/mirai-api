@@ -36,7 +36,7 @@ public class CreateWorkItemCommandHandler(
             return result.Errors;
         }
 
-        await _projectsRepository.UpdateAsync(project, cancellationToken);
+        _projectsRepository.Update(project);
 
         return workItem;
     }

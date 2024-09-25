@@ -12,7 +12,6 @@ public class WikiPagesRepository(AppDbContext dbContext) : IWikiPagesRepository
     public async Task AddAsync(WikiPage wikiPage, CancellationToken cancellationToken = default)
     {
         await _dbContext.WikiPages.AddAsync(wikiPage, cancellationToken);
-        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
     public async Task<WikiPage?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
@@ -28,15 +27,13 @@ public class WikiPagesRepository(AppDbContext dbContext) : IWikiPagesRepository
         return await _dbContext.WikiPages.ToListAsync(cancellationToken);
     }
 
-    public async Task RemoveAsync(WikiPage wikiPage, CancellationToken cancellationToken = default)
-    {
-        _dbContext.WikiPages.Remove(wikiPage);
-        await _dbContext.SaveChangesAsync(cancellationToken);
-    }
-
-    public async Task UpdateAsync(WikiPage wikiPage, CancellationToken cancellationToken = default)
+    public void Update(WikiPage wikiPage)
     {
         _dbContext.WikiPages.Update(wikiPage);
-        await _dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public void Remove(WikiPage wikiPage)
+    {
+        _dbContext.WikiPages.Remove(wikiPage);
     }
 }

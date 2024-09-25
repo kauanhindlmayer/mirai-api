@@ -4,13 +4,13 @@ using Mirai.Application.Common.Interfaces;
 using Mirai.Domain.Projects;
 using Mirai.Domain.Tags;
 
-namespace Mirai.Application.Projects.Commands.DeleteTag;
+namespace Mirai.Application.Tags.Queries.ListTags;
 
-public class DeleteTagCommandHandler(IProjectsRepository _projectsRepository)
-    : IRequestHandler<DeleteTagCommand, ErrorOr<Success>>
+public class ListTagsQueryHandler(IProjectsRepository _projectsRepository)
+    : IRequestHandler<ListTagsQuery, ErrorOr<List<Tag>>>
 {
-    public async Task<ErrorOr<Success>> Handle(
-        DeleteTagCommand request,
+    public async Task<ErrorOr<List<Tag>>> Handle(
+        ListTagsQuery request,
         CancellationToken cancellationToken)
     {
         var project = await _projectsRepository.GetByIdWithTagsAsync(
@@ -22,9 +22,6 @@ public class DeleteTagCommandHandler(IProjectsRepository _projectsRepository)
             return ProjectErrors.ProjectNotFound;
         }
 
-        project.RemoveTag(request.TagName);
-        await _projectsRepository.UpdateAsync(project, cancellationToken);
-
-        return Result.Success;
+        return project.Tags.ToList();
     }
 }

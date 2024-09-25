@@ -27,7 +27,7 @@ public class AssignWorkItemCommandHandler(
         }
 
         workItem.Assign(request.AssigneeId);
-        await _workItemsRepository.UpdateAsync(workItem, cancellationToken);
+        _workItemsRepository.Update(workItem);
 
         return Result.Success;
     }

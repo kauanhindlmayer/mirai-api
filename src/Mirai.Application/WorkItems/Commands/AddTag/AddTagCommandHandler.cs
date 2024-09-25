@@ -25,7 +25,7 @@ public class AddTagCommandHandler(
             ?? new Tag(request.TagName);
 
         workItem.AddTag(tag);
-        await _workItemsRepository.UpdateAsync(workItem, cancellationToken);
+        _workItemsRepository.Update(workItem);
 
         return Result.Success;
     }

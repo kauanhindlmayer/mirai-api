@@ -38,7 +38,7 @@ public class AddMemberCommandHandler(
             return addMemberResult.Errors;
         }
 
-        await _teamsRepository.UpdateAsync(team, cancellationToken);
+        _teamsRepository.Update(team);
 
         return Result.Success;
     }

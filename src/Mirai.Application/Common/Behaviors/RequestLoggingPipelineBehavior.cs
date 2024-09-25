@@ -5,7 +5,7 @@ using Serilog.Context;
 
 namespace Mirai.Application.Common.Behaviors;
 
-public class RequestLoggingPipelineBehavior<TRequest, TResponse>(
+public sealed class RequestLoggingPipelineBehavior<TRequest, TResponse>(
     ILogger<RequestLoggingPipelineBehavior<TRequest, TResponse>> _logger)
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>

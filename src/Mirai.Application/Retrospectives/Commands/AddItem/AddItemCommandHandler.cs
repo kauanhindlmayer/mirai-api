@@ -37,7 +37,7 @@ public class AddItemCommandHandler(
             return addedItemResult.Errors;
         }
 
-        await _retrospectivesRepository.UpdateAsync(retrospective, cancellationToken);
+        _retrospectivesRepository.Update(retrospective);
 
         return retrospectiveItem;
     }

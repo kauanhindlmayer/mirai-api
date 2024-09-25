@@ -30,7 +30,7 @@ public class CreateTeamCommandHandler(IProjectsRepository _projectsRepository)
             return addTeamResult.Errors;
         }
 
-        await _projectsRepository.UpdateAsync(project, cancellationToken);
+        _projectsRepository.Update(project);
 
         return team;
     }
