@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Mirai.Application.Tags.Commands.CreateTag;
 using Mirai.Application.Tags.Commands.DeleteTag;
+using Mirai.Application.Tags.Commands.UpdateTag;
 using Mirai.Application.Tags.Queries.ListTags;
 using Mirai.Contracts.Tags;
 using Mirai.Domain.Tags;
@@ -15,10 +16,10 @@ public class TagsController(ISender _mediator) : ApiController
     /// </summary>
     /// <param name="projectId">The project ID.</param>
     /// <param name="request">The tag data.</param>
-    [HttpPost(ApiEndpoints.Projects.AddTag)]
+    [HttpPost(ApiEndpoints.Tags.Create)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> AddTag(Guid projectId, CreateTagRequest request)
+    public async Task<IActionResult> CreateTag(Guid projectId, CreateTagRequest request)
     {
         var command = new CreateTagCommand(projectId, request.Name);
 
@@ -33,7 +34,7 @@ public class TagsController(ISender _mediator) : ApiController
     /// List all tags in a project.
     /// </summary>
     /// <param name="projectId">The project ID.</param>
-    [HttpGet(ApiEndpoints.Projects.ListTags)]
+    [HttpGet(ApiEndpoints.Tags.List)]
     [ProducesResponseType(typeof(List<TagResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ListTags(Guid projectId)
@@ -51,22 +52,20 @@ public class TagsController(ISender _mediator) : ApiController
     /// Update a tag in a project.
     /// </summary>
     /// <param name="projectId">The project ID.</param>
-    /// <param name="tagName">The tag name.</param>
+    /// <param name="tagId">The tag ID.</param>
     /// <param name="request">The new tag data.</param>
-    [HttpPut(ApiEndpoints.Projects.UpdateTag)]
+    [HttpPut(ApiEndpoints.Tags.Update)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateTag(Guid projectId, string tagName, CreateTagRequest request)
+    public async Task<IActionResult> UpdateTag(Guid projectId, Guid tagId, CreateTagRequest request)
     {
-        // var command = new UpdateTagCommand(projectId, tagName, request.Name);
+        var command = new UpdateTagCommand(projectId, tagId, request.Name);
 
-        // var result = await _mediator.Send(command);
+        var result = await _mediator.Send(command);
 
-        // return result.Match(
-        //     _ => NoContent(),
-        //     Problem);
-        await Task.CompletedTask;
-        return NoContent();
+        return result.Match(
+            _ => NoContent(),
+            Problem);
     }
 
     /// <summary>
@@ -74,7 +73,7 @@ public class TagsController(ISender _mediator) : ApiController
     /// </summary>
     /// <param name="projectId">The project ID.</param>
     /// <param name="tagName">The tag name.</param>
-    [HttpDelete(ApiEndpoints.Projects.RemoveTag)]
+    [HttpDelete(ApiEndpoints.Tags.Delete)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteTag(Guid projectId, string tagName)

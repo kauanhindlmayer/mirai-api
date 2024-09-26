@@ -4,7 +4,6 @@ using Mirai.Domain.WorkItems;
 
 namespace Mirai.Domain.Tags;
 
-// TODO: Refactor the tag to make it belong to a project and not be global.
 public class Tag : Entity
 {
     public string Name { get; private set; } = null!;
@@ -19,5 +18,10 @@ public class Tag : Entity
 
     private Tag()
     {
+    }
+
+    public void UpdateName(string name)
+    {
+        Name = name;
     }
 }

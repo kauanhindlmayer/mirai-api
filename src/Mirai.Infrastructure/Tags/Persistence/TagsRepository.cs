@@ -14,7 +14,7 @@ public class TagsRepository(AppDbContext dbContext) : ITagsRepository
         return _dbContext.Tags.FirstOrDefaultAsync(t => t.Name == name, cancellationToken);
     }
 
-    public async Task<bool> HasWorkItemsAssociatedAsync(Guid projectId, string name, CancellationToken cancellationToken = default)
+    public async Task<bool> IsTagLinkedToAnyWorkItemsAsync(Guid projectId, string name, CancellationToken cancellationToken = default)
     {
         return await _dbContext.Tags
             .AsNoTracking()

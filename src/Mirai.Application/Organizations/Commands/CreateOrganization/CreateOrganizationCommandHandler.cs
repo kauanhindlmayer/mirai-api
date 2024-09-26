@@ -18,8 +18,8 @@ public class CreateOrganizationCommandHandler(IOrganizationsRepository _organiza
         }
 
         var organization = new Organization(
-            name: request.Name,
-            description: request.Description);
+            request.Name,
+            request.Description);
 
         await _organizationsRepository.AddAsync(organization, cancellationToken);
 

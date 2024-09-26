@@ -29,11 +29,17 @@ public static class ApiEndpoints
         public const string Update = $"{Base}/{{projectId:guid}}";
         public const string Delete = $"{Base}/{{projectId:guid}}";
         public const string ListWorkItems = $"{Base}/{{projectId:guid}}/work-items";
-        public const string ListTags = $"{Base}/{{projectId:guid}}/tags";
-        public const string AddTag = $"{Base}/{{projectId:guid}}/tags";
-        public const string RemoveTag = $"{Base}/{{projectId:guid}}/tags/{{tagName}}";
-        public const string UpdateTag = $"{Base}/{{projectId:guid}}/tags";
         private const string Base = $"{ApiBase}/projects";
+    }
+
+    public static class Tags
+    {
+        public const string Create = Base;
+        public const string Get = $"{Base}/{{tagId:guid}}";
+        public const string Update = $"{Base}/{{tagId:guid}}";
+        public const string Delete = $"{Base}/{{tagId:guid}}";
+        public const string List = Base;
+        private const string Base = $"{ApiBase}/tags";
     }
 
     public static class WorkItems
