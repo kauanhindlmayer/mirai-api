@@ -34,12 +34,13 @@ public class TagsController(ISender _mediator) : ApiController
     /// List all tags in a project.
     /// </summary>
     /// <param name="projectId">The project ID.</param>
+    /// <param name="searchTerm">The search term to filter tags by name.</param>
     [HttpGet(ApiEndpoints.Tags.List)]
     [ProducesResponseType(typeof(List<TagResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> ListTags(Guid projectId)
+    public async Task<IActionResult> ListTags(Guid projectId, string? searchTerm = null)
     {
-        var query = new ListTagsQuery(projectId);
+        var query = new ListTagsQuery(projectId, searchTerm);
 
         var result = await _mediator.Send(query);
 
