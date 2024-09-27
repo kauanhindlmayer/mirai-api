@@ -10,4 +10,5 @@ public class WorkItemStatus(string name, int value)
     public static readonly WorkItemStatus Closed = new(nameof(Closed), 2);
     public static readonly WorkItemStatus Resolved = new(nameof(Resolved), 3);
     public static readonly WorkItemStatus Reopened = new(nameof(Reopened), 4);
+    public static readonly WorkItemStatus Removed = new(nameof(Removed), 5);
 }

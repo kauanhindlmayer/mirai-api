@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Mirai.Application.Boards.Commands.AddCard;
 using Mirai.Application.Boards.Commands.AddColumn;
 using Mirai.Application.Boards.Commands.CreateBoard;
+using Mirai.Application.Boards.Commands.RemoveColumn;
 using Mirai.Application.Boards.Queries.GetBoard;
 using Mirai.Contracts.Boards;
 using Mirai.Domain.Boards;
@@ -84,6 +85,25 @@ public class BoardsController(ISender _mediator) : ApiController
     }
 
     /// <summary>
+    /// Remove a column from a board.
+    /// </summary>
+    /// <param name="boardId">The ID of the board to remove a column from.</param>
+    /// <param name="columnId">The ID of the column to remove.</param>
+    [HttpDelete(ApiEndpoints.Boards.RemoveColumn)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> RemoveColumn(Guid boardId, Guid columnId)
+    {
+        var command = new RemoveColumnCommand(boardId, columnId);
+
+        var result = await _mediator.Send(command);
+
+        return result.Match(
+            _ => NoContent(),
+            Problem);
+    }
+
+    /// <summary>
     /// Add a new card to a column on a board.
     /// </summary>
     /// <param name="boardId">The ID of the board to add a new card to a column on.</param>
@@ -132,6 +152,15 @@ public class BoardsController(ISender _mediator) : ApiController
             column.Position,
             column.WipLimit,
             column.DefinitionOfDone,
-            []);
+            column.Cards.Select(ToDto));
+    }
+
+    private static BoardCardResponse ToDto(BoardCard card)
+    {
+        return new(
+            card.Id,
+            card.Position,
+            card.CreatedAt,
+            card.UpdatedAt);
     }
 }

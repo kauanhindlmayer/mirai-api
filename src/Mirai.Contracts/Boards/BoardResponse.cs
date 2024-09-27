@@ -19,7 +19,6 @@ public record BoardColumnResponse(
 
 public record BoardCardResponse(
     Guid Id,
-    WorkItemResponse WorkItem,
     int Position,
     DateTime CreatedAt,
     DateTime? UpdatedAt);

@@ -96,6 +96,7 @@ public static class ApiEndpoints
         public const string Update = $"{Base}/{{boardId:guid}}";
         public const string Delete = $"{Base}/{{boardId:guid}}";
         public const string AddColumn = $"{Base}/{{boardId:guid}}/columns";
+        public const string RemoveColumn = $"{Base}/{{boardId:guid}}/columns/{{columnId:guid}}";
         public const string AddCard = $"{Base}/{{boardId:guid}}/columns/{{columnId:guid}}/cards";
         private const string Base = $"{ApiBase}/boards";
     }

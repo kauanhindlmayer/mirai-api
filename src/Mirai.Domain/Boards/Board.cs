@@ -44,6 +44,11 @@ public class Board : Entity
             return BoardErrors.ColumnNotFound;
         }
 
+        if (column.Cards.Count != 0)
+        {
+            return BoardErrors.ColumnHasCards(column);
+        }
+
         Columns.Remove(column);
         ReorderColumns();
         return Result.Success;
