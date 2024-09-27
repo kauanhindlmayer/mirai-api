@@ -1,4 +1,6 @@
+using System.Collections;
 using ErrorOr;
+using Mirai.Domain.Boards;
 using Mirai.Domain.Common;
 using Mirai.Domain.Organizations;
 using Mirai.Domain.Tags;
@@ -18,6 +20,7 @@ public class Project : Entity
     public ICollection<WikiPage> WikiPages { get; private set; } = [];
     public ICollection<Team> Teams { get; private set; } = [];
     public ICollection<Tag> Tags { get; private set; } = [];
+    public ICollection<Board> Boards { get; private set; } = [];
 
     public Project(string name, string? description, Guid organizationId)
     {

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Mirai.Application.Common.Interfaces;
+using Mirai.Infrastructure.Boards.Persistence;
 using Mirai.Infrastructure.Common.Persistence;
 using Mirai.Infrastructure.Organizations.Persistence;
 using Mirai.Infrastructure.Projects.Persistence;
@@ -57,6 +58,7 @@ public static class DependencyInjection
         services.AddScoped<ITeamsRepository, TeamsRepository>();
         services.AddScoped<IUsersRepository, UsersRepository>();
         services.AddScoped<ITagsRepository, TagsRepository>();
+        services.AddScoped<IBoardsRepository, BoardsRepository>();
 
         return services;
     }

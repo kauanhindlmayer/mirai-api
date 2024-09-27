@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Mirai.Domain.Boards;
 using Mirai.Domain.Common;
 using Mirai.Domain.Organizations;
 using Mirai.Domain.Projects;
@@ -26,6 +27,12 @@ public class AppDbContext(
     public DbSet<Project> Projects { get; init; }
 
     public DbSet<Team> Teams { get; init; }
+
+    public DbSet<Board> Boards { get; init; }
+
+    public DbSet<BoardColumn> BoardColumns { get; init; }
+
+    public DbSet<BoardCard> BoardCards { get; init; }
 
     public DbSet<WorkItem> WorkItems { get; init; }
 

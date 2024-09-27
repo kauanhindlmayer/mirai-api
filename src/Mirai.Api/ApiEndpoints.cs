@@ -88,4 +88,15 @@ public static class ApiEndpoints
         public const string RemoveMember = $"{Base}/{{teamId:guid}}/members";
         private const string Base = $"{ApiBase}/teams";
     }
+
+    public static class Boards
+    {
+        public const string Create = Base;
+        public const string Get = $"{Base}/{{boardId:guid}}";
+        public const string Update = $"{Base}/{{boardId:guid}}";
+        public const string Delete = $"{Base}/{{boardId:guid}}";
+        public const string AddColumn = $"{Base}/{{boardId:guid}}/columns";
+        public const string AddCard = $"{Base}/{{boardId:guid}}/columns/{{columnId:guid}}/cards";
+        private const string Base = $"{ApiBase}/boards";
+    }
 }
