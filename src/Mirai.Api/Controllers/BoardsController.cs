@@ -1,11 +1,14 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Mirai.Application.Boards.Commands.CreateBoard;
+using Mirai.Application.Boards.Queries.GetBoard;
 using Mirai.Contracts.Boards;
 using Mirai.Domain.Boards;
 
 namespace Mirai.Api.Controllers;
 
+[AllowAnonymous]
 public class BoardsController(ISender _mediator) : ApiController
 {
     /// <summary>
@@ -41,15 +44,13 @@ public class BoardsController(ISender _mediator) : ApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetBoard(Guid boardId)
     {
-        // var query = new GetBoardQuery(boardId);
+        var query = new GetBoardQuery(boardId);
 
-        // var result = await _mediator.Send(query);
+        var result = await _mediator.Send(query);
 
-        // return result.Match(
-        //     board => Ok(ToDto(board)),
-        //     Problem);
-        await Task.CompletedTask;
-        return Ok();
+        return result.Match(
+            board => Ok(ToDto(board)),
+            Problem);
     }
 
     private static BoardResponse ToDto(Board board)
