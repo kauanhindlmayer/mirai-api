@@ -1,9 +1,8 @@
-using System.Collections;
 using Mirai.Domain.Common;
 
 namespace Mirai.Domain.WikiPages;
 
-public class WikiPage : Entity
+public class WikiPage : AggregateRoot
 {
     public Guid ProjectId { get; private set; }
     public string Title { get; private set; } = string.Empty;

@@ -4,7 +4,7 @@ using Mirai.Domain.Projects;
 
 namespace Mirai.Domain.Boards;
 
-public class Board : Entity
+public class Board : AggregateRoot
 {
     public Guid ProjectId { get; private set; }
     public Project Project { get; private set; } = null!;
@@ -52,17 +52,6 @@ public class Board : Entity
         Columns.Remove(column);
         ReorderColumns();
         return Result.Success;
-    }
-
-    public ErrorOr<BoardColumn> GetColumn(Guid columnId)
-    {
-        var column = Columns.SingleOrDefault(c => c.Id == columnId);
-        if (column is null)
-        {
-            return BoardErrors.ColumnNotFound;
-        }
-
-        return column;
     }
 
     private void ReorderColumns()

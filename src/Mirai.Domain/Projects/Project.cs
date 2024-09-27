@@ -1,4 +1,3 @@
-using System.Collections;
 using ErrorOr;
 using Mirai.Domain.Boards;
 using Mirai.Domain.Common;
@@ -10,7 +9,7 @@ using Mirai.Domain.WorkItems;
 
 namespace Mirai.Domain.Projects;
 
-public class Project : Entity
+public class Project : AggregateRoot
 {
     public string Name { get; private set; } = null!;
     public string? Description { get; private set; }

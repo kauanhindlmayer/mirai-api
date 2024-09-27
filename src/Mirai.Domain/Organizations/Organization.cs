@@ -5,7 +5,7 @@ using Mirai.Domain.Users;
 
 namespace Mirai.Domain.Organizations;
 
-public class Organization : Entity
+public class Organization : AggregateRoot
 {
     public string Name { get; private set; } = null!;
     public string? Description { get; private set; }

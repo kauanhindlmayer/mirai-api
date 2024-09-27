@@ -8,7 +8,7 @@ using Mirai.Domain.WorkItems.ValueObjects;
 
 namespace Mirai.Domain.WorkItems;
 
-public class WorkItem : Entity
+public class WorkItem : AggregateRoot
 {
     public int Code { get; private set; }
     public string Title { get; private set; } = null!;

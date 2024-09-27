@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 using ErrorOr;
-using Mirai.Application.Common.Interfaces;
+using Mirai.Domain.Common;
 
 namespace GymManagement.Infrastructure.Authentication.PasswordHasher;
 

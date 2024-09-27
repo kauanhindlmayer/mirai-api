@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Mirai.Application.Common.Interfaces;
+using Mirai.Domain.Common;
 using Mirai.Infrastructure.Boards.Persistence;
 using Mirai.Infrastructure.Common.Persistence;
 using Mirai.Infrastructure.Organizations.Persistence;

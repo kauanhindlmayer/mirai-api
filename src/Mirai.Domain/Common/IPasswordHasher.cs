@@ -1,6 +1,6 @@
 using ErrorOr;
 
-namespace Mirai.Application.Common.Interfaces;
+namespace Mirai.Domain.Common;
 
 public interface IPasswordHasher
 {

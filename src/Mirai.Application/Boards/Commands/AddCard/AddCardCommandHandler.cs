@@ -11,10 +11,12 @@ public class AddCardCommandHandler(
     IBoardsRepository _boardRepository)
     : IRequestHandler<AddCardCommand, ErrorOr<BoardCard>>
 {
-    public async Task<ErrorOr<BoardCard>> Handle(AddCardCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<BoardCard>> Handle(
+        AddCardCommand command,
+        CancellationToken cancellationToken)
     {
         var board = await _boardRepository.GetByIdAsync(
-            request.BoardId,
+            command.BoardId,
             cancellationToken);
 
         if (board is null)
@@ -29,18 +31,17 @@ public class AddCardCommandHandler(
         var workItem = new WorkItem(
             board.ProjectId,
             workItemCode,
-            request.Title,
-            request.Type);
+            command.Title,
+            command.Type);
 
         await _workItemsRepository.AddAsync(workItem, cancellationToken);
 
-        var result = board.GetColumn(request.ColumnId);
-        if (result.IsError)
+        var column = board.Columns.SingleOrDefault(c => c.Id == command.ColumnId);
+        if (column is null)
         {
-            return result.Errors;
+            return BoardErrors.ColumnNotFound;
         }
 
-        var column = result.Value;
         var card = column.AddCard(workItem);
         _boardRepository.Update(board);
 

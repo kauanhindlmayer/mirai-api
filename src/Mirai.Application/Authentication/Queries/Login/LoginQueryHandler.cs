@@ -2,6 +2,7 @@ using ErrorOr;
 using MediatR;
 using Mirai.Application.Authentication.Common;
 using Mirai.Application.Common.Interfaces;
+using Mirai.Domain.Common;
 
 namespace Mirai.Application.Authentication.Queries.Login;
 

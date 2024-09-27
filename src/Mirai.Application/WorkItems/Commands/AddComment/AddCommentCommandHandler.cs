@@ -1,7 +1,6 @@
 using ErrorOr;
 using MediatR;
 using Mirai.Application.Common.Interfaces;
-using Mirai.Domain.Projects;
 using Mirai.Domain.WorkItems;
 
 namespace Mirai.Application.WorkItems.Commands.AddComment;
