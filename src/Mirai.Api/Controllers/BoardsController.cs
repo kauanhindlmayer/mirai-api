@@ -1,11 +1,13 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Mirai.Application.Boards.Commands.AddCard;
 using Mirai.Application.Boards.Commands.AddColumn;
 using Mirai.Application.Boards.Commands.CreateBoard;
 using Mirai.Application.Boards.Queries.GetBoard;
 using Mirai.Contracts.Boards;
 using Mirai.Domain.Boards;
+using DomainWorkItemType = Mirai.Domain.WorkItems.Enums.WorkItemType;
 
 namespace Mirai.Api.Controllers;
 
@@ -57,15 +59,16 @@ public class BoardsController(ISender _mediator) : ApiController
     /// <summary>
     /// Add a new column to a board.
     /// </summary>
+    /// <param name="boardId">The ID of the board to add a new column to.</param>
     /// <param name="request">The request to add a new column to a board.</param>
     [HttpPost(ApiEndpoints.Boards.AddColumn)]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> AddColumn(AddColumnRequest request)
+    public async Task<IActionResult> AddColumn(Guid boardId, AddColumnRequest request)
     {
         var command = new AddColumnCommand(
-            request.BoardId,
+            boardId,
             request.Name,
             request.WipLimit,
             request.DefinitionOfDone);
@@ -75,14 +78,45 @@ public class BoardsController(ISender _mediator) : ApiController
         return result.Match(
             _ => CreatedAtAction(
                 actionName: nameof(GetBoard),
-                routeValues: new { request.BoardId },
+                routeValues: new { BoardId = boardId },
+                value: null),
+            Problem);
+    }
+
+    /// <summary>
+    /// Add a new card to a column on a board.
+    /// </summary>
+    /// <param name="boardId">The ID of the board to add a new card to a column on.</param>
+    /// <param name="columnId">The ID of the column to add a new card to.</param>
+    /// <param name="request">The request to add a new card to a column on a board.</param>
+    [HttpPost(ApiEndpoints.Boards.AddCard)]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> AddCard(Guid boardId, Guid columnId, AddCardRequest request)
+    {
+        if (!DomainWorkItemType.TryFromName(request.Type.ToString(), out var type))
+        {
+            return Problem(
+                statusCode: StatusCodes.Status400BadRequest,
+                detail: "Invalid work item type");
+        }
+
+        var command = new AddCardCommand(boardId, columnId, type, request.Title);
+
+        var result = await _mediator.Send(command);
+
+        return result.Match(
+            _ => CreatedAtAction(
+                actionName: nameof(GetBoard),
+                routeValues: new { BoardId = boardId },
                 value: null),
             Problem);
     }
 
     private static BoardResponse ToDto(Board board)
     {
-        return new BoardResponse(
+        return new(
             board.Id,
             board.ProjectId,
             board.Name,

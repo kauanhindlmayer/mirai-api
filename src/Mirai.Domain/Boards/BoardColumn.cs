@@ -1,4 +1,6 @@
+using ErrorOr;
 using Mirai.Domain.Common;
+using Mirai.Domain.WorkItems;
 
 namespace Mirai.Domain.Boards;
 
@@ -32,5 +34,28 @@ public class BoardColumn : Entity
     public void UpdatePosition(int position)
     {
         Position = position;
+    }
+
+    public ErrorOr<BoardCard> AddCard(WorkItem workItem)
+    {
+        if (Cards.Any(c => c.WorkItem.Id == workItem.Id))
+        {
+            return BoardErrors.CardAlreadyExists;
+        }
+
+        var position = Cards.Count;
+        var card = new BoardCard(Id, workItem.Id, position);
+        Cards.Add(card);
+        return card;
+    }
+
+    public void ReorderCards()
+    {
+        var position = 0;
+        foreach (var card in Cards.OrderBy(c => c.Position))
+        {
+            card.UpdatePosition(position);
+            position++;
+        }
     }
 }

@@ -21,4 +21,9 @@ public class BoardCard : Entity
     private BoardCard()
     {
     }
+
+    public void UpdatePosition(int position)
+    {
+        Position = position;
+    }
 }

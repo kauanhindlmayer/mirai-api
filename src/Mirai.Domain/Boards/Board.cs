@@ -49,12 +49,24 @@ public class Board : Entity
         return Result.Success;
     }
 
+    public ErrorOr<BoardColumn> GetColumn(Guid columnId)
+    {
+        var column = Columns.SingleOrDefault(c => c.Id == columnId);
+        if (column is null)
+        {
+            return BoardErrors.ColumnNotFound;
+        }
+
+        return column;
+    }
+
     private void ReorderColumns()
     {
         var position = 0;
-        foreach (var column in Columns)
+        foreach (var column in Columns.OrderBy(c => c.Position))
         {
-            column.UpdatePosition(position++);
+            column.UpdatePosition(position);
+            position++;
         }
     }
 }
