@@ -11,14 +11,14 @@ public record BoardResponse(
 
 public record BoardColumnResponse(
     Guid Id,
-    Guid BoardId,
     string Name,
     int Position,
+    int? WipLimit,
+    string DefinitionOfDone,
     IEnumerable<BoardCardResponse> Cards);
 
 public record BoardCardResponse(
     Guid Id,
-    Guid BoardColumnId,
     WorkItemResponse WorkItem,
     int Position,
     DateTime CreatedAt,

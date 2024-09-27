@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Mirai.Application.Boards.Commands.AddColumn;
 using Mirai.Application.Boards.Commands.CreateBoard;
 using Mirai.Application.Boards.Queries.GetBoard;
 using Mirai.Contracts.Boards;
@@ -53,6 +54,32 @@ public class BoardsController(ISender _mediator) : ApiController
             Problem);
     }
 
+    /// <summary>
+    /// Add a new column to a board.
+    /// </summary>
+    /// <param name="request">The request to add a new column to a board.</param>
+    [HttpPost(ApiEndpoints.Boards.AddColumn)]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> AddColumn(AddColumnRequest request)
+    {
+        var command = new AddColumnCommand(
+            request.BoardId,
+            request.Name,
+            request.WipLimit,
+            request.DefinitionOfDone);
+
+        var result = await _mediator.Send(command);
+
+        return result.Match(
+            _ => CreatedAtAction(
+                actionName: nameof(GetBoard),
+                routeValues: new { request.BoardId },
+                value: null),
+            Problem);
+    }
+
     private static BoardResponse ToDto(Board board)
     {
         return new BoardResponse(
@@ -60,6 +87,17 @@ public class BoardsController(ISender _mediator) : ApiController
             board.ProjectId,
             board.Name,
             board.Description,
+            board.Columns.Select(ToDto));
+    }
+
+    private static BoardColumnResponse ToDto(BoardColumn column)
+    {
+        return new(
+            column.Id,
+            column.Name,
+            column.Position,
+            column.WipLimit,
+            column.DefinitionOfDone,
             []);
     }
 }

@@ -20,6 +20,13 @@ public class BoardColumnConfigurations : IEntityTypeConfiguration<BoardColumn>
         builder.Property(bc => bc.Position)
             .IsRequired();
 
+        builder.Property(bc => bc.WipLimit)
+            .IsRequired(false);
+
+        builder.Property(bc => bc.DefinitionOfDone)
+            .HasMaxLength(255)
+            .IsRequired();
+
         builder.Property(bc => bc.BoardId)
             .IsRequired();
 

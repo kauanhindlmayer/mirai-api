@@ -6,4 +6,5 @@ public interface IBoardsRepository
 {
     Task AddAsync(Board board, CancellationToken cancellationToken);
     Task<Board?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    void Update(Board board);
 }

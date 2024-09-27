@@ -1,3 +1,4 @@
+using ErrorOr;
 using Mirai.Domain.Common;
 using Mirai.Domain.Projects;
 
@@ -20,5 +21,40 @@ public class Board : Entity
 
     private Board()
     {
+    }
+
+    public ErrorOr<BoardColumn> AddColumn(string name, int wipLimit, string definitionOfDone)
+    {
+        if (Columns.Any(c => c.Name == name))
+        {
+            return BoardErrors.ColumnAlreadyExists;
+        }
+
+        var position = Columns.Count;
+        var column = new BoardColumn(Id, name, position, wipLimit, definitionOfDone);
+        Columns.Add(column);
+        return column;
+    }
+
+    public ErrorOr<Success> RemoveColumn(Guid columnId)
+    {
+        var column = Columns.SingleOrDefault(c => c.Id == columnId);
+        if (column is null)
+        {
+            return BoardErrors.ColumnNotFound;
+        }
+
+        Columns.Remove(column);
+        ReorderColumns();
+        return Result.Success;
+    }
+
+    private void ReorderColumns()
+    {
+        var position = 0;
+        foreach (var column in Columns)
+        {
+            column.UpdatePosition(position++);
+        }
     }
 }
