@@ -36,6 +36,7 @@ public class BoardColumnConfigurations : IEntityTypeConfiguration<BoardColumn>
 
         builder.HasMany(bc => bc.Cards)
             .WithOne(c => c.BoardColumn)
-            .HasForeignKey(c => c.BoardColumnId);
+            .HasForeignKey(c => c.BoardColumnId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

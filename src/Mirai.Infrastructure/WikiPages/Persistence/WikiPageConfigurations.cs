@@ -21,6 +21,7 @@ public class WikiPageConfigurations : IEntityTypeConfiguration<WikiPage>
             .IsRequired();
 
         builder.Property(p => p.Content)
+            .HasColumnType("NVARCHAR(MAX)")
             .IsRequired();
 
         builder.HasMany(p => p.SubWikiPages)

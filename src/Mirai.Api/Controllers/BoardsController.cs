@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Mirai.Application.Boards.Commands.AddCard;
 using Mirai.Application.Boards.Commands.AddColumn;
 using Mirai.Application.Boards.Commands.CreateBoard;
+using Mirai.Application.Boards.Commands.DeleteBoard;
 using Mirai.Application.Boards.Commands.RemoveColumn;
 using Mirai.Application.Boards.Queries.GetBoard;
 using Mirai.Contracts.Boards;
@@ -58,6 +59,24 @@ public class BoardsController(ISender _mediator) : ApiController
     }
 
     /// <summary>
+    /// Delete a board by its ID. This will also delete all columns and cards on the board.
+    /// </summary>
+    /// <param name="boardId">The ID of the board to delete.</param>
+    [HttpDelete(ApiEndpoints.Boards.Delete)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteBoard(Guid boardId)
+    {
+        var command = new DeleteBoardCommand(boardId);
+
+        var result = await _mediator.Send(command);
+
+        return result.Match(
+            _ => NoContent(),
+            Problem);
+    }
+
+    /// <summary>
     /// Add a new column to a board.
     /// </summary>
     /// <param name="boardId">The ID of the board to add a new column to.</param>
@@ -85,7 +104,7 @@ public class BoardsController(ISender _mediator) : ApiController
     }
 
     /// <summary>
-    /// Remove a column from a board.
+    /// Remove a column from a board. The column must be empty before it can be removed.
     /// </summary>
     /// <param name="boardId">The ID of the board to remove a column from.</param>
     /// <param name="columnId">The ID of the column to remove.</param>

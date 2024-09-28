@@ -20,6 +20,7 @@ public class WikiPageCommentConfigurations : IEntityTypeConfiguration<WikiPageCo
             .IsRequired();
 
         builder.Property(wpc => wpc.Content)
+            .HasColumnType("NVARCHAR(MAX)")
             .IsRequired();
     }
 }

@@ -26,4 +26,9 @@ public class BoardsRepository(AppDbContext dbContext) : IBoardsRepository
     {
         _dbContext.Boards.Update(board);
     }
+
+    public void Remove(Board board)
+    {
+        _dbContext.Boards.Remove(board);
+    }
 }

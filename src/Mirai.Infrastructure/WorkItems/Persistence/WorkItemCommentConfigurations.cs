@@ -20,6 +20,7 @@ public class WorkItemCommentConfigurations : IEntityTypeConfiguration<WorkItemCo
             .IsRequired();
 
         builder.Property(wic => wic.Content)
+            .HasColumnType("NVARCHAR(MAX)")
             .IsRequired();
     }
 }

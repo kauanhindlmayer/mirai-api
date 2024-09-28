@@ -29,6 +29,7 @@ public class BoardConfigurations : IEntityTypeConfiguration<Board>
 
         builder.HasMany(b => b.Columns)
             .WithOne(c => c.Board)
-            .HasForeignKey(c => c.BoardId);
+            .HasForeignKey(c => c.BoardId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
