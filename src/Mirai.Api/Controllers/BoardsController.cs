@@ -7,6 +7,7 @@ using Mirai.Application.Boards.Commands.CreateBoard;
 using Mirai.Application.Boards.Commands.DeleteBoard;
 using Mirai.Application.Boards.Commands.RemoveColumn;
 using Mirai.Application.Boards.Queries.GetBoard;
+using Mirai.Application.Boards.Queries.ListBoards;
 using Mirai.Contracts.Boards;
 using Mirai.Domain.Boards;
 using DomainWorkItemType = Mirai.Domain.WorkItems.Enums.WorkItemType;
@@ -55,6 +56,25 @@ public class BoardsController(ISender _mediator) : ApiController
 
         return result.Match(
             board => Ok(ToDto(board)),
+            Problem);
+    }
+
+    /// <summary>
+    /// List all boards.
+    /// </summary>
+    /// <returns>A list of all boards.</returns>
+    /// <param name="projectId">The ID of the project to list boards for.</param>
+    [HttpGet(ApiEndpoints.Projects.ListBoards)]
+    [ProducesResponseType(typeof(List<BoardResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> ListBoards(Guid projectId)
+    {
+        var query = new ListBoardsQuery(projectId);
+
+        var result = await _mediator.Send(query);
+
+        return result.Match(
+            boards => Ok(boards.Select(ToSummaryDto)),
             Problem);
     }
 
@@ -161,6 +181,11 @@ public class BoardsController(ISender _mediator) : ApiController
             board.Name,
             board.Description,
             board.Columns.Select(ToDto));
+    }
+
+    private static BoardSummaryResponse ToSummaryDto(Board board)
+    {
+        return new(board.Id, board.Name);
     }
 
     private static BoardColumnResponse ToDto(BoardColumn column)

@@ -29,6 +29,7 @@ public static class ApiEndpoints
         public const string Update = $"{Base}/{{projectId:guid}}";
         public const string Delete = $"{Base}/{{projectId:guid}}";
         public const string ListWorkItems = $"{Base}/{{projectId:guid}}/work-items";
+        public const string ListBoards = $"{Base}/{{projectId:guid}}/boards";
         private const string Base = $"{ApiBase}/projects";
     }
 
