@@ -11,6 +11,7 @@ using Mirai.Domain.Retrospectives;
 
 namespace Mirai.Api.Controllers;
 
+[Route("api/teams/{teamId:guid}/retrospectives")]
 public class RetrospectivesController(
     ISender _mediator,
     IHubContext<RetrospectiveHub, IRetrospectiveHub> _hubContext) : ApiController
@@ -18,16 +19,17 @@ public class RetrospectivesController(
     /// <summary>
     /// Create a new retrospective session.
     /// </summary>
+    /// <param name="teamId">The team ID.</param>
     /// <param name="request">The details of the retrospective session to create.</param>
-    [HttpPost(ApiEndpoints.Retrospectives.Create)]
+    [HttpPost]
     [ProducesResponseType(typeof(RetrospectiveResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CreateRetrospective(CreateRetrospectiveRequest request)
+    public async Task<IActionResult> CreateRetrospective(Guid teamId, CreateRetrospectiveRequest request)
     {
         var command = new CreateRetrospectiveCommand(
             request.Title,
             request.Description,
-            request.TeamId);
+            teamId);
 
         var result = await _mediator.Send(command);
 
@@ -43,7 +45,7 @@ public class RetrospectivesController(
     /// Get a retrospective session by ID.
     /// </summary>
     /// <param name="retrospectiveId">The retrospective session ID.</param>
-    [HttpGet(ApiEndpoints.Retrospectives.Get)]
+    [HttpGet("{retrospectiveId:guid}")]
     [ProducesResponseType(typeof(RetrospectiveResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetRetrospective(Guid retrospectiveId)
@@ -62,7 +64,7 @@ public class RetrospectivesController(
     /// </summary>
     /// <param name="retrospectiveId">The ID of the retrospective session to add the column to.</param>
     /// <param name="request">The details of the column to add.</param>
-    [HttpPost(ApiEndpoints.Retrospectives.AddColumn)]
+    [HttpPost("{retrospectiveId:guid}/columns")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> AddColumn(Guid retrospectiveId, AddColumnRequest request)
@@ -83,7 +85,7 @@ public class RetrospectivesController(
     /// <param name="retrospectiveId">The ID of the retrospective session to add the item to.</param>
     /// <param name="columnId">The ID of the column to add the item to.</param>
     /// <param name="request">The details of the item to add.</param>
-    [HttpPost(ApiEndpoints.Retrospectives.AddItem)]
+    [HttpPost("{retrospectiveId:guid}/columns/{columnId:guid}/items")]
     [ProducesResponseType(typeof(RetrospectiveItemResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> AddItem(Guid retrospectiveId, Guid columnId, AddItemRequest request)

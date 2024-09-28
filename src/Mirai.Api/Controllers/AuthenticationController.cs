@@ -8,6 +8,7 @@ using Mirai.Contracts.Authentication;
 
 namespace Mirai.Api.Controllers;
 
+[Route("api/authentication")]
 [AllowAnonymous]
 public class AuthenticationController(ISender mediator) : ApiController
 {
@@ -15,7 +16,7 @@ public class AuthenticationController(ISender mediator) : ApiController
     /// Register a new user.
     /// </summary>
     /// <param name="request">The request to register a new user.</param>
-    [HttpPost(ApiEndpoints.Authentication.Register)]
+    [HttpPost("register")]
     [ProducesResponseType(typeof(AuthenticationResult), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
@@ -38,7 +39,7 @@ public class AuthenticationController(ISender mediator) : ApiController
     /// Login a user.
     /// </summary>
     /// <param name="request">The request to login a user.</param>
-    [HttpPost(ApiEndpoints.Authentication.Login)]
+    [HttpPost("login")]
     [ProducesResponseType(typeof(AuthenticationResult), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> Login(LoginRequest request)

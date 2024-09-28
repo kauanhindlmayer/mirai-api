@@ -12,20 +12,22 @@ using Mirai.Domain.WikiPages;
 
 namespace Mirai.Api.Controllers;
 
+[Route("api/projects/{projectId:guid}/wiki-pages")]
 public class WikiPagesController(ISender _mediator) : ApiController
 {
     /// <summary>
     /// Creates a new wiki page. If a ParentWikiPageId is provided, the page
     /// will be created as a sub-page under the specified parent wiki page.
     /// </summary>
+    /// <param name="projectId">The ID of the project to create the wiki page in.</param>
     /// <param name="request">The details of the wiki page to create.</param>
-    [HttpPost(ApiEndpoints.WikiPages.Create)]
+    [HttpPost]
     [ProducesResponseType(typeof(WikiPageDetailResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CreateWikiPage(CreateWikiPageRequest request)
+    public async Task<IActionResult> CreateWikiPage(Guid projectId, CreateWikiPageRequest request)
     {
         var command = new CreateWikiPageCommand(
-            request.ProjectId,
+            projectId,
             request.Title,
             request.Content,
             request.ParentWikiPageId);
@@ -44,7 +46,7 @@ public class WikiPagesController(ISender _mediator) : ApiController
     /// Get a wiki page by its ID.
     /// </summary>
     /// <param name="wikiPageId">The ID of the wiki page to get.</param>
-    [HttpGet(ApiEndpoints.WikiPages.Get)]
+    [HttpGet("{wikiPageId:guid}")]
     [ProducesResponseType(typeof(WikiPageDetailResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetWikiPage(Guid wikiPageId)
@@ -62,7 +64,7 @@ public class WikiPagesController(ISender _mediator) : ApiController
     /// List all wiki pages in a project.
     /// </summary>
     /// <param name="projectId">The ID of the project to list wiki pages for.</param>
-    [HttpGet(ApiEndpoints.WikiPages.List)]
+    [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<WikiPageSummaryResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> ListWikiPages(Guid projectId)
     {
@@ -80,7 +82,7 @@ public class WikiPagesController(ISender _mediator) : ApiController
     /// </summary>
     /// <param name="wikiPageId">The ID of the wiki page to add a comment to.</param>
     /// <param name="request">The details of the comment to add.</param>
-    [HttpPost(ApiEndpoints.WikiPages.AddComment)]
+    [HttpPost("{wikiPageId:guid}/comments")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -102,7 +104,7 @@ public class WikiPagesController(ISender _mediator) : ApiController
     /// Delete a wiki page by its ID.
     /// </summary>
     /// <param name="wikiPageId">The ID of the wiki page to delete.</param>
-    [HttpDelete(ApiEndpoints.WikiPages.Delete)]
+    [HttpDelete("{wikiPageId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteWikiPage(Guid wikiPageId)
@@ -121,7 +123,7 @@ public class WikiPagesController(ISender _mediator) : ApiController
     /// </summary>
     /// <param name="wikiPageId">The ID of the wiki page to update.</param>
     /// <param name="request">The details of the wiki page to update.</param>
-    [HttpPut(ApiEndpoints.WikiPages.Update)]
+    [HttpPut("{wikiPageId:guid}")]
     [ProducesResponseType(typeof(WikiPageDetailResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateWikiPage(Guid wikiPageId, UpdateWikiPageRequest request)

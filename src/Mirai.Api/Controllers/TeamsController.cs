@@ -9,13 +9,14 @@ using Mirai.Domain.Users;
 
 namespace Mirai.Api.Controllers;
 
+[Route("api/teams")]
 public class TeamsController(ISender _mediator) : ApiController
 {
     /// <summary>
     /// Create a new team.
     /// </summary>
     /// <param name="request">The details of the team to create.</param>
-    [HttpPost(ApiEndpoints.Teams.Create)]
+    [HttpPost]
     [ProducesResponseType(typeof(TeamResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateTeam(CreateTeamRequest request)
@@ -38,7 +39,7 @@ public class TeamsController(ISender _mediator) : ApiController
     /// Get a team by its ID.
     /// </summary>
     /// <param name="teamId">The ID of the team to get.</param>
-    [HttpGet(ApiEndpoints.Teams.Get)]
+    [HttpGet("{teamId:guid}")]
     [ProducesResponseType(typeof(TeamResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetTeam(Guid teamId)
@@ -57,7 +58,7 @@ public class TeamsController(ISender _mediator) : ApiController
     /// </summary>
     /// <param name="teamId">The ID of the team to add the member to.</param>
     /// <param name="request">The details of the member to add.</param>
-    [HttpPost(ApiEndpoints.Teams.AddMember)]
+    [HttpPost("{teamId:guid}/members")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> AddMember(Guid teamId, AddMemberRequest request)

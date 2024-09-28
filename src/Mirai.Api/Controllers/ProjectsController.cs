@@ -8,21 +8,23 @@ using Mirai.Domain.Projects;
 
 namespace Mirai.Api.Controllers;
 
+[Route("api/organizations/{organizationId:guid}/projects")]
 public class ProjectsController(ISender _mediator) : ApiController
 {
     /// <summary>
     /// Create a new project.
     /// </summary>
+    /// <param name="organizationId">The ID of the organization to create the project for.</param>
     /// <param name="request">The project data.</param>
-    [HttpPost(ApiEndpoints.Projects.Create)]
+    [HttpPost]
     [ProducesResponseType(typeof(ProjectResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CreateProject(CreateProjectRequest request)
+    public async Task<IActionResult> CreateProject(Guid organizationId, CreateProjectRequest request)
     {
         var command = new CreateProjectCommand(
             request.Name,
             request.Description,
-            request.OrganizationId);
+            organizationId);
 
         var result = await _mediator.Send(command);
 
@@ -38,7 +40,7 @@ public class ProjectsController(ISender _mediator) : ApiController
     /// Get a project by ID.
     /// </summary>
     /// <param name="projectId">The project ID.</param>
-    [HttpGet(ApiEndpoints.Projects.Get)]
+    [HttpGet("{projectId:guid}")]
     [ProducesResponseType(typeof(ProjectResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetProject(Guid projectId)
@@ -56,8 +58,8 @@ public class ProjectsController(ISender _mediator) : ApiController
     /// List all projects in an organization.
     /// </summary>
     /// <param name="organizationId">The organization ID.</param>
-    [HttpGet(ApiEndpoints.Organizations.ListProjects)]
-    [ProducesResponseType(typeof(IEnumerable<ProjectResponse>), StatusCodes.Status200OK)]
+    [HttpGet]
+    [ProducesResponseType(typeof(List<ProjectResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ListProjects(Guid organizationId)
     {
@@ -66,7 +68,7 @@ public class ProjectsController(ISender _mediator) : ApiController
         var result = await _mediator.Send(query);
 
         return result.Match(
-            projects => Ok(projects.ConvertAll(ToDto)),
+            projects => Ok(projects.Select(ToDto)),
             Problem);
     }
 

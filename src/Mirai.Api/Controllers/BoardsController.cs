@@ -14,20 +14,22 @@ using DomainWorkItemType = Mirai.Domain.WorkItems.Enums.WorkItemType;
 
 namespace Mirai.Api.Controllers;
 
+[Route("api/projects/{projectId:guid}/boards")]
 [AllowAnonymous]
 public class BoardsController(ISender _mediator) : ApiController
 {
     /// <summary>
     /// Create a new board.
     /// </summary>
+    /// <param name="projectId">The ID of the project to create a new board for.</param>
     /// <param name="request">The request to create a new board.</param>
-    [HttpPost(ApiEndpoints.Boards.Create)]
+    [HttpPost]
     [ProducesResponseType(typeof(BoardResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CreateBoard(CreateBoardRequest request)
+    public async Task<IActionResult> CreateBoard(Guid projectId, CreateBoardRequest request)
     {
         var command = new CreateBoardCommand(
-            request.ProjectId,
+            projectId,
             request.Name,
             request.Description);
 
@@ -45,7 +47,7 @@ public class BoardsController(ISender _mediator) : ApiController
     /// Get a board by its ID.
     /// </summary>
     /// <param name="boardId">The ID of the board to get.</param>
-    [HttpGet(ApiEndpoints.Boards.Get)]
+    [HttpGet("{boardId:guid}")]
     [ProducesResponseType(typeof(BoardResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetBoard(Guid boardId)
@@ -64,7 +66,7 @@ public class BoardsController(ISender _mediator) : ApiController
     /// </summary>
     /// <returns>A list of all boards.</returns>
     /// <param name="projectId">The ID of the project to list boards for.</param>
-    [HttpGet(ApiEndpoints.Projects.ListBoards)]
+    [HttpGet]
     [ProducesResponseType(typeof(List<BoardResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ListBoards(Guid projectId)
@@ -82,7 +84,7 @@ public class BoardsController(ISender _mediator) : ApiController
     /// Delete a board by its ID. This will also delete all columns and cards on the board.
     /// </summary>
     /// <param name="boardId">The ID of the board to delete.</param>
-    [HttpDelete(ApiEndpoints.Boards.Delete)]
+    [HttpDelete("{boardId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteBoard(Guid boardId)
@@ -101,7 +103,7 @@ public class BoardsController(ISender _mediator) : ApiController
     /// </summary>
     /// <param name="boardId">The ID of the board to add a new column to.</param>
     /// <param name="request">The request to add a new column to a board.</param>
-    [HttpPost(ApiEndpoints.Boards.AddColumn)]
+    [HttpPost("{boardId:guid}/columns")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -128,7 +130,7 @@ public class BoardsController(ISender _mediator) : ApiController
     /// </summary>
     /// <param name="boardId">The ID of the board to remove a column from.</param>
     /// <param name="columnId">The ID of the column to remove.</param>
-    [HttpDelete(ApiEndpoints.Boards.RemoveColumn)]
+    [HttpDelete("{boardId:guid}/columns/{columnId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> RemoveColumn(Guid boardId, Guid columnId)
@@ -148,7 +150,7 @@ public class BoardsController(ISender _mediator) : ApiController
     /// <param name="boardId">The ID of the board to add a new card to a column on.</param>
     /// <param name="columnId">The ID of the column to add a new card to.</param>
     /// <param name="request">The request to add a new card to a column on a board.</param>
-    [HttpPost(ApiEndpoints.Boards.AddCard)]
+    [HttpPost("{boardId:guid}/columns/{columnId:guid}/cards")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

@@ -10,13 +10,14 @@ using Mirai.Domain.Organizations;
 
 namespace Mirai.Api.Controllers;
 
+[Route("api/organizations")]
 public class OrganizationsController(ISender _mediator) : ApiController
 {
     /// <summary>
     /// Create a new organization.
     /// </summary>
     /// <param name="request">The request to create a new organization.</param>
-    [HttpPost(ApiEndpoints.Organizations.Create)]
+    [HttpPost]
     [ProducesResponseType(typeof(OrganizationResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateOrganization(CreateOrganizationRequest request)
@@ -37,7 +38,7 @@ public class OrganizationsController(ISender _mediator) : ApiController
     /// Get an organization by its ID.
     /// </summary>
     /// <param name="organizationId">The ID of the organization to get.</param>
-    [HttpGet(ApiEndpoints.Organizations.Get)]
+    [HttpGet("{organizationId:guid}")]
     [ProducesResponseType(typeof(IEnumerable<OrganizationResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetOrganization(Guid organizationId)
@@ -54,7 +55,7 @@ public class OrganizationsController(ISender _mediator) : ApiController
     /// <summary>
     /// List all organizations.
     /// </summary>
-    [HttpGet(ApiEndpoints.Organizations.List)]
+    [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<OrganizationResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> ListOrganizations()
     {
@@ -72,7 +73,7 @@ public class OrganizationsController(ISender _mediator) : ApiController
     /// </summary>
     /// <param name="organizationId">The ID of the organization to update.</param>
     /// <param name="request">The request to update the organization.</param>
-    [HttpPut(ApiEndpoints.Organizations.Update)]
+    [HttpPut("{organizationId:guid}")]
     [ProducesResponseType(typeof(OrganizationResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -91,7 +92,7 @@ public class OrganizationsController(ISender _mediator) : ApiController
     /// Delete an organization.
     /// </summary>
     /// <param name="organizationId">The ID of the organization to delete.</param>
-    [HttpDelete(ApiEndpoints.Organizations.Delete)]
+    [HttpDelete("{organizationId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteOrganization(Guid organizationId)

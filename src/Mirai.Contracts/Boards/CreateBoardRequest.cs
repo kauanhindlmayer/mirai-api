@@ -1,6 +1,3 @@
 namespace Mirai.Contracts.Boards;
 
-public record CreateBoardRequest(
-    Guid ProjectId,
-    string Name,
-    string Description);
+public record CreateBoardRequest(string Name, string Description);

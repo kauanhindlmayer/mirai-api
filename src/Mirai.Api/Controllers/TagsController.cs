@@ -9,6 +9,7 @@ using Mirai.Domain.Tags;
 
 namespace Mirai.Api.Controllers;
 
+[Route("api/projects/{projectId:guid}/tags")]
 public class TagsController(ISender _mediator) : ApiController
 {
     /// <summary>
@@ -16,7 +17,7 @@ public class TagsController(ISender _mediator) : ApiController
     /// </summary>
     /// <param name="projectId">The project ID.</param>
     /// <param name="request">The tag data.</param>
-    [HttpPost(ApiEndpoints.Tags.Create)]
+    [HttpPost]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> CreateTag(Guid projectId, CreateTagRequest request)
@@ -35,7 +36,7 @@ public class TagsController(ISender _mediator) : ApiController
     /// </summary>
     /// <param name="projectId">The project ID.</param>
     /// <param name="searchTerm">The search term to filter tags by name.</param>
-    [HttpGet(ApiEndpoints.Tags.List)]
+    [HttpGet]
     [ProducesResponseType(typeof(List<TagResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ListTags(Guid projectId, string? searchTerm = null)
@@ -55,7 +56,7 @@ public class TagsController(ISender _mediator) : ApiController
     /// <param name="projectId">The project ID.</param>
     /// <param name="tagId">The tag ID.</param>
     /// <param name="request">The new tag data.</param>
-    [HttpPut(ApiEndpoints.Tags.Update)]
+    [HttpPut("{tagId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateTag(Guid projectId, Guid tagId, CreateTagRequest request)
@@ -70,11 +71,11 @@ public class TagsController(ISender _mediator) : ApiController
     }
 
     /// <summary>
-    /// Remove a tag from a project.
+    /// Delete a tag from a project.
     /// </summary>
     /// <param name="projectId">The project ID.</param>
     /// <param name="tagName">The tag name.</param>
-    [HttpDelete(ApiEndpoints.Tags.Delete)]
+    [HttpDelete("{tagName}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteTag(Guid projectId, string tagName)

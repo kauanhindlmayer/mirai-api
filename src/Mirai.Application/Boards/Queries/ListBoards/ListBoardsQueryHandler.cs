@@ -13,7 +13,7 @@ public class ListBoardsQueryHandler(IProjectsRepository _projectsRepository)
         ListBoardsQuery request,
         CancellationToken cancellationToken)
     {
-        var project = await _projectsRepository.GetByIdAsync(
+        var project = await _projectsRepository.GetByIdWithBoardsAsync(
             request.ProjectId,
             cancellationToken);
 

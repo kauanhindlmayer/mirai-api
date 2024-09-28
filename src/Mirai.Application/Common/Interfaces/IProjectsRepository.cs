@@ -6,6 +6,7 @@ public interface IProjectsRepository
 {
     Task AddAsync(Project project, CancellationToken cancellationToken = default);
     Task<Project?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<Project?> GetByIdWithBoardsAsync(Guid id, CancellationToken cancellationToken = default);
     Task<Project?> GetByIdWithWorkItemsAsync(Guid id, CancellationToken cancellationToken = default);
     Task<Project?> GetByIdWithWikiPagesAsync(Guid id, CancellationToken cancellationToken = default);
     Task<Project?> GetByIdWithTagsAsync(Guid id, CancellationToken cancellationToken = default);

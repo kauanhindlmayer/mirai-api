@@ -17,16 +17,18 @@ using WorkItemType = Mirai.Contracts.Common.WorkItemType;
 
 namespace Mirai.Api.Controllers;
 
+[Route("api/projects/{projectId:guid}/work-items")]
 public class WorkItemsController(ISender _mediator) : ApiController
 {
     /// <summary>
     /// Create a new work item.
     /// </summary>
+    /// <param name="projectId">The ID of the project to create the work item in.</param>
     /// <param name="request">The details of the work item to create.</param>
-    [HttpPost(ApiEndpoints.WorkItems.Create)]
+    [HttpPost]
     [ProducesResponseType(typeof(WorkItemResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CreateWorkItem(CreateWorkItemRequest request)
+    public async Task<IActionResult> CreateWorkItem(Guid projectId, CreateWorkItemRequest request)
     {
         if (!DomainWorkItemType.TryFromName(request.Type.ToString(), out var type))
         {
@@ -35,10 +37,7 @@ public class WorkItemsController(ISender _mediator) : ApiController
                 detail: "Invalid work item type");
         }
 
-        var command = new CreateWorkItemCommand(
-            request.ProjectId,
-            type,
-            request.Title);
+        var command = new CreateWorkItemCommand(projectId, type, request.Title);
 
         var result = await _mediator.Send(command);
 
@@ -54,7 +53,7 @@ public class WorkItemsController(ISender _mediator) : ApiController
     /// Get a work item by its ID.
     /// </summary>
     /// <param name="workItemId">The ID of the work item to get.</param>
-    [HttpGet(ApiEndpoints.WorkItems.Get)]
+    [HttpGet("{workItemId:guid}")]
     [ProducesResponseType(typeof(WorkItemResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetWorkItem(Guid workItemId)
@@ -73,7 +72,7 @@ public class WorkItemsController(ISender _mediator) : ApiController
     /// </summary>
     /// <param name="workItemId">The ID of the work item to add a comment to.</param>
     /// <param name="request">The details of the comment to add.</param>
-    [HttpPost(ApiEndpoints.WorkItems.AddComment)]
+    [HttpPost("{workItemId:guid}/comments")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -95,7 +94,7 @@ public class WorkItemsController(ISender _mediator) : ApiController
     /// List all work items belonging to a project.
     /// </summary>
     /// <param name="projectId">The ID of the project to list work items for.</param>
-    [HttpGet(ApiEndpoints.Projects.ListWorkItems)]
+    [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<WorkItemResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> ListWorkItems(Guid projectId)
     {
@@ -113,7 +112,7 @@ public class WorkItemsController(ISender _mediator) : ApiController
     /// </summary>
     /// <param name="workItemId">The ID of the work item to assign.</param>
     /// <param name="request">The details of the assignment.</param>
-    [HttpPatch(ApiEndpoints.WorkItems.Assign)]
+    [HttpPatch("{workItemId:guid}/assign")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -133,7 +132,7 @@ public class WorkItemsController(ISender _mediator) : ApiController
     /// </summary>
     /// <param name="workItemId">The ID of the work item to add a tag to.</param>
     /// <param name="request">The details of the tag to add.</param>
-    [HttpPost(ApiEndpoints.WorkItems.AddTag)]
+    [HttpPost("{workItemId:guid}/tags")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -153,7 +152,7 @@ public class WorkItemsController(ISender _mediator) : ApiController
     /// </summary>
     /// <param name="workItemId>">The ID of the work item to remove a tag from.</param>
     /// <param name="tagName">The name of the tag to remove.</param>
-    [HttpDelete(ApiEndpoints.WorkItems.RemoveTag)]
+    [HttpDelete("{workItemId:guid}/tags/{tagName}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> RemoveTagFromWorkItem(Guid workItemId, string tagName)
