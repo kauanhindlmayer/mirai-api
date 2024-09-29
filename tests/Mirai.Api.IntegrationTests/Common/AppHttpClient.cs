@@ -12,25 +12,28 @@ public class AppHttpClient(HttpClient _httpClient)
 {
     public async Task<ProjectResponse> CreateProjectAndExpectSuccessAsync(
         CreateProjectRequest? createProjectRequest = null,
+        Guid? organizationId = null,
         string? token = null)
     {
-        var response = await CreateProjectAsync(createProjectRequest, token);
+        var response = await CreateProjectAsync(createProjectRequest, organizationId, token);
         response.StatusCode.Should().Be(HttpStatusCode.Created);
         var project = await response.Content.ReadFromJsonAsync<ProjectResponse>();
         response.Headers.Location.Should().NotBeNull();
-        response.Headers.Location!.AbsolutePath.Should().Be($"/api/projects/{project!.Id}");
+        response.Headers.Location!.AbsolutePath.Should().Be($"/api/organizations/{organizationId}/projects/{project!.Id}");
         project.Should().NotBeNull();
         return project!;
     }
 
     public async Task<HttpResponseMessage> CreateProjectAsync(
         CreateProjectRequest? createProjectRequest = null,
+        Guid? organizationId = null,
         string? token = null)
     {
         createProjectRequest ??= ProjectRequestFactory.CreateCreateProjectRequest();
         token ??= await GenerateTokenAsync();
+        organizationId ??= Guid.NewGuid();
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        return await _httpClient.PostAsJsonAsync($"api/projects", createProjectRequest);
+        return await _httpClient.PostAsJsonAsync($"api/organizations/{organizationId}/projects", createProjectRequest);
     }
 
     public async Task<OrganizationResponse> GetOrganizationAndExpectSuccessAsync(Guid id, string? token = null)
@@ -118,7 +121,7 @@ public class AppHttpClient(HttpClient _httpClient)
     public async Task<string> GenerateTokenAsync(RegisterRequest? registerRequest = null)
     {
         registerRequest ??= AuthenticationRequestFactory.CreateRegisterRequest();
-        var response = await _httpClient.PostAsJsonAsync("api/register", registerRequest);
+        var response = await _httpClient.PostAsJsonAsync("api/authentication/register", registerRequest);
         response.Should().BeSuccessful();
         var tokenResponse = await response.Content.ReadFromJsonAsync<AuthenticationResponse>();
         tokenResponse.Should().NotBeNull();

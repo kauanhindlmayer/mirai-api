@@ -31,7 +31,7 @@ public class ProjectsController(ISender _mediator) : ApiController
         return result.Match(
             project => CreatedAtAction(
                 actionName: nameof(GetProject),
-                routeValues: new { ProjectId = project.Id },
+                routeValues: new { OrganizationId = organizationId, ProjectId = project.Id },
                 value: ToDto(project)),
             Problem);
     }

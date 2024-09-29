@@ -30,7 +30,7 @@ public class TeamsController(ISender _mediator) : ApiController
         return result.Match(
             team => CreatedAtAction(
                 actionName: nameof(GetTeam),
-                routeValues: new { TeamId = team.Id },
+                routeValues: new { ProjectId = projectId, TeamId = team.Id },
                 value: ToDto(team)),
             Problem);
     }

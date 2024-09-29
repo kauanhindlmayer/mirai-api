@@ -21,11 +21,9 @@ public class WorkItemConfigurations : IEntityTypeConfiguration<WorkItem>
             .IsRequired()
             .HasMaxLength(100);
 
-        builder.Property(wi => wi.Description)
-            .HasColumnType("NVARCHAR(MAX)");
+        builder.Property(wi => wi.Description);
 
-        builder.Property(wi => wi.AcceptanceCriteria)
-            .HasColumnType("NVARCHAR(MAX)");
+        builder.Property(wi => wi.AcceptanceCriteria);
 
         builder.Property(wi => wi.Type)
             .HasConversion(

@@ -21,16 +21,15 @@ public class ProjectsControllerTests
         // Arrange
         var token = await _client.GenerateTokenAsync();
         var createOrganizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest();
-        var createOrganizationResponse = await _client.CreateOrganizationAndExpectSuccessAsync(createOrganizationRequest, token);
-        var createProjectRequest = ProjectRequestFactory.CreateCreateProjectRequest(organizationId: createOrganizationResponse.Id);
+        var organization = await _client.CreateOrganizationAndExpectSuccessAsync(createOrganizationRequest, token);
+        var createProjectRequest = ProjectRequestFactory.CreateCreateProjectRequest();
 
         // Act
-        var response = await _client.CreateProjectAndExpectSuccessAsync(createProjectRequest, token);
+        var response = await _client.CreateProjectAndExpectSuccessAsync(createProjectRequest, organization.Id, token);
 
         // Assert
         response.Id.Should().NotBeEmpty();
         response.Name.Should().Be(createProjectRequest.Name);
         response.Description.Should().Be(createProjectRequest.Description);
-        response.OrganizationId.Should().Be(createProjectRequest.OrganizationId);
     }
 }

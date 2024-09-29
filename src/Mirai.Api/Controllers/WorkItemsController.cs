@@ -44,7 +44,7 @@ public class WorkItemsController(ISender _mediator) : ApiController
         return result.Match(
             workItem => CreatedAtAction(
                 actionName: nameof(GetWorkItem),
-                routeValues: new { WorkItemId = workItem.Id },
+                routeValues: new { ProjectId = projectId, WorkItemId = workItem.Id },
                 value: ToDto(workItem)),
             Problem);
     }
@@ -70,13 +70,14 @@ public class WorkItemsController(ISender _mediator) : ApiController
     /// <summary>
     /// Add a comment to a work item.
     /// </summary>
+    /// <param name="projectId">The ID of the project the work item belongs to.</param>
     /// <param name="workItemId">The ID of the work item to add a comment to.</param>
     /// <param name="request">The details of the comment to add.</param>
     [HttpPost("{workItemId:guid}/comments")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> AddComment(Guid workItemId, AddCommentRequest request)
+    public async Task<IActionResult> AddComment(Guid projectId, Guid workItemId, AddCommentRequest request)
     {
         var command = new AddCommentCommand(workItemId, request.Content);
 
@@ -85,7 +86,7 @@ public class WorkItemsController(ISender _mediator) : ApiController
         return result.Match(
             _ => CreatedAtAction(
                 actionName: nameof(GetWorkItem),
-                routeValues: new { WorkItemId = workItemId },
+                routeValues: new { ProjectId = projectId, WorkItemId = workItemId },
                 value: null),
             Problem);
     }

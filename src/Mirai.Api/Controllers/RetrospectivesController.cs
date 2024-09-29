@@ -36,7 +36,7 @@ public class RetrospectivesController(
         return result.Match(
             retrospective => CreatedAtAction(
                 actionName: nameof(GetRetrospective),
-                routeValues: new { RetrospectiveId = retrospective.Id },
+                routeValues: new { TeamId = teamId, RetrospectiveId = retrospective.Id },
                 value: ToDto(retrospective)),
             Problem);
     }

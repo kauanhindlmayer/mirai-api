@@ -39,7 +39,7 @@ public class BoardsController(ISender _mediator) : ApiController
         return result.Match(
             board => CreatedAtAction(
                 actionName: nameof(GetBoard),
-                routeValues: new { BoardId = board.Id },
+                routeValues: new { ProjectId = projectId, BoardId = board.Id },
                 value: ToDto(board)),
             Problem);
     }

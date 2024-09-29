@@ -37,7 +37,7 @@ public class WikiPagesController(ISender _mediator) : ApiController
         return result.Match(
             wikiPage => CreatedAtAction(
                 actionName: nameof(GetWikiPage),
-                routeValues: new { WikiPageId = wikiPage.Id },
+                routeValues: new { ProjectId = projectId, WikiPageId = wikiPage.Id },
                 value: ToDto(wikiPage)),
             Problem);
     }
@@ -80,13 +80,14 @@ public class WikiPagesController(ISender _mediator) : ApiController
     /// <summary>
     /// Add a comment to a wiki page.
     /// </summary>
+    /// <param name="projectId">The ID of the project to add a comment to.</param>
     /// <param name="wikiPageId">The ID of the wiki page to add a comment to.</param>
     /// <param name="request">The details of the comment to add.</param>
     [HttpPost("{wikiPageId:guid}/comments")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> AddComment(Guid wikiPageId, AddCommentRequest request)
+    public async Task<IActionResult> AddComment(Guid projectId, Guid wikiPageId, AddCommentRequest request)
     {
         var command = new AddCommentCommand(wikiPageId, request.Content);
 
@@ -95,7 +96,7 @@ public class WikiPagesController(ISender _mediator) : ApiController
         return result.Match(
             _ => CreatedAtAction(
                 actionName: nameof(GetWikiPage),
-                routeValues: new { WikiPageId = wikiPageId },
+                routeValues: new { ProjectId = projectId, WikiPageId = wikiPageId },
                 value: null),
             Problem);
     }
