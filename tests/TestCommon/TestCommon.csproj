@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Mirai.Domain\Mirai.Domain.csproj" />
-    <ProjectReference Include="..\..\src\Mirai.Application\Mirai.Application.csproj" />
-    <ProjectReference Include="..\..\src\Mirai.Infrastructure\Mirai.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Domain\Domain.csproj" />
+    <ProjectReference Include="..\..\src\Application\Application.csproj" />
+    <ProjectReference Include="..\..\src\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

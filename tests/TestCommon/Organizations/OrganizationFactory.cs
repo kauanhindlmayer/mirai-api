@@ -1,4 +1,4 @@
-using Mirai.Domain.Organizations;
+using Domain.Organizations;
 using TestCommon.TestConstants;
 
 namespace TestCommon.Organizations;

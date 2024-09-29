@@ -1,4 +1,4 @@
-using Mirai.Application.Projects.Commands.CreateProject;
+using Application.Projects.Commands.CreateProject;
 using TestCommon.TestConstants;
 
 namespace TestCommon.Projects;

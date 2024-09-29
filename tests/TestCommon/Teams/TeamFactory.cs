@@ -1,4 +1,4 @@
-using Mirai.Domain.Teams;
+using Domain.Teams;
 using TestCommon.TestConstants;
 
 namespace TestCommon.Teams;

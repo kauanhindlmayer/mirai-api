@@ -1,4 +1,4 @@
-using Mirai.Domain.Users;
+using Domain.Users;
 
 using TestCommon.TestConstants;
 

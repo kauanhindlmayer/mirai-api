@@ -1,5 +1,5 @@
-using Mirai.Application.Common.Interfaces;
-using Mirai.Application.Common.Models;
+using Application.Common.Interfaces;
+using Application.Common.Models;
 
 namespace TestCommon.Security;
 

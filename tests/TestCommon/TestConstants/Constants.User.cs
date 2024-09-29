@@ -1,4 +1,4 @@
-using Mirai.Application.Common.Security.Roles;
+using Application.Common.Security.Roles;
 
 namespace TestCommon.TestConstants;
 

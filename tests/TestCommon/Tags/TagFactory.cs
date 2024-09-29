@@ -1,4 +1,4 @@
-using Mirai.Domain.Tags;
+using Domain.Tags;
 using TestCommon.TestConstants;
 
 namespace TestCommon.Tags;

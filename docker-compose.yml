@@ -12,4 +12,4 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
     restart: on-failure
     volumes:
-      - ./src/Mirai.Api/Mirai.sqlite:/app/Mirai.sqlite
+      - ./src/WebApi/Mirai.sqlite:/app/Mirai.sqlite

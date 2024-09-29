@@ -5,27 +5,27 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E6C0A80B-5ADC-4138-A79D-C9C128EA163B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mirai.Api", "src\Mirai.Api\Mirai.Api.csproj", "{0B9F7D22-2A37-4EB6-A410-32BA01213D2A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "src\WebApi\WebApi.csproj", "{0B9F7D22-2A37-4EB6-A410-32BA01213D2A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mirai.Application", "src\Mirai.Application\Mirai.Application.csproj", "{387688C4-17C9-4BDC-A144-4A53CD73C931}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "src\Application\Application.csproj", "{387688C4-17C9-4BDC-A144-4A53CD73C931}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mirai.Contracts", "src\Mirai.Contracts\Mirai.Contracts.csproj", "{804C9341-86F4-40FD-90A5-BFF6EB7B7BB3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contracts", "src\Contracts\Contracts.csproj", "{804C9341-86F4-40FD-90A5-BFF6EB7B7BB3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mirai.Domain", "src\Mirai.Domain\Mirai.Domain.csproj", "{E1DF54B6-BF5F-43F0-8E52-6398C68FB5E5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "src\Domain\Domain.csproj", "{E1DF54B6-BF5F-43F0-8E52-6398C68FB5E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mirai.Infrastructure", "src\Mirai.Infrastructure\Mirai.Infrastructure.csproj", "{7D84EEE6-905F-4356-B927-60F2686406C9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "src\Infrastructure\Infrastructure.csproj", "{7D84EEE6-905F-4356-B927-60F2686406C9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{1DD25606-DF8E-4B91-9335-F916B14BF596}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mirai.Domain.UnitTests", "tests\Mirai.Domain.UnitTests\Mirai.Domain.UnitTests.csproj", "{D796849D-C8BE-44CB-87E1-5DB49A4B377E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.UnitTests", "tests\Domain.UnitTests\Domain.UnitTests.csproj", "{D796849D-C8BE-44CB-87E1-5DB49A4B377E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestCommon", "tests\TestCommon\TestCommon.csproj", "{39082959-A18B-423A-9E3F-0B9FAD42F697}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mirai.Application.UnitTests", "tests\Mirai.Application.UnitTests\Mirai.Application.UnitTests.csproj", "{9ED129C8-9C2F-4E19-8CCC-51FBC5CDE0A7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.UnitTests", "tests\Application.UnitTests\Application.UnitTests.csproj", "{9ED129C8-9C2F-4E19-8CCC-51FBC5CDE0A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mirai.Application.SubcutaneousTests", "tests\Mirai.Application.SubcutaneousTests\Mirai.Application.SubcutaneousTests.csproj", "{EC6267FA-4762-400A-8D7C-0FC0FB167AE8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.SubcutaneousTests", "tests\Application.SubcutaneousTests\Application.SubcutaneousTests.csproj", "{EC6267FA-4762-400A-8D7C-0FC0FB167AE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mirai.Api.IntegrationTests", "tests\Mirai.Api.IntegrationTests\Mirai.Api.IntegrationTests.csproj", "{2A315D67-B631-478A-8F67-9EE9DB03D0C5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi.IntegrationTests", "tests\WebApi.IntegrationTests\WebApi.IntegrationTests.csproj", "{2A315D67-B631-478A-8F67-9EE9DB03D0C5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

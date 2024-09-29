@@ -1,4 +1,4 @@
-using Mirai.Domain.WikiPages;
+using Domain.WikiPages;
 using TestCommon.TestConstants;
 
 namespace TestCommon.WikiPages;

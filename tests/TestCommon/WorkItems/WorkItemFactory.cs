@@ -1,5 +1,5 @@
-using Mirai.Domain.WorkItems;
-using Mirai.Domain.WorkItems.Enums;
+using Domain.WorkItems;
+using Domain.WorkItems.Enums;
 using TestCommon.TestConstants;
 
 namespace TestCommon.WorkItems;

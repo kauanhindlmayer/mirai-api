@@ -1,7 +1,7 @@
-using Mirai.Application.WikiPages.Commands.AddComment;
-using Mirai.Application.WikiPages.Commands.CreateWikiPage;
-using Mirai.Application.WikiPages.Commands.DeleteWikiPage;
-using Mirai.Application.WikiPages.Commands.UpdateWikiPage;
+using Application.WikiPages.Commands.AddComment;
+using Application.WikiPages.Commands.CreateWikiPage;
+using Application.WikiPages.Commands.DeleteWikiPage;
+using Application.WikiPages.Commands.UpdateWikiPage;
 using TestCommon.TestConstants;
 
 namespace TestCommon.WikiPages;
