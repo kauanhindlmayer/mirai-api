@@ -23,15 +23,13 @@ public class Board : AggregateRoot
     {
     }
 
-    public ErrorOr<BoardColumn> AddColumn(string name, int? wipLimit, string definitionOfDone)
+    public ErrorOr<BoardColumn> AddColumn(BoardColumn column)
     {
-        if (Columns.Any(c => c.Name == name))
+        if (Columns.Any(c => c.Name == column.Name))
         {
             return BoardErrors.ColumnAlreadyExists;
         }
 
-        var position = Columns.Count;
-        var column = new BoardColumn(Id, name, position, wipLimit, definitionOfDone);
         Columns.Add(column);
         return column;
     }

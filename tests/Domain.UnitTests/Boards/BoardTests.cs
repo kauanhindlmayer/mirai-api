@@ -12,10 +12,10 @@ public class BoardTests
         // Arrange
         var board = BoardFactory.CreateBoard();
         var column = BoardFactory.CreateBoardColumn();
-        board.AddColumn(column.Name, column.WipLimit, column.DefinitionOfDone);
+        board.AddColumn(column);
 
         // Act
-        var result = board.AddColumn(column.Name, column.WipLimit, column.DefinitionOfDone);
+        var result = board.AddColumn(column);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -31,7 +31,7 @@ public class BoardTests
         var column = BoardFactory.CreateBoardColumn();
 
         // Act
-        var result = board.AddColumn(column.Name, column.WipLimit, column.DefinitionOfDone);
+        var result = board.AddColumn(column);
 
         // Assert
         result.IsError.Should().BeFalse();
@@ -63,7 +63,7 @@ public class BoardTests
         var column = BoardFactory.CreateBoardColumn();
         var workItem = WorkItemFactory.CreateWorkItem();
         column.AddCard(workItem);
-        board.AddColumn(column.Name, column.WipLimit, column.DefinitionOfDone);
+        board.AddColumn(column);
 
         // Act
         var result = board.RemoveColumn(column.Id);
@@ -80,7 +80,7 @@ public class BoardTests
         // Arrange
         var board = BoardFactory.CreateBoard();
         var column = BoardFactory.CreateBoardColumn();
-        board.AddColumn(column.Name, column.WipLimit, column.DefinitionOfDone);
+        board.AddColumn(column);
 
         // Act
         var result = board.RemoveColumn(column.Id);
@@ -95,12 +95,12 @@ public class BoardTests
     {
         // Arrange
         var board = BoardFactory.CreateBoard();
-        var column1 = BoardFactory.CreateBoardColumn();
-        var column2 = BoardFactory.CreateBoardColumn();
-        var column3 = BoardFactory.CreateBoardColumn();
-        board.AddColumn(column1.Name, column1.WipLimit, column1.DefinitionOfDone);
-        board.AddColumn(column2.Name, column2.WipLimit, column2.DefinitionOfDone);
-        board.AddColumn(column3.Name, column3.WipLimit, column3.DefinitionOfDone);
+        var column1 = BoardFactory.CreateBoardColumn(name: "Column 1", position: 0);
+        var column2 = BoardFactory.CreateBoardColumn(name: "Column 2", position: 1);
+        var column3 = BoardFactory.CreateBoardColumn(name: "Column 3", position: 2);
+        board.AddColumn(column1);
+        board.AddColumn(column2);
+        board.AddColumn(column3);
 
         // Act
         board.RemoveColumn(column2.Id);
@@ -116,12 +116,12 @@ public class BoardTests
     {
         // Arrange
         var board = BoardFactory.CreateBoard();
-        var column1 = BoardFactory.CreateBoardColumn();
-        var column2 = BoardFactory.CreateBoardColumn();
-        var column3 = BoardFactory.CreateBoardColumn();
-        board.AddColumn(column1.Name, column1.WipLimit, column1.DefinitionOfDone);
-        board.AddColumn(column2.Name, column2.WipLimit, column2.DefinitionOfDone);
-        board.AddColumn(column3.Name, column3.WipLimit, column3.DefinitionOfDone);
+        var column1 = BoardFactory.CreateBoardColumn(name: "Column 1", position: 0);
+        var column2 = BoardFactory.CreateBoardColumn(name: "Column 2", position: 1);
+        var column3 = BoardFactory.CreateBoardColumn(name: "Column 3", position: 2);
+        board.AddColumn(column1);
+        board.AddColumn(column2);
+        board.AddColumn(column3);
 
         // Act
         board.RemoveColumn(column1.Id);

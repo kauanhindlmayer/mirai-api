@@ -21,11 +21,14 @@ public class AddColumnCommandHandler(IBoardsRepository _boardsRepository)
             return BoardErrors.BoardNotFound;
         }
 
-        var result = board.AddColumn(
+        var column = new BoardColumn(
+            board.Id,
             request.Name,
+            board.Columns.Count,
             request.WipLimit,
             request.DefinitionOfDone);
 
+        var result = board.AddColumn(column);
         if (result.IsError)
         {
             return result.Errors;

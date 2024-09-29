@@ -39,7 +39,7 @@ public class BoardColumn : Entity
 
     public ErrorOr<BoardCard> AddCard(WorkItem workItem)
     {
-        if (Cards.Any(c => c.WorkItem.Id == workItem.Id))
+        if (Cards.Any(c => c.WorkItemId == workItem.Id))
         {
             return BoardErrors.CardAlreadyExists;
         }

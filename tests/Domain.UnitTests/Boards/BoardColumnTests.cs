@@ -12,6 +12,7 @@ public class BoardColumnTests
         // Arrange
         var column = BoardFactory.CreateBoardColumn();
         var workItem = WorkItemFactory.CreateWorkItem();
+        column.AddCard(workItem);
 
         // Act
         var result = column.AddCard(workItem);
@@ -35,7 +36,7 @@ public class BoardColumnTests
         // Assert
         result.IsError.Should().BeFalse();
         column.Cards.Should().HaveCount(1);
-        column.Cards.First().WorkItem.Id.Should().Be(workItem.Id);
+        column.Cards.First().WorkItemId.Should().Be(workItem.Id);
     }
 
     [Fact]
