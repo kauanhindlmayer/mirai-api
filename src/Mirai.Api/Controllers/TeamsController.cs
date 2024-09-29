@@ -9,21 +9,21 @@ using Mirai.Domain.Users;
 
 namespace Mirai.Api.Controllers;
 
-[Route("api/teams")]
+[Route("api/projects/{projectId:guid}/teams")]
 public class TeamsController(ISender _mediator) : ApiController
 {
     /// <summary>
     /// Create a new team.
     /// </summary>
+    /// <param name="projectId">The ID of the project to create the team in.</param>
     /// <param name="request">The details of the team to create.</param>
     [HttpPost]
     [ProducesResponseType(typeof(TeamResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CreateTeam(CreateTeamRequest request)
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> CreateTeam(Guid projectId, CreateTeamRequest request)
     {
-        var command = new CreateTeamCommand(
-            request.ProjectId,
-            request.Name);
+        var command = new CreateTeamCommand(projectId, request.Name);
 
         var result = await _mediator.Send(command);
 

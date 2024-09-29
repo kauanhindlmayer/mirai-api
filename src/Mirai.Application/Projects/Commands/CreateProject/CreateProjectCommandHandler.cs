@@ -23,9 +23,9 @@ public class CreateProjectCommandHandler(IOrganizationsRepository _organizations
         }
 
         var project = new Project(
-            name: request.Name,
-            description: request.Description,
-            organizationId: request.OrganizationId);
+            request.Name,
+            request.Description,
+            request.OrganizationId);
 
         var result = organization.AddProject(project);
         if (result.IsError)

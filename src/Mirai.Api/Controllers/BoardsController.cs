@@ -5,6 +5,7 @@ using Mirai.Application.Boards.Commands.AddCard;
 using Mirai.Application.Boards.Commands.AddColumn;
 using Mirai.Application.Boards.Commands.CreateBoard;
 using Mirai.Application.Boards.Commands.DeleteBoard;
+using Mirai.Application.Boards.Commands.MoveCard;
 using Mirai.Application.Boards.Commands.RemoveColumn;
 using Mirai.Application.Boards.Queries.GetBoard;
 using Mirai.Application.Boards.Queries.ListBoards;
@@ -101,13 +102,14 @@ public class BoardsController(ISender _mediator) : ApiController
     /// <summary>
     /// Add a new column to a board.
     /// </summary>
+    /// <param name="projectId">The ID of the project to add a new column to a board.</param>
     /// <param name="boardId">The ID of the board to add a new column to.</param>
     /// <param name="request">The request to add a new column to a board.</param>
     [HttpPost("{boardId:guid}/columns")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> AddColumn(Guid boardId, AddColumnRequest request)
+    public async Task<IActionResult> AddColumn(Guid projectId, Guid boardId, AddColumnRequest request)
     {
         var command = new AddColumnCommand(
             boardId,
@@ -120,7 +122,7 @@ public class BoardsController(ISender _mediator) : ApiController
         return result.Match(
             _ => CreatedAtAction(
                 actionName: nameof(GetBoard),
-                routeValues: new { BoardId = boardId },
+                routeValues: new { ProjectId = projectId, BoardId = boardId },
                 value: null),
             Problem);
     }
@@ -147,6 +149,7 @@ public class BoardsController(ISender _mediator) : ApiController
     /// <summary>
     /// Add a new card to a column on a board.
     /// </summary>
+    /// <param name="projectId">The ID of the project to add a new card to a column on a board.</param>
     /// <param name="boardId">The ID of the board to add a new card to a column on.</param>
     /// <param name="columnId">The ID of the column to add a new card to.</param>
     /// <param name="request">The request to add a new card to a column on a board.</param>
@@ -154,7 +157,7 @@ public class BoardsController(ISender _mediator) : ApiController
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> AddCard(Guid boardId, Guid columnId, AddCardRequest request)
+    public async Task<IActionResult> AddCard(Guid projectId, Guid boardId, Guid columnId, AddCardRequest request)
     {
         if (!DomainWorkItemType.TryFromName(request.Type.ToString(), out var type))
         {
@@ -170,8 +173,35 @@ public class BoardsController(ISender _mediator) : ApiController
         return result.Match(
             _ => CreatedAtAction(
                 actionName: nameof(GetBoard),
-                routeValues: new { BoardId = boardId },
+                routeValues: new { ProjectId = projectId, BoardId = boardId },
                 value: null),
+            Problem);
+    }
+
+    /// <summary>
+    /// Move a card to a new column and position on a board.
+    /// </summary>
+    /// <param name="boardId">The ID of the board to move a card on.</param>
+    /// <param name="columnId">The ID of the column to move a card in.</param>
+    /// <param name="cardId">The ID of the card to move.</param>
+    /// <param name="request">The request to move a card to a new position in a column.</param>
+    [HttpPost("{boardId:guid}/columns/{columnId:guid}/cards/{cardId:guid}/move")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> MoveCard(Guid boardId, Guid columnId, Guid cardId, MoveCardRequest request)
+    {
+        var command = new MoveCardCommand(
+            boardId,
+            columnId,
+            cardId,
+            request.TargetColumnId,
+            request.TargetPosition);
+
+        var result = await _mediator.Send(command);
+
+        return result.Match(
+            _ => NoContent(),
             Problem);
     }
 

@@ -12,7 +12,7 @@ namespace Mirai.Domain.Projects;
 public class Project : AggregateRoot
 {
     public string Name { get; private set; } = null!;
-    public string? Description { get; private set; }
+    public string Description { get; private set; } = string.Empty;
     public Guid OrganizationId { get; private set; }
     public Organization Organization { get; private set; } = null!;
     public ICollection<WorkItem> WorkItems { get; private set; } = [];
@@ -21,7 +21,7 @@ public class Project : AggregateRoot
     public ICollection<Tag> Tags { get; private set; } = [];
     public ICollection<Board> Boards { get; private set; } = [];
 
-    public Project(string name, string? description, Guid organizationId)
+    public Project(string name, string description, Guid organizationId)
     {
         Name = name;
         Description = description;

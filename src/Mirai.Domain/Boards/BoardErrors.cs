@@ -17,6 +17,10 @@ public static class BoardErrors
         "Board.ColumnNotFound",
         "Column not found.");
 
+    public static readonly Error TargetColumnNotFound = Error.NotFound(
+        "Board.TargetColumnNotFound",
+        "Target column not found.");
+
     [SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1118:ParameterMustNotSpanMultipleLines", Justification = "Reviewed.")]
     public static Error ColumnHasCards(BoardColumn column) => Error.Validation(
             "Board.ColumnHasCards",

@@ -39,7 +39,7 @@ public class OrganizationsController(ISender _mediator) : ApiController
     /// </summary>
     /// <param name="organizationId">The ID of the organization to get.</param>
     [HttpGet("{organizationId:guid}")]
-    [ProducesResponseType(typeof(IEnumerable<OrganizationResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(OrganizationResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetOrganization(Guid organizationId)
     {
@@ -56,7 +56,7 @@ public class OrganizationsController(ISender _mediator) : ApiController
     /// List all organizations.
     /// </summary>
     [HttpGet]
-    [ProducesResponseType(typeof(IEnumerable<OrganizationResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(List<OrganizationResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> ListOrganizations()
     {
         var query = new ListOrganizationsQuery();

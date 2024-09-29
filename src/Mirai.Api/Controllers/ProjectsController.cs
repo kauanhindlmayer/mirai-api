@@ -68,7 +68,7 @@ public class ProjectsController(ISender _mediator) : ApiController
         var result = await _mediator.Send(query);
 
         return result.Match(
-            projects => Ok(projects.Select(ToDto)),
+            projects => Ok(projects.ConvertAll(ToDto)),
             Problem);
     }
 

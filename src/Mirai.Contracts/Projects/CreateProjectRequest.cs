@@ -1,3 +1,3 @@
 namespace Mirai.Contracts.Projects;
 
-public record CreateProjectRequest(string Name, string? Description);
+public record CreateProjectRequest(string Name, string Description);

@@ -16,7 +16,7 @@ public class BoardColumn : Entity
     /// </summary>
     public int? WipLimit { get; private set; }
     public string DefinitionOfDone { get; private set; } = null!;
-    public ICollection<BoardCard> Cards { get; private set; } = [];
+    public List<BoardCard> Cards { get; private set; } = [];
 
     public BoardColumn(Guid boardId, string name, int position, int wipLimit, string definitionOfDone)
     {
