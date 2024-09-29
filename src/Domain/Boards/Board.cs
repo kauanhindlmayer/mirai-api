@@ -23,7 +23,7 @@ public class Board : AggregateRoot
     {
     }
 
-    public ErrorOr<BoardColumn> AddColumn(string name, int wipLimit, string definitionOfDone)
+    public ErrorOr<BoardColumn> AddColumn(string name, int? wipLimit, string definitionOfDone)
     {
         if (Columns.Any(c => c.Name == name))
         {

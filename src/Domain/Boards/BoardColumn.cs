@@ -12,13 +12,14 @@ public class BoardColumn : Entity
     public int Position { get; private set; }
 
     /// <summary>
-    /// Gets the maximum number of cards that can be in this column at once.
+    /// Gets the Work-In-Progress limit, the recommended max cards for this column.
+    /// This is advisory only, not enforced.
     /// </summary>
     public int? WipLimit { get; private set; }
     public string DefinitionOfDone { get; private set; } = null!;
     public List<BoardCard> Cards { get; private set; } = [];
 
-    public BoardColumn(Guid boardId, string name, int position, int wipLimit, string definitionOfDone)
+    public BoardColumn(Guid boardId, string name, int position, int? wipLimit, string definitionOfDone)
     {
         BoardId = boardId;
         Name = name;
