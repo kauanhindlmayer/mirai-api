@@ -9,16 +9,19 @@ public class UpdateWikiPageCommandHandler(IWikiPagesRepository _wikiPagesReposit
     : IRequestHandler<UpdateWikiPageCommand, ErrorOr<WikiPage>>
 {
     public async Task<ErrorOr<WikiPage>> Handle(
-        UpdateWikiPageCommand request,
+        UpdateWikiPageCommand command,
         CancellationToken cancellationToken)
     {
-        var wikiPage = await _wikiPagesRepository.GetByIdAsync(request.WikiPageId, cancellationToken);
+        var wikiPage = await _wikiPagesRepository.GetByIdAsync(
+            command.WikiPageId,
+            cancellationToken);
+
         if (wikiPage is null)
         {
             return WikiPageErrors.WikiPageNotFound;
         }
 
-        wikiPage.Update(request.Title, request.Content);
+        wikiPage.Update(command.Title, command.Content);
         _wikiPagesRepository.Update(wikiPage);
 
         return wikiPage;

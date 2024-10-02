@@ -11,11 +11,11 @@ public class DeleteTagCommandHandler(
     : IRequestHandler<DeleteTagCommand, ErrorOr<Success>>
 {
     public async Task<ErrorOr<Success>> Handle(
-        DeleteTagCommand request,
+        DeleteTagCommand command,
         CancellationToken cancellationToken)
     {
         var project = await _projectsRepository.GetByIdWithTagsAsync(
-            request.ProjectId,
+            command.ProjectId,
             cancellationToken);
 
         if (project is null)
@@ -25,13 +25,13 @@ public class DeleteTagCommandHandler(
 
         if (await _tagsRepository.IsTagLinkedToAnyWorkItemsAsync(
             project.Id,
-            request.TagName,
+            command.TagName,
             cancellationToken))
         {
             return ProjectErrors.TagHasWorkItems;
         }
 
-        project.RemoveTag(request.TagName);
+        project.RemoveTag(command.TagName);
         _projectsRepository.Update(project);
 
         return Result.Success;

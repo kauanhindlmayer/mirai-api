@@ -10,11 +10,11 @@ public class ListBoardsQueryHandler(IProjectsRepository _projectsRepository)
     : IRequestHandler<ListBoardsQuery, ErrorOr<List<Board>>>
 {
     public async Task<ErrorOr<List<Board>>> Handle(
-        ListBoardsQuery request,
+        ListBoardsQuery query,
         CancellationToken cancellationToken)
     {
         var project = await _projectsRepository.GetByIdWithBoardsAsync(
-            request.ProjectId,
+            query.ProjectId,
             cancellationToken);
 
         if (project is null)

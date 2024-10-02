@@ -10,11 +10,11 @@ public class DeleteOrganizationCommandHandler(
     : IRequestHandler<DeleteOrganizationCommand, ErrorOr<Success>>
 {
     public async Task<ErrorOr<Success>> Handle(
-        DeleteOrganizationCommand request,
+        DeleteOrganizationCommand command,
         CancellationToken cancellationToken)
     {
         var organization = await _organizationsRepository.GetByIdAsync(
-            request.OrganizationId,
+            command.OrganizationId,
             cancellationToken);
 
         if (organization is null)

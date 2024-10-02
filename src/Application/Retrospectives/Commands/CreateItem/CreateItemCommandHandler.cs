@@ -11,11 +11,11 @@ public class CreateItemCommandHandler(
     : IRequestHandler<CreateItemCommand, ErrorOr<RetrospectiveItem>>
 {
     public async Task<ErrorOr<RetrospectiveItem>> Handle(
-        CreateItemCommand request,
+        CreateItemCommand command,
         CancellationToken cancellationToken)
     {
         var retrospective = await _retrospectivesRepository.GetByIdWithColumnsAsync(
-            request.RetrospectiveId,
+            command.RetrospectiveId,
             cancellationToken);
 
         if (retrospective is null)
@@ -23,7 +23,7 @@ public class CreateItemCommandHandler(
             return RetrospectiveErrors.RetrospectiveNotFound;
         }
 
-        var column = retrospective.Columns.FirstOrDefault(c => c.Id == request.RetrospectiveColumnId);
+        var column = retrospective.Columns.FirstOrDefault(c => c.Id == command.RetrospectiveColumnId);
         if (column is null)
         {
             return RetrospectiveErrors.RetrospectiveColumnNotFound;
@@ -32,8 +32,8 @@ public class CreateItemCommandHandler(
         var currentUser = _currentUserProvider.GetCurrentUser();
 
         var retrospectiveItem = new RetrospectiveItem(
-            request.Description,
-            request.RetrospectiveColumnId,
+            command.Description,
+            command.RetrospectiveColumnId,
             currentUser.Id);
 
         var result = column.AddItem(retrospectiveItem);

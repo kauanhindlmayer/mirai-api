@@ -12,17 +12,20 @@ public class AddTagCommandHandler(
     : IRequestHandler<AddTagCommand, ErrorOr<Success>>
 {
     public async Task<ErrorOr<Success>> Handle(
-        AddTagCommand request,
+        AddTagCommand command,
         CancellationToken cancellationToken)
     {
-        var workItem = await _workItemsRepository.GetByIdAsync(request.WorkItemId, cancellationToken);
+        var workItem = await _workItemsRepository.GetByIdAsync(
+            command.WorkItemId,
+            cancellationToken);
+
         if (workItem is null)
         {
             return WorkItemErrors.WorkItemNotFound;
         }
 
-        var tag = await _tagsRepository.GetByNameAsync(request.TagName, cancellationToken)
-            ?? new Tag(request.TagName);
+        var tag = await _tagsRepository.GetByNameAsync(command.TagName, cancellationToken)
+            ?? new Tag(command.TagName);
 
         workItem.AddTag(tag);
         _workItemsRepository.Update(workItem);

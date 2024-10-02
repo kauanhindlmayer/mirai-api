@@ -10,10 +10,12 @@ public class CreateTagCommandHandler(
     IProjectsRepository _projectsRepository)
     : IRequestHandler<CreateTagCommand, ErrorOr<Tag>>
 {
-    public async Task<ErrorOr<Tag>> Handle(CreateTagCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Tag>> Handle(
+        CreateTagCommand command,
+        CancellationToken cancellationToken)
     {
         var project = await _projectsRepository.GetByIdWithTagsAsync(
-            request.ProjectId,
+            command.ProjectId,
             cancellationToken);
 
         if (project is null)
@@ -21,7 +23,7 @@ public class CreateTagCommandHandler(
             return ProjectErrors.ProjectNotFound;
         }
 
-        var tag = new Tag(request.Name);
+        var tag = new Tag(command.Name);
 
         var result = project.AddTag(tag);
         if (result.IsError)

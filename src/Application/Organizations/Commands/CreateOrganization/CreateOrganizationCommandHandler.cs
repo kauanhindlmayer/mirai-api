@@ -9,17 +9,17 @@ public class CreateOrganizationCommandHandler(IOrganizationsRepository _organiza
     : IRequestHandler<CreateOrganizationCommand, ErrorOr<Organization>>
 {
     public async Task<ErrorOr<Organization>> Handle(
-        CreateOrganizationCommand request,
+        CreateOrganizationCommand command,
         CancellationToken cancellationToken)
     {
-        if (await _organizationsRepository.ExistsByNameAsync(request.Name, cancellationToken))
+        if (await _organizationsRepository.ExistsByNameAsync(command.Name, cancellationToken))
         {
             return OrganizationErrors.OrganizationWithSameNameAlreadyExists;
         }
 
         var organization = new Organization(
-            request.Name,
-            request.Description);
+            command.Name,
+            command.Description);
 
         await _organizationsRepository.AddAsync(organization, cancellationToken);
 

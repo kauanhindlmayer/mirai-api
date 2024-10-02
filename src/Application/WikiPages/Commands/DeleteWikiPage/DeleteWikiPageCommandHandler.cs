@@ -9,11 +9,11 @@ public class DeleteWikiPageCommandHandler(IWikiPagesRepository _wikiPagesReposit
     : IRequestHandler<DeleteWikiPageCommand, ErrorOr<Success>>
 {
     public async Task<ErrorOr<Success>> Handle(
-        DeleteWikiPageCommand request,
+        DeleteWikiPageCommand command,
         CancellationToken cancellationToken)
     {
         var wikiPage = await _wikiPagesRepository.GetByIdAsync(
-            request.WikiPageId,
+            command.WikiPageId,
             cancellationToken);
 
         if (wikiPage is null)
@@ -27,6 +27,7 @@ public class DeleteWikiPageCommandHandler(IWikiPagesRepository _wikiPagesReposit
         }
 
         _wikiPagesRepository.Remove(wikiPage);
+
         return Result.Success;
     }
 }

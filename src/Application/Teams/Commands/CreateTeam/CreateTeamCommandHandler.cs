@@ -10,11 +10,11 @@ public class CreateTeamCommandHandler(IProjectsRepository _projectsRepository)
     : IRequestHandler<CreateTeamCommand, ErrorOr<Team>>
 {
     public async Task<ErrorOr<Team>> Handle(
-        CreateTeamCommand request,
+        CreateTeamCommand command,
         CancellationToken cancellationToken)
     {
         var project = await _projectsRepository.GetByIdAsync(
-            request.ProjectId,
+            command.ProjectId,
             cancellationToken);
 
         if (project is null)
@@ -22,7 +22,7 @@ public class CreateTeamCommandHandler(IProjectsRepository _projectsRepository)
             return ProjectErrors.ProjectNotFound;
         }
 
-        var team = new Team(project.Id, request.Name);
+        var team = new Team(project.Id, command.Name);
         var addTeamResult = project.AddTeam(team);
 
         if (addTeamResult.IsError)

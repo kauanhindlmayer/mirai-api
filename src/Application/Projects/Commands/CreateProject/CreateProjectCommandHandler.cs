@@ -10,11 +10,11 @@ public class CreateProjectCommandHandler(IOrganizationsRepository _organizations
     : IRequestHandler<CreateProjectCommand, ErrorOr<Project>>
 {
     public async Task<ErrorOr<Project>> Handle(
-        CreateProjectCommand request,
+        CreateProjectCommand command,
         CancellationToken cancellationToken)
     {
         var organization = await _organizationsRepository.GetByIdAsync(
-            request.OrganizationId,
+            command.OrganizationId,
             cancellationToken);
 
         if (organization is null)
@@ -23,9 +23,9 @@ public class CreateProjectCommandHandler(IOrganizationsRepository _organizations
         }
 
         var project = new Project(
-            request.Name,
-            request.Description,
-            request.OrganizationId);
+            command.Name,
+            command.Description,
+            command.OrganizationId);
 
         var result = organization.AddProject(project);
         if (result.IsError)

@@ -11,11 +11,11 @@ public class AddCommentCommandHandler(
     : IRequestHandler<AddCommentCommand, ErrorOr<WikiPageComment>>
 {
     public async Task<ErrorOr<WikiPageComment>> Handle(
-        AddCommentCommand request,
+        AddCommentCommand command,
         CancellationToken cancellationToken)
     {
         var wikiPage = await _wikiPagesRepository.GetByIdAsync(
-            request.WikiPageId,
+            command.WikiPageId,
             cancellationToken);
 
         if (wikiPage is null)
@@ -28,7 +28,7 @@ public class AddCommentCommandHandler(
         var comment = new WikiPageComment(
             wikiPage.Id,
             currentUser.Id,
-            request.Content);
+            command.Content);
 
         wikiPage.AddComment(comment);
         _wikiPagesRepository.Update(wikiPage);

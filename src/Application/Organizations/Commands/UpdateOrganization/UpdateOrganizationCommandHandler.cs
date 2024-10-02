@@ -9,11 +9,11 @@ public class UpdateOrganizationCommandHandler(IOrganizationsRepository _organiza
     : IRequestHandler<UpdateOrganizationCommand, ErrorOr<Organization>>
 {
     public async Task<ErrorOr<Organization>> Handle(
-        UpdateOrganizationCommand request,
+        UpdateOrganizationCommand command,
         CancellationToken cancellationToken)
     {
         var organization = await _organizationsRepository.GetByIdAsync(
-            request.Id,
+            command.Id,
             cancellationToken);
 
         if (organization is null)
@@ -21,7 +21,7 @@ public class UpdateOrganizationCommandHandler(IOrganizationsRepository _organiza
             return OrganizationErrors.OrganizationNotFound;
         }
 
-        organization.Update(request.Name, request.Description);
+        organization.Update(command.Name, command.Description);
         _organizationsRepository.Update(organization);
 
         return organization;

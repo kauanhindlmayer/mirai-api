@@ -11,22 +11,28 @@ public class AssignWorkItemCommandHandler(
     : IRequestHandler<AssignWorkItemCommand, ErrorOr<Success>>
 {
     public async Task<ErrorOr<Success>> Handle(
-        AssignWorkItemCommand request,
+        AssignWorkItemCommand command,
         CancellationToken cancellationToken)
     {
-        var workItem = await _workItemsRepository.GetByIdAsync(request.WorkItemId, cancellationToken);
+        var workItem = await _workItemsRepository.GetByIdAsync(
+            command.WorkItemId,
+            cancellationToken);
+
         if (workItem is null)
         {
             return WorkItemErrors.WorkItemNotFound;
         }
 
-        var assignee = await _usersRepository.GetByIdAsync(request.AssigneeId, cancellationToken);
+        var assignee = await _usersRepository.GetByIdAsync(
+            command.AssigneeId,
+            cancellationToken);
+
         if (assignee is null)
         {
             return WorkItemErrors.AssigneeNotFound;
         }
 
-        workItem.Assign(request.AssigneeId);
+        workItem.Assign(command.AssigneeId);
         _workItemsRepository.Update(workItem);
 
         return Result.Success;

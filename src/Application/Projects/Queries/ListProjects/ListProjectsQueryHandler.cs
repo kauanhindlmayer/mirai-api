@@ -12,11 +12,11 @@ public class ListProjectsQueryHandler(
     : IRequestHandler<ListProjectsQuery, ErrorOr<List<Project>>>
 {
     public async Task<ErrorOr<List<Project>>> Handle(
-        ListProjectsQuery request,
+        ListProjectsQuery query,
         CancellationToken cancellationToken)
     {
         var organization = await _organizationsRepository.GetByIdAsync(
-            request.OrganizationId,
+            query.OrganizationId,
             cancellationToken);
 
         if (organization is null)
@@ -25,7 +25,7 @@ public class ListProjectsQueryHandler(
         }
 
         return await _projectsRepository.ListAsync(
-            request.OrganizationId,
+            query.OrganizationId,
             cancellationToken);
     }
 }

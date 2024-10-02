@@ -12,11 +12,11 @@ public class CreateWorkItemCommandHandler(
     : IRequestHandler<CreateWorkItemCommand, ErrorOr<WorkItem>>
 {
     public async Task<ErrorOr<WorkItem>> Handle(
-        CreateWorkItemCommand request,
+        CreateWorkItemCommand command,
         CancellationToken cancellationToken)
     {
         var project = await _projectsRepository.GetByIdAsync(
-            request.ProjectId,
+            command.ProjectId,
             cancellationToken);
 
         if (project is null)
@@ -25,14 +25,14 @@ public class CreateWorkItemCommandHandler(
         }
 
         var workItemCode = await _workItemsRepository.GetNextWorkItemCodeAsync(
-            request.ProjectId,
+            command.ProjectId,
             cancellationToken);
 
         var workItem = new WorkItem(
-            request.ProjectId,
+            command.ProjectId,
             workItemCode,
-            request.Title,
-            request.Type);
+            command.Title,
+            command.Type);
 
         var result = project.AddWorkItem(workItem);
         if (result.IsError)

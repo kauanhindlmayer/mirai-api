@@ -11,11 +11,11 @@ public class AddCommentCommandHandler(
     : IRequestHandler<AddCommentCommand, ErrorOr<WorkItemComment>>
 {
     public async Task<ErrorOr<WorkItemComment>> Handle(
-        AddCommentCommand request,
+        AddCommentCommand command,
         CancellationToken cancellationToken)
     {
         var workItem = await _workItemsRepository.GetByIdAsync(
-            request.WorkItemId,
+            command.WorkItemId,
             cancellationToken);
 
         if (workItem is null)
@@ -28,7 +28,7 @@ public class AddCommentCommandHandler(
         var comment = new WorkItemComment(
             workItem.Id,
             currentUser.Id,
-            request.Content);
+            command.Content);
 
         workItem.AddComment(comment);
         _workItemsRepository.Update(workItem);

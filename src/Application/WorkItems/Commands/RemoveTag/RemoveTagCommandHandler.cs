@@ -9,11 +9,11 @@ public class RemoveTagCommandHandler(IWorkItemsRepository _workItemsRepository)
     : IRequestHandler<RemoveTagCommand, ErrorOr<Success>>
 {
     public async Task<ErrorOr<Success>> Handle(
-        RemoveTagCommand request,
+        RemoveTagCommand command,
         CancellationToken cancellationToken)
     {
         var workItem = await _workItemsRepository.GetByIdAsync(
-            request.WorkItemId,
+            command.WorkItemId,
             cancellationToken);
 
         if (workItem is null)
@@ -21,7 +21,7 @@ public class RemoveTagCommandHandler(IWorkItemsRepository _workItemsRepository)
             return WorkItemErrors.WorkItemNotFound;
         }
 
-        var result = workItem.RemoveTag(request.TagName);
+        var result = workItem.RemoveTag(command.TagName);
         if (result.IsError)
         {
             return result.Errors;

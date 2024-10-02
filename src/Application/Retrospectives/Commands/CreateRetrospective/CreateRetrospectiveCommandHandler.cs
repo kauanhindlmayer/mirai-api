@@ -10,11 +10,11 @@ public class CreateRetrospectiveCommandHandler(ITeamsRepository _teamsRepository
     : IRequestHandler<CreateRetrospectiveCommand, ErrorOr<Retrospective>>
 {
     public async Task<ErrorOr<Retrospective>> Handle(
-        CreateRetrospectiveCommand request,
+        CreateRetrospectiveCommand command,
         CancellationToken cancellationToken)
     {
         var team = await _teamsRepository.GetByIdAsync(
-            request.TeamId,
+            command.TeamId,
             cancellationToken);
 
         if (team is null)
@@ -23,9 +23,9 @@ public class CreateRetrospectiveCommandHandler(ITeamsRepository _teamsRepository
         }
 
         var retrospective = new Retrospective(
-            request.Title,
-            request.Description,
-            request.TeamId);
+            command.Title,
+            command.Description,
+            command.TeamId);
 
         var result = team.AddRetrospective(retrospective);
         if (result.IsError)

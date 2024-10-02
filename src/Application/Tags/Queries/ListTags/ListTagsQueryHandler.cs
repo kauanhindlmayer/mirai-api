@@ -12,11 +12,11 @@ public class ListTagsQueryHandler(
     : IRequestHandler<ListTagsQuery, ErrorOr<List<Tag>>>
 {
     public async Task<ErrorOr<List<Tag>>> Handle(
-        ListTagsQuery request,
+        ListTagsQuery query,
         CancellationToken cancellationToken)
     {
         var project = await _projectsRepository.GetByIdAsync(
-            request.ProjectId,
+            query.ProjectId,
             cancellationToken);
 
         if (project is null)
@@ -25,8 +25,8 @@ public class ListTagsQueryHandler(
         }
 
         var tags = await _tagsRepository.GetByProjectAsync(
-            request.ProjectId,
-            request.SearchTerm,
+            query.ProjectId,
+            query.SearchTerm,
             cancellationToken);
 
         return tags;

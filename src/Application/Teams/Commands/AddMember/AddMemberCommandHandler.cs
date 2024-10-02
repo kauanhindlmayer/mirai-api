@@ -11,11 +11,11 @@ public class AddMemberCommandHandler(
     : IRequestHandler<AddMemberCommand, ErrorOr<Success>>
 {
     public async Task<ErrorOr<Success>> Handle(
-        AddMemberCommand request,
+        AddMemberCommand command,
         CancellationToken cancellationToken)
     {
         var team = await _teamsRepository.GetByIdAsync(
-            request.TeamId,
+            command.TeamId,
             cancellationToken);
 
         if (team is null)
@@ -24,7 +24,7 @@ public class AddMemberCommandHandler(
         }
 
         var member = await _usersRepository.GetByIdAsync(
-            request.MemberId,
+            command.MemberId,
             cancellationToken);
 
         if (member is null)
@@ -32,10 +32,10 @@ public class AddMemberCommandHandler(
             return TeamErrors.TeamMemberNotFound;
         }
 
-        var addMemberResult = team.AddMember(member);
-        if (addMemberResult.IsError)
+        var result = team.AddMember(member);
+        if (result.IsError)
         {
-            return addMemberResult.Errors;
+            return result.Errors;
         }
 
         _teamsRepository.Update(team);

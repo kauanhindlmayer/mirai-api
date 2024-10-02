@@ -9,11 +9,11 @@ public class GetBoardQueryHandler(IBoardsRepository _boardRepository)
     : IRequestHandler<GetBoardQuery, ErrorOr<Board>>
 {
     public async Task<ErrorOr<Board>> Handle(
-        GetBoardQuery request,
+        GetBoardQuery query,
         CancellationToken cancellationToken)
     {
         var board = await _boardRepository.GetByIdAsync(
-            request.BoardId,
+            query.BoardId,
             cancellationToken);
 
         if (board is null)

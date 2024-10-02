@@ -10,11 +10,11 @@ public class CreateWikiPageCommandHandler(IProjectsRepository _projectsRepositor
     : IRequestHandler<CreateWikiPageCommand, ErrorOr<WikiPage>>
 {
     public async Task<ErrorOr<WikiPage>> Handle(
-        CreateWikiPageCommand request,
+        CreateWikiPageCommand command,
         CancellationToken cancellationToken)
     {
         var project = await _projectsRepository.GetByIdWithWikiPagesAsync(
-            request.ProjectId,
+            command.ProjectId,
             cancellationToken);
 
         if (project is null)
@@ -22,22 +22,22 @@ public class CreateWikiPageCommandHandler(IProjectsRepository _projectsRepositor
             return ProjectErrors.ProjectNotFound;
         }
 
-        if (request.ParentWikiPageId.HasValue)
+        if (command.ParentWikiPageId.HasValue)
         {
             var parentWikiPage = project.WikiPages.FirstOrDefault(wikiPage =>
-                wikiPage.Id == request.ParentWikiPageId);
+                wikiPage.Id == command.ParentWikiPageId);
 
-            if (parentWikiPage is null || parentWikiPage.ProjectId != request.ProjectId)
+            if (parentWikiPage is null || parentWikiPage.ProjectId != command.ProjectId)
             {
                 return WikiPageErrors.ParentWikiPageNotFound;
             }
         }
 
         var wikiPage = new WikiPage(
-            request.ProjectId,
-            request.Title,
-            request.Content,
-            request.ParentWikiPageId);
+            command.ProjectId,
+            command.Title,
+            command.Content,
+            command.ParentWikiPageId);
 
         var result = project.AddWikiPage(wikiPage);
         if (result.IsError)
