@@ -14,7 +14,7 @@ public class RetrospectivesRepository(AppDbContext dbContext) : IRetrospectivesR
         await _dbContext.Retrospectives.AddAsync(retrospective, cancellationToken);
     }
 
-    public Task<Retrospective?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public Task<Retrospective?> GetByIdWithColumnsAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return _dbContext.Retrospectives
             .Include(x => x.Columns)

@@ -12,7 +12,7 @@ public class GetRetrospectiveQueryHandler(IRetrospectivesRepository _retrospecti
         GetRetrospectiveQuery query,
         CancellationToken cancellationToken)
     {
-        var retrospective = await _retrospectivesRepository.GetByIdAsync(
+        var retrospective = await _retrospectivesRepository.GetByIdWithColumnsAsync(
             query.RetrospectiveId,
             cancellationToken);
 

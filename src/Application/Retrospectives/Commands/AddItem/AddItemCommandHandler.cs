@@ -14,7 +14,7 @@ public class AddItemCommandHandler(
         AddItemCommand request,
         CancellationToken cancellationToken)
     {
-        var retrospective = await _retrospectivesRepository.GetByIdAsync(
+        var retrospective = await _retrospectivesRepository.GetByIdWithColumnsAsync(
             request.RetrospectiveId,
             cancellationToken);
 

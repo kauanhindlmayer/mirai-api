@@ -1,6 +1,7 @@
 using Application.Retrospectives.Commands.AddColumn;
 using Application.Retrospectives.Commands.AddItem;
 using Application.Retrospectives.Commands.CreateRetrospective;
+using Application.Retrospectives.Commands.RemoveItem;
 using Application.Retrospectives.Queries.GetRetrospective;
 using Contracts.Retrospectives;
 using Domain.Retrospectives;
@@ -103,6 +104,26 @@ public class RetrospectivesController(
         var retrospectiveItem = ToDto(result.Value);
         await _hubContext.Clients.All.SendRetrospectiveItem(retrospectiveItem);
         return StatusCode(StatusCodes.Status201Created, retrospectiveItem);
+    }
+
+    /// <summary>
+    /// Remove an item from a column in a retrospective session.
+    /// </summary>
+    /// <param name="retrospectiveId">The ID of the retrospective session to delete the item from.</param>
+    /// <param name="columnId">The ID of the column to delete the item from.</param>
+    /// <param name="itemId">The ID of the item to delete.</param>
+    [HttpDelete("{retrospectiveId:guid}/columns/{columnId:guid}/items/{itemId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> RemoveItem(Guid retrospectiveId, Guid columnId, Guid itemId)
+    {
+        var command = new RemoveItemCommand(retrospectiveId, columnId, itemId);
+
+        var result = await _mediator.Send(command);
+
+        return result.Match(
+            _ => NoContent(),
+            Problem);
     }
 
     private static RetrospectiveResponse ToDto(Retrospective retrospective)

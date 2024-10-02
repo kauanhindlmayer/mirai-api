@@ -40,6 +40,8 @@ public class AppDbContext(
 
     public DbSet<WikiPage> WikiPages { get; init; }
 
+    public DbSet<WikiPageComment> WikiPageComments { get; init; }
+
     public DbSet<Retrospective> Retrospectives { get; init; }
 
     public DbSet<RetrospectiveColumn> RetrospectiveColumns { get; init; }

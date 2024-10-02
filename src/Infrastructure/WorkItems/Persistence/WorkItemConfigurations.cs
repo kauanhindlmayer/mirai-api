@@ -14,6 +14,9 @@ public class WorkItemConfigurations : IEntityTypeConfiguration<WorkItem>
         builder.Property(wi => wi.Id)
             .ValueGeneratedNever();
 
+        builder.HasIndex(wi => new { wi.ProjectId, wi.Code })
+            .IsUnique();
+
         builder.Property(wi => wi.Code)
             .IsRequired();
 

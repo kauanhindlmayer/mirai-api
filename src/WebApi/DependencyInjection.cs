@@ -59,7 +59,7 @@ public static class DependencyInjection
     {
         options.SwaggerDoc("v1", new OpenApiInfo
         {
-            Title = "WebApi",
+            Title = "Mirai",
             Version = "v1",
             Description = "Mirai (Japanese word for \"future\" and \"forward-thinking\") is a project management tool that aims to help teams collaborate and manage their projects more effectively.",
         });

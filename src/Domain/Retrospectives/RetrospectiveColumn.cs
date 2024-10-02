@@ -33,6 +33,18 @@ public class RetrospectiveColumn : Entity
         return Result.Success;
     }
 
+    public ErrorOr<Success> RemoveItem(Guid itemId)
+    {
+        var item = Items.FirstOrDefault(i => i.Id == itemId);
+        if (item is null)
+        {
+            return RetrospectiveErrors.RetrospectiveItemNotFound;
+        }
+
+        Items.Remove(item);
+        return Result.Success;
+    }
+
     public void UpdatePosition(int position)
     {
         Position = position;
