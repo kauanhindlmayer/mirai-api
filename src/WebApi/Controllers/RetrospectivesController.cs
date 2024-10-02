@@ -1,7 +1,7 @@
-using Application.Retrospectives.Commands.AddColumn;
-using Application.Retrospectives.Commands.AddItem;
+using Application.Retrospectives.Commands.CreateColumn;
+using Application.Retrospectives.Commands.CreateItem;
 using Application.Retrospectives.Commands.CreateRetrospective;
-using Application.Retrospectives.Commands.RemoveItem;
+using Application.Retrospectives.Commands.DeleteItem;
 using Application.Retrospectives.Queries.GetRetrospective;
 using Contracts.Retrospectives;
 using Domain.Retrospectives;
@@ -63,37 +63,36 @@ public class RetrospectivesController(
     }
 
     /// <summary>
-    /// Add a column to a retrospective session.
+    /// Create a new column in a retrospective session.
     /// </summary>
-    /// <param name="retrospectiveId">The ID of the retrospective session to add the column to.</param>
-    /// <param name="request">The details of the column to add.</param>
+    /// <param name="retrospectiveId">The ID of the retrospective session to create the column in.</param>
+    /// <param name="request">The details of the column to create.</param>
     [HttpPost("{retrospectiveId:guid}/columns")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> AddColumn(Guid retrospectiveId, AddColumnRequest request)
+    public async Task<IActionResult> CreateColumn(Guid retrospectiveId, CreateColumnRequest request)
     {
-        var command = new AddColumnCommand(request.Title, retrospectiveId);
+        var command = new CreateColumnCommand(request.Title, retrospectiveId);
 
         var result = await _mediator.Send(command);
 
-        // TODO: Return 201 Created with the new column in the response body.
         return result.Match(
             _ => NoContent(),
             Problem);
     }
 
     /// <summary>
-    /// Add an item to a column in a retrospective session.
+    /// Create a new item in a column in a retrospective session.
     /// </summary>
-    /// <param name="retrospectiveId">The ID of the retrospective session to add the item to.</param>
-    /// <param name="columnId">The ID of the column to add the item to.</param>
-    /// <param name="request">The details of the item to add.</param>
+    /// <param name="retrospectiveId">The ID of the retrospective session to create the item in.</param>
+    /// <param name="columnId">The ID of the column to create the item in.</param>
+    /// <param name="request">The details of the item to create.</param>
     [HttpPost("{retrospectiveId:guid}/columns/{columnId:guid}/items")]
     [ProducesResponseType(typeof(RetrospectiveItemResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> AddItem(Guid retrospectiveId, Guid columnId, AddItemRequest request)
+    public async Task<IActionResult> CreateItem(Guid retrospectiveId, Guid columnId, CreateItemRequest request)
     {
-        var command = new AddItemCommand(request.Description, retrospectiveId, columnId);
+        var command = new CreateItemCommand(request.Description, retrospectiveId, columnId);
         var result = await _mediator.Send(command);
 
         if (result.IsError)
@@ -107,7 +106,7 @@ public class RetrospectivesController(
     }
 
     /// <summary>
-    /// Remove an item from a column in a retrospective session.
+    /// Delete an item from a column in a retrospective session.
     /// </summary>
     /// <param name="retrospectiveId">The ID of the retrospective session to delete the item from.</param>
     /// <param name="columnId">The ID of the column to delete the item from.</param>
@@ -115,9 +114,9 @@ public class RetrospectivesController(
     [HttpDelete("{retrospectiveId:guid}/columns/{columnId:guid}/items/{itemId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> RemoveItem(Guid retrospectiveId, Guid columnId, Guid itemId)
+    public async Task<IActionResult> DeleteItem(Guid retrospectiveId, Guid columnId, Guid itemId)
     {
-        var command = new RemoveItemCommand(retrospectiveId, columnId, itemId);
+        var command = new DeleteItemCommand(retrospectiveId, columnId, itemId);
 
         var result = await _mediator.Send(command);
 

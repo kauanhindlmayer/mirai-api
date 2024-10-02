@@ -1,9 +1,9 @@
 using ErrorOr;
 using MediatR;
 
-namespace Application.Retrospectives.Commands.RemoveItem;
+namespace Application.Retrospectives.Commands.DeleteItem;
 
-public record RemoveItemCommand(
+public record DeleteItemCommand(
     Guid RetrospectiveId,
     Guid ColumnId,
     Guid ItemId) : IRequest<ErrorOr<Success>>;

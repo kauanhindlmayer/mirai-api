@@ -1,10 +1,10 @@
 using FluentValidation;
 
-namespace Application.Retrospectives.Commands.RemoveItem;
+namespace Application.Retrospectives.Commands.DeleteItem;
 
-public class RemoveItemCommandValidator : AbstractValidator<RemoveItemCommand>
+public class DeleteItemCommandValidator : AbstractValidator<DeleteItemCommand>
 {
-    public RemoveItemCommandValidator()
+    public DeleteItemCommandValidator()
     {
         RuleFor(x => x.RetrospectiveId)
             .NotEmpty();

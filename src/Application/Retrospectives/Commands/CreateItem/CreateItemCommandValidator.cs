@@ -1,10 +1,10 @@
 using FluentValidation;
 
-namespace Application.Retrospectives.Commands.AddItem;
+namespace Application.Retrospectives.Commands.CreateItem;
 
-public class AddItemCommandValidator : AbstractValidator<AddItemCommand>
+public class CreateItemCommandValidator : AbstractValidator<CreateItemCommand>
 {
-    public AddItemCommandValidator()
+    public CreateItemCommandValidator()
     {
         RuleFor(x => x.Description)
             .NotEmpty();

@@ -3,17 +3,17 @@ using Domain.Retrospectives;
 using ErrorOr;
 using MediatR;
 
-namespace Application.Retrospectives.Commands.AddColumn;
+namespace Application.Retrospectives.Commands.CreateColumn;
 
-public class AddColumnCommandHandler(IRetrospectivesRepository _retrospectivesRepository)
-    : IRequestHandler<AddColumnCommand, ErrorOr<Retrospective>>
+public class CreateColumnCommandHandler(IRetrospectivesRepository _retrospectivesRepository)
+    : IRequestHandler<CreateColumnCommand, ErrorOr<Retrospective>>
 {
     public async Task<ErrorOr<Retrospective>> Handle(
-        AddColumnCommand request,
+        CreateColumnCommand command,
         CancellationToken cancellationToken)
     {
         var retrospective = await _retrospectivesRepository.GetByIdWithColumnsAsync(
-            request.RetrospectiveId,
+            command.RetrospectiveId,
             cancellationToken);
 
         if (retrospective is null)
@@ -21,7 +21,8 @@ public class AddColumnCommandHandler(IRetrospectivesRepository _retrospectivesRe
             return RetrospectiveErrors.RetrospectiveNotFound;
         }
 
-        var column = new RetrospectiveColumn(request.Title, retrospective.Id);
+        var column = new RetrospectiveColumn(command.Title, retrospective.Id);
+
         var result = retrospective.AddColumn(column);
         if (result.IsError)
         {

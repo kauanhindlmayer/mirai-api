@@ -1,10 +1,10 @@
 using FluentValidation;
 
-namespace Application.Retrospectives.Commands.AddColumn;
+namespace Application.Retrospectives.Commands.CreateColumn;
 
-public class AddColumnCommandValidator : AbstractValidator<AddColumnCommand>
+public class CreateColumnCommandValidator : AbstractValidator<CreateColumnCommand>
 {
-    public AddColumnCommandValidator()
+    public CreateColumnCommandValidator()
     {
         RuleFor(x => x.Title)
             .MinimumLength(3)

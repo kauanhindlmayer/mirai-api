@@ -3,13 +3,13 @@ using Domain.Retrospectives;
 using ErrorOr;
 using MediatR;
 
-namespace Application.Retrospectives.Commands.RemoveItem;
+namespace Application.Retrospectives.Commands.DeleteItem;
 
-public class RemoveItemCommandHandler(IRetrospectivesRepository _retrospectivesRepository)
-    : IRequestHandler<RemoveItemCommand, ErrorOr<Success>>
+public class DeleteItemCommandHandler(IRetrospectivesRepository _retrospectivesRepository)
+    : IRequestHandler<DeleteItemCommand, ErrorOr<Success>>
 {
     public async Task<ErrorOr<Success>> Handle(
-        RemoveItemCommand command,
+        DeleteItemCommand command,
         CancellationToken cancellationToken)
     {
         var retrospective = await _retrospectivesRepository.GetByIdWithColumnsAsync(

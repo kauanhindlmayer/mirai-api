@@ -3,15 +3,15 @@ using Domain.Retrospectives;
 using ErrorOr;
 using MediatR;
 
-namespace Application.Retrospectives.Commands.AddItem;
+namespace Application.Retrospectives.Commands.CreateItem;
 
-public class AddItemCommandHandler(
+public class CreateItemCommandHandler(
     IRetrospectivesRepository _retrospectivesRepository,
     ICurrentUserProvider _currentUserProvider)
-    : IRequestHandler<AddItemCommand, ErrorOr<RetrospectiveItem>>
+    : IRequestHandler<CreateItemCommand, ErrorOr<RetrospectiveItem>>
 {
     public async Task<ErrorOr<RetrospectiveItem>> Handle(
-        AddItemCommand request,
+        CreateItemCommand request,
         CancellationToken cancellationToken)
     {
         var retrospective = await _retrospectivesRepository.GetByIdWithColumnsAsync(
