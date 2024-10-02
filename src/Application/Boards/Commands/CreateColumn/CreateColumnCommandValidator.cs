@@ -1,10 +1,10 @@
 using FluentValidation;
 
-namespace Application.Boards.Commands.AddColumn;
+namespace Application.Boards.Commands.CreateColumn;
 
-public class AddColumnCommandValidator : AbstractValidator<AddColumnCommand>
+public class CreateColumnCommandValidator : AbstractValidator<CreateColumnCommand>
 {
-    public AddColumnCommandValidator()
+    public CreateColumnCommandValidator()
     {
         RuleFor(x => x.Name)
             .MinimumLength(3)

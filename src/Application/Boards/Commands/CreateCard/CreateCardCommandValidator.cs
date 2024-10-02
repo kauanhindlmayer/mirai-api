@@ -1,10 +1,10 @@
 using FluentValidation;
 
-namespace Application.Boards.Commands.AddCard;
+namespace Application.Boards.Commands.CreateCard;
 
-public class AddCardCommandValidator : AbstractValidator<AddCardCommand>
+public class CreateCardCommandValidator : AbstractValidator<CreateCardCommand>
 {
-    public AddCardCommandValidator()
+    public CreateCardCommandValidator()
     {
         RuleFor(x => x.BoardId)
             .NotEmpty();

@@ -19,11 +19,10 @@ public class BoardColumn : Entity
     public string DefinitionOfDone { get; private set; } = null!;
     public List<BoardCard> Cards { get; private set; } = [];
 
-    public BoardColumn(Guid boardId, string name, int position, int? wipLimit, string definitionOfDone)
+    public BoardColumn(Guid boardId, string name, int? wipLimit, string definitionOfDone)
     {
         BoardId = boardId;
         Name = name;
-        Position = position;
         WipLimit = wipLimit;
         DefinitionOfDone = definitionOfDone;
     }

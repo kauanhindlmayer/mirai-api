@@ -30,6 +30,7 @@ public class Board : AggregateRoot
             return BoardErrors.ColumnAlreadyExists;
         }
 
+        column.UpdatePosition(Columns.Count);
         Columns.Add(column);
         return column;
     }

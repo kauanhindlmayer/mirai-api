@@ -2,9 +2,9 @@ using Domain.Boards;
 using ErrorOr;
 using MediatR;
 
-namespace Application.Boards.Commands.AddColumn;
+namespace Application.Boards.Commands.CreateColumn;
 
-public record AddColumnCommand(
+public record CreateColumnCommand(
     Guid BoardId,
     string Name,
     int WipLimit,

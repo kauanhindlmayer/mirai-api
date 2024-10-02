@@ -3,17 +3,17 @@ using Domain.Boards;
 using ErrorOr;
 using MediatR;
 
-namespace Application.Boards.Commands.AddColumn;
+namespace Application.Boards.Commands.CreateColumn;
 
-public class AddColumnCommandHandler(IBoardsRepository _boardsRepository)
-    : IRequestHandler<AddColumnCommand, ErrorOr<BoardColumn>>
+public class CreateColumnCommandHandler(IBoardsRepository _boardsRepository)
+    : IRequestHandler<CreateColumnCommand, ErrorOr<BoardColumn>>
 {
     public async Task<ErrorOr<BoardColumn>> Handle(
-        AddColumnCommand request,
+        CreateColumnCommand command,
         CancellationToken cancellationToken)
     {
         var board = await _boardsRepository.GetByIdAsync(
-            request.BoardId,
+            command.BoardId,
             cancellationToken);
 
         if (board is null)
@@ -23,10 +23,9 @@ public class AddColumnCommandHandler(IBoardsRepository _boardsRepository)
 
         var column = new BoardColumn(
             board.Id,
-            request.Name,
-            board.Columns.Count,
-            request.WipLimit,
-            request.DefinitionOfDone);
+            command.Name,
+            command.WipLimit,
+            command.DefinitionOfDone);
 
         var result = board.AddColumn(column);
         if (result.IsError)

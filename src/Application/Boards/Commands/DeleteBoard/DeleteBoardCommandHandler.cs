@@ -9,11 +9,11 @@ public class DeleteBoardCommandHandler(IBoardsRepository _boardRepository)
     : IRequestHandler<DeleteBoardCommand, ErrorOr<Success>>
 {
     public async Task<ErrorOr<Success>> Handle(
-        DeleteBoardCommand request,
+        DeleteBoardCommand command,
         CancellationToken cancellationToken)
     {
         var board = await _boardRepository.GetByIdAsync(
-            request.BoardId,
+            command.BoardId,
             cancellationToken);
 
         if (board is null)

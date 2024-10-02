@@ -4,15 +4,15 @@ using Domain.WorkItems;
 using ErrorOr;
 using MediatR;
 
-namespace Application.Boards.Commands.AddCard;
+namespace Application.Boards.Commands.CreateCard;
 
-public class AddCardCommandHandler(
+public class CreateCardCommandHandler(
     IWorkItemsRepository _workItemsRepository,
     IBoardsRepository _boardRepository)
-    : IRequestHandler<AddCardCommand, ErrorOr<BoardCard>>
+    : IRequestHandler<CreateCardCommand, ErrorOr<BoardCard>>
 {
     public async Task<ErrorOr<BoardCard>> Handle(
-        AddCardCommand command,
+        CreateCardCommand command,
         CancellationToken cancellationToken)
     {
         var board = await _boardRepository.GetByIdAsync(

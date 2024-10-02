@@ -1,6 +1,6 @@
 namespace Contracts.Boards;
 
-public record AddColumnRequest(
+public record CreateColumnRequest(
     string Name,
     int WipLimit,
     string DefinitionOfDone);

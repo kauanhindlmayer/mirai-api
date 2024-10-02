@@ -3,9 +3,9 @@ using Domain.WorkItems.Enums;
 using ErrorOr;
 using MediatR;
 
-namespace Application.Boards.Commands.AddCard;
+namespace Application.Boards.Commands.CreateCard;
 
-public record AddCardCommand(
+public record CreateCardCommand(
     Guid BoardId,
     Guid ColumnId,
     WorkItemType Type,

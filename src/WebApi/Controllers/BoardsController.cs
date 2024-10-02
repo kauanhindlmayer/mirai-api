@@ -1,9 +1,9 @@
-using Application.Boards.Commands.AddCard;
-using Application.Boards.Commands.AddColumn;
 using Application.Boards.Commands.CreateBoard;
+using Application.Boards.Commands.CreateCard;
+using Application.Boards.Commands.CreateColumn;
 using Application.Boards.Commands.DeleteBoard;
+using Application.Boards.Commands.DeleteColumn;
 using Application.Boards.Commands.MoveCard;
-using Application.Boards.Commands.RemoveColumn;
 using Application.Boards.Queries.GetBoard;
 using Application.Boards.Queries.ListBoards;
 using Contracts.Boards;
@@ -100,18 +100,18 @@ public class BoardsController(ISender _mediator) : ApiController
     }
 
     /// <summary>
-    /// Add a new column to a board.
+    /// Create a new column on a board.
     /// </summary>
-    /// <param name="projectId">The ID of the project to add a new column to a board.</param>
-    /// <param name="boardId">The ID of the board to add a new column to.</param>
-    /// <param name="request">The request to add a new column to a board.</param>
+    /// <param name="projectId">The ID of the project to create a new column on a board.</param>
+    /// <param name="boardId">The ID of the board to create a new column on.</param>
+    /// <param name="request">The request to create a new column on a board.</param>
     [HttpPost("{boardId:guid}/columns")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> AddColumn(Guid projectId, Guid boardId, AddColumnRequest request)
+    public async Task<IActionResult> CreateColumn(Guid projectId, Guid boardId, CreateColumnRequest request)
     {
-        var command = new AddColumnCommand(
+        var command = new CreateColumnCommand(
             boardId,
             request.Name,
             request.WipLimit,
@@ -128,16 +128,16 @@ public class BoardsController(ISender _mediator) : ApiController
     }
 
     /// <summary>
-    /// Remove a column from a board. The column must be empty before it can be removed.
+    /// Delete a column by its ID. The column must be empty of cards to be deleted.
     /// </summary>
-    /// <param name="boardId">The ID of the board to remove a column from.</param>
-    /// <param name="columnId">The ID of the column to remove.</param>
+    /// <param name="boardId">The ID of the board to delete a column from.</param>
+    /// <param name="columnId">The ID of the column to delete.</param>
     [HttpDelete("{boardId:guid}/columns/{columnId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> RemoveColumn(Guid boardId, Guid columnId)
+    public async Task<IActionResult> DeleteColumn(Guid boardId, Guid columnId)
     {
-        var command = new RemoveColumnCommand(boardId, columnId);
+        var command = new DeleteColumnCommand(boardId, columnId);
 
         var result = await _mediator.Send(command);
 
@@ -147,17 +147,17 @@ public class BoardsController(ISender _mediator) : ApiController
     }
 
     /// <summary>
-    /// Add a new card to a column on a board.
+    /// Create a new card in a column on a board.
     /// </summary>
-    /// <param name="projectId">The ID of the project to add a new card to a column on a board.</param>
-    /// <param name="boardId">The ID of the board to add a new card to a column on.</param>
-    /// <param name="columnId">The ID of the column to add a new card to.</param>
-    /// <param name="request">The request to add a new card to a column on a board.</param>
+    /// <param name="projectId">The ID of the project to create a new card on a board.</param>
+    /// <param name="boardId">The ID of the board to create a new card on.</param>
+    /// <param name="columnId">The ID of the column to create a new card in.</param>
+    /// <param name="request">The request to create a new card in a column on a board.</param>
     [HttpPost("{boardId:guid}/columns/{columnId:guid}/cards")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> AddCard(Guid projectId, Guid boardId, Guid columnId, AddCardRequest request)
+    public async Task<IActionResult> CreateCard(Guid projectId, Guid boardId, Guid columnId, CreateCardRequest request)
     {
         if (!DomainWorkItemType.TryFromName(request.Type.ToString(), out var type))
         {
@@ -166,7 +166,7 @@ public class BoardsController(ISender _mediator) : ApiController
                 detail: "Invalid work item type");
         }
 
-        var command = new AddCardCommand(boardId, columnId, type, request.Title);
+        var command = new CreateCardCommand(boardId, columnId, type, request.Title);
 
         var result = await _mediator.Send(command);
 

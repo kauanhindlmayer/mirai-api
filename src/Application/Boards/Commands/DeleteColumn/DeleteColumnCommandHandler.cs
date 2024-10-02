@@ -3,17 +3,17 @@ using Domain.Boards;
 using ErrorOr;
 using MediatR;
 
-namespace Application.Boards.Commands.RemoveColumn;
+namespace Application.Boards.Commands.DeleteColumn;
 
-public class RemoveColumnCommandHandler(IBoardsRepository _boardsRepository)
-    : IRequestHandler<RemoveColumnCommand, ErrorOr<Success>>
+public class DeleteColumnCommandHandler(IBoardsRepository _boardsRepository)
+    : IRequestHandler<DeleteColumnCommand, ErrorOr<Success>>
 {
     public async Task<ErrorOr<Success>> Handle(
-        RemoveColumnCommand request,
+        DeleteColumnCommand command,
         CancellationToken cancellationToken)
     {
         var board = await _boardsRepository.GetByIdAsync(
-            request.BoardId,
+            command.BoardId,
             cancellationToken);
 
         if (board is null)
@@ -21,7 +21,7 @@ public class RemoveColumnCommandHandler(IBoardsRepository _boardsRepository)
             return BoardErrors.BoardNotFound;
         }
 
-        var result = board.RemoveColumn(request.ColumnId);
+        var result = board.RemoveColumn(command.ColumnId);
         if (result.IsError)
         {
             return result.Errors;
