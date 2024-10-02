@@ -5,6 +5,7 @@ using Application.Retrospectives.Queries.GetRetrospective;
 using Contracts.Retrospectives;
 using Domain.Retrospectives;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using WebApi.Hubs;
@@ -12,6 +13,7 @@ using WebApi.Hubs;
 namespace WebApi.Controllers;
 
 [Route("api/teams/{teamId:guid}/retrospectives")]
+[AllowAnonymous]
 public class RetrospectivesController(
     ISender _mediator,
     IHubContext<RetrospectiveHub, IRetrospectiveHub> _hubContext) : ApiController
@@ -109,7 +111,7 @@ public class RetrospectivesController(
             retrospective.Id,
             retrospective.Title,
             retrospective.Description,
-            retrospective.Columns.Select(ToDto).ToList());
+            retrospective.Columns.OrderBy(c => c.Position).Select(ToDto).ToList());
     }
 
     private static RetrospectiveColumnResponse ToDto(RetrospectiveColumn column)
@@ -117,7 +119,8 @@ public class RetrospectivesController(
         return new(
             column.Id,
             column.Title,
-            column.Items.Select(ToDto).ToList());
+            column.Position,
+            column.Items.OrderBy(c => c.Position).Select(ToDto).ToList());
     }
 
     private static RetrospectiveItemResponse ToDto(RetrospectiveItem item)
@@ -125,6 +128,7 @@ public class RetrospectivesController(
         return new(
             item.Id,
             item.Description,
+            item.Position,
             item.AuthorId,
             item.Votes);
     }

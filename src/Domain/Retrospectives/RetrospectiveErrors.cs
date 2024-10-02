@@ -12,7 +12,15 @@ public static class RetrospectiveErrors
         code: "Retrospective.RetrospectiveColumnNotFound",
         description: "Retrospective column not found.");
 
+    public static readonly Error RetrospectiveAlreadyExists = Error.Validation(
+        code: "Retrospective.RetrospectiveAlreadyExists",
+        description: "A retrospective with the same title already exists in this team.");
+
     public static readonly Error RetrospectiveColumnAlreadyExists = Error.Validation(
         code: "Retrospective.RetrospectiveColumnAlreadyExists",
         description: "A column with the same title already exists in this retrospective.");
+
+    public static readonly Error RetrospectiveItemAlreadyExists = Error.Validation(
+        code: "Retrospective.RetrospectiveItemAlreadyExists",
+        description: "An item with the same description already exists in this column.");
 }

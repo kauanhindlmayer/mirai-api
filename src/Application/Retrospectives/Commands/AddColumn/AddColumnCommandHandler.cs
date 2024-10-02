@@ -21,14 +21,11 @@ public class AddColumnCommandHandler(IRetrospectivesRepository _retrospectivesRe
             return RetrospectiveErrors.RetrospectiveNotFound;
         }
 
-        var column = new RetrospectiveColumn(
-            title: request.Title,
-            retrospectiveId: retrospective.Id);
-
-        var addColumnResult = retrospective.AddColumn(column);
-        if (addColumnResult.IsError)
+        var column = new RetrospectiveColumn(request.Title, retrospective.Id);
+        var result = retrospective.AddColumn(column);
+        if (result.IsError)
         {
-            return addColumnResult.Errors;
+            return result.Errors;
         }
 
         _retrospectivesRepository.Update(retrospective);

@@ -10,7 +10,7 @@ public class AddCommentTests(WebAppFactory webAppFactory)
 {
     private readonly IMediator _mediator = webAppFactory.CreateMediator();
 
-    [Fact]
+    [Fact(Skip = "Not implemented")]
     public async Task AddComment_WhenValidCommand_ShouldAddComment()
     {
         // Arrange

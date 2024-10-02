@@ -14,6 +14,7 @@ public static class DependencyInjection
         services.AddSwaggerGen();
         services.AddProblemDetails();
         services.AddSignalR();
+        services.AddCorsPolicy();
 
         return services;
     }
@@ -35,8 +36,17 @@ public static class DependencyInjection
 
     public static WebApplication UsePresentation(this WebApplication app)
     {
+        app.UseCors();
         app.MapHub<RetrospectiveHub>("/hubs/retrospective");
         return app;
+    }
+
+    private static void AddCorsPolicy(this IServiceCollection services)
+    {
+        services.AddCors(options => options.AddDefaultPolicy(builder =>
+            builder.WithOrigins("http://localhost:4200")
+                .AllowAnyMethod()
+                .AllowAnyHeader()));
     }
 
     private static string GetXmlCommentsPath()

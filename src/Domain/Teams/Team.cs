@@ -45,4 +45,15 @@ public class Team : Entity
         Members.Remove(user);
         return Result.Success;
     }
+
+    public ErrorOr<Success> AddRetrospective(Retrospective retrospective)
+    {
+        if (Retrospectives.Any(r => r.Title == retrospective.Title))
+        {
+            return RetrospectiveErrors.RetrospectiveAlreadyExists;
+        }
+
+        Retrospectives.Add(retrospective);
+        return Result.Success;
+    }
 }

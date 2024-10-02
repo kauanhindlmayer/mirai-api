@@ -6,9 +6,7 @@ using MediatR;
 
 namespace Application.Retrospectives.Commands.CreateRetrospective;
 
-public class CreateRetrospectiveCommandHandler(
-    ITeamsRepository _teamsRepository,
-    IRetrospectivesRepository _retrospectivesRepository)
+public class CreateRetrospectiveCommandHandler(ITeamsRepository _teamsRepository)
     : IRequestHandler<CreateRetrospectiveCommand, ErrorOr<Retrospective>>
 {
     public async Task<ErrorOr<Retrospective>> Handle(
@@ -29,7 +27,13 @@ public class CreateRetrospectiveCommandHandler(
             request.Description,
             request.TeamId);
 
-        await _retrospectivesRepository.AddAsync(retrospective, cancellationToken);
+        var result = team.AddRetrospective(retrospective);
+        if (result.IsError)
+        {
+            return result.Errors;
+        }
+
+        _teamsRepository.Update(team);
 
         return retrospective;
     }

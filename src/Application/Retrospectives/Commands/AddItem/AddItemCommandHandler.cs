@@ -23,18 +23,23 @@ public class AddItemCommandHandler(
             return RetrospectiveErrors.RetrospectiveNotFound;
         }
 
+        var column = retrospective.Columns.FirstOrDefault(c => c.Id == request.RetrospectiveColumnId);
+        if (column is null)
+        {
+            return RetrospectiveErrors.RetrospectiveColumnNotFound;
+        }
+
         var currentUser = _currentUserProvider.GetCurrentUser();
 
         var retrospectiveItem = new RetrospectiveItem(
-            retrospectiveColumnId: request.RetrospectiveColumnId,
-            authorId: currentUser.Id,
-            description: request.Description,
-            votes: 0);
+            request.Description,
+            request.RetrospectiveColumnId,
+            currentUser.Id);
 
-        var addedItemResult = retrospective.AddItem(retrospectiveItem, request.RetrospectiveColumnId);
-        if (addedItemResult.IsError)
+        var result = column.AddItem(retrospectiveItem);
+        if (result.IsError)
         {
-            return addedItemResult.Errors;
+            return result.Errors;
         }
 
         _retrospectivesRepository.Update(retrospective);

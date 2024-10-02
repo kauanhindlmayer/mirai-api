@@ -30,19 +30,8 @@ public class Retrospective : AggregateRoot
             return RetrospectiveErrors.RetrospectiveColumnAlreadyExists;
         }
 
+        column.UpdatePosition(Columns.Count);
         Columns.Add(column);
-        return Result.Success;
-    }
-
-    public ErrorOr<Success> AddItem(RetrospectiveItem item, Guid columnId)
-    {
-        var column = Columns.FirstOrDefault(c => c.Id == columnId);
-        if (column is null)
-        {
-            return RetrospectiveErrors.RetrospectiveColumnNotFound;
-        }
-
-        column.AddItem(item);
         return Result.Success;
     }
 }
