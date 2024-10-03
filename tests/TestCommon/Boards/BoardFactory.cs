@@ -11,9 +11,9 @@ public static class BoardFactory
         Guid? projectId = null)
     {
         return new(
-            projectId: projectId ?? Constants.Project.Id,
-            name: name,
-            description: description);
+            projectId ?? Constants.Project.Id,
+            name,
+            description);
     }
 
     public static BoardColumn CreateBoardColumn(
@@ -24,10 +24,9 @@ public static class BoardFactory
         Guid? boardId = null)
     {
         return new(
-            boardId: boardId ?? Constants.Board.Id,
-            name: name,
-            position: position,
-            wipLimit: wipLimit,
-            definitionOfDone: definitionOfDone);
+            boardId ?? Constants.Board.Id,
+            name,
+            wipLimit,
+            definitionOfDone);
     }
 }
