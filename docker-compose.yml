@@ -1,7 +1,7 @@
-version: "3.8"
+version: "3.9"
 
 services:
-  api:
+  webapp:
     container_name: mirai-api
     build:
       context: .
@@ -10,6 +10,27 @@ services:
       - "5001:5001"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-    restart: on-failure
+      - Database__ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=mirai;Username=postgres;Password=postgres
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    container_name: mirai-db
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=mirai
     volumes:
-      - ./src/WebApi/Mirai.sqlite:/app/Mirai.sqlite
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d mirai"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:

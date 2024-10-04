@@ -13,6 +13,7 @@
     "Authorizeable",
     "Hasher",
     "Mediat",
+    "Npgsql",
     "Serilog",
     "Swashbuckle"
   ]
