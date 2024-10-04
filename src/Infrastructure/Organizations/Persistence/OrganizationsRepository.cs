@@ -16,6 +16,11 @@ public class OrganizationsRepository(AppDbContext dbContext) : IOrganizationsRep
 
     public async Task<Organization?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
+        return await _dbContext.Organizations.FirstOrDefaultAsync(o => o.Id == id, cancellationToken);
+    }
+
+    public async Task<Organization?> GetByIdWithProjectsAsync(Guid id, CancellationToken cancellationToken = default)
+    {
         return await _dbContext.Organizations
             .Include(o => o.Projects)
             .FirstOrDefaultAsync(o => o.Id == id, cancellationToken);

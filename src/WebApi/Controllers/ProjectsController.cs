@@ -1,4 +1,5 @@
 using Application.Projects.Commands.CreateProject;
+using Application.Projects.Commands.UpdateProject;
 using Application.Projects.Queries.GetProject;
 using Application.Projects.Queries.ListProjects;
 using Contracts.Projects;
@@ -69,6 +70,31 @@ public class ProjectsController(ISender _mediator) : ApiController
 
         return result.Match(
             projects => Ok(projects.ConvertAll(ToDto)),
+            Problem);
+    }
+
+    /// <summary>
+    /// Update a project.
+    /// </summary>
+    /// <param name="organizationId">The organization ID.</param>
+    /// <param name="projectId">The project ID.</param>
+    /// <param name="request">The project data.</param>
+    [HttpPut("{projectId:guid}")]
+    [ProducesResponseType(typeof(ProjectResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateProject(Guid organizationId, Guid projectId, UpdateProjectRequest request)
+    {
+        var command = new UpdateProjectCommand(
+            organizationId,
+            projectId,
+            request.Name,
+            request.Description);
+
+        var result = await _mediator.Send(command);
+
+        return result.Match(
+            project => Ok(ToDto(project)),
             Problem);
     }
 

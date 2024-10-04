@@ -32,6 +32,12 @@ public class Project : AggregateRoot
     {
     }
 
+    public void Update(string name, string description)
+    {
+        Name = name;
+        Description = description;
+    }
+
     public ErrorOr<Success> AddWorkItem(WorkItem workItem)
     {
         if (WorkItems.Any(wi => wi.Title == workItem.Title))

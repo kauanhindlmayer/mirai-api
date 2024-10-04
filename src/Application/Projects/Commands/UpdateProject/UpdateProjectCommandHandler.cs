@@ -4,13 +4,13 @@ using Domain.Projects;
 using ErrorOr;
 using MediatR;
 
-namespace Application.Projects.Commands.CreateProject;
+namespace Application.Projects.Commands.UpdateProject;
 
-public class CreateProjectCommandHandler(IOrganizationsRepository _organizationsRepository)
-    : IRequestHandler<CreateProjectCommand, ErrorOr<Project>>
+public class UpdateProjectCommandHandler(IOrganizationsRepository _organizationsRepository)
+    : IRequestHandler<UpdateProjectCommand, ErrorOr<Project>>
 {
     public async Task<ErrorOr<Project>> Handle(
-        CreateProjectCommand command,
+        UpdateProjectCommand command,
         CancellationToken cancellationToken)
     {
         var organization = await _organizationsRepository.GetByIdWithProjectsAsync(
@@ -22,17 +22,13 @@ public class CreateProjectCommandHandler(IOrganizationsRepository _organizations
             return OrganizationErrors.OrganizationNotFound;
         }
 
-        var project = new Project(
-            command.Name,
-            command.Description,
-            command.OrganizationId);
-
-        var result = organization.AddProject(project);
-        if (result.IsError)
+        var project = organization.Projects.FirstOrDefault(x => x.Id == command.ProjectId);
+        if (project is null)
         {
-            return result.Errors;
+            return ProjectErrors.ProjectNotFound;
         }
 
+        project.Update(command.Name, command.Description);
         _organizationsRepository.Update(organization);
 
         return project;
