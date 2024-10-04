@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   webapp:
     container_name: mirai-api
