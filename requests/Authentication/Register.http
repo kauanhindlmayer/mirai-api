@@ -1,9 +1,0 @@
-POST {{host}}/register
-Content-Type: application/json
-
-{
-  "firstName": "Service",
-  "lastName": "Account",
-  "email": "svc_test_user@example.com",
-  "password": "2HdG!Ae!$Ib(j9Wp"
-}

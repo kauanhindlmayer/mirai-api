@@ -7,11 +7,13 @@ namespace WebApi;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddPresentation(this IServiceCollection services)
+    public static IServiceCollection AddPresentation(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
         services.AddControllers();
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
+        services.AddSwaggerGen(configuration);
         services.AddProblemDetails();
         services.AddSignalR();
         services.AddCorsPolicy();
@@ -19,7 +21,9 @@ public static class DependencyInjection
         return services;
     }
 
-    public static IServiceCollection AddSwaggerGen(this IServiceCollection services)
+    public static IServiceCollection AddSwaggerGen(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
         services.AddSwaggerGen(options =>
         {
@@ -28,7 +32,7 @@ public static class DependencyInjection
             ConfigureSwaggerDoc(options);
             ConfigureXmlComments(options, xmlFilePath);
             ConfigureSignalRSwagger(options, xmlFilePath);
-            ConfigureSecurity(options);
+            ConfigureSecurity(options, configuration);
         });
 
         return services;
@@ -61,7 +65,7 @@ public static class DependencyInjection
         {
             Title = "Mirai",
             Version = "v1",
-            Description = "Mirai (Japanese word for \"future\" and \"forward-thinking\") is a project management tool that aims to help teams collaborate and manage their projects more effectively.",
+            Description = "Mirai (Japanese word for \"future\") is a web-based project management tool that aims to help teams collaborate and manage their projects more effectively.",
         });
     }
 
@@ -81,29 +85,43 @@ public static class DependencyInjection
         });
     }
 
-    private static void ConfigureSecurity(SwaggerGenOptions options)
+    private static void ConfigureSecurity(SwaggerGenOptions options, IConfiguration configuration)
     {
-        options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        options.AddSecurityDefinition("Keycloak", new OpenApiSecurityScheme
         {
-            Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-            Name = "Authorization",
-            In = ParameterLocation.Header,
-            Type = SecuritySchemeType.ApiKey,
-        });
-
-        options.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
+            Type = SecuritySchemeType.OAuth2,
+            Flows = new OpenApiOAuthFlows
             {
-                Reference = new OpenApiReference
+                Implicit = new OpenApiOAuthFlow
                 {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer",
+                    AuthorizationUrl = new Uri(configuration["Keycloak:AuthorizationUrl"]!),
+                    Scopes = new Dictionary<string, string>
+                    {
+                        { "openid", "openid" },
+                        { "profile", "profile" },
+                    },
                 },
             },
-            Array.Empty<string>()
-        },
-    });
+        });
+
+        var securityRequirement = new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Id = "Keycloak",
+                        Type = ReferenceType.SecurityScheme,
+                    },
+                    In = ParameterLocation.Header,
+                    Name = "Bearer",
+                    Scheme = "Bearer",
+                },
+                []
+            },
+        };
+
+        options.AddSecurityRequirement(securityRequirement);
     }
 }

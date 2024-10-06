@@ -8,7 +8,25 @@ services:
       - "5001:5001"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - Database__ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=mirai;Username=postgres;Password=postgres
+    depends_on:
+      db:
+        condition: service_healthy
+
+  keycloak:
+    container_name: mirai-keycloak
+    image: quay.io/keycloak/keycloak:latest
+    command: start-dev
+    environment:
+      - KC_HEALTH_ENABLED=true
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_DB=postgres
+      - KC_DB_URL=jdbc:postgresql://mirai-db:5432/mirai
+      - KC_DB_USERNAME=postgres
+      - KC_DB_PASSWORD=postgres
+      - KC_DB_URL_PROPERTIES=ssl=false
+    ports:
+      - "18080:8080"
     depends_on:
       db:
         condition: service_healthy

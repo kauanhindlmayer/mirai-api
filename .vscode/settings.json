@@ -12,6 +12,7 @@
     "Ardalis",
     "Authorizeable",
     "Hasher",
+    "Keycloak",
     "Mediat",
     "Npgsql",
     "Serilog",

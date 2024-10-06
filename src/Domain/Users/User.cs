@@ -25,9 +25,4 @@ public class User : Entity
     private User()
     {
     }
-
-    public bool IsCorrectPasswordHash(string password, IPasswordHasher passwordHasher)
-    {
-        return passwordHasher.IsCorrectPassword(password, PasswordHash);
-    }
 }
