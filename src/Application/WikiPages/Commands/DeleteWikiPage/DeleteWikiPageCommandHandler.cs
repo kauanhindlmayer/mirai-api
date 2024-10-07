@@ -18,12 +18,12 @@ public class DeleteWikiPageCommandHandler(IWikiPagesRepository _wikiPagesReposit
 
         if (wikiPage is null)
         {
-            return WikiPageErrors.WikiPageNotFound;
+            return WikiPageErrors.NotFound;
         }
 
         if (wikiPage.SubWikiPages.Count > 0)
         {
-            return WikiPageErrors.WikiPageHasSubWikiPages;
+            return WikiPageErrors.HasSubWikiPages;
         }
 
         _wikiPagesRepository.Remove(wikiPage);

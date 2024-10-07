@@ -18,7 +18,7 @@ public class GetBoardQueryHandler(IBoardsRepository _boardRepository)
 
         if (board is null)
         {
-            return BoardErrors.BoardNotFound;
+            return BoardErrors.NotFound;
         }
 
         return board;

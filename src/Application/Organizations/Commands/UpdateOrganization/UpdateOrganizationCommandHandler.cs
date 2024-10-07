@@ -18,7 +18,7 @@ public class UpdateOrganizationCommandHandler(IOrganizationsRepository _organiza
 
         if (organization is null)
         {
-            return OrganizationErrors.OrganizationNotFound;
+            return OrganizationErrors.NotFound;
         }
 
         organization.Update(command.Name, command.Description);

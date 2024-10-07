@@ -44,6 +44,6 @@ public class AddCommentTests(WebAppFactory webAppFactory)
         // Assert
         result.IsError.Should().BeTrue();
         result.Errors.Should().HaveCount(1);
-        result.Errors.First().Should().BeEquivalentTo(WikiPageErrors.WikiPageNotFound);
+        result.Errors.First().Should().BeEquivalentTo(WikiPageErrors.NotFound);
     }
 }

@@ -19,7 +19,7 @@ public class CreateWikiPageCommandHandler(IProjectsRepository _projectsRepositor
 
         if (project is null)
         {
-            return ProjectErrors.ProjectNotFound;
+            return ProjectErrors.NotFound;
         }
 
         if (command.ParentWikiPageId.HasValue)

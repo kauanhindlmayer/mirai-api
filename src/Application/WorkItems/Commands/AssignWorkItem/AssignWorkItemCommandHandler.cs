@@ -20,7 +20,7 @@ public class AssignWorkItemCommandHandler(
 
         if (workItem is null)
         {
-            return WorkItemErrors.WorkItemNotFound;
+            return WorkItemErrors.NotFound;
         }
 
         var assignee = await _usersRepository.GetByIdAsync(

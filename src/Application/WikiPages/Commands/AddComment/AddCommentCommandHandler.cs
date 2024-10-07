@@ -20,7 +20,7 @@ public class AddCommentCommandHandler(
 
         if (wikiPage is null)
         {
-            return WikiPageErrors.WikiPageNotFound;
+            return WikiPageErrors.NotFound;
         }
 
         var currentUser = _currentUserProvider.GetCurrentUser();

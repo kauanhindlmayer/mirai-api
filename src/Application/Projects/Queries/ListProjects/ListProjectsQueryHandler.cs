@@ -19,7 +19,7 @@ public class ListProjectsQueryHandler(IOrganizationsRepository _organizationsRep
 
         if (organization is null)
         {
-            return OrganizationErrors.OrganizationNotFound;
+            return OrganizationErrors.NotFound;
         }
 
         return organization.Projects.ToList();

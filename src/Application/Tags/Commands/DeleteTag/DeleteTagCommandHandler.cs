@@ -20,7 +20,7 @@ public class DeleteTagCommandHandler(
 
         if (project is null)
         {
-            return ProjectErrors.ProjectNotFound;
+            return ProjectErrors.NotFound;
         }
 
         if (await _tagsRepository.IsTagLinkedToAnyWorkItemsAsync(

@@ -11,7 +11,9 @@ public sealed class AdminAuthorizationDelegatingHandler(IOptions<KeycloakOptions
 {
     private readonly KeycloakOptions _keycloakOptions = keycloakOptions.Value;
 
-    protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+    protected override async Task<HttpResponseMessage> SendAsync(
+        HttpRequestMessage request,
+        CancellationToken cancellationToken)
     {
         var authorizationToken = await GetAuthorizationToken(cancellationToken);
 
@@ -44,11 +46,13 @@ public sealed class AdminAuthorizationDelegatingHandler(IOptions<KeycloakOptions
             Content = authorizationRequestContext,
         };
 
-        var authorizationResponse = await base.SendAsync(authorizationRequest, cancellationToken);
+        var authorizationResponse = await base.SendAsync(
+            authorizationRequest,
+            cancellationToken);
 
         authorizationResponse.EnsureSuccessStatusCode();
 
-        return await authorizationResponse.Content.ReadFromJsonAsync<AuthorizationToken>()
+        return await authorizationResponse.Content.ReadFromJsonAsync<AuthorizationToken>(cancellationToken)
             ?? throw new ApplicationException();
     }
 }

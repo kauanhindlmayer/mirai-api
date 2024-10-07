@@ -37,6 +37,6 @@ public class DeleteOrganizationTests(WebAppFactory webAppFactory)
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.Errors.Should().ContainSingle().Which.Should().BeEquivalentTo(OrganizationErrors.OrganizationNotFound);
+        result.Errors.Should().ContainSingle().Which.Should().BeEquivalentTo(OrganizationErrors.NotFound);
     }
 }

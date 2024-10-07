@@ -7,5 +7,5 @@ public sealed class AuthenticationOptions
     public string Audience { get; init; } = string.Empty;
     public string MetadataAddress { get; init; } = string.Empty;
     public bool RequireHttpsMetadata { get; init; }
-    public string Issuer { get; init; } = string.Empty;
+    public string ValidIssuer { get; init; } = string.Empty;
 }

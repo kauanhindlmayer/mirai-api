@@ -18,7 +18,7 @@ public class GetTeamQueryHandler(ITeamsRepository _teamsRepository)
 
         if (team is null)
         {
-            return TeamErrors.TeamNotFound;
+            return TeamErrors.NotFound;
         }
 
         return team;

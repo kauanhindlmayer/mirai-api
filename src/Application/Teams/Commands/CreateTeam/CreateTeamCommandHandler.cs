@@ -19,7 +19,7 @@ public class CreateTeamCommandHandler(IProjectsRepository _projectsRepository)
 
         if (project is null)
         {
-            return ProjectErrors.ProjectNotFound;
+            return ProjectErrors.NotFound;
         }
 
         var team = new Team(project.Id, command.Name);

@@ -18,7 +18,7 @@ public class UpdateWikiPageCommandHandler(IWikiPagesRepository _wikiPagesReposit
 
         if (wikiPage is null)
         {
-            return WikiPageErrors.WikiPageNotFound;
+            return WikiPageErrors.NotFound;
         }
 
         wikiPage.Update(command.Title, command.Content);

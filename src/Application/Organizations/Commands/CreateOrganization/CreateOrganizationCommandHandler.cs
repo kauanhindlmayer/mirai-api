@@ -14,7 +14,7 @@ public class CreateOrganizationCommandHandler(IOrganizationsRepository _organiza
     {
         if (await _organizationsRepository.ExistsByNameAsync(command.Name, cancellationToken))
         {
-            return OrganizationErrors.OrganizationWithSameNameAlreadyExists;
+            return OrganizationErrors.AlreadyExists;
         }
 
         var organization = new Organization(

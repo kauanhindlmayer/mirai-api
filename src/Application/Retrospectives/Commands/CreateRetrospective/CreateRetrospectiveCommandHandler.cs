@@ -19,7 +19,7 @@ public class CreateRetrospectiveCommandHandler(ITeamsRepository _teamsRepository
 
         if (team is null)
         {
-            return TeamErrors.TeamNotFound;
+            return TeamErrors.NotFound;
         }
 
         var retrospective = new Retrospective(

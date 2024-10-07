@@ -20,13 +20,13 @@ public class UpdateTagCommandHandler(
 
         if (project is null)
         {
-            return ProjectErrors.ProjectNotFound;
+            return ProjectErrors.NotFound;
         }
 
         var existingTag = project.Tags.FirstOrDefault(t => t.Id == command.TagId);
         if (existingTag is null)
         {
-            return TagErrors.TagNotFound;
+            return TagErrors.NotFound;
         }
 
         existingTag.UpdateName(command.Name);

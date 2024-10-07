@@ -21,7 +21,7 @@ public class CreateWorkItemCommandHandler(
 
         if (project is null)
         {
-            return ProjectErrors.ProjectNotFound;
+            return ProjectErrors.NotFound;
         }
 
         var workItemCode = await _workItemsRepository.GetNextWorkItemCodeAsync(

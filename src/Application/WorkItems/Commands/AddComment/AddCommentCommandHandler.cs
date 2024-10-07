@@ -20,7 +20,7 @@ public class AddCommentCommandHandler(
 
         if (workItem is null)
         {
-            return WorkItemErrors.WorkItemNotFound;
+            return WorkItemErrors.NotFound;
         }
 
         var currentUser = _currentUserProvider.GetCurrentUser();

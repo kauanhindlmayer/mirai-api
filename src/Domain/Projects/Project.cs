@@ -75,7 +75,7 @@ public class Project : AggregateRoot
     {
         if (Tags.Any(t => t.Name == tag.Name))
         {
-            return TagErrors.TagWithSameNameAlreadyExists;
+            return TagErrors.AlreadyExists;
         }
 
         Tags.Add(tag);
@@ -87,7 +87,7 @@ public class Project : AggregateRoot
         var tag = Tags.FirstOrDefault(t => t.Name == tagName);
         if (tag is null)
         {
-            return TagErrors.TagNotFound;
+            return TagErrors.NotFound;
         }
 
         Tags.Remove(tag);

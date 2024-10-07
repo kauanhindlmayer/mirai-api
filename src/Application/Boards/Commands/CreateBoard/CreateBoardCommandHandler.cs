@@ -21,7 +21,7 @@ public class CreateBoardCommandHandler(
 
         if (project is null)
         {
-            return ProjectErrors.ProjectNotFound;
+            return ProjectErrors.NotFound;
         }
 
         var board = new Board(

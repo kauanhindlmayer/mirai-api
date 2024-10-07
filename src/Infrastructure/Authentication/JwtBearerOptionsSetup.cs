@@ -13,7 +13,7 @@ public sealed class JwtBearerOptionsSetup(IOptions<AuthenticationOptions> authen
         options.Audience = _authenticationOptions.Audience;
         options.MetadataAddress = _authenticationOptions.MetadataAddress;
         options.RequireHttpsMetadata = _authenticationOptions.RequireHttpsMetadata;
-        options.TokenValidationParameters.ValidIssuer = _authenticationOptions.Issuer;
+        options.TokenValidationParameters.ValidIssuer = _authenticationOptions.ValidIssuer;
     }
 
     public void Configure(string? name, JwtBearerOptions options)

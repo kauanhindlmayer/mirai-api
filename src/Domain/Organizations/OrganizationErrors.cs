@@ -4,12 +4,12 @@ namespace Domain.Organizations;
 
 public static class OrganizationErrors
 {
-    public static readonly Error OrganizationNotFound = Error.NotFound(
-        "Organization.OrganizationNotFound",
+    public static readonly Error NotFound = Error.NotFound(
+        "Organization.NotFound",
         "Organization not found.");
 
-    public static readonly Error OrganizationWithSameNameAlreadyExists = Error.Validation(
-        "Organization.OrganizationWithSameNameAlreadyExists",
+    public static readonly Error AlreadyExists = Error.Validation(
+        "Organization.AlreadyExists",
         "An organization with the same name already exists.");
 
     public static readonly Error UserAlreadyMember = Error.Validation(

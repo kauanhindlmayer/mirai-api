@@ -16,7 +16,7 @@ public sealed class RegisterUserCommandHandler(
     {
         if (await _usersRepository.ExistsByEmailAsync(command.Email, cancellationToken))
         {
-            return UserErrors.UserAlreadyExists;
+            return UserErrors.AlreadyExists;
         }
 
         var user = new User(

@@ -18,7 +18,7 @@ public class DeleteColumnCommandHandler(IBoardsRepository _boardsRepository)
 
         if (board is null)
         {
-            return BoardErrors.BoardNotFound;
+            return BoardErrors.NotFound;
         }
 
         var result = board.RemoveColumn(command.ColumnId);

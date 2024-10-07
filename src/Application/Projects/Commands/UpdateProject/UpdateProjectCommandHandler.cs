@@ -19,13 +19,13 @@ public class UpdateProjectCommandHandler(IOrganizationsRepository _organizations
 
         if (organization is null)
         {
-            return OrganizationErrors.OrganizationNotFound;
+            return OrganizationErrors.NotFound;
         }
 
         var project = organization.Projects.FirstOrDefault(x => x.Id == command.ProjectId);
         if (project is null)
         {
-            return ProjectErrors.ProjectNotFound;
+            return ProjectErrors.NotFound;
         }
 
         project.Update(command.Name, command.Description);

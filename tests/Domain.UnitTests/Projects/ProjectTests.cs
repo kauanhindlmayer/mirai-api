@@ -123,7 +123,7 @@ public class ProjectTests
         // Assert
         result.IsError.Should().BeTrue();
         result.Errors.Should().HaveCount(1);
-        result.Errors.First().Should().BeEquivalentTo(TagErrors.TagWithSameNameAlreadyExists);
+        result.Errors.First().Should().BeEquivalentTo(TagErrors.AlreadyExists);
     }
 
     [Fact]
@@ -155,7 +155,7 @@ public class ProjectTests
         // Assert
         result.IsError.Should().BeTrue();
         result.Errors.Should().HaveCount(1);
-        result.Errors.First().Should().BeEquivalentTo(TagErrors.TagNotFound);
+        result.Errors.First().Should().BeEquivalentTo(TagErrors.NotFound);
     }
 
     [Fact]

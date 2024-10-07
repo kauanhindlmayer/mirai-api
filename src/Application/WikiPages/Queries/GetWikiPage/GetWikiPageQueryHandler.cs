@@ -18,7 +18,7 @@ public class GetWikiPageQueryHandler(IWikiPagesRepository _wikiPagesRepository)
 
         if (wikiPage is null)
         {
-            return WikiPageErrors.WikiPageNotFound;
+            return WikiPageErrors.NotFound;
         }
 
         return wikiPage;

@@ -4,11 +4,11 @@ namespace Domain.Users;
 
 public static class UserErrors
 {
-    public static readonly Error UserNotFound = Error.NotFound(
-        code: "User.UserNotFound",
+    public static readonly Error NotFound = Error.NotFound(
+        code: "User.NotFound",
         description: "User not found.");
 
-    public static readonly Error UserAlreadyExists = Error.Conflict(
-        code: "User.UserAlreadyExists",
+    public static readonly Error AlreadyExists = Error.Conflict(
+        code: "User.AlreadyExists",
         description: "User already exists.");
 }

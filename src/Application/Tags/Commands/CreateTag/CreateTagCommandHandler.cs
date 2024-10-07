@@ -20,7 +20,7 @@ public class CreateTagCommandHandler(
 
         if (project is null)
         {
-            return ProjectErrors.ProjectNotFound;
+            return ProjectErrors.NotFound;
         }
 
         var tag = new Tag(command.Name);

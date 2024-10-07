@@ -21,7 +21,7 @@ public class AddTagCommandHandler(
 
         if (workItem is null)
         {
-            return WorkItemErrors.WorkItemNotFound;
+            return WorkItemErrors.NotFound;
         }
 
         var tag = await _tagsRepository.GetByNameAsync(command.TagName, cancellationToken)

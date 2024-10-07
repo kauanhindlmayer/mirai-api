@@ -18,7 +18,7 @@ public class RemoveTagCommandHandler(IWorkItemsRepository _workItemsRepository)
 
         if (workItem is null)
         {
-            return WorkItemErrors.WorkItemNotFound;
+            return WorkItemErrors.NotFound;
         }
 
         var result = workItem.RemoveTag(command.TagName);

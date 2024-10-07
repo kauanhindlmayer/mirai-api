@@ -18,7 +18,7 @@ public class DeleteBoardCommandHandler(IBoardsRepository _boardRepository)
 
         if (board is null)
         {
-            return BoardErrors.BoardNotFound;
+            return BoardErrors.NotFound;
         }
 
         _boardRepository.Remove(board);

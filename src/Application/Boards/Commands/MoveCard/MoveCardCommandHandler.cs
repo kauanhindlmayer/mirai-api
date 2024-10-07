@@ -18,7 +18,7 @@ public class MoveCardCommandHandler(IBoardsRepository _boardRepository)
 
         if (board is null)
         {
-            return BoardErrors.BoardNotFound;
+            return BoardErrors.NotFound;
         }
 
         var column = board.Columns.FirstOrDefault(c => c.Id == command.ColumnId);

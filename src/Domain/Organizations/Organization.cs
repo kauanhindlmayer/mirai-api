@@ -32,7 +32,7 @@ public class Organization : AggregateRoot
     {
         if (Projects.Any(p => p.Name == project.Name))
         {
-            return ProjectErrors.ProjectWithSameNameAlreadyExists;
+            return ProjectErrors.AlreadyExists;
         }
 
         Projects.Add(project);
@@ -44,7 +44,7 @@ public class Organization : AggregateRoot
         var projectToRemove = Projects.FirstOrDefault(p => p.Id == project.Id);
         if (projectToRemove is null)
         {
-            return ProjectErrors.ProjectNotFound;
+            return ProjectErrors.NotFound;
         }
 
         Projects.Remove(projectToRemove);

@@ -18,7 +18,7 @@ public class CreateColumnCommandHandler(IRetrospectivesRepository _retrospective
 
         if (retrospective is null)
         {
-            return RetrospectiveErrors.RetrospectiveNotFound;
+            return RetrospectiveErrors.NotFound;
         }
 
         var column = new RetrospectiveColumn(command.Title, retrospective.Id);

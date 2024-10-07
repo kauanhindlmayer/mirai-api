@@ -37,6 +37,6 @@ public class CreateOrganizationTests(WebAppFactory webAppFactory)
         // Assert
         result.IsError.Should().BeTrue();
         result.Errors.Should().HaveCount(1);
-        result.Errors.First().Should().BeEquivalentTo(OrganizationErrors.OrganizationWithSameNameAlreadyExists);
+        result.Errors.First().Should().BeEquivalentTo(OrganizationErrors.AlreadyExists);
     }
 }

@@ -21,7 +21,7 @@ public class CreateCardCommandHandler(
 
         if (board is null)
         {
-            return BoardErrors.BoardNotFound;
+            return BoardErrors.NotFound;
         }
 
         var workItemCode = await _workItemsRepository.GetNextWorkItemCodeAsync(

@@ -20,7 +20,7 @@ public class AddMemberCommandHandler(
 
         if (team is null)
         {
-            return TeamErrors.TeamNotFound;
+            return TeamErrors.NotFound;
         }
 
         var member = await _usersRepository.GetByIdAsync(
@@ -29,7 +29,7 @@ public class AddMemberCommandHandler(
 
         if (member is null)
         {
-            return TeamErrors.TeamMemberNotFound;
+            return TeamErrors.MemberNotFound;
         }
 
         var result = team.AddMember(member);

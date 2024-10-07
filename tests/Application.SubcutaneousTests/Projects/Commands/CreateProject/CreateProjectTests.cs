@@ -43,7 +43,7 @@ public class CreateProjectTests(WebAppFactory webAppFactory)
         // Assert
         result.IsError.Should().BeTrue();
         result.Errors.Should().HaveCount(1);
-        result.Errors.First().Should().BeEquivalentTo(ProjectErrors.ProjectWithSameNameAlreadyExists);
+        result.Errors.First().Should().BeEquivalentTo(ProjectErrors.AlreadyExists);
     }
 
     [Fact]
@@ -58,6 +58,6 @@ public class CreateProjectTests(WebAppFactory webAppFactory)
         // Assert
         result.IsError.Should().BeTrue();
         result.Errors.Should().HaveCount(1);
-        result.Errors.First().Should().BeEquivalentTo(OrganizationErrors.OrganizationNotFound);
+        result.Errors.First().Should().BeEquivalentTo(OrganizationErrors.NotFound);
     }
 }

@@ -19,7 +19,7 @@ public class DeleteOrganizationCommandHandler(
 
         if (organization is null)
         {
-            return OrganizationErrors.OrganizationNotFound;
+            return OrganizationErrors.NotFound;
         }
 
         _organizationsRepository.Remove(organization);

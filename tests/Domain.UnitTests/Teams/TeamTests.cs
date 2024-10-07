@@ -19,7 +19,7 @@ public class TeamTests
         // Assert
         result.IsError.Should().BeTrue();
         result.Errors.Should().HaveCount(1);
-        result.Errors.First().Should().BeEquivalentTo(TeamErrors.TeamMemberAlreadyExists);
+        result.Errors.First().Should().BeEquivalentTo(TeamErrors.MemberAlreadyExists);
     }
 
     [Fact]
@@ -50,7 +50,7 @@ public class TeamTests
         // Assert
         result.IsError.Should().BeTrue();
         result.Errors.Should().HaveCount(1);
-        result.Errors.First().Should().BeEquivalentTo(TeamErrors.TeamMemberNotFound);
+        result.Errors.First().Should().BeEquivalentTo(TeamErrors.MemberNotFound);
     }
 
     [Fact]

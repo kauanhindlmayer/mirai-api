@@ -28,7 +28,7 @@ public class Team : Entity
     {
         if (Members.Contains(user))
         {
-            return TeamErrors.TeamMemberAlreadyExists;
+            return TeamErrors.MemberAlreadyExists;
         }
 
         Members.Add(user);
@@ -39,7 +39,7 @@ public class Team : Entity
     {
         if (!Members.Contains(user))
         {
-            return TeamErrors.TeamMemberNotFound;
+            return TeamErrors.MemberNotFound;
         }
 
         Members.Remove(user);
@@ -50,7 +50,7 @@ public class Team : Entity
     {
         if (Retrospectives.Any(r => r.Title == retrospective.Title))
         {
-            return RetrospectiveErrors.RetrospectiveAlreadyExists;
+            return RetrospectiveErrors.AlreadyExists;
         }
 
         Retrospectives.Add(retrospective);

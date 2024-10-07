@@ -66,7 +66,7 @@ public class WorkItem : AggregateRoot
         var comment = Comments.SingleOrDefault(c => c.Id == commentId);
         if (comment is null)
         {
-            return WorkItemErrors.WorkItemCommentNotFound;
+            return WorkItemErrors.CommentNotFound;
         }
 
         Comments.Remove(comment);
@@ -83,7 +83,7 @@ public class WorkItem : AggregateRoot
         var tag = Tags.SingleOrDefault(t => t.Name == tagName);
         if (tag is null)
         {
-            return WorkItemErrors.WorkItemTagNotFound;
+            return TagErrors.NotFound;
         }
 
         Tags.Remove(tag);

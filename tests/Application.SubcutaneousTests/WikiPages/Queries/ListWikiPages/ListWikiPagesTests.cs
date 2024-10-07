@@ -50,7 +50,7 @@ public class ListWikiPagesTests(WebAppFactory webAppFactory)
         // Assert
         result.IsError.Should().BeTrue();
         result.Errors.Should().HaveCount(1);
-        result.Errors.First().Should().BeEquivalentTo(ProjectErrors.ProjectNotFound);
+        result.Errors.First().Should().BeEquivalentTo(ProjectErrors.NotFound);
     }
 
     [Fact]

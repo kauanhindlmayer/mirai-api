@@ -4,12 +4,12 @@ namespace Domain.Projects;
 
 public static class ProjectErrors
 {
-    public static readonly Error ProjectNotFound = Error.NotFound(
-        code: "Project.ProjectNotFound",
+    public static readonly Error NotFound = Error.NotFound(
+        code: "Project.NotFound",
         description: "Project not found.");
 
-    public static readonly Error ProjectWithSameNameAlreadyExists = Error.Validation(
-        "Project.ProjectWithSameNameAlreadyExists",
+    public static readonly Error AlreadyExists = Error.Validation(
+        "Project.AlreadyExists",
         "A project with the same name already exists in the organization.");
 
     public static readonly Error WorkItemWithSameTitleAlreadyExists = Error.Conflict(

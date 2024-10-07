@@ -20,13 +20,13 @@ public class CreateItemCommandHandler(
 
         if (retrospective is null)
         {
-            return RetrospectiveErrors.RetrospectiveNotFound;
+            return RetrospectiveErrors.NotFound;
         }
 
         var column = retrospective.Columns.FirstOrDefault(c => c.Id == command.RetrospectiveColumnId);
         if (column is null)
         {
-            return RetrospectiveErrors.RetrospectiveColumnNotFound;
+            return RetrospectiveErrors.ColumnNotFound;
         }
 
         var currentUser = _currentUserProvider.GetCurrentUser();

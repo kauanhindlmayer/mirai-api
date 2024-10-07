@@ -21,7 +21,7 @@ public class ListTagsQueryHandler(
 
         if (project is null)
         {
-            return ProjectErrors.ProjectNotFound;
+            return ProjectErrors.NotFound;
         }
 
         var tags = await _tagsRepository.GetByProjectAsync(

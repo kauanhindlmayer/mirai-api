@@ -19,7 +19,7 @@ public class CreateProjectCommandHandler(IOrganizationsRepository _organizations
 
         if (organization is null)
         {
-            return OrganizationErrors.OrganizationNotFound;
+            return OrganizationErrors.NotFound;
         }
 
         var project = new Project(

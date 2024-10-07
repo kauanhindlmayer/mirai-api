@@ -5,8 +5,8 @@ namespace Domain.Boards;
 
 public static class BoardErrors
 {
-    public static readonly Error BoardNotFound = Error.NotFound(
-        "Board.BoardNotFound",
+    public static readonly Error NotFound = Error.NotFound(
+        "Board.NotFound",
         "Board not found.");
 
     public static readonly Error ColumnAlreadyExists = Error.Validation(

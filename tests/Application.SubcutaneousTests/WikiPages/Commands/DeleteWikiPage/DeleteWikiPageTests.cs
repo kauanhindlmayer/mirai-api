@@ -41,7 +41,7 @@ public class DeleteWikiPageTests(WebAppFactory webAppFactory)
         // Assert
         result.IsError.Should().BeTrue();
         result.Errors.Should().HaveCount(1);
-        result.Errors.First().Should().BeEquivalentTo(WikiPageErrors.WikiPageNotFound);
+        result.Errors.First().Should().BeEquivalentTo(WikiPageErrors.NotFound);
     }
 
     [Fact]
@@ -67,6 +67,6 @@ public class DeleteWikiPageTests(WebAppFactory webAppFactory)
         // Assert
         result.IsError.Should().BeTrue();
         result.Errors.Should().HaveCount(1);
-        result.Errors.First().Should().BeEquivalentTo(WikiPageErrors.WikiPageHasSubWikiPages);
+        result.Errors.First().Should().BeEquivalentTo(WikiPageErrors.HasSubWikiPages);
     }
 }

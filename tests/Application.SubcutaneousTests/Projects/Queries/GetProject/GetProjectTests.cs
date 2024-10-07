@@ -41,6 +41,6 @@ public class GetProjectTests(WebAppFactory webAppFactory)
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.Errors.Should().ContainSingle().Which.Should().BeEquivalentTo(ProjectErrors.ProjectNotFound);
+        result.Errors.Should().ContainSingle().Which.Should().BeEquivalentTo(ProjectErrors.NotFound);
     }
 }

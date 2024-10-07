@@ -19,7 +19,7 @@ public class ListWikiPagesQueryHandler(IProjectsRepository _projectsRepository)
 
         if (project is null)
         {
-            return ProjectErrors.ProjectNotFound;
+            return ProjectErrors.NotFound;
         }
 
         var rootPages = project.WikiPages

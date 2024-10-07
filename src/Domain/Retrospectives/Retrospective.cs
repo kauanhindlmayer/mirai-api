@@ -27,7 +27,7 @@ public class Retrospective : AggregateRoot
     {
         if (Columns.Any(c => c.Title == column.Title))
         {
-            return RetrospectiveErrors.RetrospectiveColumnAlreadyExists;
+            return RetrospectiveErrors.ColumnAlreadyExists;
         }
 
         column.UpdatePosition(Columns.Count);

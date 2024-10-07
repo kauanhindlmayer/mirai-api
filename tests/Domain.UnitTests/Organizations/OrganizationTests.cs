@@ -20,7 +20,7 @@ public class OrganizationTests
         // Assert
         result.IsError.Should().BeTrue();
         result.Errors.Should().HaveCount(1);
-        result.Errors.First().Should().BeEquivalentTo(ProjectErrors.ProjectWithSameNameAlreadyExists);
+        result.Errors.First().Should().BeEquivalentTo(ProjectErrors.AlreadyExists);
     }
 
     [Fact]

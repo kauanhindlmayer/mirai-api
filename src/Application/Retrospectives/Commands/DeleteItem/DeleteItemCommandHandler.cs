@@ -18,13 +18,13 @@ public class DeleteItemCommandHandler(IRetrospectivesRepository _retrospectivesR
 
         if (retrospective is null)
         {
-            return RetrospectiveErrors.RetrospectiveNotFound;
+            return RetrospectiveErrors.NotFound;
         }
 
         var column = retrospective.Columns.FirstOrDefault(c => c.Id == command.ColumnId);
         if (column is null)
         {
-            return RetrospectiveErrors.RetrospectiveColumnNotFound;
+            return RetrospectiveErrors.ColumnNotFound;
         }
 
         var result = column.RemoveItem(command.ItemId);

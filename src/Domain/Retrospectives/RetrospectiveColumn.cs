@@ -25,7 +25,7 @@ public class RetrospectiveColumn : Entity
     {
         if (Items.Any(i => i.Description == item.Description))
         {
-            return RetrospectiveErrors.RetrospectiveItemAlreadyExists;
+            return RetrospectiveErrors.ItemAlreadyExists;
         }
 
         item.UpdatePosition(Items.Count);
@@ -38,7 +38,7 @@ public class RetrospectiveColumn : Entity
         var item = Items.FirstOrDefault(i => i.Id == itemId);
         if (item is null)
         {
-            return RetrospectiveErrors.RetrospectiveItemNotFound;
+            return RetrospectiveErrors.ItemNotFound;
         }
 
         Items.Remove(item);

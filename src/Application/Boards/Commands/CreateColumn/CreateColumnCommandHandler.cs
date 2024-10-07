@@ -18,7 +18,7 @@ public class CreateColumnCommandHandler(IBoardsRepository _boardsRepository)
 
         if (board is null)
         {
-            return BoardErrors.BoardNotFound;
+            return BoardErrors.NotFound;
         }
 
         var column = new BoardColumn(

@@ -19,7 +19,7 @@ public class ListWorkItemsQueryHandler(IProjectsRepository _projectsRepository)
 
         if (project is null)
         {
-            return ProjectErrors.ProjectNotFound;
+            return ProjectErrors.NotFound;
         }
 
         return project.WorkItems.ToList();
