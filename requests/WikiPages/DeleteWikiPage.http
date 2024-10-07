@@ -1,5 +1,0 @@
-@wikiPageId = e8018058-74ee-4d27-9529-63634270cac0
-
-DELETE {{host}}/wiki-pages/{{wikiPageId}}
-Content-Type: application/json
-Authorization: Bearer {{token}}

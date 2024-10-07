@@ -8,6 +8,7 @@ services:
       - 5001:5001
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - Database__ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=mirai;Username=postgres;Password=postgres
     depends_on:
       db:
         condition: service_healthy
@@ -15,18 +16,15 @@ services:
   keycloak:
     container_name: mirai-idp
     image: quay.io/keycloak/keycloak:latest
-    command: start-dev
+    command: start-dev --import-realm
     environment:
-      - KC_HEALTH_ENABLED=true
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin
     volumes:
       - ./.container/identity:/opt/jboss/keycloak/standalone/data
+      - ./.files/mirai-realm-export.json:/opt/keycloak/data/import/mirai-realm-export.json
     ports:
       - 18080:8080
-    depends_on:
-      db:
-        condition: service_healthy
 
   db:
     container_name: mirai-db

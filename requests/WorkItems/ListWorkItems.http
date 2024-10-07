@@ -1,5 +1,0 @@
-@projectId = 3697a1a4-c429-4c44-8e12-e593538c1a4c
-
-GET {{host}}/projects/{{projectId}}/work-items
-Content-Type: application/json
-Authorization: Bearer {{token}}

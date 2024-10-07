@@ -1,9 +1,0 @@
-@teamId = c09f852d-9f08-4227-be94-4be43eea1bdc
-
-GET {{host}}/teams/{{teamId}}/members
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-{
-  "memberId": "c09f852d-9f08-4227-be94-4be43eea1bdc",
-}

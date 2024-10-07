@@ -1,5 +1,0 @@
-@organizationId = 09441901-ec30-4d95-8170-8eff875eb5ac
-
-GET {{host}}/organizations/{{organizationId}}
-Content-Type: application/json
-Authorization: Bearer {{token}}

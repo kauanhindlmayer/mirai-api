@@ -1,8 +1,0 @@
-POST {{host}}/teams
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-{
-  "projectId": "c09f852d-9f08-4227-be94-4be43eea1bdc",
-  "name": "Team",
-}

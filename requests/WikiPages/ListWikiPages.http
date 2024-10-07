@@ -1,5 +1,0 @@
-@projectId = e8018058-74ee-4d27-9529-63634270cac0
-
-GET {{host}}/wiki-pages/{{projectId}}
-Content-Type: application/json
-Authorization: Bearer {{token}}

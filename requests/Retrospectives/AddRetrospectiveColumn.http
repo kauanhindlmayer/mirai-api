@@ -1,9 +1,0 @@
-@retrospectiveId = 43ba0dcc-3a4c-4028-a807-8da524653cc7
-
-POST {{host}}/retrospectives/{{retrospectiveId}}/columns
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-{
-  "title": "What went well",
-}

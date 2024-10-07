@@ -1,4 +1,5 @@
 using Application.Common.Interfaces;
+using Infrastructure.Authentication;
 using Infrastructure.Boards.Persistence;
 using Infrastructure.Common.Persistence;
 using Infrastructure.Organizations.Persistence;
@@ -17,7 +18,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Options;
 
 namespace Infrastructure;
 
@@ -78,17 +79,24 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
-            {
-                options.RequireHttpsMetadata = false;
-                options.Audience = configuration["Authentication:Audience"];
-                options.MetadataAddress = configuration["Authentication:MetadataAddress"]!;
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidIssuer = configuration["Authentication:ValidIssuer"],
-                };
-            });
+        var authenticationOptions = configuration.GetSection(AuthenticationOptions.SectionName);
+        services.Configure<AuthenticationOptions>(authenticationOptions);
+
+        var keycloakOptions = configuration.GetSection(KeycloakOptions.SectionName);
+        services.Configure<KeycloakOptions>(keycloakOptions);
+
+        services
+            .ConfigureOptions<JwtBearerOptionsSetup>()
+            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer();
+
+        services.AddTransient<AdminAuthorizationDelegatingHandler>();
+
+        services.AddHttpClient<IAuthenticationService, AuthenticationService>((serviceProvider, httpClient) =>
+        {
+            var keycloakOptions = serviceProvider.GetRequiredService<IOptions<KeycloakOptions>>().Value;
+            httpClient.BaseAddress = new Uri(keycloakOptions.AdminUrl);
+        }).AddHttpMessageHandler<AdminAuthorizationDelegatingHandler>();
 
         return services;
     }
