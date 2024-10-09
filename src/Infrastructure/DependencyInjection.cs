@@ -98,6 +98,12 @@ public static class DependencyInjection
             httpClient.BaseAddress = new Uri(keycloakOptions.AdminUrl);
         }).AddHttpMessageHandler<AdminAuthorizationDelegatingHandler>();
 
+        services.AddHttpClient<IJwtService, JwtService>((serviceProvider, httpClient) =>
+        {
+            var keycloakOptions = serviceProvider.GetRequiredService<IOptions<KeycloakOptions>>().Value;
+            httpClient.BaseAddress = new Uri(keycloakOptions.TokenUrl);
+        });
+
         return services;
     }
 }

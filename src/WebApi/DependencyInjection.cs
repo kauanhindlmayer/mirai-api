@@ -32,7 +32,6 @@ public static class DependencyInjection
             ConfigureSwaggerDoc(options);
             ConfigureXmlComments(options, xmlFilePath);
             ConfigureSignalRSwagger(options, xmlFilePath);
-            ConfigureSecurity(options, configuration);
         });
 
         return services;
@@ -83,45 +82,5 @@ public static class DependencyInjection
             swaggerGenOptions.UseHubXmlCommentsSummaryAsTag = true;
             swaggerGenOptions.UseXmlComments(xmlFilePath);
         });
-    }
-
-    private static void ConfigureSecurity(SwaggerGenOptions options, IConfiguration configuration)
-    {
-        options.AddSecurityDefinition("Keycloak", new OpenApiSecurityScheme
-        {
-            Type = SecuritySchemeType.OAuth2,
-            Flows = new OpenApiOAuthFlows
-            {
-                Implicit = new OpenApiOAuthFlow
-                {
-                    AuthorizationUrl = new Uri(configuration["Keycloak:AuthorizationUrl"]!),
-                    Scopes = new Dictionary<string, string>
-                    {
-                        { "openid", "openid" },
-                        { "profile", "profile" },
-                    },
-                },
-            },
-        });
-
-        var securityRequirement = new OpenApiSecurityRequirement
-        {
-            {
-                new OpenApiSecurityScheme
-                {
-                    Reference = new OpenApiReference
-                    {
-                        Id = "Keycloak",
-                        Type = ReferenceType.SecurityScheme,
-                    },
-                    In = ParameterLocation.Header,
-                    Name = "Bearer",
-                    Scheme = "Bearer",
-                },
-                []
-            },
-        };
-
-        options.AddSecurityRequirement(securityRequirement);
     }
 }

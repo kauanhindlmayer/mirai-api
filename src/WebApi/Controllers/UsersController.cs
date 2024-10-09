@@ -1,4 +1,5 @@
-using Application.Users.RegisterUser;
+using Application.Users.Commands.RegisterUser;
+using Application.Users.Queries.LoginUser;
 using Contracts.Users;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -17,7 +18,7 @@ public class UsersController(ISender _mediator) : ApiController
     [HttpPost("register")]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Register(RegisterUserRequest request)
+    public async Task<IActionResult> RegisterUser(RegisterUserRequest request)
     {
         var command = new RegisterUserCommand(
             request.Email,
@@ -29,6 +30,24 @@ public class UsersController(ISender _mediator) : ApiController
 
         return result.Match(
             userId => Ok(userId),
+            Problem);
+    }
+
+    /// <summary>
+    /// Log in a user.
+    /// </summary>
+    /// <param name="request">The details of the user to log in.</param>
+    [HttpPost("login")]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> LoginUser(LoginUserRequest request)
+    {
+        var query = new LoginUserQuery(request.Email, request.Password);
+
+        var result = await _mediator.Send(query);
+
+        return result.Match(
+            accessToken => Ok(accessToken.Value),
             Problem);
     }
 }

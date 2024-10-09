@@ -3,7 +3,7 @@ using Domain.Users;
 using ErrorOr;
 using MediatR;
 
-namespace Application.Users.RegisterUser;
+namespace Application.Users.Commands.RegisterUser;
 
 public sealed class RegisterUserCommandHandler(
     IUsersRepository _usersRepository,

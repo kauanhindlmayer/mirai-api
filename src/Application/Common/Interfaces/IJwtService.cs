@@ -1,11 +1,11 @@
-using Domain.Users;
+using ErrorOr;
 
 namespace Application.Common.Interfaces;
 
-public interface IAuthenticationService
+public interface IJwtService
 {
-    Task<string> RegisterAsync(
-        User user,
+    Task<ErrorOr<string>> GetAccessTokenAsync(
+        string email,
         string password,
         CancellationToken cancellationToken = default);
 }

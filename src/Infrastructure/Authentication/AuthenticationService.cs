@@ -2,10 +2,13 @@ using System.Net.Http.Json;
 using Application.Common.Interfaces;
 using Domain.Users;
 using Infrastructure.Authentication.Models;
+using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Authentication;
 
-public class AuthenticationService(HttpClient httpClient)
+public class AuthenticationService(
+    HttpClient httpClient,
+    ILogger<AuthenticationService> logger)
     : IAuthenticationService
 {
     private const string PasswordCredentialType = "password";
@@ -22,9 +25,9 @@ public class AuthenticationService(HttpClient httpClient)
         [
             new()
             {
+                Type = PasswordCredentialType,
                 Value = password,
                 Temporary = false,
-                Type = PasswordCredentialType,
             }
         ];
 
@@ -32,6 +35,8 @@ public class AuthenticationService(HttpClient httpClient)
             "users",
             userRepresentationModel,
             cancellationToken);
+
+        logger.LogInformation("Keycloak response: {response}", response);
 
         return ExtractIdentityIdFromLocationHeader(response);
     }
@@ -47,10 +52,13 @@ public class AuthenticationService(HttpClient httpClient)
             throw new InvalidOperationException("Location header is missing.");
         }
 
-        var userSegmentValueIndex = locationHeader.IndexOf(
+        int userSegmentValueIndex = locationHeader.IndexOf(
             usersSegmentName,
             StringComparison.InvariantCultureIgnoreCase);
 
-        return locationHeader[(userSegmentValueIndex + usersSegmentName.Length)..];
+        string userIdentityId = locationHeader.Substring(
+            userSegmentValueIndex + usersSegmentName.Length);
+
+        return userIdentityId;
     }
 }

@@ -1,10 +1,10 @@
 using ErrorOr;
 using MediatR;
 
-namespace Application.Users.RegisterUser;
+namespace Application.Users.Commands.RegisterUser;
 
 public sealed record RegisterUserCommand(
     string Email,
+    string Password,
     string FirstName,
-    string LastName,
-    string Password) : IRequest<ErrorOr<Guid>>;
+    string LastName) : IRequest<ErrorOr<Guid>>;
