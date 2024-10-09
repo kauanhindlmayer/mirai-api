@@ -9,14 +9,12 @@ using Application.Boards.Queries.ListBoards;
 using Contracts.Boards;
 using Domain.Boards;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using DomainWorkItemType = Domain.WorkItems.Enums.WorkItemType;
 
 namespace WebApi.Controllers;
 
 [Route("api/projects/{projectId:guid}/boards")]
-[AllowAnonymous]
 public class BoardsController(ISender _mediator) : ApiController
 {
     /// <summary>

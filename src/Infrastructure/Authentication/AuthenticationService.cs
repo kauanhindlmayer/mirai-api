@@ -2,14 +2,10 @@ using System.Net.Http.Json;
 using Application.Common.Interfaces;
 using Domain.Users;
 using Infrastructure.Authentication.Models;
-using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Authentication;
 
-public class AuthenticationService(
-    HttpClient httpClient,
-    ILogger<AuthenticationService> logger)
-    : IAuthenticationService
+public class AuthenticationService(HttpClient httpClient) : IAuthenticationService
 {
     private const string PasswordCredentialType = "password";
     private readonly HttpClient _httpClient = httpClient;
@@ -35,8 +31,6 @@ public class AuthenticationService(
             "users",
             userRepresentationModel,
             cancellationToken);
-
-        logger.LogInformation("Keycloak response: {response}", response);
 
         return ExtractIdentityIdFromLocationHeader(response);
     }

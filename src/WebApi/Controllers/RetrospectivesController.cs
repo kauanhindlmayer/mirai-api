@@ -6,7 +6,6 @@ using Application.Retrospectives.Queries.GetRetrospective;
 using Contracts.Retrospectives;
 using Domain.Retrospectives;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using WebApi.Hubs;
@@ -14,7 +13,6 @@ using WebApi.Hubs;
 namespace WebApi.Controllers;
 
 [Route("api/teams/{teamId:guid}/retrospectives")]
-[AllowAnonymous]
 public class RetrospectivesController(
     ISender _mediator,
     IHubContext<RetrospectiveHub, IRetrospectiveHub> _hubContext) : ApiController

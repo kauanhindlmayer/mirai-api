@@ -36,7 +36,6 @@ services:
     environment:
       - KC_BOOTSTRAP_ADMIN_USERNAME=admin
       - KC_BOOTSTRAP_ADMIN_PASSWORD=admin
-      - KEYCLOAK_LOGLEVEL=DEBUG
     volumes:
       - keycloak_data:/opt/jboss/keycloak/standalone/data
       - ./.files/mirai-realm-export.json:/opt/keycloak/data/import/realm.json
