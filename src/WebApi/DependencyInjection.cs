@@ -32,6 +32,7 @@ public static class DependencyInjection
             ConfigureSwaggerDoc(options);
             ConfigureXmlComments(options, xmlFilePath);
             ConfigureSignalRSwagger(options, xmlFilePath);
+            ConfigureSecurity(options, configuration);
         });
 
         return services;
@@ -81,6 +82,32 @@ public static class DependencyInjection
             swaggerGenOptions.UseHubXmlCommentsSummaryAsTagDescription = true;
             swaggerGenOptions.UseHubXmlCommentsSummaryAsTag = true;
             swaggerGenOptions.UseXmlComments(xmlFilePath);
+        });
+    }
+
+    private static void ConfigureSecurity(SwaggerGenOptions options, IConfiguration configuration)
+    {
+        options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+            Name = "Authorization",
+            In = ParameterLocation.Header,
+            Type = SecuritySchemeType.ApiKey,
+        });
+
+        options.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer",
+                    },
+                },
+                Array.Empty<string>()
+            },
         });
     }
 }
