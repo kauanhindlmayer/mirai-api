@@ -5,8 +5,8 @@ using Serilog.Context;
 
 namespace Application.Common.Behaviors;
 
-public sealed class RequestLoggingPipelineBehavior<TRequest, TResponse>(
-    ILogger<RequestLoggingPipelineBehavior<TRequest, TResponse>> _logger)
+public sealed class LoggingBehavior<TRequest, TResponse>(
+    ILogger<LoggingBehavior<TRequest, TResponse>> _logger)
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
     where TResponse : IErrorOr

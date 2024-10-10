@@ -42,6 +42,15 @@ services:
     ports:
       - 18080:8080
 
+  mirai-seq:
+    container_name: mirai-seq
+    image: datalust/seq:latest
+    environment:
+      - ACCEPT_EULA=Y
+    ports:
+      - 5341:5341
+      - 8081:80
+
 volumes:
   postgres_data:
   keycloak_data:

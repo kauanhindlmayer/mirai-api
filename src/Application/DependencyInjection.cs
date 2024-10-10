@@ -12,7 +12,7 @@ public static class DependencyInjection
         {
             options.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly);
 
-            options.AddOpenBehavior(typeof(RequestLoggingPipelineBehavior<,>));
+            options.AddOpenBehavior(typeof(LoggingBehavior<,>));
             options.AddOpenBehavior(typeof(AuthorizationBehavior<,>));
             options.AddOpenBehavior(typeof(ValidationBehavior<,>));
             options.AddOpenBehavior(typeof(UnitOfWorkBehavior<,>));
