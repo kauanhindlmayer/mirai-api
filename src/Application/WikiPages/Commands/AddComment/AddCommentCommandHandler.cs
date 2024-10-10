@@ -7,7 +7,7 @@ namespace Application.WikiPages.Commands.AddComment;
 
 public class AddCommentCommandHandler(
     IWikiPagesRepository _wikiPagesRepository,
-    ICurrentUserProvider _currentUserProvider)
+    IUserContext _userContext)
     : IRequestHandler<AddCommentCommand, ErrorOr<WikiPageComment>>
 {
     public async Task<ErrorOr<WikiPageComment>> Handle(
@@ -23,11 +23,9 @@ public class AddCommentCommandHandler(
             return WikiPageErrors.NotFound;
         }
 
-        var currentUser = _currentUserProvider.GetCurrentUser();
-
         var comment = new WikiPageComment(
             wikiPage.Id,
-            currentUser.Id,
+            _userContext.UserId,
             command.Content);
 
         wikiPage.AddComment(comment);

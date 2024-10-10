@@ -40,9 +40,10 @@ public class WebAppFactory : WebApplicationFactory<IAssemblyMarker>, IAsyncLifet
 
         builder.ConfigureTestServices(services =>
         {
-            services
-                .RemoveAll<ICurrentUserProvider>()
-                .AddScoped<ICurrentUserProvider>(_ => TestCurrentUserProvider);
+            // TODO: Replace the current usr provider implementation with the user context implementation
+            // services
+            //     .RemoveAll<ICurrentUserProvider>()
+            //     .AddScoped<ICurrentUserProvider>(_ => TestCurrentUserProvider);
 
             services
                 .RemoveAll<DbContextOptions<AppDbContext>>()

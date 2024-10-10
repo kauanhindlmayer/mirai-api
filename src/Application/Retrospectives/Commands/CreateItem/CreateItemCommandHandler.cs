@@ -7,7 +7,7 @@ namespace Application.Retrospectives.Commands.CreateItem;
 
 public class CreateItemCommandHandler(
     IRetrospectivesRepository _retrospectivesRepository,
-    ICurrentUserProvider _currentUserProvider)
+    IUserContext _userContext)
     : IRequestHandler<CreateItemCommand, ErrorOr<RetrospectiveItem>>
 {
     public async Task<ErrorOr<RetrospectiveItem>> Handle(
@@ -29,12 +29,10 @@ public class CreateItemCommandHandler(
             return RetrospectiveErrors.ColumnNotFound;
         }
 
-        var currentUser = _currentUserProvider.GetCurrentUser();
-
         var retrospectiveItem = new RetrospectiveItem(
             command.Description,
             command.RetrospectiveColumnId,
-            currentUser.Id);
+            _userContext.UserId);
 
         var result = column.AddItem(retrospectiveItem);
         if (result.IsError)

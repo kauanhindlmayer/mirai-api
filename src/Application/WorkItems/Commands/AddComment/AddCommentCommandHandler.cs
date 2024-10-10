@@ -7,7 +7,7 @@ namespace Application.WorkItems.Commands.AddComment;
 
 public class AddCommentCommandHandler(
     IWorkItemsRepository _workItemsRepository,
-    ICurrentUserProvider _currentUserProvider)
+    IUserContext _userContext)
     : IRequestHandler<AddCommentCommand, ErrorOr<WorkItemComment>>
 {
     public async Task<ErrorOr<WorkItemComment>> Handle(
@@ -23,11 +23,9 @@ public class AddCommentCommandHandler(
             return WorkItemErrors.NotFound;
         }
 
-        var currentUser = _currentUserProvider.GetCurrentUser();
-
         var comment = new WorkItemComment(
             workItem.Id,
-            currentUser.Id,
+            _userContext.UserId,
             command.Content);
 
         workItem.AddComment(comment);

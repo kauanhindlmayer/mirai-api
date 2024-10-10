@@ -1,24 +1,26 @@
 using Application.Common.Interfaces;
 using Infrastructure.Authentication;
+using Infrastructure.Authorization;
 using Infrastructure.Boards.Persistence;
 using Infrastructure.Common.Persistence;
 using Infrastructure.Organizations.Persistence;
 using Infrastructure.Projects.Persistence;
 using Infrastructure.Retrospectives.Persistence;
-using Infrastructure.Security;
-using Infrastructure.Security.CurrentUserProvider;
-using Infrastructure.Security.PolicyEnforcer;
 using Infrastructure.Services;
 using Infrastructure.Tags.Persistence;
 using Infrastructure.Teams.Persistence;
 using Infrastructure.Users.Persistence;
 using Infrastructure.WikiPages.Persistence;
 using Infrastructure.WorkItems.Persistence;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using AuthenticationOptions = Infrastructure.Authentication.AuthenticationOptions;
+using AuthenticationService = Infrastructure.Authentication.AuthenticationService;
+using IAuthenticationService = Application.Common.Interfaces.IAuthenticationService;
 
 namespace Infrastructure;
 
@@ -68,9 +70,9 @@ public static class DependencyInjection
 
     private static IServiceCollection AddAuthorization(this IServiceCollection services)
     {
-        services.AddScoped<IAuthorizationService, AuthorizationService>();
-        services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
-        services.AddSingleton<IPolicyEnforcer, PolicyEnforcer>();
+        services.AddScoped<AuthorizationService>();
+        services.AddTransient<IClaimsTransformation, CustomClaimsTransformation>();
+        services.AddScoped<IUserContext, UserContext>();
 
         return services;
     }
