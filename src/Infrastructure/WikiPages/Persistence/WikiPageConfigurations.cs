@@ -23,6 +23,9 @@ public class WikiPageConfigurations : IEntityTypeConfiguration<WikiPage>
         builder.Property(p => p.Content)
             .IsRequired();
 
+        builder.Property(p => p.Position)
+            .IsRequired();
+
         builder.HasMany(p => p.SubWikiPages)
             .WithOne(p => p.ParentWikiPage)
             .HasForeignKey(p => p.ParentWikiPageId)

@@ -16,7 +16,7 @@ public class Project : AggregateRoot
     public Guid OrganizationId { get; private set; }
     public Organization Organization { get; private set; } = null!;
     public ICollection<WorkItem> WorkItems { get; private set; } = [];
-    public ICollection<WikiPage> WikiPages { get; private set; } = [];
+    public List<WikiPage> WikiPages { get; private set; } = [];
     public ICollection<Team> Teams { get; private set; } = [];
     public ICollection<Tag> Tags { get; private set; } = [];
     public ICollection<Board> Boards { get; private set; } = [];
@@ -56,8 +56,50 @@ public class Project : AggregateRoot
             return ProjectErrors.WikiPageWithSameTitleAlreadyExists;
         }
 
+        wikiPage.UpdatePosition(WikiPages.Count);
         WikiPages.Add(wikiPage);
         return Result.Success;
+    }
+
+    public ErrorOr<Success> MoveWikiPage(Guid wikiPageId, Guid? targetParentId, int targetPosition)
+    {
+        var wikiPage = WikiPages.FirstOrDefault(wp => wp.Id == wikiPageId);
+        if (wikiPage is null)
+        {
+            return WikiPageErrors.NotFound;
+        }
+
+        WikiPages.Remove(wikiPage);
+
+        if (targetParentId is not null)
+        {
+            var targetParent = WikiPages.FirstOrDefault(wp => wp.Id == targetParentId);
+            if (targetParent is null)
+            {
+                return WikiPageErrors.ParentWikiPageNotFound;
+            }
+
+            targetParent.InsertSubWikiPage(targetPosition, wikiPage);
+        }
+        else
+        {
+            wikiPage.RemoveParent();
+            WikiPages.Insert(targetPosition, wikiPage);
+        }
+
+        ReorderWikiPages();
+
+        return Result.Success;
+    }
+
+    public void ReorderWikiPages()
+    {
+        var position = 0;
+        foreach (var wikiPage in WikiPages.OrderBy(wp => wp.Position))
+        {
+            wikiPage.UpdatePosition(position);
+            position++;
+        }
     }
 
     public ErrorOr<Success> AddTeam(Team team)

@@ -1,6 +1,7 @@
 using Application.WikiPages.Commands.AddComment;
 using Application.WikiPages.Commands.CreateWikiPage;
 using Application.WikiPages.Commands.DeleteWikiPage;
+using Application.WikiPages.Commands.MoveWikiPage;
 using Application.WikiPages.Commands.UpdateWikiPage;
 using Application.WikiPages.Queries.GetWikiPage;
 using Application.WikiPages.Queries.ListWikiPages;
@@ -138,6 +139,31 @@ public class WikiPagesController(ISender _mediator) : ApiController
 
         return result.Match(
             wikiPage => Ok(ToDto(wikiPage)),
+            Problem);
+    }
+
+    /// <summary>
+    /// Move a wiki page to a new parent wiki page.
+    /// </summary>
+    /// <param name="projectId">The ID of the project the wiki page belongs to.</param>
+    /// <param name="wikiPageId">The ID of the wiki page to move.</param>
+    /// <param name="request">The details of the move operation.</param>
+    [HttpPut("{wikiPageId:guid}/move")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> MoveWikiPage(Guid projectId, Guid wikiPageId, MoveWikiPageRequest request)
+    {
+        var command = new MoveWikiPageCommand(
+            projectId,
+            wikiPageId,
+            request.TargetParentId,
+            request.TargetPosition);
+
+        var result = await _mediator.Send(command);
+
+        return result.Match(
+            _ => NoContent(),
             Problem);
     }
 
