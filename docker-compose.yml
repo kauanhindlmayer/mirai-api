@@ -8,6 +8,8 @@ services:
       - 5001:5001
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+    volumes:
+      - ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
     depends_on:
       mirai-db:
         condition: service_healthy
