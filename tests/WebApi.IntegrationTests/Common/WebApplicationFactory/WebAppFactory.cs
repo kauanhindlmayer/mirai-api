@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace WebApi.IntegrationTests.Common.WebApplicationFactory;
 
-public class WebAppFactory : WebApplicationFactory<IAssemblyMarker>, IAsyncLifetime
+public class WebAppFactory : WebApplicationFactory<IWebApiAssemblyMarker>, IAsyncLifetime
 {
     private SqliteTestDatabase _testDatabase = null!;
 

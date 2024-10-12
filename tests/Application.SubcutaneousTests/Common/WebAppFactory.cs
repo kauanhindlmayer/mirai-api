@@ -7,11 +7,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using WebApi;
 
 namespace Application.SubcutaneousTests.Common;
 
-public class WebAppFactory : WebApplicationFactory<IAssemblyMarker>, IAsyncLifetime
+public class WebAppFactory : WebApplicationFactory<IWebApiAssemblyMarker>, IAsyncLifetime
 {
     public TestCurrentUserProvider TestCurrentUserProvider { get; private set; } = new();
     public SqliteTestDatabase TestDatabase { get; set; } = null!;

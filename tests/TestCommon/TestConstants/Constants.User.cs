@@ -1,5 +1,3 @@
-using Application.Common.Security.Roles;
-
 namespace TestCommon.TestConstants;
 
 public static partial class Constants
@@ -12,6 +10,6 @@ public static partial class Constants
         public const string Password = "2HdG!Ae!$Ib(j9Wp";
         public static readonly Guid Id = Guid.NewGuid();
         public static readonly List<string> Permissions = [];
-        public static readonly List<string> Roles = [Role.Admin];
+        public static readonly List<string> Roles = [];
     }
 }

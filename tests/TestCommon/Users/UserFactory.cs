@@ -11,6 +11,6 @@ public static class UserFactory
         string lastName = Constants.User.LastName,
         string emailName = Constants.User.Email)
     {
-        return new(firstName, lastName, emailName, string.Empty);
+        return new(firstName, lastName, emailName);
     }
 }
