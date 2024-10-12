@@ -3,6 +3,7 @@ using Application.Retrospectives.Commands.CreateItem;
 using Application.Retrospectives.Commands.CreateRetrospective;
 using Application.Retrospectives.Commands.DeleteItem;
 using Application.Retrospectives.Queries.GetRetrospective;
+using Application.Retrospectives.Queries.ListRetrospectives;
 using Contracts.Retrospectives;
 using Domain.Retrospectives;
 using MediatR;
@@ -120,6 +121,24 @@ public class RetrospectivesController(
 
         return result.Match(
             _ => NoContent(),
+            Problem);
+    }
+
+    /// <summary>
+    /// List all retrospective sessions in a team.
+    /// </summary>
+    /// <param name="teamId">The team ID.</param>
+    [HttpGet]
+    [ProducesResponseType(typeof(List<RetrospectiveResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> ListRetrospectives(Guid teamId)
+    {
+        var query = new ListRetrospectivesQuery(teamId);
+
+        var result = await _mediator.Send(query);
+
+        return result.Match(
+            retrospectives => Ok(retrospectives.Select(ToDto)),
             Problem);
     }
 

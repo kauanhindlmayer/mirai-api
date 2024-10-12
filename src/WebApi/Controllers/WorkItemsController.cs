@@ -96,7 +96,7 @@ public class WorkItemsController(ISender _mediator) : ApiController
     /// </summary>
     /// <param name="projectId">The ID of the project to list work items for.</param>
     [HttpGet]
-    [ProducesResponseType(typeof(IEnumerable<WorkItemResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(List<WorkItemResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> ListWorkItems(Guid projectId)
     {
         var query = new ListWorkItemsQuery(projectId);

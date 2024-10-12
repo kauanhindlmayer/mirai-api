@@ -21,6 +21,13 @@ public class TeamsRepository(AppDbContext dbContext) : ITeamsRepository
             .FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
     }
 
+    public async Task<Team?> GetByIdWithRetrospectivesAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Teams
+            .Include(t => t.Retrospectives)
+            .FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
+    }
+
     public async Task<List<Team>> ListAsync(Guid projectId, CancellationToken cancellationToken = default)
     {
         return await _dbContext.Teams

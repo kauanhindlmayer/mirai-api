@@ -66,7 +66,7 @@ public class WikiPagesController(ISender _mediator) : ApiController
     /// </summary>
     /// <param name="projectId">The ID of the project to list wiki pages for.</param>
     [HttpGet]
-    [ProducesResponseType(typeof(IEnumerable<WikiPageSummaryResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(List<WikiPageSummaryResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> ListWikiPages(Guid projectId)
     {
         var query = new ListWikiPagesQuery(projectId);
