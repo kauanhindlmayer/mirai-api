@@ -1,17 +1,17 @@
-using Contracts.Authentication;
+using Contracts.Users;
 
 namespace WebApi.IntegrationTests.Common.Authentication;
 
 public static class AuthenticationRequestFactory
 {
-    public static LoginRequest CreateLoginRequest(
+    public static LoginUserRequest CreateLoginRequest(
         string email = Constants.User.Email,
         string password = Constants.User.Password)
     {
         return new(email, password);
     }
 
-    public static RegisterRequest CreateRegisterRequest(
+    public static RegisterUserRequest CreateRegisterRequest(
         string email = Constants.User.Email,
         string password = Constants.User.Password,
         string firstName = Constants.User.FirstName,

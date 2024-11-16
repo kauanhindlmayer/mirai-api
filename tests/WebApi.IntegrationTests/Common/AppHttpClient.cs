@@ -1,7 +1,7 @@
 using System.Net.Http.Headers;
-using Contracts.Authentication;
 using Contracts.Organizations;
 using Contracts.Projects;
+using Contracts.Users;
 using WebApi.IntegrationTests.Common.Authentication;
 using WebApi.IntegrationTests.Common.Organizations;
 using WebApi.IntegrationTests.Common.Projects;
@@ -118,13 +118,13 @@ public class AppHttpClient(HttpClient _httpClient)
         return await _httpClient.DeleteAsync($"api/organizations/{id}");
     }
 
-    public async Task<string> GenerateTokenAsync(RegisterRequest? registerRequest = null)
+    public async Task<string> GenerateTokenAsync(RegisterUserRequest? registerRequest = null)
     {
         registerRequest ??= AuthenticationRequestFactory.CreateRegisterRequest();
         var response = await _httpClient.PostAsJsonAsync("api/authentication/register", registerRequest);
         response.Should().BeSuccessful();
-        var tokenResponse = await response.Content.ReadFromJsonAsync<AuthenticationResponse>();
-        tokenResponse.Should().NotBeNull();
-        return tokenResponse!.Token;
+        var accessToken = await response.Content.ReadFromJsonAsync<string>();
+        accessToken.Should().NotBeNull();
+        return accessToken!;
     }
 }

@@ -7,12 +7,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using WebApi;
 
 namespace Application.SubcutaneousTests.Common;
 
 public class WebAppFactory : WebApplicationFactory<IWebApiAssemblyMarker>, IAsyncLifetime
 {
-    public TestCurrentUserProvider TestCurrentUserProvider { get; private set; } = new();
     public SqliteTestDatabase TestDatabase { get; set; } = null!;
 
     public IMediator CreateMediator()
@@ -43,7 +43,6 @@ public class WebAppFactory : WebApplicationFactory<IWebApiAssemblyMarker>, IAsyn
             // services
             //     .RemoveAll<ICurrentUserProvider>()
             //     .AddScoped<ICurrentUserProvider>(_ => TestCurrentUserProvider);
-
             services
                 .RemoveAll<DbContextOptions<AppDbContext>>()
                 .AddDbContext<AppDbContext>((sp, options) => options.UseSqlite(TestDatabase.Connection));

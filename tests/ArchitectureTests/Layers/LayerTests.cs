@@ -21,7 +21,6 @@ public class LayerTests : BaseTest
     public void DomainLayer_DoesNotReference_InfrastructureLayer()
     {
         var result = Types.InAssembly(DomainAssembly)
-
             .Should()
             .NotHaveDependencyOn(InfrastructureAssembly.GetName().Name)
             .GetResult();
