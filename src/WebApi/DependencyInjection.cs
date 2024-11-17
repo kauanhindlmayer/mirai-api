@@ -42,6 +42,7 @@ public static class DependencyInjection
     {
         app.UseCors();
         app.MapHub<RetrospectiveHub>("/hubs/retrospective");
+
         return app;
     }
 

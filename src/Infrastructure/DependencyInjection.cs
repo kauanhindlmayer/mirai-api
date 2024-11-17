@@ -35,7 +35,8 @@ public static class DependencyInjection
             .AddServices()
             .AddAuthorization()
             .AddAuthentication(configuration)
-            .AddPersistence(configuration);
+            .AddPersistence(configuration)
+            .AddHealthChecks(configuration);
 
         return services;
     }
@@ -51,7 +52,7 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var connectionString = configuration[DbConstants.DefaultConnectionStringPath];
+        var connectionString = configuration["ConnectionStrings:DefaultConnection"];
         services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -107,5 +108,19 @@ public static class DependencyInjection
         });
 
         return services;
+    }
+
+    private static void AddHealthChecks(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        var connectionString = configuration["ConnectionStrings:DefaultConnection"]!;
+        var keycloakServiceUri = new Uri(configuration["Keycloak:BaseUrl"]!);
+
+        services.AddHealthChecks()
+            .AddNpgSql(connectionString)
+            .AddUrlGroup(keycloakServiceUri, HttpMethod.Get, "keycloak");
+
+        // .AddRedis(configuration["ConnectionStrings.Redis"]!)
     }
 }
