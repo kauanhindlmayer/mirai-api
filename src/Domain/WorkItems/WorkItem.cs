@@ -41,7 +41,7 @@ public class WorkItem : AggregateRoot
         Status = WorkItemStatus.New;
     }
 
-    private WorkItem()
+    public WorkItem()
     {
     }
 

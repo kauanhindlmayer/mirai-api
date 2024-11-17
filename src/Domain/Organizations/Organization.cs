@@ -18,7 +18,7 @@ public class Organization : AggregateRoot
         Description = description;
     }
 
-    private Organization()
+    public Organization()
     {
     }
 

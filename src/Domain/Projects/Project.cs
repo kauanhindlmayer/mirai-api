@@ -28,7 +28,7 @@ public class Project : AggregateRoot
         OrganizationId = organizationId;
     }
 
-    private Project()
+    public Project()
     {
     }
 

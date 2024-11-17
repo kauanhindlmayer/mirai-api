@@ -1,13 +1,4 @@
 {
-  "rest-client.environmentVariables": {
-    "$shared": {
-      "token": "",
-      "userId": ""
-    },
-    "dev": {
-      "host": "http://localhost:5001"
-    }
-  },
   "cSpell.words": [
     "Ardalis",
     "Authorizeable",
