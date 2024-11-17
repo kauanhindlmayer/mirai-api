@@ -2,6 +2,7 @@ using Application;
 using Infrastructure;
 using Serilog;
 using WebApi;
+using WebApi.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 {
@@ -24,6 +25,7 @@ var app = builder.Build();
     {
         app.UseSwagger();
         app.UseSwaggerUI();
+        app.ApplyMigrations();
     }
 
     app.UseSerilogRequestLogging();
