@@ -1,5 +1,4 @@
 using Application.Common.Caching;
-using Application.Common.Interfaces;
 using ErrorOr;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -21,7 +20,6 @@ internal sealed class QueryCachingBehavior<TRequest, TResponse>(
         RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
     {
-        // TODO: Refactor to avoid race conditions
         var cachedResult = await _cacheService.GetAsync<TResponse>(
             request.CacheKey,
             cancellationToken);

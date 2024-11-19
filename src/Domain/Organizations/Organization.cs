@@ -1,4 +1,5 @@
 using Domain.Common;
+using Domain.Organizations.Events;
 using Domain.Projects;
 using Domain.Users;
 using ErrorOr;
@@ -16,6 +17,7 @@ public class Organization : AggregateRoot
     {
         Name = name;
         Description = description;
+        _domainEvents.Add(new OrganizationCreatedEvent(Id));
     }
 
     public Organization()
@@ -26,6 +28,12 @@ public class Organization : AggregateRoot
     {
         Name = name;
         Description = description;
+        _domainEvents.Add(new OrganizationUpdatedEvent(Id));
+    }
+
+    public void Delete()
+    {
+        _domainEvents.Add(new OrganizationDeletedEvent(Id));
     }
 
     public ErrorOr<Success> AddProject(Project project)
