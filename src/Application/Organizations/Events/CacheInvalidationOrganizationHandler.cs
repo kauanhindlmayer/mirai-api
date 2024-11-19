@@ -1,3 +1,4 @@
+using Application.Common;
 using Application.Common.Interfaces.Services;
 using Domain.Organizations.Events;
 using MediatR;
