@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Authentication;
 
-public sealed class AdminAuthorizationDelegatingHandler(IOptions<KeycloakOptions> keycloakOptions)
+internal sealed class AdminAuthorizationDelegatingHandler(IOptions<KeycloakOptions> keycloakOptions)
     : DelegatingHandler
 {
     private readonly KeycloakOptions _keycloakOptions = keycloakOptions.Value;

@@ -1,4 +1,4 @@
-using Application.Common.Interfaces;
+using Application.Common.Interfaces.Services;
 using Microsoft.AspNetCore.Http;
 
 namespace Infrastructure.Authentication;

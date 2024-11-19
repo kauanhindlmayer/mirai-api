@@ -1,5 +1,5 @@
 using Application.Common.Interfaces;
-using Infrastructure.Common.Persistence;
+using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -44,8 +44,8 @@ public class WebAppFactory : WebApplicationFactory<IWebApiAssemblyMarker>, IAsyn
             //     .RemoveAll<ICurrentUserProvider>()
             //     .AddScoped<ICurrentUserProvider>(_ => TestCurrentUserProvider);
             services
-                .RemoveAll<DbContextOptions<AppDbContext>>()
-                .AddDbContext<AppDbContext>((sp, options) => options.UseSqlite(TestDatabase.Connection));
+                .RemoveAll<DbContextOptions<ApplicationDbContext>>()
+                .AddDbContext<ApplicationDbContext>((sp, options) => options.UseSqlite(TestDatabase.Connection));
         });
 
         builder.ConfigureAppConfiguration((context, conf) => conf.AddInMemoryCollection(new Dictionary<string, string?>

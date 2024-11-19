@@ -1,4 +1,4 @@
-using Application.Common.Interfaces;
+using Application.Common.Interfaces.Persistence;
 using Domain.Organizations;
 using Domain.Projects;
 using ErrorOr;

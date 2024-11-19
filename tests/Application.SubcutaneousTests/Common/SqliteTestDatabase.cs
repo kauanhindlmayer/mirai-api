@@ -1,4 +1,4 @@
-using Infrastructure.Common.Persistence;
+using Infrastructure.Persistence;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,11 +24,11 @@ public class SqliteTestDatabase : IDisposable
     public void InitializeDatabase()
     {
         Connection.Open();
-        var options = new DbContextOptionsBuilder<AppDbContext>()
+        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
             .UseSqlite(Connection)
             .Options;
 
-        using var context = new AppDbContext(options, null!, null!);
+        using var context = new ApplicationDbContext(options, null!, null!);
         context.Database.EnsureDeleted();
         context.Database.EnsureCreated();
     }

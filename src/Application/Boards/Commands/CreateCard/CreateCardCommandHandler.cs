@@ -1,4 +1,4 @@
-using Application.Common.Interfaces;
+using Application.Common.Interfaces.Persistence;
 using Domain.Boards;
 using Domain.WorkItems;
 using ErrorOr;

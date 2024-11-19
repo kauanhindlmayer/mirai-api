@@ -1,5 +1,5 @@
 ﻿using System.Net.Http.Json;
-using Application.Common.Interfaces;
+using Application.Common.Interfaces.Services;
 using Domain.Users;
 using ErrorOr;
 using Infrastructure.Authentication.Models;

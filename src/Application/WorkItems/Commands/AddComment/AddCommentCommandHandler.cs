@@ -1,4 +1,5 @@
-using Application.Common.Interfaces;
+using Application.Common.Interfaces.Persistence;
+using Application.Common.Interfaces.Services;
 using Domain.WorkItems;
 using ErrorOr;
 using MediatR;

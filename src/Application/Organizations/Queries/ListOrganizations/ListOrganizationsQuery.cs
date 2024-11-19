@@ -1,4 +1,4 @@
-using Application.Common.Caching;
+using Application.Common.Interfaces.Services;
 using Domain.Organizations;
 using ErrorOr;
 

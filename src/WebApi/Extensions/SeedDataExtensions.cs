@@ -3,7 +3,7 @@ using Domain.Organizations;
 using Domain.Projects;
 using Domain.WorkItems;
 using Domain.WorkItems.Enums;
-using Infrastructure.Common.Persistence;
+using Infrastructure.Persistence;
 
 namespace WebApi.Extensions;
 
@@ -12,7 +12,7 @@ public static class SeedDataExtensions
     public static void SeedData(this IApplicationBuilder app)
     {
         using var scope = app.ApplicationServices.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
         var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
         logger.LogInformation("Seeding data...");

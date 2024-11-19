@@ -1,5 +1,5 @@
 using HealthChecks.UI.Client;
-using Infrastructure.Common.Middleware;
+using Infrastructure.Common.Middlewares;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 

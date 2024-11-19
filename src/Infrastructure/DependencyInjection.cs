@@ -1,18 +1,10 @@
-using Application.Common.Caching;
-using Application.Common.Interfaces;
+using Application.Common.Interfaces.Persistence;
+using Application.Common.Interfaces.Services;
 using Infrastructure.Authentication;
 using Infrastructure.Authorization;
-using Infrastructure.Boards.Persistence;
-using Infrastructure.Common.Persistence;
-using Infrastructure.Organizations.Persistence;
-using Infrastructure.Projects.Persistence;
-using Infrastructure.Retrospectives.Persistence;
+using Infrastructure.Persistence;
+using Infrastructure.Persistence.Repositories;
 using Infrastructure.Services;
-using Infrastructure.Tags.Persistence;
-using Infrastructure.Teams.Persistence;
-using Infrastructure.Users.Persistence;
-using Infrastructure.WikiPages.Persistence;
-using Infrastructure.WorkItems.Persistence;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using AuthenticationOptions = Infrastructure.Authentication.AuthenticationOptions;
 using AuthenticationService = Infrastructure.Authentication.AuthenticationService;
-using IAuthenticationService = Application.Common.Interfaces.IAuthenticationService;
+using IAuthenticationService = Application.Common.Interfaces.Services.IAuthenticationService;
 
 namespace Infrastructure;
 
@@ -45,7 +37,7 @@ public static class DependencyInjection
 
     private static IServiceCollection AddServices(this IServiceCollection services)
     {
-        services.AddSingleton<IDateTimeProvider, SystemDateTimeProvider>();
+        services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 
         return services;
     }
@@ -55,7 +47,7 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         var connectionString = configuration.GetConnectionString("Database");
-        services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
+        services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IOrganizationsRepository, OrganizationsRepository>();
@@ -126,7 +118,9 @@ public static class DependencyInjection
         return services;
     }
 
-    private static void AddCaching(this IServiceCollection services, IConfiguration configuration)
+    private static void AddCaching(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
         var connectionString = configuration.GetConnectionString("Redis");
         services.AddStackExchangeRedisCache(options => options.Configuration = connectionString);

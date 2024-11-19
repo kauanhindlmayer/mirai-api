@@ -1,4 +1,4 @@
-using Application.Common.Interfaces;
+using Application.Common.Interfaces.Persistence;
 using MediatR;
 
 namespace Application.Common.Behaviors;

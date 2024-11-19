@@ -1,4 +1,4 @@
-using Application.Common.Interfaces;
+using Application.Common.Interfaces.Persistence;
 using Domain.Teams;
 using ErrorOr;
 using MediatR;

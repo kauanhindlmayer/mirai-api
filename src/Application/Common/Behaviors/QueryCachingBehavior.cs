@@ -1,4 +1,4 @@
-using Application.Common.Caching;
+using Application.Common.Interfaces.Services;
 using ErrorOr;
 using MediatR;
 using Microsoft.Extensions.Logging;

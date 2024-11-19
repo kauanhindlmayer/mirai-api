@@ -1,6 +1,6 @@
 using System.Buffers;
 using System.Text.Json;
-using Application.Common.Caching;
+using Application.Common.Interfaces.Services;
 using Microsoft.Extensions.Caching.Distributed;
 
 namespace Infrastructure.Services;
