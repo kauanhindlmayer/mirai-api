@@ -7,7 +7,7 @@
       "request": "attach",
       "platform": "netCore",
       "sourceFileMap": {
-        "/src": "${workspaceFolder}"
+        "/src": "${workspaceFolder}/src"
       }
     },
     {

@@ -1,3 +1,4 @@
+using Application.Common.Caching;
 using Application.Common.Interfaces;
 using Infrastructure.Authentication;
 using Infrastructure.Authorization;
@@ -36,7 +37,8 @@ public static class DependencyInjection
             .AddAuthorization()
             .AddAuthentication(configuration)
             .AddPersistence(configuration)
-            .AddHealthChecks(configuration);
+            .AddHealthChecks(configuration)
+            .AddCaching(configuration);
 
         return services;
     }
@@ -52,7 +54,7 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var connectionString = configuration["ConnectionStrings:DefaultConnection"];
+        var connectionString = configuration.GetConnectionString("Database");
         services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -110,17 +112,24 @@ public static class DependencyInjection
         return services;
     }
 
-    private static void AddHealthChecks(
+    private static IServiceCollection AddHealthChecks(
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var connectionString = configuration["ConnectionStrings:DefaultConnection"]!;
         var keycloakServiceUri = new Uri(configuration["Keycloak:BaseUrl"]!);
 
         services.AddHealthChecks()
-            .AddNpgSql(connectionString)
+            .AddNpgSql(configuration.GetConnectionString("Database")!)
+            .AddRedis(configuration.GetConnectionString("Redis")!)
             .AddUrlGroup(keycloakServiceUri, HttpMethod.Get, "keycloak");
 
-        // .AddRedis(configuration["ConnectionStrings.Redis"]!)
+        return services;
+    }
+
+    private static void AddCaching(this IServiceCollection services, IConfiguration configuration)
+    {
+        var connectionString = configuration.GetConnectionString("Redis");
+        services.AddStackExchangeRedisCache(options => options.Configuration = connectionString);
+        services.AddSingleton<ICacheService, CacheService>();
     }
 }

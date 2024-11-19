@@ -53,6 +53,13 @@ services:
       - 5341:5341
       - 8081:80
 
+  mirai-redis:
+    container_name: mirai-redis
+    image: redis:latest
+    restart: always
+    ports:
+      - 6379:6379
+
 volumes:
   postgres_data:
   keycloak_data:

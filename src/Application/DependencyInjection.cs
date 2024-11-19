@@ -14,6 +14,7 @@ public static class DependencyInjection
 
             options.AddOpenBehavior(typeof(LoggingBehavior<,>));
             options.AddOpenBehavior(typeof(ValidationBehavior<,>));
+            options.AddOpenBehavior(typeof(QueryCachingBehavior<,>));
             options.AddOpenBehavior(typeof(UnitOfWorkBehavior<,>));
         });
 
