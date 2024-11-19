@@ -5,16 +5,24 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Tags.Persistence;
 
-public class TagsRepository(AppDbContext dbContext) : ITagsRepository
+public class TagsRepository : Repository<Tag>, ITagsRepository
 {
-    private readonly AppDbContext _dbContext = dbContext;
+    public TagsRepository(AppDbContext dbContext)
+        : base(dbContext)
+    {
+    }
 
-    public Task<Tag?> GetByNameAsync(string name, CancellationToken cancellationToken = default)
+    public Task<Tag?> GetByNameAsync(
+        string name,
+        CancellationToken cancellationToken = default)
     {
         return _dbContext.Tags.FirstOrDefaultAsync(t => t.Name == name, cancellationToken);
     }
 
-    public Task<List<Tag>> GetByProjectAsync(Guid projectId, string? searchTerm, CancellationToken cancellationToken = default)
+    public Task<List<Tag>> GetByProjectAsync(
+        Guid projectId,
+        string? searchTerm,
+        CancellationToken cancellationToken = default)
     {
         var query = _dbContext.Tags
             .AsNoTracking()
@@ -28,7 +36,10 @@ public class TagsRepository(AppDbContext dbContext) : ITagsRepository
         return query.ToListAsync(cancellationToken);
     }
 
-    public async Task<bool> IsTagLinkedToAnyWorkItemsAsync(Guid projectId, string name, CancellationToken cancellationToken = default)
+    public async Task<bool> IsTagLinkedToAnyWorkItemsAsync(
+        Guid projectId,
+        string name,
+        CancellationToken cancellationToken = default)
     {
         return await _dbContext.Tags
             .AsNoTracking()

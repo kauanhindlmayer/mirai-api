@@ -5,30 +5,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Boards.Persistence;
 
-public class BoardsRepository(AppDbContext dbContext) : IBoardsRepository
+public class BoardsRepository : Repository<Board>, IBoardsRepository
 {
-    private readonly AppDbContext _dbContext = dbContext;
-
-    public async Task AddAsync(Board board, CancellationToken cancellationToken)
+    public BoardsRepository(AppDbContext dbContext)
+        : base(dbContext)
     {
-        await _dbContext.Boards.AddAsync(board, cancellationToken);
     }
 
-    public async Task<Board?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public new async Task<Board?> GetByIdAsync(
+        Guid id,
+        CancellationToken cancellationToken = default)
     {
         return await _dbContext.Boards
             .Include(board => board.Columns)
                 .ThenInclude(column => column.Cards)
             .FirstOrDefaultAsync(board => board.Id == id, cancellationToken);
-    }
-
-    public void Update(Board board)
-    {
-        _dbContext.Boards.Update(board);
-    }
-
-    public void Remove(Board board)
-    {
-        _dbContext.Boards.Remove(board);
     }
 }

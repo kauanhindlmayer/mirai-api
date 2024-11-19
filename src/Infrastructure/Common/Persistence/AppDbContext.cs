@@ -20,35 +20,35 @@ public class AppDbContext(
     IHttpContextAccessor _httpContextAccessor,
     IPublisher _publisher) : DbContext(options)
 {
-    public DbSet<User> Users { get; init; }
+    public DbSet<User> Users { get; init; } = null!;
 
-    public DbSet<Organization> Organizations { get; init; }
+    public DbSet<Organization> Organizations { get; init; } = null!;
 
-    public DbSet<Project> Projects { get; init; }
+    public DbSet<Project> Projects { get; init; } = null!;
 
-    public DbSet<Team> Teams { get; init; }
+    public DbSet<Team> Teams { get; init; } = null!;
 
-    public DbSet<Board> Boards { get; init; }
+    public DbSet<Board> Boards { get; init; } = null!;
 
-    public DbSet<BoardColumn> BoardColumns { get; init; }
+    public DbSet<BoardColumn> BoardColumns { get; init; } = null!;
 
-    public DbSet<BoardCard> BoardCards { get; init; }
+    public DbSet<BoardCard> BoardCards { get; init; } = null!;
 
-    public DbSet<WorkItem> WorkItems { get; init; }
+    public DbSet<WorkItem> WorkItems { get; init; } = null!;
 
-    public DbSet<WorkItemComment> WorkItemComments { get; init; }
+    public DbSet<WorkItemComment> WorkItemComments { get; init; } = null!;
 
-    public DbSet<WikiPage> WikiPages { get; init; }
+    public DbSet<WikiPage> WikiPages { get; init; } = null!;
 
-    public DbSet<WikiPageComment> WikiPageComments { get; init; }
+    public DbSet<WikiPageComment> WikiPageComments { get; init; } = null!;
 
-    public DbSet<Retrospective> Retrospectives { get; init; }
+    public DbSet<Retrospective> Retrospectives { get; init; } = null!;
 
-    public DbSet<RetrospectiveColumn> RetrospectiveColumns { get; init; }
+    public DbSet<RetrospectiveColumn> RetrospectiveColumns { get; init; } = null!;
 
-    public DbSet<RetrospectiveItem> RetrospectiveItems { get; init; }
+    public DbSet<RetrospectiveItem> RetrospectiveItems { get; init; } = null!;
 
-    public DbSet<Tag> Tags { get; init; }
+    public DbSet<Tag> Tags { get; init; } = null!;
 
     public async override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

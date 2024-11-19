@@ -5,16 +5,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Retrospectives.Persistence;
 
-public class RetrospectivesRepository(AppDbContext dbContext) : IRetrospectivesRepository
+public class RetrospectivesRepository : Repository<Retrospective>,
+    IRetrospectivesRepository
 {
-    private readonly AppDbContext _dbContext = dbContext;
-
-    public async Task AddAsync(Retrospective retrospective, CancellationToken cancellationToken = default)
+    public RetrospectivesRepository(AppDbContext dbContext)
+        : base(dbContext)
     {
-        await _dbContext.Retrospectives.AddAsync(retrospective, cancellationToken);
     }
 
-    public Task<Retrospective?> GetByIdWithColumnsAsync(Guid id, CancellationToken cancellationToken = default)
+    public Task<Retrospective?> GetByIdWithColumnsAsync(
+        Guid id,
+        CancellationToken cancellationToken = default)
     {
         return _dbContext.Retrospectives
             .Include(x => x.Columns)
@@ -22,21 +23,13 @@ public class RetrospectivesRepository(AppDbContext dbContext) : IRetrospectivesR
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
-    public Task<List<Retrospective>> ListAsync(Guid teamId, CancellationToken cancellationToken = default)
+    public Task<List<Retrospective>> ListAsync(
+        Guid teamId,
+        CancellationToken cancellationToken = default)
     {
         return _dbContext.Retrospectives
             .AsNoTracking()
             .Where(x => x.TeamId == teamId)
             .ToListAsync(cancellationToken);
-    }
-
-    public void Update(Retrospective retrospective)
-    {
-        _dbContext.Retrospectives.Update(retrospective);
-    }
-
-    public void Remove(Retrospective retrospective)
-    {
-        _dbContext.Retrospectives.Remove(retrospective);
     }
 }
