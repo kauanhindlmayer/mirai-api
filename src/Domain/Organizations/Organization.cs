@@ -17,7 +17,7 @@ public class Organization : AggregateRoot
     {
         Name = name;
         Description = description;
-        _domainEvents.Add(new OrganizationCreatedEvent(Id));
+        _domainEvents.Add(new OrganizationCreatedDomainEvent(Id));
     }
 
     public Organization()
@@ -28,12 +28,12 @@ public class Organization : AggregateRoot
     {
         Name = name;
         Description = description;
-        _domainEvents.Add(new OrganizationUpdatedEvent(Id));
+        _domainEvents.Add(new OrganizationUpdatedDomainEvent(Id));
     }
 
     public void Delete()
     {
-        _domainEvents.Add(new OrganizationDeletedEvent(Id));
+        _domainEvents.Add(new OrganizationDeletedDomainEvent(Id));
     }
 
     public ErrorOr<Success> AddProject(Project project)

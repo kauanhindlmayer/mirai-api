@@ -5,7 +5,7 @@ namespace WebApi.Hubs;
 
 public class RetrospectiveHub : Hub<IRetrospectiveHub>
 {
-    private static int _connectedClientsCount;
+    private int _connectedClientsCount;
 
     public async Task SendRetrospectiveItem(RetrospectiveItemResponse retrospectiveItem)
     {

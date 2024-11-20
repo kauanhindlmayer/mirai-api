@@ -1,6 +1,7 @@
 using Contracts.Organizations;
+using TestCommon.TestConstants;
 
-namespace WebApi.IntegrationTests.Common.Organizations;
+namespace WebApi.FunctionalTests.Organizations;
 
 public static class OrganizationRequestFactory
 {
@@ -8,13 +9,13 @@ public static class OrganizationRequestFactory
         string name = Constants.Organization.Name,
         string description = Constants.Organization.Description)
     {
-        return new(name, description);
+        return new CreateOrganizationRequest(name, description);
     }
 
     public static UpdateOrganizationRequest CreateUpdateOrganizationRequest(
         string name = Constants.Organization.UpdatedName,
         string description = Constants.Organization.UpdatedDescription)
     {
-        return new(name, description);
+        return new UpdateOrganizationRequest(name, description);
     }
 }

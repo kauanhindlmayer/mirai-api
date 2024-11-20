@@ -1,4 +1,5 @@
 using Application.Users.Commands.RegisterUser;
+using Application.Users.Common;
 using Application.Users.Queries.GetCurrentUser;
 using Application.Users.Queries.LoginUser;
 using Contracts.Users;
@@ -10,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebApi.Controllers;
 
 [Route("api/users")]
-public class UsersController(ISender _mediator) : ApiController
+public class UsersController(ISender mediator) : ApiController
 {
     /// <summary>
     /// Register a new user.
@@ -28,7 +29,7 @@ public class UsersController(ISender _mediator) : ApiController
             request.FirstName,
             request.LastName);
 
-        var result = await _mediator.Send(command);
+        var result = await mediator.Send(command);
 
         return result.Match(
             userId => Ok(userId),
@@ -41,17 +42,15 @@ public class UsersController(ISender _mediator) : ApiController
     /// <param name="request">The details of the user to log in.</param>
     [AllowAnonymous]
     [HttpPost("login")]
-    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(AccessTokenResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> LoginUser(LoginUserRequest request)
     {
         var query = new LoginUserQuery(request.Email, request.Password);
 
-        var result = await _mediator.Send(query);
+        var result = await mediator.Send(query);
 
-        return result.Match(
-            accessToken => Ok(accessToken.Value),
-            Problem);
+        return result.Match(Ok, Problem);
     }
 
     /// <summary>
@@ -63,7 +62,7 @@ public class UsersController(ISender _mediator) : ApiController
     {
         var query = new GetCurrentUserQuery();
 
-        var result = await _mediator.Send(query);
+        var result = await mediator.Send(query);
 
         return result.Match(
             user => Ok(ToDto(user)),
