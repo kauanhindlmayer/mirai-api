@@ -7,15 +7,15 @@ using MediatR;
 namespace Application.Users.Commands.RegisterUser;
 
 public sealed class RegisterUserCommandHandler(
-    IUsersRepository usersRepository,
-    IAuthenticationService authenticationService)
+    IUsersRepository _usersRepository,
+    IAuthenticationService _authenticationService)
     : IRequestHandler<RegisterUserCommand, ErrorOr<Guid>>
 {
     public async Task<ErrorOr<Guid>> Handle(
         RegisterUserCommand command,
         CancellationToken cancellationToken)
     {
-        if (await usersRepository.ExistsByEmailAsync(command.Email, cancellationToken))
+        if (await _usersRepository.ExistsByEmailAsync(command.Email, cancellationToken))
         {
             return UserErrors.AlreadyExists;
         }
@@ -25,13 +25,13 @@ public sealed class RegisterUserCommandHandler(
             command.LastName,
             command.Email);
 
-        var identityId = await authenticationService.RegisterAsync(
+        var identityId = await _authenticationService.RegisterAsync(
             user,
             command.Password,
             cancellationToken);
 
         user.SetIdentityId(identityId);
-        await usersRepository.AddAsync(user, cancellationToken);
+        await _usersRepository.AddAsync(user, cancellationToken);
 
         return user.Id;
     }

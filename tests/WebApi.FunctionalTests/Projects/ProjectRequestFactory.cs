@@ -1,6 +1,7 @@
 using Contracts.Projects;
+using TestCommon.TestConstants;
 
-namespace WebApi.IntegrationTests.Common.Projects;
+namespace WebApi.FunctionalTests.Projects;
 
 public static class ProjectRequestFactory
 {
@@ -8,6 +9,6 @@ public static class ProjectRequestFactory
         string name = Constants.Organization.Name,
         string description = Constants.Organization.Description)
     {
-        return new(name, description);
+        return new CreateProjectRequest(name, description);
     }
 }

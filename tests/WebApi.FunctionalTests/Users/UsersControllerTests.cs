@@ -19,7 +19,7 @@ public class UserControllerTests : BaseFunctionalTest
     public async Task RegisterUser_WhenRequestIsValid_ShouldReturnOk()
     {
         // Arrange
-        var request = UserRequestFactory.CreateRegisterUserRequest(email: "new.user@gmail.com");
+        var request = UserRequestFactory.CreateRegisterUserRequest(email: "test@test.com");
 
         // Act
         var response = await HttpClient.PostAsJsonAsync("api/users/register", request);
@@ -42,10 +42,7 @@ public class UserControllerTests : BaseFunctionalTest
     public async Task GetLoggedInUser_WhenRequestIsValid_ShouldReturnUser()
     {
         // Arrange
-        var accessToken = await GetAccessToken();
-        HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
-            JwtBearerDefaults.AuthenticationScheme,
-            accessToken);
+        await SetAuthorizationHeaderAsync();
 
         // Act
         var user = await HttpClient.GetFromJsonAsync<UserResponse>("api/users/me");

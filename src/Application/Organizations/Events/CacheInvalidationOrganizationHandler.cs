@@ -6,23 +6,23 @@ using MediatR;
 namespace Application.Organizations.Events;
 
 internal class CacheInvalidationOrganizationHandler(ICacheService cacheService)
-    : INotificationHandler<OrganizationCreatedEvent>,
-    INotificationHandler<OrganizationUpdatedEvent>,
-    INotificationHandler<OrganizationDeletedEvent>
+    : INotificationHandler<OrganizationCreatedDomainEvent>,
+    INotificationHandler<OrganizationUpdatedDomainEvent>,
+    INotificationHandler<OrganizationDeletedDomainEvent>
 {
     private readonly ICacheService _cacheService = cacheService;
 
-    public Task Handle(OrganizationCreatedEvent notification, CancellationToken cancellationToken)
+    public Task Handle(OrganizationCreatedDomainEvent notification, CancellationToken cancellationToken)
     {
         return InvalidateCache(notification.Id, cancellationToken);
     }
 
-    public Task Handle(OrganizationUpdatedEvent notification, CancellationToken cancellationToken)
+    public Task Handle(OrganizationUpdatedDomainEvent notification, CancellationToken cancellationToken)
     {
         return InvalidateCache(notification.Id, cancellationToken);
     }
 
-    public Task Handle(OrganizationDeletedEvent notification, CancellationToken cancellationToken)
+    public Task Handle(OrganizationDeletedDomainEvent notification, CancellationToken cancellationToken)
     {
         return InvalidateCache(notification.Id, cancellationToken);
     }
