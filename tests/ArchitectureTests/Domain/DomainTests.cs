@@ -21,6 +21,7 @@ public class DomainTests : BaseTest
         result.IsSuccessful.Should().BeTrue();
     }
 
+    [Fact]
     public void DomainEvents_ShouldHave_DomainEventPostfix()
     {
         TestResult result = Types.InAssembly(DomainAssembly)

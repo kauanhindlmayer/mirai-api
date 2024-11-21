@@ -53,7 +53,7 @@ public class ApplicationDbContext(
     public async override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         var domainEvents = ChangeTracker.Entries<Entity>()
-           .SelectMany(entry => entry.Entity.PopDomainEvents())
+           .SelectMany(entry => entry.Entity.GetDomainEvents())
            .ToList();
 
         if (IsUserWaitingOnline())
