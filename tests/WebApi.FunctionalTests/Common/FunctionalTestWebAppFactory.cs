@@ -85,9 +85,10 @@ public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyn
     {
         try
         {
-            var logs = await _keycloakContainer.GetLogsAsync();
             using HttpClient httpClient = CreateClient();
-            await httpClient.PostAsJsonAsync("api/users/register", UserRequestFactory.CreateRegisterUserRequest());
+            await httpClient.PostAsJsonAsync(
+                "api/users/register",
+                UserRequestFactory.CreateRegisterUserRequest());
         }
         catch
         {

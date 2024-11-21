@@ -21,13 +21,13 @@ public class ProjectsControllerTests : BaseFunctionalTest
         // Arrange
         await SetAuthorizationHeaderAsync();
         var organizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest();
-        var organizationResponse = await HttpClient.PostAsJsonAsync("/api/organizations", organizationRequest);
+        var organizationResponse = await HttpClient.PostAsJsonAsync("api/organizations", organizationRequest);
         var createdOrganization = await organizationResponse.Content.ReadFromJsonAsync<OrganizationResponse>();
         var createProjectRequest = ProjectRequestFactory.CreateCreateProjectRequest();
 
         // Act
         var createProjectResponse = await HttpClient.PostAsJsonAsync(
-            $"/api/organizations/{createdOrganization?.Id}/projects",
+            $"api/organizations/{createdOrganization?.Id}/projects",
             createProjectRequest);
 
         // Assert
@@ -40,6 +40,6 @@ public class ProjectsControllerTests : BaseFunctionalTest
         createdProject?.OrganizationId.Should().Be(createdOrganization!.Id);
         createProjectResponse.Headers.Location.Should().NotBeNull();
         createProjectResponse.Headers.Location!.AbsolutePath.Should()
-            .Be($"/api/organizations/{createdOrganization?.Id}/projects/{createdProject?.Id}");
+            .Be($"api/organizations/{createdOrganization?.Id}/projects/{createdProject?.Id}");
     }
 }

@@ -1,9 +1,7 @@
 using System.Net;
-using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using Contracts.Users;
 using FluentAssertions;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using WebApi.FunctionalTests.Common;
 
 namespace WebApi.FunctionalTests.Users;
