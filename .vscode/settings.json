@@ -8,6 +8,7 @@
     "Npgsql",
     "Serilog",
     "Swashbuckle",
+    "Testcontainers",
     "Xunit"
   ]
 }

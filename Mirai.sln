@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchitectureTests", "tests\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi.FunctionalTests", "tests\WebApi.FunctionalTests\WebApi.FunctionalTests.csproj", "{7151FDB6-3CA8-4495-BD0A-E5B6750AA649}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.IntegrationTests", "tests\Application.IntegrationTests\Application.IntegrationTests.csproj", "{D93F41A5-F9F4-4132-A625-CF2A20162F64}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -82,6 +84,10 @@ Global
 		{7151FDB6-3CA8-4495-BD0A-E5B6750AA649}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7151FDB6-3CA8-4495-BD0A-E5B6750AA649}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7151FDB6-3CA8-4495-BD0A-E5B6750AA649}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D93F41A5-F9F4-4132-A625-CF2A20162F64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D93F41A5-F9F4-4132-A625-CF2A20162F64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D93F41A5-F9F4-4132-A625-CF2A20162F64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D93F41A5-F9F4-4132-A625-CF2A20162F64}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{0B9F7D22-2A37-4EB6-A410-32BA01213D2A} = {E6C0A80B-5ADC-4138-A79D-C9C128EA163B}
@@ -95,5 +101,6 @@ Global
 		{EC6267FA-4762-400A-8D7C-0FC0FB167AE8} = {1DD25606-DF8E-4B91-9335-F916B14BF596}
 		{41FC028A-B0C7-4DC6-A0D2-587E2712CCA1} = {1DD25606-DF8E-4B91-9335-F916B14BF596}
 		{7151FDB6-3CA8-4495-BD0A-E5B6750AA649} = {1DD25606-DF8E-4B91-9335-F916B14BF596}
+		{D93F41A5-F9F4-4132-A625-CF2A20162F64} = {1DD25606-DF8E-4B91-9335-F916B14BF596}
 	EndGlobalSection
 EndGlobal
