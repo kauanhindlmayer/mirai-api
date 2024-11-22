@@ -4,7 +4,6 @@ using Domain.Organizations;
 using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
-using TestCommon.Organizations;
 
 namespace Application.UnitTests.Common.Behaviors;
 
@@ -25,8 +24,8 @@ public class ValidationBehaviorTests
     public async Task InvokeValidationBehavior_WhenValidatorResultIsValid_ShouldInvokeNextBehavior()
     {
         // Arrange
-        var createOrganizationCommand = OrganizationCommandFactory.CreateCreateOrganizationCommand();
-        var organization = OrganizationFactory.CreateOrganization();
+        var createOrganizationCommand = new CreateOrganizationCommand("Organization", "Description");
+        var organization = new Organization("Organization", "Description");
 
         _mockValidator
             .ValidateAsync(createOrganizationCommand, Arg.Any<CancellationToken>())
@@ -46,8 +45,10 @@ public class ValidationBehaviorTests
     public async Task InvokeValidationBehavior_WhenValidatorResultIsNotValid_ShouldReturnListOfErrors()
     {
         // Arrange
-        var createOrganizationCommand = OrganizationCommandFactory.CreateCreateOrganizationCommand();
-        List<ValidationFailure> validationFailures = [new(propertyName: "foo", errorMessage: "bad foo")];
+        var createOrganizationCommand = new CreateOrganizationCommand("Organization", "Description");
+        List<ValidationFailure> validationFailures = [new(
+            propertyName: "Organization.Name",
+            errorMessage: "The organization name is required.")];
 
         _mockValidator
             .ValidateAsync(createOrganizationCommand, Arg.Any<CancellationToken>())
@@ -66,10 +67,10 @@ public class ValidationBehaviorTests
     public async Task InvokeValidationBehavior_WhenNoValidator_ShouldInvokeNextBehavior()
     {
         // Arrange
-        var createOrganizationCommand = OrganizationCommandFactory.CreateCreateOrganizationCommand();
+        var createOrganizationCommand = new CreateOrganizationCommand("Organization", "Description");
         var validationBehavior = new ValidationBehavior<CreateOrganizationCommand, ErrorOr<Organization>>();
 
-        var organization = OrganizationFactory.CreateOrganization();
+        var organization = new Organization("Organization", "Description");
         _mockNextBehavior.Invoke().Returns(organization);
 
         // Act

@@ -1,6 +1,5 @@
 using Domain.Boards;
-using TestCommon.Boards;
-using TestCommon.WorkItems;
+using Domain.UnitTests.WorkItems;
 
 namespace Domain.UnitTests.Boards;
 

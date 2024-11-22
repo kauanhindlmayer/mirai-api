@@ -1,22 +1,21 @@
 using Contracts.Users;
-using TestCommon.TestConstants;
 
 namespace WebApi.FunctionalTests.Users;
 
 public static class UserRequestFactory
 {
     public static LoginUserRequest CreateLoginUserRequest(
-        string email = Constants.User.Email,
-        string password = Constants.User.Password)
+        string email = "john.doe@email.com",
+        string password = "vXJu9zCgjOV2dW3")
     {
         return new LoginUserRequest(email, password);
     }
 
     public static RegisterUserRequest CreateRegisterUserRequest(
-        string email = Constants.User.Email,
-        string password = Constants.User.Password,
-        string firstName = Constants.User.FirstName,
-        string lastName = Constants.User.LastName)
+        string email = "john.doe@email.com",
+        string password = "vXJu9zCgjOV2dW3",
+        string firstName = "John",
+        string lastName = "Doe")
     {
         return new RegisterUserRequest(email, password, firstName, lastName);
     }

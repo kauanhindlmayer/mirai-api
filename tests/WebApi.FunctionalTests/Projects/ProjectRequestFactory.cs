@@ -1,13 +1,12 @@
 using Contracts.Projects;
-using TestCommon.TestConstants;
 
 namespace WebApi.FunctionalTests.Projects;
 
 public static class ProjectRequestFactory
 {
     public static CreateProjectRequest CreateCreateProjectRequest(
-        string name = Constants.Organization.Name,
-        string description = Constants.Organization.Description)
+        string name = "Project Name",
+        string description = "Project Description")
     {
         return new CreateProjectRequest(name, description);
     }

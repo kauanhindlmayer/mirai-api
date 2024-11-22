@@ -2,8 +2,8 @@ using Domain.Organizations;
 using Domain.Organizations.Events;
 using Domain.Projects;
 using Domain.UnitTests.Common;
-using TestCommon.Organizations;
-using TestCommon.Projects;
+using Domain.UnitTests.Projects;
+using Domain.UnitTests.Users;
 
 namespace Domain.UnitTests.Organizations;
 

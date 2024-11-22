@@ -1,5 +1,5 @@
 using Domain.Teams;
-using TestCommon.Teams;
+using Domain.UnitTests.Users;
 
 namespace Domain.UnitTests.Teams;
 

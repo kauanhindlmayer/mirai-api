@@ -1,6 +1,5 @@
 using Domain.Boards;
-using TestCommon.Boards;
-using TestCommon.WorkItems;
+using Domain.UnitTests.WorkItems;
 
 namespace Domain.UnitTests.Boards;
 
@@ -95,9 +94,9 @@ public class BoardTests
     {
         // Arrange
         var board = BoardFactory.CreateBoard();
-        var column1 = BoardFactory.CreateBoardColumn(name: "Column 1", position: 0);
-        var column2 = BoardFactory.CreateBoardColumn(name: "Column 2", position: 1);
-        var column3 = BoardFactory.CreateBoardColumn(name: "Column 3", position: 2);
+        var column1 = BoardFactory.CreateBoardColumn(name: "Column 1");
+        var column2 = BoardFactory.CreateBoardColumn(name: "Column 2");
+        var column3 = BoardFactory.CreateBoardColumn(name: "Column 3");
         board.AddColumn(column1);
         board.AddColumn(column2);
         board.AddColumn(column3);
@@ -116,9 +115,9 @@ public class BoardTests
     {
         // Arrange
         var board = BoardFactory.CreateBoard();
-        var column1 = BoardFactory.CreateBoardColumn(name: "Column 1", position: 0);
-        var column2 = BoardFactory.CreateBoardColumn(name: "Column 2", position: 1);
-        var column3 = BoardFactory.CreateBoardColumn(name: "Column 3", position: 2);
+        var column1 = BoardFactory.CreateBoardColumn(name: "Column 1");
+        var column2 = BoardFactory.CreateBoardColumn(name: "Column 2");
+        var column3 = BoardFactory.CreateBoardColumn(name: "Column 3");
         board.AddColumn(column1);
         board.AddColumn(column2);
         board.AddColumn(column3);

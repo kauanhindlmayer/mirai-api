@@ -1,10 +1,9 @@
 using Domain.Projects;
 using Domain.Tags;
-using TestCommon.Projects;
-using TestCommon.Tags;
-using TestCommon.Teams;
-using TestCommon.WikiPages;
-using TestCommon.WorkItems;
+using Domain.UnitTests.Tags;
+using Domain.UnitTests.Teams;
+using Domain.UnitTests.WikiPages;
+using Domain.UnitTests.WorkItems;
 
 namespace Domain.UnitTests.Projects;
 
