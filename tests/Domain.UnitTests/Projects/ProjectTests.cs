@@ -10,6 +10,32 @@ namespace Domain.UnitTests.Projects;
 public class ProjectTests
 {
     [Fact]
+    public void CreateProject_ShouldSetProperties()
+    {
+        // Act
+        var project = ProjectFactory.CreateProject();
+
+        // Assert
+        project.Name.Should().Be(ProjectFactory.Name);
+        project.Description.Should().Be(ProjectFactory.Description);
+        project.OrganizationId.Should().Be(ProjectFactory.OrganizationId);
+    }
+
+    [Fact]
+    public void Update_ShouldUpdateProperties()
+    {
+        // Arrange
+        var project = ProjectFactory.CreateProject();
+
+        // Act
+        project.Update("New Name", "New Description");
+
+        // Assert
+        project.Name.Should().Be("New Name");
+        project.Description.Should().Be("New Description");
+    }
+
+    [Fact]
     public void AddWorkItem_WhenWorkItemWithSameTitleAlreadyExists_ShouldReturnError()
     {
         // Arrange

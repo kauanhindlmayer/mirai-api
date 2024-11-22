@@ -28,7 +28,6 @@
     <ItemGroup>
       <ProjectReference Include="..\..\src\Contracts\Contracts.csproj" />
       <ProjectReference Include="..\..\src\WebApi\WebApi.csproj" />
-      <ProjectReference Include="..\TestCommon\TestCommon.csproj" />
     </ItemGroup>
 
     <ItemGroup>
