@@ -45,7 +45,7 @@ public class ValidationBehaviorTests
     public async Task InvokeValidationBehavior_WhenValidatorResultIsNotValid_ShouldReturnListOfErrors()
     {
         // Arrange
-        var createOrganizationCommand = new CreateOrganizationCommand("Organization", "Description");
+        var createOrganizationCommand = new CreateOrganizationCommand(string.Empty, "Description");
         List<ValidationFailure> validationFailures = [new(
             propertyName: "Organization.Name",
             errorMessage: "The organization name is required.")];
@@ -59,8 +59,8 @@ public class ValidationBehaviorTests
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Code.Should().Be("foo");
-        result.FirstError.Description.Should().Be("bad foo");
+        result.FirstError.Code.Should().Be("Organization.Name");
+        result.FirstError.Description.Should().Be("The organization name is required.");
     }
 
     [Fact]
@@ -74,7 +74,10 @@ public class ValidationBehaviorTests
         _mockNextBehavior.Invoke().Returns(organization);
 
         // Act
-        var result = await validationBehavior.Handle(createOrganizationCommand, _mockNextBehavior, default);
+        var result = await validationBehavior.Handle(
+            createOrganizationCommand,
+            _mockNextBehavior,
+            default);
 
         // Assert
         result.IsError.Should().BeFalse();

@@ -2,7 +2,7 @@ using Application.Common.Interfaces.Persistence;
 using Application.Organizations.Commands.CreateOrganization;
 using Domain.Organizations;
 
-namespace Application.UnitTests.Organizations;
+namespace Application.UnitTests.Organizations.Commands;
 
 public class CreateOrganizationTests
 {
