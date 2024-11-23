@@ -29,12 +29,12 @@ public class OrganizationsControllerTests : BaseFunctionalTest
         createOrganizationResponse.StatusCode.Should().Be(HttpStatusCode.Created);
         var createdOrganization = await createOrganizationResponse.Content.ReadFromJsonAsync<OrganizationResponse>();
         createdOrganization.Should().NotBeNull();
-        createdOrganization?.Id.Should().NotBeEmpty();
-        createdOrganization?.Name.Should().Be(createOrganizationRequest.Name);
-        createdOrganization?.Description.Should().Be(createOrganizationRequest.Description);
+        createdOrganization!.Id.Should().NotBeEmpty();
+        createdOrganization.Name.Should().Be(createOrganizationRequest.Name);
+        createdOrganization.Description.Should().Be(createOrganizationRequest.Description);
         createOrganizationResponse.Headers.Location.Should().NotBeNull();
         createOrganizationResponse.Headers.Location!.AbsolutePath.Should()
-            .Be($"api/organizations/{createdOrganization?.Id}");
+            .Be($"api/organizations/{createdOrganization.Id}");
     }
 
     [Fact]

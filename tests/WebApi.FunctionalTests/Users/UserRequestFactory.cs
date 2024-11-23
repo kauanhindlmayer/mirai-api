@@ -4,18 +4,23 @@ namespace WebApi.FunctionalTests.Users;
 
 public static class UserRequestFactory
 {
+    public const string Email = "john.doe@email.com";
+    public const string Password = "vXJu9zCgjOV2dW3";
+    public const string FirstName = "John";
+    public const string LastName = "Doe";
+
     public static LoginUserRequest CreateLoginUserRequest(
-        string email = "john.doe@email.com",
-        string password = "vXJu9zCgjOV2dW3")
+        string email = Email,
+        string password = Password)
     {
         return new LoginUserRequest(email, password);
     }
 
     public static RegisterUserRequest CreateRegisterUserRequest(
-        string email = "john.doe@email.com",
-        string password = "vXJu9zCgjOV2dW3",
-        string firstName = "John",
-        string lastName = "Doe")
+        string email = Email,
+        string password = Password,
+        string firstName = FirstName,
+        string lastName = LastName)
     {
         return new RegisterUserRequest(email, password, firstName, lastName);
     }

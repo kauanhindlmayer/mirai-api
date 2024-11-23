@@ -4,10 +4,16 @@ namespace Domain.UnitTests.Users;
 
 public static class UserFactory
 {
+    public const string FirstName = "John";
+    public const string LastName = "Doe";
+    public const string FullName = "John Doe";
+    public const string Email = "john.doe@email.com";
+    public const string IdentityId = "identity_id";
+
     public static User CreateUser(
-        string firstName = "John",
-        string lastName = "Doe",
-        string emailName = "john.doe@email.com")
+        string firstName = FirstName,
+        string lastName = LastName,
+        string emailName = Email)
     {
         return new(firstName, lastName, emailName);
     }
