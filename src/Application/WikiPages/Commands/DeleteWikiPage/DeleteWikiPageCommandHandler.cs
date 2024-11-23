@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Application.WikiPages.Commands.DeleteWikiPage;
 
-public class DeleteWikiPageCommandHandler(IWikiPagesRepository _wikiPagesRepository)
+internal sealed class DeleteWikiPageCommandHandler(IWikiPagesRepository _wikiPagesRepository)
     : IRequestHandler<DeleteWikiPageCommand, ErrorOr<Success>>
 {
     public async Task<ErrorOr<Success>> Handle(

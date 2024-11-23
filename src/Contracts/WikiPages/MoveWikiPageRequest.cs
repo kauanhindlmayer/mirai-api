@@ -1,3 +1,5 @@
 namespace Contracts.WikiPages;
 
-public record MoveWikiPageRequest(Guid? TargetParentId, int TargetPosition);
+public sealed record MoveWikiPageRequest(
+    Guid? TargetParentId,
+    int TargetPosition);

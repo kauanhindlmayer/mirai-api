@@ -4,4 +4,4 @@ using MediatR;
 
 namespace Application.Users.Queries.GetCurrentUser;
 
-public record GetCurrentUserQuery : IRequest<ErrorOr<User>>;
+public sealed record GetCurrentUserQuery : IRequest<ErrorOr<User>>;

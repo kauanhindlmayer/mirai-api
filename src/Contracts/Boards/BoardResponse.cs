@@ -1,13 +1,13 @@
 namespace Contracts.Boards;
 
-public record BoardResponse(
+public sealed record BoardResponse(
     Guid Id,
     Guid ProjectId,
     string Name,
     string Description,
     IEnumerable<BoardColumnResponse> Columns);
 
-public record BoardColumnResponse(
+public sealed record BoardColumnResponse(
     Guid Id,
     string Name,
     int Position,
@@ -15,7 +15,7 @@ public record BoardColumnResponse(
     string DefinitionOfDone,
     IEnumerable<BoardCardResponse> Cards);
 
-public record BoardCardResponse(
+public sealed record BoardCardResponse(
     Guid Id,
     int Position,
     DateTime CreatedAt,

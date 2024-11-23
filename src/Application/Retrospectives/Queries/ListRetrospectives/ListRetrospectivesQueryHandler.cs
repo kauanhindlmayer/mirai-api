@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Application.Retrospectives.Queries.ListRetrospectives;
 
-public class ListRetrospectivesQueryHandler(ITeamsRepository _teamsRepository)
+internal sealed class ListRetrospectivesQueryHandler(ITeamsRepository _teamsRepository)
     : IRequestHandler<ListRetrospectivesQuery, ErrorOr<List<Retrospective>>>
 {
     public async Task<ErrorOr<List<Retrospective>>> Handle(

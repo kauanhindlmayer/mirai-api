@@ -7,7 +7,7 @@ using MediatR;
 
 namespace Application.Users.Queries.LoginUser;
 
-public sealed class LoginUserQueryHandler(
+internal sealed class LoginUserQueryHandler(
     IUsersRepository _usersRepository,
     IJwtService _jwtService)
     : IRequestHandler<LoginUserQuery, ErrorOr<AccessTokenResponse>>

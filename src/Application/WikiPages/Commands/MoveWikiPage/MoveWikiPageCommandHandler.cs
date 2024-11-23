@@ -1,12 +1,11 @@
 using Application.Common.Interfaces.Persistence;
 using Domain.Projects;
-using Domain.WikiPages;
 using ErrorOr;
 using MediatR;
 
 namespace Application.WikiPages.Commands.MoveWikiPage;
 
-public class MoveWikiPageCommandHandler(IProjectsRepository _projectsRepository)
+internal sealed class MoveWikiPageCommandHandler(IProjectsRepository _projectsRepository)
     : IRequestHandler<MoveWikiPageCommand, ErrorOr<Success>>
 {
     public async Task<ErrorOr<Success>> Handle(

@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Application.WikiPages.Commands.UpdateWikiPage;
 
-public class UpdateWikiPageCommandHandler(IWikiPagesRepository _wikiPagesRepository)
+internal sealed class UpdateWikiPageCommandHandler(IWikiPagesRepository _wikiPagesRepository)
     : IRequestHandler<UpdateWikiPageCommand, ErrorOr<WikiPage>>
 {
     public async Task<ErrorOr<WikiPage>> Handle(

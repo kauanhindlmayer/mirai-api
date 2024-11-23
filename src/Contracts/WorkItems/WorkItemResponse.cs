@@ -2,7 +2,7 @@ using Contracts.Common;
 
 namespace Contracts.WorkItems;
 
-public record WorkItemResponse(
+public sealed record WorkItemResponse(
     Guid Id,
     Guid ProjectId,
     int Code,
@@ -16,7 +16,7 @@ public record WorkItemResponse(
     DateTime CreatedAt,
     DateTime? UpdatedAt);
 
-public record CommentResponse(
+public sealed record CommentResponse(
     Guid Id,
     string Content,
     DateTime CreatedAt);

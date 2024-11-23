@@ -1,6 +1,6 @@
 namespace Contracts.WikiPages;
 
-public record CreateWikiPageRequest(
+public sealed record CreateWikiPageRequest(
     string Title,
     string Content,
     Guid? ParentWikiPageId);

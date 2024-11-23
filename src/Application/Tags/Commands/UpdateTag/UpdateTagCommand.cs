@@ -4,5 +4,7 @@ using MediatR;
 
 namespace Application.Tags.Commands.UpdateTag;
 
-public record UpdateTagCommand(Guid ProjectId, Guid TagId, string Name)
-    : IRequest<ErrorOr<Tag>>;
+public sealed record UpdateTagCommand(
+    Guid ProjectId,
+    Guid TagId,
+    string Name) : IRequest<ErrorOr<Tag>>;

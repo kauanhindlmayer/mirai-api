@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Application.Users.Queries.GetCurrentUser;
 
-public class GetCurrentUserQueryHandler(
+internal sealed class GetCurrentUserQueryHandler(
     IUserContext _userContext,
     IUsersRepository _usersRepository)
     : IRequestHandler<GetCurrentUserQuery, ErrorOr<User>>

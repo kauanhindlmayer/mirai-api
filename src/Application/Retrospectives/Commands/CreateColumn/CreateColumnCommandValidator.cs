@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Application.Retrospectives.Commands.CreateColumn;
 
-public class CreateColumnCommandValidator : AbstractValidator<CreateColumnCommand>
+internal sealed class CreateColumnCommandValidator : AbstractValidator<CreateColumnCommand>
 {
     public CreateColumnCommandValidator()
     {

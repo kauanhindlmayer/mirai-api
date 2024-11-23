@@ -1,3 +1,3 @@
 namespace Contracts.Teams;
 
-public record AddMemberRequest(Guid MemberId);
+public sealed record AddMemberRequest(Guid MemberId);

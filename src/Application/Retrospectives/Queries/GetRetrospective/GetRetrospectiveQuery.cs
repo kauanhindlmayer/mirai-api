@@ -4,5 +4,5 @@ using MediatR;
 
 namespace Application.Retrospectives.Queries.GetRetrospective;
 
-public record GetRetrospectiveQuery(Guid RetrospectiveId)
+public sealed record GetRetrospectiveQuery(Guid RetrospectiveId)
     : IRequest<ErrorOr<Retrospective>>;

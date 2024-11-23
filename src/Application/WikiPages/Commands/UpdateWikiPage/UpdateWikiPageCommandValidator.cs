@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Application.WikiPages.Commands.UpdateWikiPage;
 
-public class UpdateWikiPageCommandValidator : AbstractValidator<UpdateWikiPageCommand>
+internal sealed class UpdateWikiPageCommandValidator : AbstractValidator<UpdateWikiPageCommand>
 {
     public UpdateWikiPageCommandValidator()
     {

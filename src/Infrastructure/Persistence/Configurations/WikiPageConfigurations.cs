@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.Configurations;
 
-public class WikiPageConfigurations : IEntityTypeConfiguration<WikiPage>
+internal sealed class WikiPageConfigurations : IEntityTypeConfiguration<WikiPage>
 {
     public void Configure(EntityTypeBuilder<WikiPage> builder)
     {

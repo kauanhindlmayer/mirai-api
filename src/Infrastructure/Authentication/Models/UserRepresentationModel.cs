@@ -2,7 +2,7 @@ using Domain.Users;
 
 namespace Infrastructure.Authentication.Models;
 
-public sealed class UserRepresentationModel
+internal sealed class UserRepresentationModel
 {
     public Dictionary<string, string>? Access { get; set; }
     public Dictionary<string, List<string>>? Attributes { get; set; }

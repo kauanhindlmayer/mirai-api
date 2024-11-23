@@ -3,7 +3,7 @@ using Domain.WorkItems;
 
 namespace Domain.Boards;
 
-public class BoardCard : Entity
+public sealed class BoardCard : Entity
 {
     public Guid BoardColumnId { get; private set; }
     public BoardColumn BoardColumn { get; private set; } = null!;

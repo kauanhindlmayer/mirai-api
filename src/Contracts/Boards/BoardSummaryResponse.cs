@@ -1,3 +1,5 @@
 namespace Contracts.Boards;
 
-public record BoardSummaryResponse(Guid Id, string Name);
+public sealed record BoardSummaryResponse(
+    Guid Id,
+    string Name);

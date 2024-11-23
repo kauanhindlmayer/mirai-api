@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Application.Boards.Commands.CreateColumn;
 
-public class CreateColumnCommandHandler(IBoardsRepository _boardsRepository)
+internal sealed class CreateColumnCommandHandler(IBoardsRepository _boardsRepository)
     : IRequestHandler<CreateColumnCommand, ErrorOr<BoardColumn>>
 {
     public async Task<ErrorOr<BoardColumn>> Handle(

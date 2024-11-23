@@ -1,6 +1,6 @@
 namespace Contracts.Projects;
 
-public record ProjectResponse(
+public sealed record ProjectResponse(
     Guid Id,
     string Name,
     string? Description,

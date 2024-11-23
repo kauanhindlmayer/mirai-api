@@ -3,5 +3,6 @@ using MediatR;
 
 namespace Application.WorkItems.Commands.RemoveTag;
 
-public record RemoveTagCommand(Guid WorkItemId, string TagName)
-    : IRequest<ErrorOr<Success>>;
+public sealed record RemoveTagCommand(
+    Guid WorkItemId,
+    string TagName) : IRequest<ErrorOr<Success>>;

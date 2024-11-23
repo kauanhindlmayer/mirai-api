@@ -6,7 +6,7 @@ using ErrorOr;
 
 namespace Domain.Organizations;
 
-public class Organization : AggregateRoot
+public sealed class Organization : AggregateRoot
 {
     public string Name { get; private set; } = null!;
     public string? Description { get; private set; }

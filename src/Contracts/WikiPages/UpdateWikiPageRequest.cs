@@ -1,3 +1,5 @@
 namespace Contracts.WikiPages;
 
-public record UpdateWikiPageRequest(string Title, string Content);
+public sealed record UpdateWikiPageRequest(
+    string Title,
+    string Content);

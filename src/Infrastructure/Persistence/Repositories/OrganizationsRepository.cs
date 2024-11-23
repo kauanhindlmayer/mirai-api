@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Repositories;
 
-public class OrganizationsRepository : Repository<Organization>,
+internal sealed class OrganizationsRepository : Repository<Organization>,
     IOrganizationsRepository
 {
     public OrganizationsRepository(ApplicationDbContext dbContext)

@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Application.Boards.Commands.CreateCard;
 
-public class CreateCardCommandHandler(
+internal sealed class CreateCardCommandHandler(
     IWorkItemsRepository _workItemsRepository,
     IBoardsRepository _boardRepository)
     : IRequestHandler<CreateCardCommand, ErrorOr<BoardCard>>

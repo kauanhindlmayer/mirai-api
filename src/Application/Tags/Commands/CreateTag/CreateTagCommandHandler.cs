@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Application.Tags.Commands.CreateTag;
 
-public class CreateTagCommandHandler(
+internal sealed class CreateTagCommandHandler(
     IProjectsRepository _projectsRepository)
     : IRequestHandler<CreateTagCommand, ErrorOr<Tag>>
 {

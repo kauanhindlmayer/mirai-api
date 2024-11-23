@@ -1,3 +1,3 @@
 namespace Contracts.Teams;
 
-public record CreateTeamRequest(string Name);
+public sealed record CreateTeamRequest(string Name);

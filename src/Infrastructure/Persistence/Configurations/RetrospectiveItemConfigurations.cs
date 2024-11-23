@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.Configurations;
 
-public class RetrospectiveItemConfigurations : IEntityTypeConfiguration<RetrospectiveItem>
+internal sealed class RetrospectiveItemConfigurations : IEntityTypeConfiguration<RetrospectiveItem>
 {
     public void Configure(EntityTypeBuilder<RetrospectiveItem> builder)
     {

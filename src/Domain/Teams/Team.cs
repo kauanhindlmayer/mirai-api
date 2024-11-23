@@ -6,7 +6,7 @@ using ErrorOr;
 
 namespace Domain.Teams;
 
-public class Team : Entity
+public sealed class Team : Entity
 {
     public Guid ProjectId { get; private set; }
     public Project Project { get; private set; } = null!;

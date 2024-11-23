@@ -2,7 +2,7 @@ using Domain.Common;
 
 namespace Domain.WikiPages;
 
-public class WikiPage : AggregateRoot
+public sealed class WikiPage : AggregateRoot
 {
     public Guid ProjectId { get; private set; }
     public string Title { get; private set; } = string.Empty;

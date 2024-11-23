@@ -4,4 +4,4 @@ using MediatR;
 
 namespace Application.WikiPages.Queries.ListWikiPages;
 
-public record ListWikiPagesQuery(Guid ProjectId) : IRequest<ErrorOr<List<WikiPage>>>;
+public sealed record ListWikiPagesQuery(Guid ProjectId) : IRequest<ErrorOr<List<WikiPage>>>;

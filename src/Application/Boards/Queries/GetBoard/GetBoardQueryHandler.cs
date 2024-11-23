@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Application.Boards.Queries.GetBoard;
 
-public class GetBoardQueryHandler(IBoardsRepository _boardRepository)
+internal sealed class GetBoardQueryHandler(IBoardsRepository _boardRepository)
     : IRequestHandler<GetBoardQuery, ErrorOr<Board>>
 {
     public async Task<ErrorOr<Board>> Handle(

@@ -4,5 +4,6 @@ using MediatR;
 
 namespace Application.WorkItems.Commands.AddComment;
 
-public record AddCommentCommand(Guid WorkItemId, string Content)
-    : IRequest<ErrorOr<WorkItemComment>>;
+public sealed record AddCommentCommand(
+    Guid WorkItemId,
+    string Content) : IRequest<ErrorOr<WorkItemComment>>;

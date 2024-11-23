@@ -1,3 +1,5 @@
 namespace Contracts.Retrospectives;
 
-public record CreateRetrospectiveRequest(string Title, string Description);
+public sealed record CreateRetrospectiveRequest(
+    string Title,
+    string Description);

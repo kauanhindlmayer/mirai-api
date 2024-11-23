@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Application.Projects.Queries.GetProject;
 
-public class GetProjectQueryHandler(IProjectsRepository _projectsRepository)
+internal sealed class GetProjectQueryHandler(IProjectsRepository _projectsRepository)
     : IRequestHandler<GetProjectQuery, ErrorOr<Project>>
 {
     public async Task<ErrorOr<Project>> Handle(

@@ -5,7 +5,7 @@ using Infrastructure.Authentication.Models;
 
 namespace Infrastructure.Authentication;
 
-public class AuthenticationService(HttpClient httpClient) : IAuthenticationService
+internal sealed class AuthenticationService(HttpClient httpClient) : IAuthenticationService
 {
     private const string PasswordCredentialType = "password";
     private readonly HttpClient _httpClient = httpClient;

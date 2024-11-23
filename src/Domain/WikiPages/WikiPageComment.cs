@@ -3,7 +3,7 @@ using Domain.Users;
 
 namespace Domain.WikiPages;
 
-public class WikiPageComment : Entity
+public sealed class WikiPageComment : Entity
 {
     public Guid WikiPageId { get; private set; }
     public WikiPage WikiPage { get; private set; } = null!;

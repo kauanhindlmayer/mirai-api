@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Application.Tags.Commands.UpdateTag;
 
-public class UpdateTagCommandHandler(
+internal sealed class UpdateTagCommandHandler(
     IProjectsRepository _projectsRepository)
     : IRequestHandler<UpdateTagCommand, ErrorOr<Tag>>
 {

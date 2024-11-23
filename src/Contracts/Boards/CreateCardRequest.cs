@@ -2,4 +2,6 @@ using Contracts.Common;
 
 namespace Contracts.Boards;
 
-public record CreateCardRequest(WorkItemType Type, string Title);
+public sealed record CreateCardRequest(
+    WorkItemType Type,
+    string Title);

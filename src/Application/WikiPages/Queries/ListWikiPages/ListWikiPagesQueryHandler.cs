@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Application.WikiPages.Queries.ListWikiPages;
 
-public class ListWikiPagesQueryHandler(IProjectsRepository _projectsRepository)
+internal sealed class ListWikiPagesQueryHandler(IProjectsRepository _projectsRepository)
     : IRequestHandler<ListWikiPagesQuery, ErrorOr<List<WikiPage>>>
 {
     public async Task<ErrorOr<List<WikiPage>>> Handle(

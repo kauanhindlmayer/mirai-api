@@ -4,7 +4,7 @@ using ErrorOr;
 
 namespace Domain.Boards;
 
-public class BoardColumn : Entity
+public sealed class BoardColumn : Entity
 {
     public Guid BoardId { get; private set; }
     public Board Board { get; private set; } = null!;

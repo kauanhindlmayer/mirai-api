@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Application.Teams.Queries.GetTeam;
 
-public class GetTeamQueryHandler(ITeamsRepository _teamsRepository)
+internal sealed class GetTeamQueryHandler(ITeamsRepository _teamsRepository)
     : IRequestHandler<GetTeamQuery, ErrorOr<Team>>
 {
     public async Task<ErrorOr<Team>> Handle(

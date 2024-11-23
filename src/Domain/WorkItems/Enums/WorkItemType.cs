@@ -2,7 +2,7 @@ using Ardalis.SmartEnum;
 
 namespace Domain.WorkItems.Enums;
 
-public class WorkItemType(string name, int value)
+public sealed class WorkItemType(string name, int value)
     : SmartEnum<WorkItemType>(name, value)
 {
     public static readonly WorkItemType UserStory = new(nameof(UserStory), 0);

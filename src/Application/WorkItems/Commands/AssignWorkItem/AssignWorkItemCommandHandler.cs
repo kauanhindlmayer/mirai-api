@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Application.WorkItems.Commands.AssignWorkItem;
 
-public class AssignWorkItemCommandHandler(
+internal sealed class AssignWorkItemCommandHandler(
     IWorkItemsRepository _workItemsRepository,
     IUsersRepository _usersRepository)
     : IRequestHandler<AssignWorkItemCommand, ErrorOr<Success>>

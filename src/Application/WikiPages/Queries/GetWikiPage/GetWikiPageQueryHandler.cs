@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Application.WikiPages.Queries.GetWikiPage;
 
-public class GetWikiPageQueryHandler(IWikiPagesRepository _wikiPagesRepository)
+internal sealed class GetWikiPageQueryHandler(IWikiPagesRepository _wikiPagesRepository)
     : IRequestHandler<GetWikiPageQuery, ErrorOr<WikiPage>>
 {
     public async Task<ErrorOr<WikiPage>> Handle(

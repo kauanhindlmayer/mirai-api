@@ -2,7 +2,7 @@ using Contracts.Common;
 
 namespace Contracts.WorkItems;
 
-public record CreateWorkItemRequest(
+public sealed record CreateWorkItemRequest(
     Guid ProjectId,
     WorkItemType Type,
     string Title);

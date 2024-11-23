@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Application.Retrospectives.Commands.CreateRetrospective;
 
-public class CreateRetrospectiveCommandHandler(ITeamsRepository _teamsRepository)
+internal sealed class CreateRetrospectiveCommandHandler(ITeamsRepository _teamsRepository)
     : IRequestHandler<CreateRetrospectiveCommand, ErrorOr<Retrospective>>
 {
     public async Task<ErrorOr<Retrospective>> Handle(

@@ -3,7 +3,7 @@ using Domain.Users;
 
 namespace Domain.Retrospectives;
 
-public class RetrospectiveItem : Entity
+public sealed class RetrospectiveItem : Entity
 {
     public string Description { get; private set; } = null!;
     public int Position { get; private set; }

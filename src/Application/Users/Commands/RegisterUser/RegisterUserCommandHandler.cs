@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Application.Users.Commands.RegisterUser;
 
-public sealed class RegisterUserCommandHandler(
+internal sealed class RegisterUserCommandHandler(
     IUsersRepository _usersRepository,
     IAuthenticationService _authenticationService)
     : IRequestHandler<RegisterUserCommand, ErrorOr<Guid>>

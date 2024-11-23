@@ -1,3 +1,5 @@
 namespace Contracts.Projects;
 
-public record CreateProjectRequest(string Name, string Description);
+public sealed record CreateProjectRequest(
+    string Name,
+    string Description);

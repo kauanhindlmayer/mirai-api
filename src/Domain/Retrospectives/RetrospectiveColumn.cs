@@ -3,7 +3,7 @@ using ErrorOr;
 
 namespace Domain.Retrospectives;
 
-public class RetrospectiveColumn : Entity
+public sealed class RetrospectiveColumn : Entity
 {
     public string Title { get; private set; } = null!;
     public int Position { get; private set; }

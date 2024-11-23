@@ -1,3 +1,5 @@
 namespace Contracts.Boards;
 
-public record CreateBoardRequest(string Name, string Description);
+public sealed record CreateBoardRequest(
+    string Name,
+    string Description);

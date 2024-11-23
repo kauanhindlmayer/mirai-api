@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Application.Boards.Commands.CreateCard;
 
-public class CreateCardCommandValidator : AbstractValidator<CreateCardCommand>
+internal sealed class CreateCardCommandValidator : AbstractValidator<CreateCardCommand>
 {
     public CreateCardCommandValidator()
     {

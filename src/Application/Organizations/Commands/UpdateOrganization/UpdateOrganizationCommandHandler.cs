@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Application.Organizations.Commands.UpdateOrganization;
 
-public class UpdateOrganizationCommandHandler(
+internal sealed class UpdateOrganizationCommandHandler(
     IOrganizationsRepository _organizationsRepository)
     : IRequestHandler<UpdateOrganizationCommand, ErrorOr<Organization>>
 {

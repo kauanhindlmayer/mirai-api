@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Application.Boards.Commands.MoveCard;
 
-public record MoveCardCommand(
+public sealed record MoveCardCommand(
     Guid BoardId,
     Guid ColumnId,
     Guid CardId,

@@ -1,6 +1,6 @@
 namespace Infrastructure.Authentication;
 
-public sealed class AuthenticationOptions
+internal sealed class AuthenticationOptions
 {
     public const string SectionName = "Authentication";
     public string Audience { get; init; } = string.Empty;

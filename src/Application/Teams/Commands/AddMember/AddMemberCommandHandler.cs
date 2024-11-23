@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Application.Teams.Commands.AddMember;
 
-public class AddMemberCommandHandler(
+internal sealed class AddMemberCommandHandler(
     ITeamsRepository _teamsRepository,
     IUsersRepository _usersRepository)
     : IRequestHandler<AddMemberCommand, ErrorOr<Success>>

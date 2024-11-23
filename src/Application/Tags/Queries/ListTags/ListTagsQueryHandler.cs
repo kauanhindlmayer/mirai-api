@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Application.Tags.Queries.ListTags;
 
-public class ListTagsQueryHandler(
+internal sealed class ListTagsQueryHandler(
     IProjectsRepository _projectsRepository,
     ITagsRepository _tagsRepository)
     : IRequestHandler<ListTagsQuery, ErrorOr<List<Tag>>>

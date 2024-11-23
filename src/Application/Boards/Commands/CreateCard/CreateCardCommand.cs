@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Application.Boards.Commands.CreateCard;
 
-public record CreateCardCommand(
+public sealed record CreateCardCommand(
     Guid BoardId,
     Guid ColumnId,
     WorkItemType Type,

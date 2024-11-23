@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.Configurations;
 
-public class WorkItemCommentConfigurations : IEntityTypeConfiguration<WorkItemComment>
+internal sealed class WorkItemCommentConfigurations : IEntityTypeConfiguration<WorkItemComment>
 {
     public void Configure(EntityTypeBuilder<WorkItemComment> builder)
     {

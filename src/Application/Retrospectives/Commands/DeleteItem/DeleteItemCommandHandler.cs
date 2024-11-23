@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Application.Retrospectives.Commands.DeleteItem;
 
-public class DeleteItemCommandHandler(IRetrospectivesRepository _retrospectivesRepository)
+internal sealed class DeleteItemCommandHandler(IRetrospectivesRepository _retrospectivesRepository)
     : IRequestHandler<DeleteItemCommand, ErrorOr<Success>>
 {
     public async Task<ErrorOr<Success>> Handle(

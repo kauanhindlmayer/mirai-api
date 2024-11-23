@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Application.Boards.Commands.CreateColumn;
 
-public record CreateColumnCommand(
+public sealed record CreateColumnCommand(
     Guid BoardId,
     string Name,
     int WipLimit,

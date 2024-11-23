@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Application.Retrospectives.Commands.CreateColumn;
 
-public class CreateColumnCommandHandler(IRetrospectivesRepository _retrospectivesRepository)
+internal sealed class CreateColumnCommandHandler(IRetrospectivesRepository _retrospectivesRepository)
     : IRequestHandler<CreateColumnCommand, ErrorOr<Retrospective>>
 {
     public async Task<ErrorOr<Retrospective>> Handle(

@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Application.Boards.Commands.DeleteBoard;
 
-public class DeleteBoardCommandValidator : AbstractValidator<DeleteBoardCommand>
+internal sealed class DeleteBoardCommandValidator : AbstractValidator<DeleteBoardCommand>
 {
     public DeleteBoardCommandValidator()
     {

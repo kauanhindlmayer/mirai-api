@@ -1,6 +1,6 @@
 namespace Contracts.Users;
 
-public record UserResponse(
+public sealed record UserResponse(
     Guid Id,
     string Email,
     string FirstName,

@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Application.Boards.Commands.CreateBoard;
 
-public class CreateBoardCommandHandler(
+internal sealed class CreateBoardCommandHandler(
     IProjectsRepository _projectRepository,
     IBoardsRepository _boardRepository)
     : IRequestHandler<CreateBoardCommand, ErrorOr<Board>>

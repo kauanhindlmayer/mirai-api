@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Application.Organizations.Commands.CreateOrganization;
 
-public class CreateOrganizationCommandHandler(
+internal sealed class CreateOrganizationCommandHandler(
     IOrganizationsRepository _organizationsRepository)
     : IRequestHandler<CreateOrganizationCommand, ErrorOr<Organization>>
 {

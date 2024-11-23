@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Application.WorkItems.Commands.AddTag;
 
-public class AddTagCommandHandler(
+internal sealed class AddTagCommandHandler(
     IWorkItemsRepository _workItemsRepository,
     ITagsRepository _tagsRepository)
     : IRequestHandler<AddTagCommand, ErrorOr<Success>>

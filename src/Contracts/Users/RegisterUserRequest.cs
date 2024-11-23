@@ -1,6 +1,6 @@
 namespace Contracts.Users;
 
-public record RegisterUserRequest(
+public sealed record RegisterUserRequest(
     string Email,
     string Password,
     string FirstName,

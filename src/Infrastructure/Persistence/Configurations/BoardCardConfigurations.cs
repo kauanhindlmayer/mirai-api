@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.Configurations;
 
-public class BoardCardConfigurations : IEntityTypeConfiguration<BoardCard>
+internal sealed class BoardCardConfigurations : IEntityTypeConfiguration<BoardCard>
 {
     public void Configure(EntityTypeBuilder<BoardCard> builder)
     {

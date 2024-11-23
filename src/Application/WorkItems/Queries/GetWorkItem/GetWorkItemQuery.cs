@@ -4,4 +4,4 @@ using MediatR;
 
 namespace Application.WorkItems.Queries.GetWorkItem;
 
-public record GetWorkItemQuery(Guid WorkItemId) : IRequest<ErrorOr<WorkItem>>;
+public sealed record GetWorkItemQuery(Guid WorkItemId) : IRequest<ErrorOr<WorkItem>>;

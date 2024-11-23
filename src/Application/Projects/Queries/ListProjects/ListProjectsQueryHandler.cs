@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Application.Projects.Queries.ListProjects;
 
-public class ListProjectsQueryHandler(IOrganizationsRepository _organizationsRepository)
+internal sealed class ListProjectsQueryHandler(IOrganizationsRepository _organizationsRepository)
     : IRequestHandler<ListProjectsQuery, ErrorOr<List<Project>>>
 {
     public async Task<ErrorOr<List<Project>>> Handle(

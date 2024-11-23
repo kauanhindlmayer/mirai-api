@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Application.Organizations.Commands.DeleteOrganization;
 
-public class DeleteOrganizationCommandHandler(
+internal sealed class DeleteOrganizationCommandHandler(
     IOrganizationsRepository _organizationsRepository)
     : IRequestHandler<DeleteOrganizationCommand, ErrorOr<Success>>
 {

@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Application.Retrospectives.Commands.CreateItem;
 
-public class CreateItemCommandHandler(
+internal sealed class CreateItemCommandHandler(
     IRetrospectivesRepository _retrospectivesRepository,
     IUserContext _userContext)
     : IRequestHandler<CreateItemCommand, ErrorOr<RetrospectiveItem>>

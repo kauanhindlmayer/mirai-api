@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Application.Boards.Commands.DeleteColumn;
 
-public class DeleteColumnCommandHandler(IBoardsRepository _boardsRepository)
+internal sealed class DeleteColumnCommandHandler(IBoardsRepository _boardsRepository)
     : IRequestHandler<DeleteColumnCommand, ErrorOr<Success>>
 {
     public async Task<ErrorOr<Success>> Handle(

@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Application.Projects.Commands.UpdateProject;
 
-public class UpdateProjectCommandValidator : AbstractValidator<UpdateProjectCommand>
+internal sealed class UpdateProjectCommandValidator : AbstractValidator<UpdateProjectCommand>
 {
     public UpdateProjectCommandValidator()
     {

@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Application.Retrospectives.Commands.CreateRetrospective;
 
-public record CreateRetrospectiveCommand(
+public sealed record CreateRetrospectiveCommand(
     string Title,
     string Description,
     Guid TeamId) : IRequest<ErrorOr<Retrospective>>;

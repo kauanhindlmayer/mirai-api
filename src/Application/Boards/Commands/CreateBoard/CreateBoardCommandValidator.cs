@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Application.Boards.Commands.CreateBoard;
 
-public class CreateBoardCommandValidator : AbstractValidator<CreateBoardCommand>
+internal sealed class CreateBoardCommandValidator : AbstractValidator<CreateBoardCommand>
 {
     public CreateBoardCommandValidator()
     {

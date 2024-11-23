@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Repositories;
 
-public class WikiPagesRepository : Repository<WikiPage>, IWikiPagesRepository
+internal sealed class WikiPagesRepository : Repository<WikiPage>, IWikiPagesRepository
 {
     public WikiPagesRepository(ApplicationDbContext dbContext)
         : base(dbContext)

@@ -4,7 +4,7 @@ using ErrorOr;
 
 namespace Domain.Retrospectives;
 
-public class Retrospective : AggregateRoot
+public sealed class Retrospective : AggregateRoot
 {
     public string Title { get; private set; } = null!;
     public string Description { get; private set; } = null!;

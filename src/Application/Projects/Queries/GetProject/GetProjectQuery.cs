@@ -4,4 +4,4 @@ using MediatR;
 
 namespace Application.Projects.Queries.GetProject;
 
-public record GetProjectQuery(Guid ProjectId) : IRequest<ErrorOr<Project>>;
+public sealed record GetProjectQuery(Guid ProjectId) : IRequest<ErrorOr<Project>>;

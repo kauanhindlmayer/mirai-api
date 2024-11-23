@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Application.WikiPages.Commands.CreateWikiPage;
 
-public record CreateWikiPageCommand(
+public sealed record CreateWikiPageCommand(
     Guid ProjectId,
     string Title,
     string Content,

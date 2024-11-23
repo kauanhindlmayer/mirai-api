@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Application.Boards.Commands.DeleteBoard;
 
-public class DeleteBoardCommandHandler(IBoardsRepository _boardRepository)
+internal sealed class DeleteBoardCommandHandler(IBoardsRepository _boardRepository)
     : IRequestHandler<DeleteBoardCommand, ErrorOr<Success>>
 {
     public async Task<ErrorOr<Success>> Handle(

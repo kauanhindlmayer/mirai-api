@@ -9,7 +9,7 @@ using ErrorOr;
 
 namespace Domain.Projects;
 
-public class Project : AggregateRoot
+public sealed class Project : AggregateRoot
 {
     public string Name { get; private set; } = null!;
     public string Description { get; private set; } = string.Empty;

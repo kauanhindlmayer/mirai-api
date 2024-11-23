@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Application.WorkItems.Commands.AddComment;
 
-public class AddCommentCommandHandler(
+internal sealed class AddCommentCommandHandler(
     IWorkItemsRepository _workItemsRepository,
     IUserContext _userContext)
     : IRequestHandler<AddCommentCommand, ErrorOr<WorkItemComment>>

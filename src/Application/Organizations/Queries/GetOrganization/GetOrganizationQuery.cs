@@ -4,5 +4,5 @@ using MediatR;
 
 namespace Application.Organizations.Queries.GetOrganization;
 
-public record GetOrganizationQuery(Guid OrganizationId)
+public sealed record GetOrganizationQuery(Guid OrganizationId)
     : IRequest<ErrorOr<Organization>>;

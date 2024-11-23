@@ -4,7 +4,7 @@ using Domain.WorkItems;
 
 namespace Domain.Tags;
 
-public class Tag : Entity
+public sealed class Tag : Entity
 {
     public string Name { get; private set; } = null!;
     public Guid ProjectId { get; private set; }

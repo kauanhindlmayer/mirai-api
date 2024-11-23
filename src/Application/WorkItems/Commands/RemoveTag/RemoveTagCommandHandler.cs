@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Application.WorkItems.Commands.RemoveTag;
 
-public class RemoveTagCommandHandler(IWorkItemsRepository _workItemsRepository)
+internal sealed class RemoveTagCommandHandler(IWorkItemsRepository _workItemsRepository)
     : IRequestHandler<RemoveTagCommand, ErrorOr<Success>>
 {
     public async Task<ErrorOr<Success>> Handle(

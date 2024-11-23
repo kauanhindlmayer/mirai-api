@@ -5,6 +5,7 @@ using Application.WorkItems.Commands.CreateWorkItem;
 using Application.WorkItems.Commands.RemoveTag;
 using Application.WorkItems.Queries.GetWorkItem;
 using Application.WorkItems.Queries.ListWorkItems;
+using Contracts.Common;
 using Contracts.Tags;
 using Contracts.WorkItems;
 using Domain.WorkItems;

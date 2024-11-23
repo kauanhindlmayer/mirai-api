@@ -1,3 +1,3 @@
 namespace Contracts.Tags;
 
-public record CreateTagRequest(string Name);
+public sealed record CreateTagRequest(string Name);

@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Authentication;
 
-public sealed class JwtBearerOptionsSetup(IOptions<AuthenticationOptions> authenticationOptions)
+internal sealed class JwtBearerOptionsSetup(IOptions<AuthenticationOptions> authenticationOptions)
     : IConfigureNamedOptions<JwtBearerOptions>
 {
     private readonly AuthenticationOptions _authenticationOptions = authenticationOptions.Value;

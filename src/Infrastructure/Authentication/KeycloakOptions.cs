@@ -1,6 +1,6 @@
 namespace Infrastructure.Authentication;
 
-public sealed class KeycloakOptions
+internal sealed class KeycloakOptions
 {
     public const string SectionName = "Keycloak";
     public string AdminUrl { get; set; } = string.Empty;

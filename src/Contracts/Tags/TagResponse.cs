@@ -1,6 +1,6 @@
 namespace Contracts.Tags;
 
-public record TagResponse(
+public sealed record TagResponse(
     Guid Id,
     string Name,
     DateTime CreatedAt,

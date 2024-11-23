@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Application.Organizations.Commands.UpdateOrganization;
 
-public class UpdateOrganizationCommandValidator : AbstractValidator<UpdateOrganizationCommand>
+internal sealed class UpdateOrganizationCommandValidator : AbstractValidator<UpdateOrganizationCommand>
 {
     public UpdateOrganizationCommandValidator()
     {

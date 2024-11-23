@@ -8,7 +8,7 @@ using ErrorOr;
 
 namespace Domain.WorkItems;
 
-public class WorkItem : AggregateRoot
+public sealed class WorkItem : AggregateRoot
 {
     public int Code { get; private set; }
     public string Title { get; private set; } = null!;

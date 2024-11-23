@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Application.Boards.Queries.ListBoards;
 
-public class ListBoardsQueryHandler(IProjectsRepository _projectsRepository)
+internal sealed class ListBoardsQueryHandler(IProjectsRepository _projectsRepository)
     : IRequestHandler<ListBoardsQuery, ErrorOr<List<Board>>>
 {
     public async Task<ErrorOr<List<Board>>> Handle(

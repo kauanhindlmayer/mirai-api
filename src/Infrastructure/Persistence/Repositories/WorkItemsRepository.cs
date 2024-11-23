@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Repositories;
 
-public class WorkItemsRepository : Repository<WorkItem>, IWorkItemsRepository
+internal sealed class WorkItemsRepository : Repository<WorkItem>, IWorkItemsRepository
 {
     public WorkItemsRepository(ApplicationDbContext dbContext)
         : base(dbContext)

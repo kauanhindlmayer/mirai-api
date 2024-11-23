@@ -1,3 +1,5 @@
 namespace Contracts.Projects;
 
-public record UpdateProjectRequest(string Name, string Description);
+public sealed record UpdateProjectRequest(
+    string Name,
+    string Description);

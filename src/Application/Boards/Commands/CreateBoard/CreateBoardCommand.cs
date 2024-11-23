@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Application.Boards.Commands.CreateBoard;
 
-public record CreateBoardCommand(
+public sealed record CreateBoardCommand(
     Guid ProjectId,
     string Name,
     string Description) : IRequest<ErrorOr<Board>>;

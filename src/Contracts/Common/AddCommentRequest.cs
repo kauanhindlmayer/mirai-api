@@ -1,3 +1,3 @@
-namespace Contracts.WorkItems;
+namespace Contracts.Common;
 
-public record AddCommentRequest(string Content);
+public sealed record AddCommentRequest(string Content);

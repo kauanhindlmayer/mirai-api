@@ -1,3 +1,3 @@
 namespace Contracts.WorkItems;
 
-public record AssignWorkItemRequest(Guid AssigneeId);
+public sealed record AssignWorkItemRequest(Guid AssigneeId);

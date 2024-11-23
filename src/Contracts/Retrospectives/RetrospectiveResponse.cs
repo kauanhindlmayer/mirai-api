@@ -1,18 +1,18 @@
 namespace Contracts.Retrospectives;
 
-public record RetrospectiveResponse(
+public sealed record RetrospectiveResponse(
     Guid Id,
     string Name,
     string Description,
     List<RetrospectiveColumnResponse> Columns);
 
-public record RetrospectiveColumnResponse(
+public sealed record RetrospectiveColumnResponse(
     Guid Id,
     string Title,
     int Position,
     List<RetrospectiveItemResponse> Items);
 
-public record RetrospectiveItemResponse(
+public sealed record RetrospectiveItemResponse(
     Guid Id,
     string Description,
     int Position,

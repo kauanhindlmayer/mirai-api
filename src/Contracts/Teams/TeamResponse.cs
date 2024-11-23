@@ -1,6 +1,6 @@
 namespace Contracts.Teams;
 
-public record TeamResponse(
+public sealed record TeamResponse(
     Guid Id,
     Guid ProjectId,
     string Name,
@@ -8,4 +8,6 @@ public record TeamResponse(
     DateTime CreatedAt,
     DateTime? UpdatedAt);
 
-public record MemberResponse(Guid Id, string Name);
+public sealed record MemberResponse(
+    Guid Id,
+    string Name);

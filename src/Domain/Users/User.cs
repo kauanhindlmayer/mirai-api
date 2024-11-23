@@ -4,7 +4,7 @@ using Domain.WorkItems;
 
 namespace Domain.Users;
 
-public class User : Entity
+public sealed class User : Entity
 {
     public string FirstName { get; private set; } = null!;
     public string LastName { get; private set; } = null!;

@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Application.WikiPages.Commands.CreateWikiPage;
 
-public class CreateWikiPageCommandHandler(IProjectsRepository _projectsRepository)
+internal sealed class CreateWikiPageCommandHandler(IProjectsRepository _projectsRepository)
     : IRequestHandler<CreateWikiPageCommand, ErrorOr<WikiPage>>
 {
     public async Task<ErrorOr<WikiPage>> Handle(

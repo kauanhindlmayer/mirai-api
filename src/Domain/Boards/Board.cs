@@ -4,7 +4,7 @@ using ErrorOr;
 
 namespace Domain.Boards;
 
-public class Board : AggregateRoot
+public sealed class Board : AggregateRoot
 {
     public Guid ProjectId { get; private set; }
     public Project Project { get; private set; } = null!;

@@ -1,9 +1,8 @@
-using Application.Tags.Commands.UpdateTag;
 using FluentValidation;
 
-namespace Application.Tags.Commands.CreateTag;
+namespace Application.Tags.Commands.UpdateTag;
 
-public class UpdateTagCommandValidator : AbstractValidator<UpdateTagCommand>
+internal sealed class UpdateTagCommandValidator : AbstractValidator<UpdateTagCommand>
 {
     public UpdateTagCommandValidator()
     {

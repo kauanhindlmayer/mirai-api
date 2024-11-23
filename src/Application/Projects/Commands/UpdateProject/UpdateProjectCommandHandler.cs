@@ -6,7 +6,8 @@ using MediatR;
 
 namespace Application.Projects.Commands.UpdateProject;
 
-public class UpdateProjectCommandHandler(IOrganizationsRepository _organizationsRepository)
+internal sealed class UpdateProjectCommandHandler(
+    IOrganizationsRepository _organizationsRepository)
     : IRequestHandler<UpdateProjectCommand, ErrorOr<Project>>
 {
     public async Task<ErrorOr<Project>> Handle(

@@ -1,6 +1,6 @@
 namespace Contracts.WikiPages;
 
-public record WikiPageSummaryResponse(
+public sealed record WikiPageSummaryResponse(
     Guid Id,
     string Title,
     List<WikiPageSummaryResponse>? SubPages = null);

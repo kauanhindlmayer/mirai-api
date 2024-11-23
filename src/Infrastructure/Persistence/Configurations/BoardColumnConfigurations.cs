@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.Configurations;
 
-public class BoardColumnConfigurations : IEntityTypeConfiguration<BoardColumn>
+internal sealed class BoardColumnConfigurations : IEntityTypeConfiguration<BoardColumn>
 {
     public void Configure(EntityTypeBuilder<BoardColumn> builder)
     {

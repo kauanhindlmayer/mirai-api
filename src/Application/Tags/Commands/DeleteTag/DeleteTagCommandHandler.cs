@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Application.Tags.Commands.DeleteTag;
 
-public class DeleteTagCommandHandler(
+internal sealed class DeleteTagCommandHandler(
     IProjectsRepository _projectsRepository,
     ITagsRepository _tagsRepository)
     : IRequestHandler<DeleteTagCommand, ErrorOr<Success>>

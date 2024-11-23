@@ -3,7 +3,7 @@ using Domain.Users;
 
 namespace Domain.WorkItems;
 
-public class WorkItemComment : Entity
+public sealed class WorkItemComment : Entity
 {
     public Guid WorkItemId { get; private set; }
     public WorkItem WorkItem { get; private set; } = null!;

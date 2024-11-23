@@ -1,6 +1,6 @@
 namespace Contracts.WikiPages;
 
-public record WikiPageDetailResponse(
+public sealed record WikiPageDetailResponse(
     Guid Id,
     Guid ProjectId,
     string Title,
@@ -9,7 +9,7 @@ public record WikiPageDetailResponse(
     DateTime CreatedAt,
     DateTime? UpdatedAt);
 
-public record WikiPageCommentResponse(
+public sealed record WikiPageCommentResponse(
     Guid Id,
     Guid UserId,
     string Content,

@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Application.Projects.Commands.CreateProject;
 
-public class CreateProjectCommandValidator : AbstractValidator<CreateProjectCommand>
+internal sealed class CreateProjectCommandValidator : AbstractValidator<CreateProjectCommand>
 {
     public CreateProjectCommandValidator()
     {

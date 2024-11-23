@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Application.Boards.Commands.MoveCard;
 
-public class MoveCardCommandHandler(IBoardsRepository _boardRepository)
+internal sealed class MoveCardCommandHandler(IBoardsRepository _boardRepository)
     : IRequestHandler<MoveCardCommand, ErrorOr<Success>>
 {
     public async Task<ErrorOr<Success>> Handle(

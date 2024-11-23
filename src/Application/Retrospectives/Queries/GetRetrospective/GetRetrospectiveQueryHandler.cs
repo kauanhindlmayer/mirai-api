@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Application.Retrospectives.Queries.GetRetrospective;
 
-public class GetRetrospectiveQueryHandler(IRetrospectivesRepository _retrospectivesRepository)
+internal sealed class GetRetrospectiveQueryHandler(IRetrospectivesRepository _retrospectivesRepository)
     : IRequestHandler<GetRetrospectiveQuery, ErrorOr<Retrospective>>
 {
     public async Task<ErrorOr<Retrospective>> Handle(

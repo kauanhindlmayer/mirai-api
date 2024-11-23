@@ -1,3 +1,5 @@
 namespace Contracts.Boards;
 
-public record MoveCardRequest(Guid TargetColumnId, int TargetPosition);
+public sealed record MoveCardRequest(
+    Guid TargetColumnId,
+    int TargetPosition);

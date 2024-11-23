@@ -6,7 +6,8 @@ using MediatR;
 
 namespace Application.Teams.Commands.CreateTeam;
 
-public class CreateTeamCommandHandler(IProjectsRepository _projectsRepository)
+internal sealed class CreateTeamCommandHandler(
+    IProjectsRepository _projectsRepository)
     : IRequestHandler<CreateTeamCommand, ErrorOr<Team>>
 {
     public async Task<ErrorOr<Team>> Handle(

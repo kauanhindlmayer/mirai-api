@@ -4,4 +4,4 @@ using MediatR;
 
 namespace Application.Retrospectives.Queries.ListRetrospectives;
 
-public record ListRetrospectivesQuery(Guid TeamId) : IRequest<ErrorOr<List<Retrospective>>>;
+public sealed record ListRetrospectivesQuery(Guid TeamId) : IRequest<ErrorOr<List<Retrospective>>>;

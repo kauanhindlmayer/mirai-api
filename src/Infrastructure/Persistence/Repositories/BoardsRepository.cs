@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Repositories;
 
-public class BoardsRepository : Repository<Board>, IBoardsRepository
+internal sealed class BoardsRepository : Repository<Board>, IBoardsRepository
 {
     public BoardsRepository(ApplicationDbContext dbContext)
         : base(dbContext)

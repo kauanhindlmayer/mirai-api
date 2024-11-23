@@ -4,5 +4,5 @@ using MediatR;
 
 namespace Application.Projects.Queries.ListProjects;
 
-public record ListProjectsQuery(Guid OrganizationId)
+public sealed record ListProjectsQuery(Guid OrganizationId)
     : IRequest<ErrorOr<List<Project>>>;

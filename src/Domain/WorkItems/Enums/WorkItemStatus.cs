@@ -2,7 +2,7 @@ using Ardalis.SmartEnum;
 
 namespace Domain.WorkItems.Enums;
 
-public class WorkItemStatus(string name, int value)
+public sealed class WorkItemStatus(string name, int value)
     : SmartEnum<WorkItemStatus>(name, value)
 {
     public static readonly WorkItemStatus New = new(nameof(New), 0);

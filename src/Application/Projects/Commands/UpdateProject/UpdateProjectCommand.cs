@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Application.Projects.Commands.UpdateProject;
 
-public record UpdateProjectCommand(
+public sealed record UpdateProjectCommand(
     Guid OrganizationId,
     Guid ProjectId,
     string Name,

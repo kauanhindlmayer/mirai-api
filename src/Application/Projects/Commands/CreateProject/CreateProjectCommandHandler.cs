@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Application.Projects.Commands.CreateProject;
 
-public class CreateProjectCommandHandler(IOrganizationsRepository _organizationsRepository)
+internal sealed class CreateProjectCommandHandler(IOrganizationsRepository _organizationsRepository)
     : IRequestHandler<CreateProjectCommand, ErrorOr<Project>>
 {
     public async Task<ErrorOr<Project>> Handle(

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.Configurations;
 
-public class WikiPageCommentConfigurations : IEntityTypeConfiguration<WikiPageComment>
+internal sealed class WikiPageCommentConfigurations : IEntityTypeConfiguration<WikiPageComment>
 {
     public void Configure(EntityTypeBuilder<WikiPageComment> builder)
     {

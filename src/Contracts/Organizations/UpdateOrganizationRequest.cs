@@ -1,3 +1,5 @@
 namespace Contracts.Organizations;
 
-public record UpdateOrganizationRequest(string Name, string? Description);
+public sealed record UpdateOrganizationRequest(
+    string Name,
+    string? Description);

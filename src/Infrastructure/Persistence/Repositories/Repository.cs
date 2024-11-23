@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Repositories;
 
-public abstract class Repository<T>(ApplicationDbContext dbContext)
+internal abstract class Repository<T>(ApplicationDbContext dbContext)
     where T : Entity
 {
     protected readonly ApplicationDbContext _dbContext = dbContext;

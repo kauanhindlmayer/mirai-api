@@ -15,7 +15,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence;
 
-public class ApplicationDbContext(
+public sealed class ApplicationDbContext(
     DbContextOptions options,
     IHttpContextAccessor _httpContextAccessor,
     IPublisher _publisher) : DbContext(options)

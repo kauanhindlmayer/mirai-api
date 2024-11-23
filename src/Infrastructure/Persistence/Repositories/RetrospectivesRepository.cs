@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Repositories;
 
-public class RetrospectivesRepository : Repository<Retrospective>,
+internal sealed class RetrospectivesRepository : Repository<Retrospective>,
     IRetrospectivesRepository
 {
     public RetrospectivesRepository(ApplicationDbContext dbContext)

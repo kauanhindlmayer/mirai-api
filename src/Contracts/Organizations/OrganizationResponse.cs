@@ -1,6 +1,6 @@
 namespace Contracts.Organizations;
 
-public record OrganizationResponse(
+public sealed record OrganizationResponse(
     Guid Id,
     string Name,
     string? Description,

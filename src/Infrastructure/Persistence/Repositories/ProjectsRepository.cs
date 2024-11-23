@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Repositories;
 
-public class ProjectsRepository : Repository<Project>, IProjectsRepository
+internal sealed class ProjectsRepository : Repository<Project>, IProjectsRepository
 {
     public ProjectsRepository(ApplicationDbContext dbContext)
         : base(dbContext)

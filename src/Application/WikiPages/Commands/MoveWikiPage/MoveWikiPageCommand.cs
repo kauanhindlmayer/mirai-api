@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Application.WikiPages.Commands.MoveWikiPage;
 
-public record MoveWikiPageCommand(
+public sealed record MoveWikiPageCommand(
     Guid ProjectId,
     Guid WikiPageId,
     Guid? TargetParentId,

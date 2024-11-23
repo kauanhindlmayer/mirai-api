@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Application.WorkItems.Queries.ListWorkItems;
 
-public class ListWorkItemsQueryHandler(IProjectsRepository _projectsRepository)
+internal sealed class ListWorkItemsQueryHandler(IProjectsRepository _projectsRepository)
     : IRequestHandler<ListWorkItemsQuery, ErrorOr<List<WorkItem>>>
 {
     public async Task<ErrorOr<List<WorkItem>>> Handle(

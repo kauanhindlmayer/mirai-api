@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Application.WorkItems.Commands.CreateWorkItem;
 
-public class CreateWorkItemCommandHandler(
+internal sealed class CreateWorkItemCommandHandler(
     IProjectsRepository _projectsRepository,
     IWorkItemsRepository _workItemsRepository)
     : IRequestHandler<CreateWorkItemCommand, ErrorOr<WorkItem>>
