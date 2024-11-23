@@ -5,14 +5,14 @@ using MediatR;
 
 namespace Application.Teams.Queries.GetTeam;
 
-internal sealed class GetTeamQueryHandler(ITeamsRepository _teamsRepository)
+internal sealed class GetTeamQueryHandler(ITeamsRepository teamsRepository)
     : IRequestHandler<GetTeamQuery, ErrorOr<Team>>
 {
     public async Task<ErrorOr<Team>> Handle(
         GetTeamQuery query,
         CancellationToken cancellationToken)
     {
-        var team = await _teamsRepository.GetByIdAsync(
+        var team = await teamsRepository.GetByIdAsync(
             query.TeamId,
             cancellationToken);
 

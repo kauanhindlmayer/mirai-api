@@ -6,14 +6,14 @@ using MediatR;
 
 namespace Application.Boards.Queries.ListBoards;
 
-internal sealed class ListBoardsQueryHandler(IProjectsRepository _projectsRepository)
+internal sealed class ListBoardsQueryHandler(IProjectsRepository projectsRepository)
     : IRequestHandler<ListBoardsQuery, ErrorOr<List<Board>>>
 {
     public async Task<ErrorOr<List<Board>>> Handle(
         ListBoardsQuery query,
         CancellationToken cancellationToken)
     {
-        var project = await _projectsRepository.GetByIdWithBoardsAsync(
+        var project = await projectsRepository.GetByIdWithBoardsAsync(
             query.ProjectId,
             cancellationToken);
 

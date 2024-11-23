@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Application.Common.Behaviors;
 
-public sealed class UnitOfWorkBehavior<TRequest, TResponse>(IUnitOfWork _unitOfWork)
+public sealed class UnitOfWorkBehavior<TRequest, TResponse>(IUnitOfWork unitOfWork)
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : notnull
 {
@@ -19,7 +19,7 @@ public sealed class UnitOfWorkBehavior<TRequest, TResponse>(IUnitOfWork _unitOfW
 
         var response = await next();
 
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return response;
     }

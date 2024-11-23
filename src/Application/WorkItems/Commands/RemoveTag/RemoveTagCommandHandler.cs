@@ -5,14 +5,14 @@ using MediatR;
 
 namespace Application.WorkItems.Commands.RemoveTag;
 
-internal sealed class RemoveTagCommandHandler(IWorkItemsRepository _workItemsRepository)
+internal sealed class RemoveTagCommandHandler(IWorkItemsRepository workItemsRepository)
     : IRequestHandler<RemoveTagCommand, ErrorOr<Success>>
 {
     public async Task<ErrorOr<Success>> Handle(
         RemoveTagCommand command,
         CancellationToken cancellationToken)
     {
-        var workItem = await _workItemsRepository.GetByIdAsync(
+        var workItem = await workItemsRepository.GetByIdAsync(
             command.WorkItemId,
             cancellationToken);
 
@@ -27,7 +27,7 @@ internal sealed class RemoveTagCommandHandler(IWorkItemsRepository _workItemsRep
             return result.Errors;
         }
 
-        _workItemsRepository.Update(workItem);
+        workItemsRepository.Update(workItem);
 
         return Result.Success;
     }

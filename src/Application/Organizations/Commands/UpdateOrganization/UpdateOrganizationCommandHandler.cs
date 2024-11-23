@@ -6,14 +6,14 @@ using MediatR;
 namespace Application.Organizations.Commands.UpdateOrganization;
 
 internal sealed class UpdateOrganizationCommandHandler(
-    IOrganizationsRepository _organizationsRepository)
+    IOrganizationsRepository organizationsRepository)
     : IRequestHandler<UpdateOrganizationCommand, ErrorOr<Organization>>
 {
     public async Task<ErrorOr<Organization>> Handle(
         UpdateOrganizationCommand command,
         CancellationToken cancellationToken)
     {
-        var organization = await _organizationsRepository.GetByIdAsync(
+        var organization = await organizationsRepository.GetByIdAsync(
             command.Id,
             cancellationToken);
 
@@ -23,7 +23,7 @@ internal sealed class UpdateOrganizationCommandHandler(
         }
 
         organization.Update(command.Name, command.Description);
-        _organizationsRepository.Update(organization);
+        organizationsRepository.Update(organization);
 
         return organization;
     }

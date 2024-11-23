@@ -8,15 +8,15 @@ using MediatR;
 namespace Application.Users.Queries.LoginUser;
 
 internal sealed class LoginUserQueryHandler(
-    IUsersRepository _usersRepository,
-    IJwtService _jwtService)
+    IUsersRepository usersRepository,
+    IJwtService jwtService)
     : IRequestHandler<LoginUserQuery, ErrorOr<AccessTokenResponse>>
 {
     public async Task<ErrorOr<AccessTokenResponse>> Handle(
         LoginUserQuery query,
         CancellationToken cancellationToken)
     {
-        var user = await _usersRepository.GetByEmailAsync(
+        var user = await usersRepository.GetByEmailAsync(
             query.Email,
             cancellationToken);
 
@@ -25,7 +25,7 @@ internal sealed class LoginUserQueryHandler(
             return UserErrors.AuthenticationFailed;
         }
 
-        var result = await _jwtService.GetAccessTokenAsync(
+        var result = await jwtService.GetAccessTokenAsync(
             query.Email,
             query.Password,
             cancellationToken);

@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebApi.Controllers;
 
 [Route("api/projects/{projectId:guid}/wiki-pages")]
-public class WikiPagesController(ISender _mediator) : ApiController
+public class WikiPagesController(ISender mediator) : ApiController
 {
     /// <summary>
     /// Creates a new wiki page. If a ParentWikiPageId is provided, the page
@@ -33,7 +33,7 @@ public class WikiPagesController(ISender _mediator) : ApiController
             request.Content,
             request.ParentWikiPageId);
 
-        var result = await _mediator.Send(command);
+        var result = await mediator.Send(command);
 
         return result.Match(
             wikiPage => CreatedAtAction(
@@ -54,7 +54,7 @@ public class WikiPagesController(ISender _mediator) : ApiController
     {
         var query = new GetWikiPageQuery(wikiPageId);
 
-        var result = await _mediator.Send(query);
+        var result = await mediator.Send(query);
 
         return result.Match(
             wikiPage => Ok(ToDto(wikiPage)),
@@ -71,7 +71,7 @@ public class WikiPagesController(ISender _mediator) : ApiController
     {
         var query = new ListWikiPagesQuery(projectId);
 
-        var result = await _mediator.Send(query);
+        var result = await mediator.Send(query);
 
         return result.Match(
             wikiPages => Ok(wikiPages.ConvertAll(ToSummaryDto)),
@@ -92,7 +92,7 @@ public class WikiPagesController(ISender _mediator) : ApiController
     {
         var command = new AddCommentCommand(wikiPageId, request.Content);
 
-        var result = await _mediator.Send(command);
+        var result = await mediator.Send(command);
 
         return result.Match(
             _ => CreatedAtAction(
@@ -113,7 +113,7 @@ public class WikiPagesController(ISender _mediator) : ApiController
     {
         var command = new DeleteWikiPageCommand(wikiPageId);
 
-        var result = await _mediator.Send(command);
+        var result = await mediator.Send(command);
 
         return result.Match(
             _ => NoContent(),
@@ -135,7 +135,7 @@ public class WikiPagesController(ISender _mediator) : ApiController
             request.Title,
             request.Content);
 
-        var result = await _mediator.Send(command);
+        var result = await mediator.Send(command);
 
         return result.Match(
             wikiPage => Ok(ToDto(wikiPage)),
@@ -160,7 +160,7 @@ public class WikiPagesController(ISender _mediator) : ApiController
             request.TargetParentId,
             request.TargetPosition);
 
-        var result = await _mediator.Send(command);
+        var result = await mediator.Send(command);
 
         return result.Match(
             _ => NoContent(),

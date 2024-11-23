@@ -6,13 +6,13 @@ using MediatR;
 namespace Application.Organizations.Queries.ListOrganizations;
 
 internal sealed class ListOrganizationsQueryHandler(
-    IOrganizationsRepository _organizationsRepository)
+    IOrganizationsRepository organizationsRepository)
     : IRequestHandler<ListOrganizationsQuery, ErrorOr<List<Organization>>>
 {
     public async Task<ErrorOr<List<Organization>>> Handle(
         ListOrganizationsQuery request,
         CancellationToken cancellationToken)
     {
-        return await _organizationsRepository.ListAsync(cancellationToken);
+        return await organizationsRepository.ListAsync(cancellationToken);
     }
 }

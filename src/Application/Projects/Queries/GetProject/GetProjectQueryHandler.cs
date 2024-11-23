@@ -5,14 +5,14 @@ using MediatR;
 
 namespace Application.Projects.Queries.GetProject;
 
-internal sealed class GetProjectQueryHandler(IProjectsRepository _projectsRepository)
+internal sealed class GetProjectQueryHandler(IProjectsRepository projectsRepository)
     : IRequestHandler<GetProjectQuery, ErrorOr<Project>>
 {
     public async Task<ErrorOr<Project>> Handle(
         GetProjectQuery query,
         CancellationToken cancellationToken)
     {
-        var project = await _projectsRepository.GetByIdAsync(
+        var project = await projectsRepository.GetByIdAsync(
             query.ProjectId,
             cancellationToken);
 

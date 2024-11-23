@@ -7,15 +7,15 @@ using MediatR;
 namespace Application.Boards.Commands.CreateCard;
 
 internal sealed class CreateCardCommandHandler(
-    IWorkItemsRepository _workItemsRepository,
-    IBoardsRepository _boardRepository)
+    IWorkItemsRepository workItemsRepository,
+    IBoardsRepository boardRepository)
     : IRequestHandler<CreateCardCommand, ErrorOr<BoardCard>>
 {
     public async Task<ErrorOr<BoardCard>> Handle(
         CreateCardCommand command,
         CancellationToken cancellationToken)
     {
-        var board = await _boardRepository.GetByIdAsync(
+        var board = await boardRepository.GetByIdAsync(
             command.BoardId,
             cancellationToken);
 
@@ -24,7 +24,7 @@ internal sealed class CreateCardCommandHandler(
             return BoardErrors.NotFound;
         }
 
-        var workItemCode = await _workItemsRepository.GetNextWorkItemCodeAsync(
+        var workItemCode = await workItemsRepository.GetNextWorkItemCodeAsync(
             board.ProjectId,
             cancellationToken);
 
@@ -34,7 +34,7 @@ internal sealed class CreateCardCommandHandler(
             command.Title,
             command.Type);
 
-        await _workItemsRepository.AddAsync(workItem, cancellationToken);
+        await workItemsRepository.AddAsync(workItem, cancellationToken);
 
         var column = board.Columns.SingleOrDefault(c => c.Id == command.ColumnId);
         if (column is null)
@@ -43,7 +43,7 @@ internal sealed class CreateCardCommandHandler(
         }
 
         var card = column.AddCard(workItem);
-        _boardRepository.Update(board);
+        boardRepository.Update(board);
 
         return card;
     }

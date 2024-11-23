@@ -7,15 +7,15 @@ using MediatR;
 namespace Application.WorkItems.Commands.AddComment;
 
 internal sealed class AddCommentCommandHandler(
-    IWorkItemsRepository _workItemsRepository,
-    IUserContext _userContext)
+    IWorkItemsRepository workItemsRepository,
+    IUserContext userContext)
     : IRequestHandler<AddCommentCommand, ErrorOr<WorkItemComment>>
 {
     public async Task<ErrorOr<WorkItemComment>> Handle(
         AddCommentCommand command,
         CancellationToken cancellationToken)
     {
-        var workItem = await _workItemsRepository.GetByIdAsync(
+        var workItem = await workItemsRepository.GetByIdAsync(
             command.WorkItemId,
             cancellationToken);
 
@@ -26,11 +26,11 @@ internal sealed class AddCommentCommandHandler(
 
         var comment = new WorkItemComment(
             workItem.Id,
-            _userContext.UserId,
+            userContext.UserId,
             command.Content);
 
         workItem.AddComment(comment);
-        _workItemsRepository.Update(workItem);
+        workItemsRepository.Update(workItem);
 
         return comment;
     }

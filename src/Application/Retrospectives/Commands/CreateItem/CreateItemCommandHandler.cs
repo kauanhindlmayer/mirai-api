@@ -7,15 +7,15 @@ using MediatR;
 namespace Application.Retrospectives.Commands.CreateItem;
 
 internal sealed class CreateItemCommandHandler(
-    IRetrospectivesRepository _retrospectivesRepository,
-    IUserContext _userContext)
+    IRetrospectivesRepository retrospectivesRepository,
+    IUserContext userContext)
     : IRequestHandler<CreateItemCommand, ErrorOr<RetrospectiveItem>>
 {
     public async Task<ErrorOr<RetrospectiveItem>> Handle(
         CreateItemCommand command,
         CancellationToken cancellationToken)
     {
-        var retrospective = await _retrospectivesRepository.GetByIdWithColumnsAsync(
+        var retrospective = await retrospectivesRepository.GetByIdWithColumnsAsync(
             command.RetrospectiveId,
             cancellationToken);
 
@@ -33,7 +33,7 @@ internal sealed class CreateItemCommandHandler(
         var retrospectiveItem = new RetrospectiveItem(
             command.Description,
             command.RetrospectiveColumnId,
-            _userContext.UserId);
+            userContext.UserId);
 
         var result = column.AddItem(retrospectiveItem);
         if (result.IsError)
@@ -41,7 +41,7 @@ internal sealed class CreateItemCommandHandler(
             return result.Errors;
         }
 
-        _retrospectivesRepository.Update(retrospective);
+        retrospectivesRepository.Update(retrospective);
 
         return retrospectiveItem;
     }

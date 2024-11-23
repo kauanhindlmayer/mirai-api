@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebApi.Controllers;
 
 [Route("api/projects/{projectId:guid}/teams")]
-public class TeamsController(ISender _mediator) : ApiController
+public class TeamsController(ISender mediator) : ApiController
 {
     /// <summary>
     /// Create a new team.
@@ -25,7 +25,7 @@ public class TeamsController(ISender _mediator) : ApiController
     {
         var command = new CreateTeamCommand(projectId, request.Name);
 
-        var result = await _mediator.Send(command);
+        var result = await mediator.Send(command);
 
         return result.Match(
             team => CreatedAtAction(
@@ -46,7 +46,7 @@ public class TeamsController(ISender _mediator) : ApiController
     {
         var query = new GetTeamQuery(teamId);
 
-        var result = await _mediator.Send(query);
+        var result = await mediator.Send(query);
 
         return result.Match(
             team => Ok(ToDto(team)),
@@ -65,7 +65,7 @@ public class TeamsController(ISender _mediator) : ApiController
     {
         var command = new AddMemberCommand(teamId, request.MemberId);
 
-        var result = await _mediator.Send(command);
+        var result = await mediator.Send(command);
 
         return result.Match(
             _ => NoContent(),

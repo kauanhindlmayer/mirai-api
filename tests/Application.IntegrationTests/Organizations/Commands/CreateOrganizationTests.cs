@@ -19,7 +19,7 @@ public class CreateOrganizationTests : BaseIntegrationTest
         var command = new CreateOrganizationCommand("Test Organization", "Test Description");
 
         // Act
-        var result = await Sender.Send(command);
+        var result = await _sender.Send(command);
 
         // Assert
         result.IsError.Should().BeFalse();
@@ -33,10 +33,10 @@ public class CreateOrganizationTests : BaseIntegrationTest
     {
         // Arrange
         var command = new CreateOrganizationCommand("Test Organization 2", "Test Description 2");
-        await Sender.Send(command);
+        await _sender.Send(command);
 
         // Act
-        var result = await Sender.Send(command);
+        var result = await _sender.Send(command);
 
         // Assert
         result.IsError.Should().BeTrue();

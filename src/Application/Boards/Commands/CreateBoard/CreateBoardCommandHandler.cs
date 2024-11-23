@@ -7,15 +7,15 @@ using MediatR;
 namespace Application.Boards.Commands.CreateBoard;
 
 internal sealed class CreateBoardCommandHandler(
-    IProjectsRepository _projectRepository,
-    IBoardsRepository _boardRepository)
+    IProjectsRepository projectRepository,
+    IBoardsRepository boardRepository)
     : IRequestHandler<CreateBoardCommand, ErrorOr<Board>>
 {
     public async Task<ErrorOr<Board>> Handle(
         CreateBoardCommand command,
         CancellationToken cancellationToken)
     {
-        var project = await _projectRepository.GetByIdAsync(
+        var project = await projectRepository.GetByIdAsync(
             command.ProjectId,
             cancellationToken);
 
@@ -29,7 +29,7 @@ internal sealed class CreateBoardCommandHandler(
             command.Name,
             command.Description);
 
-        await _boardRepository.AddAsync(board, cancellationToken);
+        await boardRepository.AddAsync(board, cancellationToken);
 
         return board;
     }

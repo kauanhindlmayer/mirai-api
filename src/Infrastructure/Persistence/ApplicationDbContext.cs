@@ -17,8 +17,8 @@ namespace Infrastructure.Persistence;
 
 public sealed class ApplicationDbContext(
     DbContextOptions options,
-    IHttpContextAccessor _httpContextAccessor,
-    IPublisher _publisher) : DbContext(options)
+    IHttpContextAccessor httpContextAccessor,
+    IPublisher publisher) : DbContext(options)
 {
     public DbSet<User> Users { get; init; } = null!;
 
@@ -72,24 +72,24 @@ public sealed class ApplicationDbContext(
         base.OnModelCreating(modelBuilder);
     }
 
-    private bool IsUserWaitingOnline() => _httpContextAccessor.HttpContext is not null;
+    private bool IsUserWaitingOnline() => httpContextAccessor.HttpContext is not null;
 
     private async Task PublishDomainEvents(List<IDomainEvent> domainEvents)
     {
         foreach (var domainEvent in domainEvents)
         {
-            await _publisher.Publish(domainEvent);
+            await publisher.Publish(domainEvent);
         }
     }
 
     private void AddDomainEventsToOfflineProcessingQueue(List<IDomainEvent> domainEvents)
     {
-        Queue<IDomainEvent> domainEventsQueue = _httpContextAccessor.HttpContext!.Items.TryGetValue(EventualConsistencyMiddleware.DomainEventsKey, out var value) &&
+        Queue<IDomainEvent> domainEventsQueue = httpContextAccessor.HttpContext!.Items.TryGetValue(EventualConsistencyMiddleware.DomainEventsKey, out var value) &&
             value is Queue<IDomainEvent> existingDomainEvents
                 ? existingDomainEvents
                 : new();
 
         domainEvents.ForEach(domainEventsQueue.Enqueue);
-        _httpContextAccessor.HttpContext.Items[EventualConsistencyMiddleware.DomainEventsKey] = domainEventsQueue;
+        httpContextAccessor.HttpContext.Items[EventualConsistencyMiddleware.DomainEventsKey] = domainEventsQueue;
     }
 }

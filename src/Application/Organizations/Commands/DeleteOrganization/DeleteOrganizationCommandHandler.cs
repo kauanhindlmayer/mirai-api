@@ -6,14 +6,14 @@ using MediatR;
 namespace Application.Organizations.Commands.DeleteOrganization;
 
 internal sealed class DeleteOrganizationCommandHandler(
-    IOrganizationsRepository _organizationsRepository)
+    IOrganizationsRepository organizationsRepository)
     : IRequestHandler<DeleteOrganizationCommand, ErrorOr<Success>>
 {
     public async Task<ErrorOr<Success>> Handle(
         DeleteOrganizationCommand command,
         CancellationToken cancellationToken)
     {
-        var organization = await _organizationsRepository.GetByIdAsync(
+        var organization = await organizationsRepository.GetByIdAsync(
             command.OrganizationId,
             cancellationToken);
 
@@ -23,7 +23,7 @@ internal sealed class DeleteOrganizationCommandHandler(
         }
 
         organization.Delete();
-        _organizationsRepository.Remove(organization);
+        organizationsRepository.Remove(organization);
 
         return Result.Success;
     }

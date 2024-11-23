@@ -6,14 +6,14 @@ using MediatR;
 
 namespace Application.WikiPages.Queries.ListWikiPages;
 
-internal sealed class ListWikiPagesQueryHandler(IProjectsRepository _projectsRepository)
+internal sealed class ListWikiPagesQueryHandler(IProjectsRepository projectsRepository)
     : IRequestHandler<ListWikiPagesQuery, ErrorOr<List<WikiPage>>>
 {
     public async Task<ErrorOr<List<WikiPage>>> Handle(
         ListWikiPagesQuery query,
         CancellationToken cancellationToken)
     {
-        var project = await _projectsRepository.GetByIdWithWikiPagesAsync(
+        var project = await projectsRepository.GetByIdWithWikiPagesAsync(
             query.ProjectId,
             cancellationToken);
 

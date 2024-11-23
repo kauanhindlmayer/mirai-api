@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebApi.Controllers;
 
 [Route("api/organizations/{organizationId:guid}/projects")]
-public class ProjectsController(ISender _mediator) : ApiController
+public class ProjectsController(ISender mediator) : ApiController
 {
     /// <summary>
     /// Create a new project.
@@ -27,7 +27,7 @@ public class ProjectsController(ISender _mediator) : ApiController
             request.Description,
             organizationId);
 
-        var result = await _mediator.Send(command);
+        var result = await mediator.Send(command);
 
         return result.Match(
             project => CreatedAtAction(
@@ -48,7 +48,7 @@ public class ProjectsController(ISender _mediator) : ApiController
     {
         var query = new GetProjectQuery(projectId);
 
-        var result = await _mediator.Send(query);
+        var result = await mediator.Send(query);
 
         return result.Match(
             project => Ok(ToDto(project)),
@@ -66,7 +66,7 @@ public class ProjectsController(ISender _mediator) : ApiController
     {
         var query = new ListProjectsQuery(organizationId);
 
-        var result = await _mediator.Send(query);
+        var result = await mediator.Send(query);
 
         return result.Match(
             projects => Ok(projects.ConvertAll(ToDto)),
@@ -91,7 +91,7 @@ public class ProjectsController(ISender _mediator) : ApiController
             request.Name,
             request.Description);
 
-        var result = await _mediator.Send(command);
+        var result = await mediator.Send(command);
 
         return result.Match(
             project => Ok(ToDto(project)),

@@ -7,14 +7,14 @@ using MediatR;
 namespace Application.Tags.Commands.CreateTag;
 
 internal sealed class CreateTagCommandHandler(
-    IProjectsRepository _projectsRepository)
+    IProjectsRepository projectsRepository)
     : IRequestHandler<CreateTagCommand, ErrorOr<Tag>>
 {
     public async Task<ErrorOr<Tag>> Handle(
         CreateTagCommand command,
         CancellationToken cancellationToken)
     {
-        var project = await _projectsRepository.GetByIdWithTagsAsync(
+        var project = await projectsRepository.GetByIdWithTagsAsync(
             command.ProjectId,
             cancellationToken);
 
@@ -31,7 +31,7 @@ internal sealed class CreateTagCommandHandler(
             return result.Errors;
         }
 
-        _projectsRepository.Update(project);
+        projectsRepository.Update(project);
 
         return tag;
     }

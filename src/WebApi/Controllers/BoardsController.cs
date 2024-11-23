@@ -15,7 +15,7 @@ using DomainWorkItemType = Domain.WorkItems.Enums.WorkItemType;
 namespace WebApi.Controllers;
 
 [Route("api/projects/{projectId:guid}/boards")]
-public class BoardsController(ISender _mediator) : ApiController
+public class BoardsController(ISender mediator) : ApiController
 {
     /// <summary>
     /// Create a new board.
@@ -32,7 +32,7 @@ public class BoardsController(ISender _mediator) : ApiController
             request.Name,
             request.Description);
 
-        var result = await _mediator.Send(command);
+        var result = await mediator.Send(command);
 
         return result.Match(
             board => CreatedAtAction(
@@ -53,7 +53,7 @@ public class BoardsController(ISender _mediator) : ApiController
     {
         var query = new GetBoardQuery(boardId);
 
-        var result = await _mediator.Send(query);
+        var result = await mediator.Send(query);
 
         return result.Match(
             board => Ok(ToDto(board)),
@@ -72,7 +72,7 @@ public class BoardsController(ISender _mediator) : ApiController
     {
         var query = new ListBoardsQuery(projectId);
 
-        var result = await _mediator.Send(query);
+        var result = await mediator.Send(query);
 
         return result.Match(
             boards => Ok(boards.Select(ToSummaryDto)),
@@ -90,7 +90,7 @@ public class BoardsController(ISender _mediator) : ApiController
     {
         var command = new DeleteBoardCommand(boardId);
 
-        var result = await _mediator.Send(command);
+        var result = await mediator.Send(command);
 
         return result.Match(
             _ => NoContent(),
@@ -115,7 +115,7 @@ public class BoardsController(ISender _mediator) : ApiController
             request.WipLimit,
             request.DefinitionOfDone);
 
-        var result = await _mediator.Send(command);
+        var result = await mediator.Send(command);
 
         return result.Match(
             _ => CreatedAtAction(
@@ -137,7 +137,7 @@ public class BoardsController(ISender _mediator) : ApiController
     {
         var command = new DeleteColumnCommand(boardId, columnId);
 
-        var result = await _mediator.Send(command);
+        var result = await mediator.Send(command);
 
         return result.Match(
             _ => NoContent(),
@@ -166,7 +166,7 @@ public class BoardsController(ISender _mediator) : ApiController
 
         var command = new CreateCardCommand(boardId, columnId, type, request.Title);
 
-        var result = await _mediator.Send(command);
+        var result = await mediator.Send(command);
 
         return result.Match(
             _ => CreatedAtAction(
@@ -196,7 +196,7 @@ public class BoardsController(ISender _mediator) : ApiController
             request.TargetColumnId,
             request.TargetPosition);
 
-        var result = await _mediator.Send(command);
+        var result = await mediator.Send(command);
 
         return result.Match(
             _ => NoContent(),

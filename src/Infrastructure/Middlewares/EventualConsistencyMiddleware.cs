@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Infrastructure.Middlewares;
 
-internal sealed class EventualConsistencyMiddleware(RequestDelegate _next)
+internal sealed class EventualConsistencyMiddleware(RequestDelegate next)
 {
     public const string DomainEventsKey = "DomainEventsKey";
 
@@ -39,6 +39,6 @@ internal sealed class EventualConsistencyMiddleware(RequestDelegate _next)
             }
         });
 
-        await _next(context);
+        await next(context);
     }
 }

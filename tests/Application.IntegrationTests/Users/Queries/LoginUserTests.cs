@@ -21,7 +21,7 @@ public class LoginUserTests : BaseIntegrationTest
         var command = new LoginUserQuery("john.doe@email.com", "password");
 
         // Act
-        var result = await Sender.Send(command);
+        var result = await _sender.Send(command);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -38,11 +38,11 @@ public class LoginUserTests : BaseIntegrationTest
             "password",
             "John",
             "Doe");
-        await Sender.Send(registerCommand);
+        await _sender.Send(registerCommand);
         var command = new LoginUserQuery("john.doe@email.com", "password");
 
         // Act
-        var result = await Sender.Send(command);
+        var result = await _sender.Send(command);
 
         // Assert
         result.IsError.Should().BeFalse();
@@ -57,11 +57,11 @@ public class LoginUserTests : BaseIntegrationTest
             "password",
             "John",
             "Doe");
-        await Sender.Send(registerCommand);
+        await _sender.Send(registerCommand);
         var command = new LoginUserQuery("john.doe@email.com", "wrong_password");
 
         // Act
-        var result = await Sender.Send(command);
+        var result = await _sender.Send(command);
 
         // Assert
         result.IsError.Should().BeFalse();

@@ -7,15 +7,15 @@ using MediatR;
 namespace Application.Tags.Queries.ListTags;
 
 internal sealed class ListTagsQueryHandler(
-    IProjectsRepository _projectsRepository,
-    ITagsRepository _tagsRepository)
+    IProjectsRepository projectsRepository,
+    ITagsRepository tagsRepository)
     : IRequestHandler<ListTagsQuery, ErrorOr<List<Tag>>>
 {
     public async Task<ErrorOr<List<Tag>>> Handle(
         ListTagsQuery query,
         CancellationToken cancellationToken)
     {
-        var project = await _projectsRepository.GetByIdAsync(
+        var project = await projectsRepository.GetByIdAsync(
             query.ProjectId,
             cancellationToken);
 
@@ -24,7 +24,7 @@ internal sealed class ListTagsQueryHandler(
             return ProjectErrors.NotFound;
         }
 
-        var tags = await _tagsRepository.GetByProjectAsync(
+        var tags = await tagsRepository.GetByProjectAsync(
             query.ProjectId,
             query.SearchTerm,
             cancellationToken);

@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebApi.Controllers;
 
 [Route("api/projects/{projectId:guid}/tags")]
-public class TagsController(ISender _mediator) : ApiController
+public class TagsController(ISender mediator) : ApiController
 {
     /// <summary>
     /// Add a tag to a project that can be used to categorize work items.
@@ -24,7 +24,7 @@ public class TagsController(ISender _mediator) : ApiController
     {
         var command = new CreateTagCommand(projectId, request.Name);
 
-        var result = await _mediator.Send(command);
+        var result = await mediator.Send(command);
 
         return result.Match(
             _ => NoContent(),
@@ -43,7 +43,7 @@ public class TagsController(ISender _mediator) : ApiController
     {
         var query = new ListTagsQuery(projectId, searchTerm);
 
-        var result = await _mediator.Send(query);
+        var result = await mediator.Send(query);
 
         return result.Match(
             tags => Ok(tags.ConvertAll(ToDto)),
@@ -63,7 +63,7 @@ public class TagsController(ISender _mediator) : ApiController
     {
         var command = new UpdateTagCommand(projectId, tagId, request.Name);
 
-        var result = await _mediator.Send(command);
+        var result = await mediator.Send(command);
 
         return result.Match(
             _ => NoContent(),
@@ -82,7 +82,7 @@ public class TagsController(ISender _mediator) : ApiController
     {
         var command = new DeleteTagCommand(projectId, tagName);
 
-        var result = await _mediator.Send(command);
+        var result = await mediator.Send(command);
 
         return result.Match(
             _ => NoContent(),

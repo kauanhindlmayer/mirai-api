@@ -7,16 +7,16 @@ using MediatR;
 namespace Application.Users.Queries.GetCurrentUser;
 
 internal sealed class GetCurrentUserQueryHandler(
-    IUserContext _userContext,
-    IUsersRepository _usersRepository)
+    IUserContext userContext,
+    IUsersRepository usersRepository)
     : IRequestHandler<GetCurrentUserQuery, ErrorOr<User>>
 {
     public async Task<ErrorOr<User>> Handle(
         GetCurrentUserQuery query,
         CancellationToken cancellationToken)
     {
-        var user = await _usersRepository.GetByIdAsync(
-            _userContext.UserId,
+        var user = await usersRepository.GetByIdAsync(
+            userContext.UserId,
             cancellationToken);
 
         if (user is null)

@@ -5,14 +5,14 @@ using MediatR;
 
 namespace Application.Boards.Commands.MoveCard;
 
-internal sealed class MoveCardCommandHandler(IBoardsRepository _boardRepository)
+internal sealed class MoveCardCommandHandler(IBoardsRepository boardRepository)
     : IRequestHandler<MoveCardCommand, ErrorOr<Success>>
 {
     public async Task<ErrorOr<Success>> Handle(
         MoveCardCommand command,
         CancellationToken cancellationToken)
     {
-        var board = await _boardRepository.GetByIdAsync(
+        var board = await boardRepository.GetByIdAsync(
             command.BoardId,
             cancellationToken);
 
@@ -37,7 +37,7 @@ internal sealed class MoveCardCommandHandler(IBoardsRepository _boardRepository)
         }
 
         targetColumn.Cards.Insert(command.TargetPosition, card);
-        _boardRepository.Update(board);
+        boardRepository.Update(board);
 
         return Result.Success;
     }

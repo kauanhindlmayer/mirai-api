@@ -6,14 +6,14 @@ using MediatR;
 
 namespace Application.WikiPages.Commands.CreateWikiPage;
 
-internal sealed class CreateWikiPageCommandHandler(IProjectsRepository _projectsRepository)
+internal sealed class CreateWikiPageCommandHandler(IProjectsRepository projectsRepository)
     : IRequestHandler<CreateWikiPageCommand, ErrorOr<WikiPage>>
 {
     public async Task<ErrorOr<WikiPage>> Handle(
         CreateWikiPageCommand command,
         CancellationToken cancellationToken)
     {
-        var project = await _projectsRepository.GetByIdWithWikiPagesAsync(
+        var project = await projectsRepository.GetByIdWithWikiPagesAsync(
             command.ProjectId,
             cancellationToken);
 
@@ -45,7 +45,7 @@ internal sealed class CreateWikiPageCommandHandler(IProjectsRepository _projects
             return result.Errors;
         }
 
-        _projectsRepository.Update(project);
+        projectsRepository.Update(project);
 
         return wikiPage;
     }

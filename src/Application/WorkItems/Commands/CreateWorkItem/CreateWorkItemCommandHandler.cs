@@ -7,15 +7,15 @@ using MediatR;
 namespace Application.WorkItems.Commands.CreateWorkItem;
 
 internal sealed class CreateWorkItemCommandHandler(
-    IProjectsRepository _projectsRepository,
-    IWorkItemsRepository _workItemsRepository)
+    IProjectsRepository projectsRepository,
+    IWorkItemsRepository workItemsRepository)
     : IRequestHandler<CreateWorkItemCommand, ErrorOr<WorkItem>>
 {
     public async Task<ErrorOr<WorkItem>> Handle(
         CreateWorkItemCommand command,
         CancellationToken cancellationToken)
     {
-        var project = await _projectsRepository.GetByIdAsync(
+        var project = await projectsRepository.GetByIdAsync(
             command.ProjectId,
             cancellationToken);
 
@@ -24,7 +24,7 @@ internal sealed class CreateWorkItemCommandHandler(
             return ProjectErrors.NotFound;
         }
 
-        var workItemCode = await _workItemsRepository.GetNextWorkItemCodeAsync(
+        var workItemCode = await workItemsRepository.GetNextWorkItemCodeAsync(
             command.ProjectId,
             cancellationToken);
 
@@ -40,7 +40,7 @@ internal sealed class CreateWorkItemCommandHandler(
             return result.Errors;
         }
 
-        _projectsRepository.Update(project);
+        projectsRepository.Update(project);
 
         return workItem;
     }

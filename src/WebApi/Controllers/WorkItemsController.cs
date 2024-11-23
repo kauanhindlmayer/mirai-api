@@ -19,7 +19,7 @@ using WorkItemType = Contracts.Common.WorkItemType;
 namespace WebApi.Controllers;
 
 [Route("api/projects/{projectId:guid}/work-items")]
-public class WorkItemsController(ISender _mediator) : ApiController
+public class WorkItemsController(ISender mediator) : ApiController
 {
     /// <summary>
     /// Create a new work item.
@@ -40,7 +40,7 @@ public class WorkItemsController(ISender _mediator) : ApiController
 
         var command = new CreateWorkItemCommand(projectId, type, request.Title);
 
-        var result = await _mediator.Send(command);
+        var result = await mediator.Send(command);
 
         return result.Match(
             workItem => CreatedAtAction(
@@ -61,7 +61,7 @@ public class WorkItemsController(ISender _mediator) : ApiController
     {
         var query = new GetWorkItemQuery(workItemId);
 
-        var result = await _mediator.Send(query);
+        var result = await mediator.Send(query);
 
         return result.Match(
             workItem => Ok(ToDto(workItem)),
@@ -82,7 +82,7 @@ public class WorkItemsController(ISender _mediator) : ApiController
     {
         var command = new AddCommentCommand(workItemId, request.Content);
 
-        var result = await _mediator.Send(command);
+        var result = await mediator.Send(command);
 
         return result.Match(
             _ => CreatedAtAction(
@@ -102,7 +102,7 @@ public class WorkItemsController(ISender _mediator) : ApiController
     {
         var query = new ListWorkItemsQuery(projectId);
 
-        var result = await _mediator.Send(query);
+        var result = await mediator.Send(query);
 
         return result.Match(
             workItems => Ok(workItems.ConvertAll(ToDto)),
@@ -122,7 +122,7 @@ public class WorkItemsController(ISender _mediator) : ApiController
     {
         var command = new AssignWorkItemCommand(workItemId, request.AssigneeId);
 
-        var result = await _mediator.Send(command);
+        var result = await mediator.Send(command);
 
         return result.Match(
             _ => NoContent(),
@@ -142,7 +142,7 @@ public class WorkItemsController(ISender _mediator) : ApiController
     {
         var command = new AddTagCommand(workItemId, request.Name);
 
-        var result = await _mediator.Send(command);
+        var result = await mediator.Send(command);
 
         return result.Match(
             _ => NoContent(),
@@ -161,7 +161,7 @@ public class WorkItemsController(ISender _mediator) : ApiController
     {
         var command = new RemoveTagCommand(workItemId, tagName);
 
-        var result = await _mediator.Send(command);
+        var result = await mediator.Send(command);
 
         return result.Match(
             _ => NoContent(),

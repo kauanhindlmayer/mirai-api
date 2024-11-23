@@ -5,14 +5,14 @@ using MediatR;
 
 namespace Application.WikiPages.Commands.DeleteWikiPage;
 
-internal sealed class DeleteWikiPageCommandHandler(IWikiPagesRepository _wikiPagesRepository)
+internal sealed class DeleteWikiPageCommandHandler(IWikiPagesRepository wikiPagesRepository)
     : IRequestHandler<DeleteWikiPageCommand, ErrorOr<Success>>
 {
     public async Task<ErrorOr<Success>> Handle(
         DeleteWikiPageCommand command,
         CancellationToken cancellationToken)
     {
-        var wikiPage = await _wikiPagesRepository.GetByIdAsync(
+        var wikiPage = await wikiPagesRepository.GetByIdAsync(
             command.WikiPageId,
             cancellationToken);
 
@@ -26,7 +26,7 @@ internal sealed class DeleteWikiPageCommandHandler(IWikiPagesRepository _wikiPag
             return WikiPageErrors.HasSubWikiPages;
         }
 
-        _wikiPagesRepository.Remove(wikiPage);
+        wikiPagesRepository.Remove(wikiPage);
 
         return Result.Success;
     }

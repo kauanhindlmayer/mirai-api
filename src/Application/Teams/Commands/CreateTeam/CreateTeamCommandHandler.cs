@@ -7,14 +7,14 @@ using MediatR;
 namespace Application.Teams.Commands.CreateTeam;
 
 internal sealed class CreateTeamCommandHandler(
-    IProjectsRepository _projectsRepository)
+    IProjectsRepository projectsRepository)
     : IRequestHandler<CreateTeamCommand, ErrorOr<Team>>
 {
     public async Task<ErrorOr<Team>> Handle(
         CreateTeamCommand command,
         CancellationToken cancellationToken)
     {
-        var project = await _projectsRepository.GetByIdAsync(
+        var project = await projectsRepository.GetByIdAsync(
             command.ProjectId,
             cancellationToken);
 
@@ -31,7 +31,7 @@ internal sealed class CreateTeamCommandHandler(
             return addTeamResult.Errors;
         }
 
-        _projectsRepository.Update(project);
+        projectsRepository.Update(project);
 
         return team;
     }

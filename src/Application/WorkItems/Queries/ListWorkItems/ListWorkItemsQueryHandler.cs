@@ -6,14 +6,14 @@ using MediatR;
 
 namespace Application.WorkItems.Queries.ListWorkItems;
 
-internal sealed class ListWorkItemsQueryHandler(IProjectsRepository _projectsRepository)
+internal sealed class ListWorkItemsQueryHandler(IProjectsRepository projectsRepository)
     : IRequestHandler<ListWorkItemsQuery, ErrorOr<List<WorkItem>>>
 {
     public async Task<ErrorOr<List<WorkItem>>> Handle(
         ListWorkItemsQuery query,
         CancellationToken cancellationToken)
     {
-        var project = await _projectsRepository.GetByIdWithWorkItemsAsync(
+        var project = await projectsRepository.GetByIdWithWorkItemsAsync(
             query.ProjectId,
             cancellationToken);
 

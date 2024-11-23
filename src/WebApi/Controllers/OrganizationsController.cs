@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebApi.Controllers;
 
 [Route("api/organizations")]
-public class OrganizationsController(ISender _mediator) : ApiController
+public class OrganizationsController(ISender mediator) : ApiController
 {
     /// <summary>
     /// Create a new organization.
@@ -24,7 +24,7 @@ public class OrganizationsController(ISender _mediator) : ApiController
     {
         var command = new CreateOrganizationCommand(request.Name, request.Description);
 
-        var result = await _mediator.Send(command);
+        var result = await mediator.Send(command);
 
         return result.Match(
             organization => CreatedAtAction(
@@ -45,7 +45,7 @@ public class OrganizationsController(ISender _mediator) : ApiController
     {
         var query = new GetOrganizationQuery(organizationId);
 
-        var result = await _mediator.Send(query);
+        var result = await mediator.Send(query);
 
         return result.Match(
             organization => Ok(ToDto(organization)),
@@ -61,7 +61,7 @@ public class OrganizationsController(ISender _mediator) : ApiController
     {
         var query = new ListOrganizationsQuery();
 
-        var result = await _mediator.Send(query);
+        var result = await mediator.Send(query);
 
         return result.Match(
             organizations => Ok(organizations.ConvertAll(ToDto)),
@@ -81,7 +81,7 @@ public class OrganizationsController(ISender _mediator) : ApiController
     {
         var command = new UpdateOrganizationCommand(organizationId, request.Name, request.Description);
 
-        var result = await _mediator.Send(command);
+        var result = await mediator.Send(command);
 
         return result.Match(
             organization => Ok(ToDto(organization)),
@@ -99,7 +99,7 @@ public class OrganizationsController(ISender _mediator) : ApiController
     {
         var command = new DeleteOrganizationCommand(organizationId);
 
-        var result = await _mediator.Send(command);
+        var result = await mediator.Send(command);
 
         return result.Match(
             _ => NoContent(),

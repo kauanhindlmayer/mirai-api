@@ -6,7 +6,7 @@ using Serilog.Context;
 namespace Application.Common.Behaviors;
 
 public sealed class LoggingBehavior<TRequest, TResponse>(
-    ILogger<LoggingBehavior<TRequest, TResponse>> _logger)
+    ILogger<LoggingBehavior<TRequest, TResponse>> logger)
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
     where TResponse : IErrorOr
@@ -16,7 +16,7 @@ public sealed class LoggingBehavior<TRequest, TResponse>(
         RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation(
+        logger.LogInformation(
             "Starting request {@RequestName}",
             typeof(TRequest).Name);
 
@@ -26,14 +26,14 @@ public sealed class LoggingBehavior<TRequest, TResponse>(
         {
             using (LogContext.PushProperty("Error", result.Errors!.First(), true))
             {
-                _logger.LogWarning(
+                logger.LogWarning(
                     "Request {@RequestName} failed with error",
                     typeof(TRequest).Name);
             }
         }
         else
         {
-            _logger.LogInformation(
+            logger.LogInformation(
                 "Request {@RequestName} succeeded",
                 typeof(TRequest).Name);
         }

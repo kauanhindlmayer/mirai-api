@@ -5,14 +5,14 @@ using MediatR;
 
 namespace Application.WikiPages.Queries.GetWikiPage;
 
-internal sealed class GetWikiPageQueryHandler(IWikiPagesRepository _wikiPagesRepository)
+internal sealed class GetWikiPageQueryHandler(IWikiPagesRepository wikiPagesRepository)
     : IRequestHandler<GetWikiPageQuery, ErrorOr<WikiPage>>
 {
     public async Task<ErrorOr<WikiPage>> Handle(
         GetWikiPageQuery query,
         CancellationToken cancellationToken)
     {
-        var wikiPage = await _wikiPagesRepository.GetByIdAsync(
+        var wikiPage = await wikiPagesRepository.GetByIdAsync(
             query.WikiPageId,
             cancellationToken);
 

@@ -5,14 +5,14 @@ using MediatR;
 
 namespace Application.Retrospectives.Commands.DeleteItem;
 
-internal sealed class DeleteItemCommandHandler(IRetrospectivesRepository _retrospectivesRepository)
+internal sealed class DeleteItemCommandHandler(IRetrospectivesRepository retrospectivesRepository)
     : IRequestHandler<DeleteItemCommand, ErrorOr<Success>>
 {
     public async Task<ErrorOr<Success>> Handle(
         DeleteItemCommand command,
         CancellationToken cancellationToken)
     {
-        var retrospective = await _retrospectivesRepository.GetByIdWithColumnsAsync(
+        var retrospective = await retrospectivesRepository.GetByIdWithColumnsAsync(
             command.RetrospectiveId,
             cancellationToken);
 
@@ -33,7 +33,7 @@ internal sealed class DeleteItemCommandHandler(IRetrospectivesRepository _retros
             return result.Errors;
         }
 
-        _retrospectivesRepository.Update(retrospective);
+        retrospectivesRepository.Update(retrospective);
 
         return Result.Success;
     }

@@ -5,14 +5,14 @@ using MediatR;
 
 namespace Application.Boards.Commands.CreateColumn;
 
-internal sealed class CreateColumnCommandHandler(IBoardsRepository _boardsRepository)
+internal sealed class CreateColumnCommandHandler(IBoardsRepository boardsRepository)
     : IRequestHandler<CreateColumnCommand, ErrorOr<BoardColumn>>
 {
     public async Task<ErrorOr<BoardColumn>> Handle(
         CreateColumnCommand command,
         CancellationToken cancellationToken)
     {
-        var board = await _boardsRepository.GetByIdAsync(
+        var board = await boardsRepository.GetByIdAsync(
             command.BoardId,
             cancellationToken);
 
@@ -33,7 +33,7 @@ internal sealed class CreateColumnCommandHandler(IBoardsRepository _boardsReposi
             return result.Errors;
         }
 
-        _boardsRepository.Update(board);
+        boardsRepository.Update(board);
 
         return result.Value;
     }

@@ -15,8 +15,8 @@ namespace WebApi.Controllers;
 
 [Route("api/teams/{teamId:guid}/retrospectives")]
 public class RetrospectivesController(
-    ISender _mediator,
-    IHubContext<RetrospectiveHub, IRetrospectiveHub> _hubContext) : ApiController
+    ISender mediator,
+    IHubContext<RetrospectiveHub, IRetrospectiveHub> hubContext) : ApiController
 {
     /// <summary>
     /// Create a new retrospective session.
@@ -33,7 +33,7 @@ public class RetrospectivesController(
             request.Description,
             teamId);
 
-        var result = await _mediator.Send(command);
+        var result = await mediator.Send(command);
 
         return result.Match(
             retrospective => CreatedAtAction(
@@ -54,7 +54,7 @@ public class RetrospectivesController(
     {
         var query = new GetRetrospectiveQuery(retrospectiveId);
 
-        var result = await _mediator.Send(query);
+        var result = await mediator.Send(query);
 
         return result.Match(
             retrospective => Ok(ToDto(retrospective)),
@@ -73,7 +73,7 @@ public class RetrospectivesController(
     {
         var command = new CreateColumnCommand(request.Title, retrospectiveId);
 
-        var result = await _mediator.Send(command);
+        var result = await mediator.Send(command);
 
         return result.Match(
             _ => NoContent(),
@@ -92,7 +92,7 @@ public class RetrospectivesController(
     public async Task<IActionResult> CreateItem(Guid retrospectiveId, Guid columnId, CreateItemRequest request)
     {
         var command = new CreateItemCommand(request.Description, retrospectiveId, columnId);
-        var result = await _mediator.Send(command);
+        var result = await mediator.Send(command);
 
         if (result.IsError)
         {
@@ -100,7 +100,7 @@ public class RetrospectivesController(
         }
 
         var retrospectiveItem = ToDto(result.Value);
-        await _hubContext.Clients.All.SendRetrospectiveItem(retrospectiveItem);
+        await hubContext.Clients.All.SendRetrospectiveItem(retrospectiveItem);
         return StatusCode(StatusCodes.Status201Created, retrospectiveItem);
     }
 
@@ -117,7 +117,7 @@ public class RetrospectivesController(
     {
         var command = new DeleteItemCommand(retrospectiveId, columnId, itemId);
 
-        var result = await _mediator.Send(command);
+        var result = await mediator.Send(command);
 
         return result.Match(
             _ => NoContent(),
@@ -135,7 +135,7 @@ public class RetrospectivesController(
     {
         var query = new ListRetrospectivesQuery(teamId);
 
-        var result = await _mediator.Send(query);
+        var result = await mediator.Send(query);
 
         return result.Match(
             retrospectives => Ok(retrospectives.Select(ToDto)),

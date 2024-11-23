@@ -21,12 +21,12 @@ public class ProjectsControllerTests : BaseFunctionalTest
         // Arrange
         await SetAuthorizationHeaderAsync();
         var organizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest();
-        var organizationResponse = await HttpClient.PostAsJsonAsync("api/organizations", organizationRequest);
+        var organizationResponse = await _httpClient.PostAsJsonAsync("api/organizations", organizationRequest);
         var createdOrganization = await organizationResponse.Content.ReadFromJsonAsync<OrganizationResponse>();
         var createProjectRequest = ProjectRequestFactory.CreateCreateProjectRequest();
 
         // Act
-        var createProjectResponse = await HttpClient.PostAsJsonAsync(
+        var createProjectResponse = await _httpClient.PostAsJsonAsync(
             $"api/organizations/{createdOrganization?.Id}/projects",
             createProjectRequest);
 

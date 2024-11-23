@@ -5,14 +5,14 @@ using MediatR;
 
 namespace Application.WikiPages.Commands.MoveWikiPage;
 
-internal sealed class MoveWikiPageCommandHandler(IProjectsRepository _projectsRepository)
+internal sealed class MoveWikiPageCommandHandler(IProjectsRepository projectsRepository)
     : IRequestHandler<MoveWikiPageCommand, ErrorOr<Success>>
 {
     public async Task<ErrorOr<Success>> Handle(
         MoveWikiPageCommand command,
         CancellationToken cancellationToken)
     {
-        var project = await _projectsRepository.GetByIdWithWikiPagesAsync(
+        var project = await projectsRepository.GetByIdWithWikiPagesAsync(
             command.ProjectId,
             cancellationToken);
 
@@ -31,7 +31,7 @@ internal sealed class MoveWikiPageCommandHandler(IProjectsRepository _projectsRe
             return result.Errors;
         }
 
-        _projectsRepository.Update(project);
+        projectsRepository.Update(project);
 
         return Result.Success;
     }

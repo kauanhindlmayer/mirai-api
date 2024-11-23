@@ -21,10 +21,10 @@ public class RegisterUserTests : BaseIntegrationTest
             "password",
             "John",
             "Doe");
-        await Sender.Send(command);
+        await _sender.Send(command);
 
         // Act
-        var result = await Sender.Send(command);
+        var result = await _sender.Send(command);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -43,7 +43,7 @@ public class RegisterUserTests : BaseIntegrationTest
             "Doe");
 
         // Act
-        var result = await Sender.Send(command);
+        var result = await _sender.Send(command);
 
         // Assert
         result.IsError.Should().BeFalse();

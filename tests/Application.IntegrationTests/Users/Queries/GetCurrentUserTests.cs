@@ -25,16 +25,16 @@ public class GetCurrentUserTests : BaseIntegrationTest
             "password",
             "John",
             "Doe");
-        await Sender.Send(registerUserCommand);
+        await _sender.Send(registerUserCommand);
         var loginUserCommand = new LoginUserQuery(
             "john.doe@email.com",
             "password");
-        await Sender.Send(loginUserCommand);
+        await _sender.Send(loginUserCommand);
 
         var query = new GetCurrentUserQuery();
 
         // Act
-        var result = await Sender.Send(query);
+        var result = await _sender.Send(query);
 
         // Assert
         result.IsError.Should().BeFalse();
@@ -51,7 +51,7 @@ public class GetCurrentUserTests : BaseIntegrationTest
         var query = new GetCurrentUserQuery();
 
         // Act
-        var result = await Sender.Send(query);
+        var result = await _sender.Send(query);
 
         // Assert
         result.IsError.Should().BeTrue();

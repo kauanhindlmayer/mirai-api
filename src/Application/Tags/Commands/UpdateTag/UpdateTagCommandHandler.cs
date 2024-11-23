@@ -7,14 +7,14 @@ using MediatR;
 namespace Application.Tags.Commands.UpdateTag;
 
 internal sealed class UpdateTagCommandHandler(
-    IProjectsRepository _projectsRepository)
+    IProjectsRepository projectsRepository)
     : IRequestHandler<UpdateTagCommand, ErrorOr<Tag>>
 {
     public async Task<ErrorOr<Tag>> Handle(
         UpdateTagCommand command,
         CancellationToken cancellationToken)
     {
-        var project = await _projectsRepository.GetByIdWithTagsAsync(
+        var project = await projectsRepository.GetByIdWithTagsAsync(
             command.ProjectId,
             cancellationToken);
 
@@ -30,7 +30,7 @@ internal sealed class UpdateTagCommandHandler(
         }
 
         existingTag.UpdateName(command.Name);
-        _projectsRepository.Update(project);
+        projectsRepository.Update(project);
 
         return existingTag;
     }
