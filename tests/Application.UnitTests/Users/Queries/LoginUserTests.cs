@@ -36,7 +36,8 @@ public class LoginUserTests
         var result = await _handler.Handle(Query, CancellationToken.None);
 
         // Assert
-        result.Should().BeEquivalentTo(UserErrors.AuthenticationFailed);
+        result.IsError.Should().BeTrue();
+        result.Errors.First().Should().BeEquivalentTo(UserErrors.AuthenticationFailed);
     }
 
     [Fact]

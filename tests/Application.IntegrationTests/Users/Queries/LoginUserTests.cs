@@ -5,7 +5,7 @@ using Application.Users.Queries.LoginUser;
 using Domain.Users;
 using FluentAssertions;
 
-namespace Application.IntegrationTests.Users.Commands;
+namespace Application.IntegrationTests.Users.Queries;
 
 public class LoginUserTests : BaseIntegrationTest
 {

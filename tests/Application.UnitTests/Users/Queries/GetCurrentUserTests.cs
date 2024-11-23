@@ -34,7 +34,8 @@ public class GetCurrentUserTests
         var result = await _handler.Handle(Query, CancellationToken.None);
 
         // Assert
-        result.Should().BeEquivalentTo(UserErrors.NotFound);
+        result.IsError.Should().BeTrue();
+        result.Errors.First().Should().BeEquivalentTo(UserErrors.NotFound);
     }
 
     [Fact]
@@ -50,6 +51,7 @@ public class GetCurrentUserTests
         var result = await _handler.Handle(Query, CancellationToken.None);
 
         // Assert
-        result.Should().BeEquivalentTo(user);
+        result.IsError.Should().BeFalse();
+        result.Value.Should().BeEquivalentTo(user);
     }
 }

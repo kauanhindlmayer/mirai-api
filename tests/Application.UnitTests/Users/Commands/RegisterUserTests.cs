@@ -37,7 +37,8 @@ public class RegisterUserTests
         var result = await _handler.Handle(Command, CancellationToken.None);
 
         // Assert
-        result.Should().BeEquivalentTo(UserErrors.AlreadyExists);
+        result.IsError.Should().BeTrue();
+        result.Errors.First().Should().BeEquivalentTo(UserErrors.AlreadyExists);
     }
 
     [Fact]
@@ -56,6 +57,7 @@ public class RegisterUserTests
         var result = await _handler.Handle(Command, CancellationToken.None);
 
         // Assert
-        result.Should().BeOfType<Guid>();
+        result.IsError.Should().BeFalse();
+        result.Value.Should().NotBeEmpty();
     }
 }
