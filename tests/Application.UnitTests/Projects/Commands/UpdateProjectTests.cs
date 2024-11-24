@@ -1,24 +1,25 @@
 using Application.Common.Interfaces.Persistence;
-using Application.Projects.Commands.CreateProject;
+using Application.Projects.Commands.UpdateProject;
 using Domain.Organizations;
 using Domain.Projects;
 
 namespace Application.UnitTests.Projects.Commands;
 
-public class CreateProjectTests
+public class UpdateProjectTests
 {
-    private static readonly CreateProjectCommand Command = new(
-        "Test Project",
-        "Test Description",
-        Guid.NewGuid());
+    private static readonly UpdateProjectCommand Command = new(
+        Guid.NewGuid(),
+        Guid.NewGuid(),
+        "New Project Name",
+        "New Test Description");
 
-    private readonly CreateProjectCommandHandler _handler;
+    private readonly UpdateProjectCommandHandler _handler;
     private readonly IOrganizationsRepository _mockOrganizationsRepository;
 
-    public CreateProjectTests()
+    public UpdateProjectTests()
     {
         _mockOrganizationsRepository = Substitute.For<IOrganizationsRepository>();
-        _handler = new CreateProjectCommandHandler(_mockOrganizationsRepository);
+        _handler = new UpdateProjectCommandHandler(_mockOrganizationsRepository);
     }
 
     [Fact]
@@ -33,30 +34,29 @@ public class CreateProjectTests
 
         // Assert
         result.Should().BeOfType<ErrorOr<Project>>();
+        result.IsError.Should().BeTrue();
         result.Errors.First().Should().Be(OrganizationErrors.NotFound);
     }
 
     [Fact]
-    public async Task Handle_WhenOrganizationExists_ShouldReturnProject()
+    public async Task Handle_WhenOrganizationExistsAndProjectDoesNotExist_ShouldReturnError()
     {
         // Arrange
         var organization = new Organization("Test Organization", "Test Description");
         _mockOrganizationsRepository.GetByIdWithProjectsAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
             .Returns(organization);
-        var command = Command with { OrganizationId = organization.Id };
 
         // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
+        var result = await _handler.Handle(Command, CancellationToken.None);
 
         // Assert
         result.Should().BeOfType<ErrorOr<Project>>();
-        result.Value.Name.Should().Be(command.Name);
-        result.Value.Description.Should().Be(command.Description);
-        result.Value.OrganizationId.Should().Be(organization.Id);
+        result.IsError.Should().BeTrue();
+        result.Errors.First().Should().Be(ProjectErrors.NotFound);
     }
 
     [Fact]
-    public async Task Handle_WhenOrganizationExistsAndProjectAlreadyExists_ShouldReturnError()
+    public async Task Handle_WhenOrganizationExistsAndProjectExists_ShouldUpdateProject()
     {
         // Arrange
         var organization = new Organization("Test Organization", "Test Description");
@@ -64,13 +64,16 @@ public class CreateProjectTests
         organization.AddProject(project);
         _mockOrganizationsRepository.GetByIdWithProjectsAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
             .Returns(organization);
-        var command = Command with { OrganizationId = organization.Id };
+        var command = Command with { OrganizationId = organization.Id, ProjectId = project.Id };
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
         result.Should().BeOfType<ErrorOr<Project>>();
-        result.Errors.First().Should().Be(ProjectErrors.AlreadyExists);
+        result.IsError.Should().BeFalse();
+        result.Value.Name.Should().Be(command.Name);
+        result.Value.Description.Should().Be(command.Description);
+        result.Value.OrganizationId.Should().Be(organization.Id);
     }
 }
