@@ -49,7 +49,7 @@ public class ProjectTests
         // Assert
         result.IsError.Should().BeTrue();
         result.Errors.Should().HaveCount(1);
-        result.Errors.First().Should().BeEquivalentTo(ProjectErrors.WorkItemWithSameTitleAlreadyExists);
+        result.FirstError.Should().BeEquivalentTo(ProjectErrors.WorkItemWithSameTitleAlreadyExists);
     }
 
     [Fact]
@@ -82,7 +82,7 @@ public class ProjectTests
         // Assert
         result.IsError.Should().BeTrue();
         result.Errors.Should().HaveCount(1);
-        result.Errors.First().Should().BeEquivalentTo(ProjectErrors.WikiPageWithSameTitleAlreadyExists);
+        result.FirstError.Should().BeEquivalentTo(ProjectErrors.WikiPageWithSameTitleAlreadyExists);
     }
 
     [Fact]
@@ -115,7 +115,7 @@ public class ProjectTests
         // Assert
         result.IsError.Should().BeTrue();
         result.Errors.Should().HaveCount(1);
-        result.Errors.First().Should().BeEquivalentTo(ProjectErrors.TeamWithSameNameAlreadyExists);
+        result.FirstError.Should().BeEquivalentTo(ProjectErrors.TeamWithSameNameAlreadyExists);
     }
 
     [Fact]
@@ -148,7 +148,7 @@ public class ProjectTests
         // Assert
         result.IsError.Should().BeTrue();
         result.Errors.Should().HaveCount(1);
-        result.Errors.First().Should().BeEquivalentTo(TagErrors.AlreadyExists);
+        result.FirstError.Should().BeEquivalentTo(TagErrors.AlreadyExists);
     }
 
     [Fact]
@@ -180,7 +180,7 @@ public class ProjectTests
         // Assert
         result.IsError.Should().BeTrue();
         result.Errors.Should().HaveCount(1);
-        result.Errors.First().Should().BeEquivalentTo(TagErrors.NotFound);
+        result.FirstError.Should().BeEquivalentTo(TagErrors.NotFound);
     }
 
     [Fact]

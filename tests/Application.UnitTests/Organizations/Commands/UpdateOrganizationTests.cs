@@ -55,6 +55,6 @@ public class UpdateOrganizationTests
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.Errors.First().Should().Be(OrganizationErrors.NotFound);
+        result.FirstError.Should().Be(OrganizationErrors.NotFound);
     }
 }

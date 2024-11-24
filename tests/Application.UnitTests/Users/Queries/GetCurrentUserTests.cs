@@ -35,7 +35,7 @@ public class GetCurrentUserTests
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.Errors.First().Should().BeEquivalentTo(UserErrors.NotFound);
+        result.FirstError.Should().BeEquivalentTo(UserErrors.NotFound);
     }
 
     [Fact]

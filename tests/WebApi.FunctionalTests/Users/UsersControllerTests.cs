@@ -40,7 +40,7 @@ public class UserControllerTests : BaseFunctionalTest
     public async Task RegisterUser_WhenRequestIsValid_ShouldReturnOk()
     {
         // Arrange
-        var request = UserRequestFactory.CreateRegisterUserRequest();
+        var request = UserRequestFactory.CreateRegisterUserRequest(email: "johndoe@email.com");
 
         // Act
         var response = await _httpClient.PostAsJsonAsync("api/users/register", request);

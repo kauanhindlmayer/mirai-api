@@ -38,7 +38,7 @@ public class RegisterUserTests
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.Errors.First().Should().BeEquivalentTo(UserErrors.AlreadyExists);
+        result.FirstError.Should().BeEquivalentTo(UserErrors.AlreadyExists);
     }
 
     [Fact]

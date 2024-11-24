@@ -12,40 +12,35 @@ public class RegisterUserTests : BaseIntegrationTest
     {
     }
 
+    private static readonly RegisterUserCommand Command = new(
+        "john.doe@email.com",
+        "password",
+        "John",
+        "Doe");
+
     [Fact]
     public async Task Handle_WhenUserExists_ReturnsAlreadyExistsError()
     {
         // Arrange
-        var command = new RegisterUserCommand(
-            "john.doe@email.com",
-            "password",
-            "John",
-            "Doe");
-        await _sender.Send(command);
+        await _sender.Send(Command);
 
         // Act
-        var result = await _sender.Send(command);
+        var result = await _sender.Send(Command);
 
         // Assert
         result.IsError.Should().BeTrue();
         result.Errors.Should().HaveCount(1);
-        result.Errors.First().Should().Be(UserErrors.AlreadyExists);
+        result.FirstError.Should().Be(UserErrors.AlreadyExists);
     }
 
     [Fact]
     public async Task Handle_WhenUserDoesNotExist_ReturnsUserId()
     {
-        // Arrange
-        var command = new RegisterUserCommand(
-            "john.doe@email.com",
-            "password",
-            "John",
-            "Doe");
-
         // Act
-        var result = await _sender.Send(command);
+        var result = await _sender.Send(Command);
 
         // Assert
         result.IsError.Should().BeFalse();
+        result.Value.Should().NotBeEmpty();
     }
 }

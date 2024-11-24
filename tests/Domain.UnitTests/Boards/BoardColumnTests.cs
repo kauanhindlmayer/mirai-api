@@ -19,7 +19,7 @@ public class BoardColumnTests
         // Assert
         result.IsError.Should().BeTrue();
         result.Errors.Should().HaveCount(1);
-        result.Errors.First().Should().BeEquivalentTo(BoardErrors.CardAlreadyExists);
+        result.FirstError.Should().BeEquivalentTo(BoardErrors.CardAlreadyExists);
     }
 
     [Fact]

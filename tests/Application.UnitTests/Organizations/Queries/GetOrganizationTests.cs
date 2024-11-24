@@ -48,6 +48,6 @@ public class GetOrganizationTests
         // Assert
         result.IsError.Should().BeTrue();
         result.Should().BeOfType<ErrorOr<Organization>>();
-        result.Errors.First().Should().Be(OrganizationErrors.NotFound);
+        result.FirstError.Should().Be(OrganizationErrors.NotFound);
     }
 }

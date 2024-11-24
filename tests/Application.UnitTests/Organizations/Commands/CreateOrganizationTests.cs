@@ -31,7 +31,7 @@ public class CreateOrganizationTests
 
         // Assert
         result.Should().BeOfType<ErrorOr<Organization>>();
-        result.Errors.First().Should().Be(OrganizationErrors.AlreadyExists);
+        result.FirstError.Should().Be(OrganizationErrors.AlreadyExists);
     }
 
     [Fact]

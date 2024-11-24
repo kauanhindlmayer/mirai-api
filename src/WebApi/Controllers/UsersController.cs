@@ -50,6 +50,13 @@ public class UsersController(ISender mediator) : ApiController
 
         var result = await mediator.Send(query);
 
+        if (result.IsError && result.FirstError == UserErrors.InvalidCredentials)
+        {
+            return Problem(
+               statusCode: StatusCodes.Status401Unauthorized,
+               title: UserErrors.InvalidCredentials.Description);
+        }
+
         return result.Match(Ok, Problem);
     }
 

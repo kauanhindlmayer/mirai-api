@@ -22,7 +22,7 @@ internal sealed class LoginUserQueryHandler(
 
         if (user is null)
         {
-            return UserErrors.AuthenticationFailed;
+            return UserErrors.InvalidCredentials;
         }
 
         var result = await jwtService.GetAccessTokenAsync(

@@ -35,7 +35,7 @@ public class UpdateProjectTests
         // Assert
         result.Should().BeOfType<ErrorOr<Project>>();
         result.IsError.Should().BeTrue();
-        result.Errors.First().Should().Be(OrganizationErrors.NotFound);
+        result.FirstError.Should().Be(OrganizationErrors.NotFound);
     }
 
     [Fact]
@@ -52,7 +52,7 @@ public class UpdateProjectTests
         // Assert
         result.Should().BeOfType<ErrorOr<Project>>();
         result.IsError.Should().BeTrue();
-        result.Errors.First().Should().Be(ProjectErrors.NotFound);
+        result.FirstError.Should().Be(ProjectErrors.NotFound);
     }
 
     [Fact]

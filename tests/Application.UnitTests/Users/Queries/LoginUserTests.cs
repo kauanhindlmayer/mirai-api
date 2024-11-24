@@ -37,7 +37,7 @@ public class LoginUserTests
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.Errors.First().Should().BeEquivalentTo(UserErrors.AuthenticationFailed);
+        result.FirstError.Should().BeEquivalentTo(UserErrors.InvalidCredentials);
     }
 
     [Fact]
@@ -81,12 +81,12 @@ public class LoginUserTests
             Query.Email,
             Query.Password,
             Arg.Any<CancellationToken>())
-            .Returns(UserErrors.AuthenticationFailed);
+            .Returns(UserErrors.InvalidCredentials);
 
         // Act
         var result = await _handler.Handle(Query, CancellationToken.None);
 
         // Assert
-        result.Errors.First().Should().BeEquivalentTo(UserErrors.AuthenticationFailed);
+        result.FirstError.Should().BeEquivalentTo(UserErrors.InvalidCredentials);
     }
 }

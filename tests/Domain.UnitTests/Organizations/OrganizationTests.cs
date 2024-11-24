@@ -87,7 +87,7 @@ public class OrganizationTests : BaseTest
         // Assert
         result.IsError.Should().BeTrue();
         result.Errors.Should().HaveCount(1);
-        result.Errors.First().Should().BeEquivalentTo(ProjectErrors.AlreadyExists);
+        result.FirstError.Should().BeEquivalentTo(ProjectErrors.AlreadyExists);
     }
 
     [Fact]
@@ -119,7 +119,7 @@ public class OrganizationTests : BaseTest
         // Assert
         result.IsError.Should().BeTrue();
         result.Errors.Should().HaveCount(1);
-        result.Errors.First().Should().BeEquivalentTo(ProjectErrors.NotFound);
+        result.FirstError.Should().BeEquivalentTo(ProjectErrors.NotFound);
     }
 
     [Fact]
@@ -152,7 +152,7 @@ public class OrganizationTests : BaseTest
         // Assert
         result.IsError.Should().BeTrue();
         result.Errors.Should().HaveCount(1);
-        result.Errors.First().Should().BeEquivalentTo(OrganizationErrors.UserAlreadyMember);
+        result.FirstError.Should().BeEquivalentTo(OrganizationErrors.UserAlreadyMember);
     }
 
     [Fact]
@@ -184,7 +184,7 @@ public class OrganizationTests : BaseTest
         // Assert
         result.IsError.Should().BeTrue();
         result.Errors.Should().HaveCount(1);
-        result.Errors.First().Should().BeEquivalentTo(OrganizationErrors.UserNotMember);
+        result.FirstError.Should().BeEquivalentTo(OrganizationErrors.UserNotMember);
     }
 
     [Fact]

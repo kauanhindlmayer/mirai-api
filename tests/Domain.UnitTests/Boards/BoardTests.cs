@@ -19,7 +19,7 @@ public class BoardTests
         // Assert
         result.IsError.Should().BeTrue();
         result.Errors.Should().HaveCount(1);
-        result.Errors.First().Should().BeEquivalentTo(BoardErrors.ColumnAlreadyExists);
+        result.FirstError.Should().BeEquivalentTo(BoardErrors.ColumnAlreadyExists);
     }
 
     [Fact]
@@ -51,7 +51,7 @@ public class BoardTests
         // Assert
         result.IsError.Should().BeTrue();
         result.Errors.Should().HaveCount(1);
-        result.Errors.First().Should().BeEquivalentTo(BoardErrors.ColumnNotFound);
+        result.FirstError.Should().BeEquivalentTo(BoardErrors.ColumnNotFound);
     }
 
     [Fact]
@@ -70,7 +70,7 @@ public class BoardTests
         // Assert
         result.IsError.Should().BeTrue();
         result.Errors.Should().HaveCount(1);
-        result.Errors.First().Should().BeEquivalentTo(BoardErrors.ColumnHasCards(column));
+        result.FirstError.Should().BeEquivalentTo(BoardErrors.ColumnHasCards(column));
     }
 
     [Fact]

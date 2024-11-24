@@ -41,6 +41,6 @@ public class CreateOrganizationTests : BaseIntegrationTest
         // Assert
         result.IsError.Should().BeTrue();
         result.Errors.Should().HaveCount(1);
-        result.Errors.First().Should().Be(OrganizationErrors.AlreadyExists);
+        result.FirstError.Should().Be(OrganizationErrors.AlreadyExists);
     }
 }

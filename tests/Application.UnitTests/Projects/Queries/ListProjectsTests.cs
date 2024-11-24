@@ -31,7 +31,7 @@ public class ListProjectsTests
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.Errors.First().Should().BeEquivalentTo(OrganizationErrors.NotFound);
+        result.FirstError.Should().BeEquivalentTo(OrganizationErrors.NotFound);
     }
 
     [Fact]

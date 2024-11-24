@@ -38,7 +38,7 @@ public class CreateWorkItemTests
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.Errors.First().Should().BeEquivalentTo(ProjectErrors.NotFound);
+        result.FirstError.Should().BeEquivalentTo(ProjectErrors.NotFound);
     }
 
     [Fact]
@@ -50,9 +50,10 @@ public class CreateWorkItemTests
             .Returns(project);
         _workItemsRepository.GetNextWorkItemCodeAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
             .Returns(1);
+        var command = Command with { ProjectId = project.Id };
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeFalse();
@@ -76,7 +77,7 @@ public class CreateWorkItemTests
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.Errors.First().Should().BeEquivalentTo(ProjectErrors.WorkItemWithSameTitleAlreadyExists);
+        result.FirstError.Should().BeEquivalentTo(ProjectErrors.WorkItemWithSameTitleAlreadyExists);
     }
 
     [Fact]

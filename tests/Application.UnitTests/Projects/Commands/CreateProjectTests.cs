@@ -33,7 +33,7 @@ public class CreateProjectTests
 
         // Assert
         result.Should().BeOfType<ErrorOr<Project>>();
-        result.Errors.First().Should().Be(OrganizationErrors.NotFound);
+        result.FirstError.Should().Be(OrganizationErrors.NotFound);
     }
 
     [Fact]
@@ -71,6 +71,6 @@ public class CreateProjectTests
 
         // Assert
         result.Should().BeOfType<ErrorOr<Project>>();
-        result.Errors.First().Should().Be(ProjectErrors.AlreadyExists);
+        result.FirstError.Should().Be(ProjectErrors.AlreadyExists);
     }
 }

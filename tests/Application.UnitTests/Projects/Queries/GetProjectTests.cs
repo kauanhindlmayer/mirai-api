@@ -45,6 +45,6 @@ public class GetProjectTests
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.Errors.First().Should().Be(ProjectErrors.NotFound);
+        result.FirstError.Should().Be(ProjectErrors.NotFound);
     }
 }

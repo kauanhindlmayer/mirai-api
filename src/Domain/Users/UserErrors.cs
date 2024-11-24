@@ -12,7 +12,7 @@ public static class UserErrors
         code: "User.AlreadyExists",
         description: "User already exists.");
 
-    public static readonly Error AuthenticationFailed = Error.Failure(
-        "User.AuthenticationFailed",
+    public static readonly Error InvalidCredentials = Error.Validation(
+        "User.InvalidCredentials",
         "Authentication with the provided credentials failed.");
 }

@@ -44,14 +44,14 @@ internal sealed class JwtService(
 
             if (authorizationToken is null)
             {
-                return UserErrors.AuthenticationFailed;
+                return UserErrors.InvalidCredentials;
             }
 
             return authorizationToken.AccessToken;
         }
         catch (HttpRequestException)
         {
-            return UserErrors.AuthenticationFailed;
+            return UserErrors.InvalidCredentials;
         }
     }
 }
