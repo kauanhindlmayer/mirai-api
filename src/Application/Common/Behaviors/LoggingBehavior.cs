@@ -5,7 +5,7 @@ using Serilog.Context;
 
 namespace Application.Common.Behaviors;
 
-public sealed class LoggingBehavior<TRequest, TResponse>(
+internal sealed class LoggingBehavior<TRequest, TResponse>(
     ILogger<LoggingBehavior<TRequest, TResponse>> logger)
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>

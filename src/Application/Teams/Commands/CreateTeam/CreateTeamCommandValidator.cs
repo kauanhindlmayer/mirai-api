@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Application.Teams.Commands.CreateTeam;
 
-internal sealed class CreateTeamCommandValidator : AbstractValidator<CreateTeamCommand>
+public sealed class CreateTeamCommandValidator : AbstractValidator<CreateTeamCommand>
 {
     public CreateTeamCommandValidator()
     {

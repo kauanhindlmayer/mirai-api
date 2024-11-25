@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Application.Organizations.Commands.CreateOrganization;
 
-internal sealed class CreateOrganizationCommandValidator : AbstractValidator<CreateOrganizationCommand>
+public sealed class CreateOrganizationCommandValidator : AbstractValidator<CreateOrganizationCommand>
 {
     public CreateOrganizationCommandValidator()
     {

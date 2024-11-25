@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Application.WikiPages.Commands.CreateWikiPage;
 
-internal sealed class CreateWikiPageCommandValidator : AbstractValidator<CreateWikiPageCommand>
+public sealed class CreateWikiPageCommandValidator : AbstractValidator<CreateWikiPageCommand>
 {
     public CreateWikiPageCommandValidator()
     {

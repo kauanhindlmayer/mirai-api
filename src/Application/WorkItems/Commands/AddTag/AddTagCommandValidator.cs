@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Application.WorkItems.Commands.AddTag;
 
-internal sealed class AddTagCommandValidator : AbstractValidator<AddTagCommand>
+public sealed class AddTagCommandValidator : AbstractValidator<AddTagCommand>
 {
     public AddTagCommandValidator()
     {

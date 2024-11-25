@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Application.Teams.Commands.AddMember;
 
-internal sealed class AddMemberCommandValidator : AbstractValidator<AddMemberCommand>
+public sealed class AddMemberCommandValidator : AbstractValidator<AddMemberCommand>
 {
     public AddMemberCommandValidator()
     {

@@ -3,7 +3,8 @@ using MediatR;
 
 namespace Application.Common.Behaviors;
 
-public sealed class UnitOfWorkBehavior<TRequest, TResponse>(IUnitOfWork unitOfWork)
+internal sealed class UnitOfWorkBehavior<TRequest, TResponse>(
+    IUnitOfWork unitOfWork)
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : notnull
 {

@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Application.Retrospectives.Commands.CreateItem;
 
-internal sealed class CreateItemCommandValidator : AbstractValidator<CreateItemCommand>
+public sealed class CreateItemCommandValidator : AbstractValidator<CreateItemCommand>
 {
     public CreateItemCommandValidator()
     {

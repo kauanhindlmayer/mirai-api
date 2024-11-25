@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Application.Tags.Commands.UpdateTag;
 
-internal sealed class UpdateTagCommandValidator : AbstractValidator<UpdateTagCommand>
+public sealed class UpdateTagCommandValidator : AbstractValidator<UpdateTagCommand>
 {
     public UpdateTagCommandValidator()
     {
