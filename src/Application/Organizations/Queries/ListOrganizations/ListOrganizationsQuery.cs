@@ -9,5 +9,5 @@ public sealed record ListOrganizationsQuery() : ICachedQuery<ErrorOr<List<Organi
 {
     public string CacheKey => CacheKeys.GetOrganizationsKey();
 
-    public TimeSpan? Expiration => null;
+    public TimeSpan? Expiration => TimeSpan.FromMinutes(5);
 }

@@ -7,15 +7,12 @@ namespace Infrastructure.Services;
 
 internal sealed class CacheService(IDistributedCache cache) : ICacheService
 {
-    private readonly IDistributedCache _cache = cache;
-
     public async Task<T?> GetAsync<T>(
         string key,
         CancellationToken cancellationToken = default)
-        where T : struct
     {
-        var bytes = await _cache.GetAsync(key, cancellationToken);
-        return bytes is null ? null : Deserialize<T>(bytes);
+        var bytes = await cache.GetAsync(key, cancellationToken);
+        return bytes is null ? default : Deserialize<T>(bytes);
     }
 
     public Task SetAsync<T>(
@@ -26,7 +23,7 @@ internal sealed class CacheService(IDistributedCache cache) : ICacheService
     {
         byte[] bytes = Serialize(value);
 
-        return _cache.SetAsync(
+        return cache.SetAsync(
             key,
             bytes,
             CacheOptions.Create(expiration),
@@ -37,12 +34,13 @@ internal sealed class CacheService(IDistributedCache cache) : ICacheService
         string key,
         CancellationToken cancellationToken = default)
     {
-        return _cache.RemoveAsync(key, cancellationToken);
+        return cache.RemoveAsync(key, cancellationToken);
     }
 
     private static T Deserialize<T>(byte[] bytes)
     {
-        return JsonSerializer.Deserialize<T>(bytes)!;
+        var result = JsonSerializer.Deserialize<T>(bytes);
+        return result!;
     }
 
     private static byte[] Serialize<T>(T value)
