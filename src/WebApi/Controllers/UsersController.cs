@@ -1,4 +1,5 @@
 using Application.Users.Commands.RegisterUser;
+using Application.Users.Commands.UpdateUserProfile;
 using Application.Users.Common;
 using Application.Users.Queries.GetCurrentUser;
 using Application.Users.Queries.LoginUser;
@@ -73,6 +74,28 @@ public class UsersController(ISender mediator) : ApiController
 
         return result.Match(
             user => Ok(ToDto(user)),
+            Problem);
+    }
+
+    /// <summary>
+    /// Update the profile of the current user.
+    /// </summary>
+    /// <param name="userId">The ID of the user to update.</param>
+    /// <param name="request">The details of the user to update.</param>
+    [HttpPut("{userId:guid}/profile")]
+    public async Task<IActionResult> UpdateProfile(
+        Guid userId,
+        UpdateUserProfileRequest request)
+    {
+        var command = new UpdateUserProfileCommand(
+            userId,
+            request.FirstName,
+            request.LastName);
+
+        var result = await mediator.Send(command);
+
+        return result.Match(
+            _ => Ok(),
             Problem);
     }
 

@@ -8,6 +8,8 @@ public static class UserRequestFactory
     public const string Password = "vXJu9zCgjOV2dW3";
     public const string FirstName = "John";
     public const string LastName = "Doe";
+    public const string NewFirstName = "Jane";
+    public const string NewLastName = "Smith";
 
     public static LoginUserRequest CreateLoginUserRequest(
         string email = Email,
@@ -23,5 +25,12 @@ public static class UserRequestFactory
         string lastName = LastName)
     {
         return new RegisterUserRequest(email, password, firstName, lastName);
+    }
+
+    internal static object CreateUpdateUserProfileRequest(
+        string firstName = NewFirstName,
+        string lastName = NewLastName)
+    {
+        return new UpdateUserProfileRequest(firstName, lastName);
     }
 }

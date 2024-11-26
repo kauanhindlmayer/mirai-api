@@ -29,4 +29,10 @@ public sealed class User : Entity
     {
         IdentityId = identityId;
     }
+
+    public void UpdateProfile(string firstName, string lastName)
+    {
+        FirstName = firstName;
+        LastName = lastName;
+    }
 }

@@ -29,4 +29,19 @@ public class UsersTests : BaseTest
         // Assert
         user.IdentityId.Should().Be(UserFactory.IdentityId);
     }
+
+    [Fact]
+    public void UpdateProfile_ShouldUpdateProfile()
+    {
+        // Arrange
+        var user = UserFactory.CreateUser();
+
+        // Act
+        user.UpdateProfile(UserFactory.NewFirstName, UserFactory.NewLastName);
+
+        // Assert
+        user.FirstName.Should().Be(UserFactory.NewFirstName);
+        user.LastName.Should().Be(UserFactory.NewLastName);
+        user.FullName.Should().Be(UserFactory.NewFullName);
+    }
 }

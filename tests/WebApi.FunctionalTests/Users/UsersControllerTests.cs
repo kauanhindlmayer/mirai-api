@@ -106,4 +106,21 @@ public class UserControllerTests : BaseFunctionalTest
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
+
+    [Fact]
+    public async Task UpdateUserProfile_WhenRequestIsValid_ShouldReturnOk()
+    {
+        // Arrange
+        await SetAuthorizationHeaderAsync();
+        var registerUserRequest = UserRequestFactory.CreateRegisterUserRequest();
+        var registerUserResponse = await _httpClient.PostAsJsonAsync("api/users/register", registerUserRequest);
+        var userId = await registerUserResponse.Content.ReadFromJsonAsync<Guid>();
+        var request = UserRequestFactory.CreateUpdateUserProfileRequest();
+
+        // Act
+        var response = await _httpClient.PutAsJsonAsync($"api/users/{userId}/profile", request);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
 }
