@@ -14,11 +14,11 @@ internal sealed class UserConfigurations : IEntityTypeConfiguration<User>
             .ValueGeneratedNever();
 
         builder.Property(u => u.FirstName)
-            .HasMaxLength(255)
+            .HasMaxLength(50)
             .IsRequired();
 
         builder.Property(u => u.LastName)
-            .HasMaxLength(255)
+            .HasMaxLength(100)
             .IsRequired();
 
         builder.Property(u => u.Email)

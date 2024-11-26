@@ -14,7 +14,7 @@ public class RegisterUserTests : BaseIntegrationTest
 
     private static readonly RegisterUserCommand Command = new(
         "john.doe@email.com",
-        "password",
+        "vXJu9zCgjOV2dW3",
         "John",
         "Doe");
 
@@ -36,8 +36,11 @@ public class RegisterUserTests : BaseIntegrationTest
     [Fact]
     public async Task Handle_WhenUserDoesNotExist_ReturnsUserId()
     {
+        // Arrange
+        var command = Command with { Email = "john.doe2@gmail.com" };
+
         // Act
-        var result = await _sender.Send(Command);
+        var result = await _sender.Send(command);
 
         // Assert
         result.IsError.Should().BeFalse();

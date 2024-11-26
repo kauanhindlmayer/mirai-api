@@ -30,7 +30,7 @@ public class UserControllerTests : BaseFunctionalTest
             lastName);
 
         // Act
-        var response = await _httpClient.PostAsJsonAsync("api/v1/users/register", request);
+        var response = await _httpClient.PostAsJsonAsync("api/users/register", request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);

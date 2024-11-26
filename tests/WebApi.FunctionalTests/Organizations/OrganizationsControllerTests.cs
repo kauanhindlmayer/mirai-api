@@ -34,7 +34,7 @@ public class OrganizationsControllerTests : BaseFunctionalTest
         createdOrganization.Description.Should().Be(createOrganizationRequest.Description);
         createOrganizationResponse.Headers.Location.Should().NotBeNull();
         createOrganizationResponse.Headers.Location!.AbsolutePath.Should()
-            .Be($"api/organizations/{createdOrganization.Id}");
+            .Be($"/api/organizations/{createdOrganization.Id}");
     }
 
     [Fact]

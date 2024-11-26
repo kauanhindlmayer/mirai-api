@@ -35,11 +35,11 @@ public class LoginUserTests : BaseIntegrationTest
         // Arrange
         var registerCommand = new RegisterUserCommand(
             "john.doe@email.com",
-            "password",
+            "vXJu9zCgjOV2dW3",
             "John",
             "Doe");
         await _sender.Send(registerCommand);
-        var command = new LoginUserQuery("john.doe@email.com", "password");
+        var command = new LoginUserQuery("john.doe@email.com", "vXJu9zCgjOV2dW3");
 
         // Act
         var result = await _sender.Send(command);

@@ -11,12 +11,20 @@ public sealed class RegisterUserCommandValidator : AbstractValidator<RegisterUse
             .EmailAddress();
 
         RuleFor(x => x.FirstName)
-            .NotEmpty();
+            .NotEmpty()
+            .MaximumLength(50)
+            .Matches("^[a-zA-Z]+$").WithMessage("First name can only contain letters.");
 
         RuleFor(x => x.LastName)
-            .NotEmpty();
+            .NotEmpty()
+            .MaximumLength(100)
+            .Matches("^[a-zA-Z]+$").WithMessage("Last name can only contain letters.");
 
         RuleFor(x => x.Password)
-            .NotEmpty();
+            .NotEmpty()
+            .MinimumLength(8)
+            .Matches("[A-Z]").WithMessage("Password must contain at least one uppercase letter.")
+            .Matches("[a-z]").WithMessage("Password must contain at least one lowercase letter.")
+            .Matches("[0-9]").WithMessage("Password must contain at least one number.");
     }
 }

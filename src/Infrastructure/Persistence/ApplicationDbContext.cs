@@ -8,16 +8,13 @@ using Domain.Teams;
 using Domain.Users;
 using Domain.WikiPages;
 using Domain.WorkItems;
-using Infrastructure.Middlewares;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence;
 
 public sealed class ApplicationDbContext(
     DbContextOptions options,
-    IHttpContextAccessor httpContextAccessor,
     IPublisher publisher) : DbContext(options)
 {
     public DbSet<User> Users { get; init; } = null!;
@@ -56,12 +53,6 @@ public sealed class ApplicationDbContext(
            .SelectMany(entry => entry.Entity.GetDomainEvents())
            .ToList();
 
-        if (IsUserWaitingOnline())
-        {
-            AddDomainEventsToOfflineProcessingQueue(domainEvents);
-            return await base.SaveChangesAsync(cancellationToken);
-        }
-
         await PublishDomainEvents(domainEvents);
         return await base.SaveChangesAsync(cancellationToken);
     }
@@ -72,24 +63,11 @@ public sealed class ApplicationDbContext(
         base.OnModelCreating(modelBuilder);
     }
 
-    private bool IsUserWaitingOnline() => httpContextAccessor.HttpContext is not null;
-
     private async Task PublishDomainEvents(List<IDomainEvent> domainEvents)
     {
         foreach (var domainEvent in domainEvents)
         {
             await publisher.Publish(domainEvent);
         }
-    }
-
-    private void AddDomainEventsToOfflineProcessingQueue(List<IDomainEvent> domainEvents)
-    {
-        Queue<IDomainEvent> domainEventsQueue = httpContextAccessor.HttpContext!.Items.TryGetValue(EventualConsistencyMiddleware.DomainEventsKey, out var value) &&
-            value is Queue<IDomainEvent> existingDomainEvents
-                ? existingDomainEvents
-                : new();
-
-        domainEvents.ForEach(domainEventsQueue.Enqueue);
-        httpContextAccessor.HttpContext.Items[EventualConsistencyMiddleware.DomainEventsKey] = domainEventsQueue;
     }
 }

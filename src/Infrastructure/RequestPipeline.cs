@@ -10,7 +10,6 @@ public static class RequestPipeline
     public static IApplicationBuilder UseInfrastructure(this WebApplication app)
     {
         app.UseMiddleware<RequestContextLoggingMiddleware>();
-        app.UseMiddleware<EventualConsistencyMiddleware>();
         app.ConfigureHealthChecks();
 
         return app;

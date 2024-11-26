@@ -40,6 +40,6 @@ public class ProjectsControllerTests : BaseFunctionalTest
         createdProject?.OrganizationId.Should().Be(createdOrganization!.Id);
         createProjectResponse.Headers.Location.Should().NotBeNull();
         createProjectResponse.Headers.Location!.AbsolutePath.Should()
-            .Be($"api/organizations/{createdOrganization?.Id}/projects/{createdProject?.Id}");
+            .Be($"/api/organizations/{createdOrganization?.Id}/projects/{createdProject?.Id}");
     }
 }
