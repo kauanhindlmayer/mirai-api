@@ -10,6 +10,7 @@ indent_size = 2
 
 # C# files
 [*.cs]
+dotnet_diagnostic.SA1611.severity = none
 
 #### Core EditorConfig Options ####
 

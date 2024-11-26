@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebApi.Controllers;
 
 [Route("api/organizations")]
-public class OrganizationsController(ISender mediator) : ApiController
+public class OrganizationsController(ISender sender) : ApiController
 {
     /// <summary>
     /// Create a new organization.
@@ -24,7 +24,7 @@ public class OrganizationsController(ISender mediator) : ApiController
     {
         var command = new CreateOrganizationCommand(request.Name, request.Description);
 
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command);
 
         return result.Match(
             organization => CreatedAtAction(
@@ -45,7 +45,7 @@ public class OrganizationsController(ISender mediator) : ApiController
     {
         var query = new GetOrganizationQuery(organizationId);
 
-        var result = await mediator.Send(query);
+        var result = await sender.Send(query);
 
         return result.Match(
             organization => Ok(ToDto(organization)),
@@ -61,7 +61,7 @@ public class OrganizationsController(ISender mediator) : ApiController
     {
         var query = new ListOrganizationsQuery();
 
-        var result = await mediator.Send(query);
+        var result = await sender.Send(query);
 
         return result.Match(
             organizations => Ok(organizations.ConvertAll(ToDto)),
@@ -77,11 +77,13 @@ public class OrganizationsController(ISender mediator) : ApiController
     [ProducesResponseType(typeof(OrganizationResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateOrganization(Guid organizationId, UpdateOrganizationRequest request)
+    public async Task<IActionResult> UpdateOrganization(
+        Guid organizationId,
+        UpdateOrganizationRequest request)
     {
         var command = new UpdateOrganizationCommand(organizationId, request.Name, request.Description);
 
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command);
 
         return result.Match(
             organization => Ok(ToDto(organization)),
@@ -99,7 +101,7 @@ public class OrganizationsController(ISender mediator) : ApiController
     {
         var command = new DeleteOrganizationCommand(organizationId);
 
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command);
 
         return result.Match(
             _ => NoContent(),

@@ -15,7 +15,7 @@ namespace WebApi.Controllers;
 
 [Route("api/teams/{teamId:guid}/retrospectives")]
 public class RetrospectivesController(
-    ISender mediator,
+    ISender sender,
     IHubContext<RetrospectiveHub, IRetrospectiveHub> hubContext) : ApiController
 {
     /// <summary>
@@ -26,14 +26,16 @@ public class RetrospectivesController(
     [HttpPost]
     [ProducesResponseType(typeof(RetrospectiveResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CreateRetrospective(Guid teamId, CreateRetrospectiveRequest request)
+    public async Task<IActionResult> CreateRetrospective(
+        Guid teamId,
+        CreateRetrospectiveRequest request)
     {
         var command = new CreateRetrospectiveCommand(
             request.Title,
             request.Description,
             teamId);
 
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command);
 
         return result.Match(
             retrospective => CreatedAtAction(
@@ -54,7 +56,7 @@ public class RetrospectivesController(
     {
         var query = new GetRetrospectiveQuery(retrospectiveId);
 
-        var result = await mediator.Send(query);
+        var result = await sender.Send(query);
 
         return result.Match(
             retrospective => Ok(ToDto(retrospective)),
@@ -69,11 +71,13 @@ public class RetrospectivesController(
     [HttpPost("{retrospectiveId:guid}/columns")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> CreateColumn(Guid retrospectiveId, CreateColumnRequest request)
+    public async Task<IActionResult> CreateColumn(
+        Guid retrospectiveId,
+        CreateColumnRequest request)
     {
         var command = new CreateColumnCommand(request.Title, retrospectiveId);
 
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command);
 
         return result.Match(
             _ => NoContent(),
@@ -89,10 +93,13 @@ public class RetrospectivesController(
     [HttpPost("{retrospectiveId:guid}/columns/{columnId:guid}/items")]
     [ProducesResponseType(typeof(RetrospectiveItemResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> CreateItem(Guid retrospectiveId, Guid columnId, CreateItemRequest request)
+    public async Task<IActionResult> CreateItem(
+        Guid retrospectiveId,
+        Guid columnId,
+        CreateItemRequest request)
     {
         var command = new CreateItemCommand(request.Description, retrospectiveId, columnId);
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command);
 
         if (result.IsError)
         {
@@ -113,11 +120,14 @@ public class RetrospectivesController(
     [HttpDelete("{retrospectiveId:guid}/columns/{columnId:guid}/items/{itemId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteItem(Guid retrospectiveId, Guid columnId, Guid itemId)
+    public async Task<IActionResult> DeleteItem(
+        Guid retrospectiveId,
+        Guid columnId,
+        Guid itemId)
     {
         var command = new DeleteItemCommand(retrospectiveId, columnId, itemId);
 
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command);
 
         return result.Match(
             _ => NoContent(),
@@ -135,7 +145,7 @@ public class RetrospectivesController(
     {
         var query = new ListRetrospectivesQuery(teamId);
 
-        var result = await mediator.Send(query);
+        var result = await sender.Send(query);
 
         return result.Match(
             retrospectives => Ok(retrospectives.Select(ToDto)),

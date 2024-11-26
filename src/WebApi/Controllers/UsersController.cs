@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebApi.Controllers;
 
 [Route("api/users")]
-public class UsersController(ISender mediator) : ApiController
+public class UsersController(ISender sender) : ApiController
 {
     /// <summary>
     /// Register a new user.
@@ -22,7 +22,9 @@ public class UsersController(ISender mediator) : ApiController
     [HttpPost("register")]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> RegisterUser(RegisterUserRequest request)
+    public async Task<IActionResult> RegisterUser(
+        RegisterUserRequest request,
+        CancellationToken cancellationToken)
     {
         var command = new RegisterUserCommand(
             request.Email,
@@ -30,7 +32,7 @@ public class UsersController(ISender mediator) : ApiController
             request.FirstName,
             request.LastName);
 
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
             userId => Ok(userId),
@@ -45,11 +47,13 @@ public class UsersController(ISender mediator) : ApiController
     [HttpPost("login")]
     [ProducesResponseType(typeof(AccessTokenResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> LoginUser(LoginUserRequest request)
+    public async Task<IActionResult> LoginUser(
+        LoginUserRequest request,
+        CancellationToken cancellationToken)
     {
         var query = new LoginUserQuery(request.Email, request.Password);
 
-        var result = await mediator.Send(query);
+        var result = await sender.Send(query, cancellationToken);
 
         if (result.IsError && result.FirstError == UserErrors.InvalidCredentials)
         {
@@ -66,11 +70,11 @@ public class UsersController(ISender mediator) : ApiController
     /// </summary>
     [HttpGet("me")]
     [ProducesResponseType(typeof(UserResponse), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetCurrentUser()
+    public async Task<IActionResult> GetCurrentUser(CancellationToken cancellationToken)
     {
         var query = new GetCurrentUserQuery();
 
-        var result = await mediator.Send(query);
+        var result = await sender.Send(query, cancellationToken);
 
         return result.Match(
             user => Ok(ToDto(user)),
@@ -85,14 +89,15 @@ public class UsersController(ISender mediator) : ApiController
     [HttpPut("{userId:guid}/profile")]
     public async Task<IActionResult> UpdateProfile(
         Guid userId,
-        UpdateUserProfileRequest request)
+        UpdateUserProfileRequest request,
+        CancellationToken cancellationToken)
     {
         var command = new UpdateUserProfileCommand(
             userId,
             request.FirstName,
             request.LastName);
 
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => Ok(),

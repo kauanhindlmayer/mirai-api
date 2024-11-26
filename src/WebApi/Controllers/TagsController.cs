@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebApi.Controllers;
 
 [Route("api/projects/{projectId:guid}/tags")]
-public class TagsController(ISender mediator) : ApiController
+public class TagsController(ISender sender) : ApiController
 {
     /// <summary>
     /// Add a tag to a project that can be used to categorize work items.
@@ -20,11 +20,13 @@ public class TagsController(ISender mediator) : ApiController
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> CreateTag(Guid projectId, CreateTagRequest request)
+    public async Task<IActionResult> CreateTag(
+        Guid projectId,
+        CreateTagRequest request)
     {
         var command = new CreateTagCommand(projectId, request.Name);
 
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command);
 
         return result.Match(
             _ => NoContent(),
@@ -39,11 +41,13 @@ public class TagsController(ISender mediator) : ApiController
     [HttpGet]
     [ProducesResponseType(typeof(List<TagResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> ListTags(Guid projectId, string? searchTerm = null)
+    public async Task<IActionResult> ListTags(
+        Guid projectId,
+        string? searchTerm = null)
     {
         var query = new ListTagsQuery(projectId, searchTerm);
 
-        var result = await mediator.Send(query);
+        var result = await sender.Send(query);
 
         return result.Match(
             tags => Ok(tags.ConvertAll(ToDto)),
@@ -59,11 +63,14 @@ public class TagsController(ISender mediator) : ApiController
     [HttpPut("{tagId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateTag(Guid projectId, Guid tagId, CreateTagRequest request)
+    public async Task<IActionResult> UpdateTag(
+        Guid projectId,
+        Guid tagId,
+        CreateTagRequest request)
     {
         var command = new UpdateTagCommand(projectId, tagId, request.Name);
 
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command);
 
         return result.Match(
             _ => NoContent(),
@@ -78,11 +85,13 @@ public class TagsController(ISender mediator) : ApiController
     [HttpDelete("{tagName}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteTag(Guid projectId, string tagName)
+    public async Task<IActionResult> DeleteTag(
+        Guid projectId,
+        string tagName)
     {
         var command = new DeleteTagCommand(projectId, tagName);
 
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command);
 
         return result.Match(
             _ => NoContent(),

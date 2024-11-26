@@ -15,7 +15,7 @@ using DomainWorkItemType = Domain.WorkItems.Enums.WorkItemType;
 namespace WebApi.Controllers;
 
 [Route("api/projects/{projectId:guid}/boards")]
-public class BoardsController(ISender mediator) : ApiController
+public class BoardsController(ISender sender) : ApiController
 {
     /// <summary>
     /// Create a new board.
@@ -25,14 +25,16 @@ public class BoardsController(ISender mediator) : ApiController
     [HttpPost]
     [ProducesResponseType(typeof(BoardResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CreateBoard(Guid projectId, CreateBoardRequest request)
+    public async Task<IActionResult> CreateBoard(
+        Guid projectId,
+        CreateBoardRequest request)
     {
         var command = new CreateBoardCommand(
             projectId,
             request.Name,
             request.Description);
 
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command);
 
         return result.Match(
             board => CreatedAtAction(
@@ -53,7 +55,7 @@ public class BoardsController(ISender mediator) : ApiController
     {
         var query = new GetBoardQuery(boardId);
 
-        var result = await mediator.Send(query);
+        var result = await sender.Send(query);
 
         return result.Match(
             board => Ok(ToDto(board)),
@@ -72,7 +74,7 @@ public class BoardsController(ISender mediator) : ApiController
     {
         var query = new ListBoardsQuery(projectId);
 
-        var result = await mediator.Send(query);
+        var result = await sender.Send(query);
 
         return result.Match(
             boards => Ok(boards.Select(ToSummaryDto)),
@@ -90,7 +92,7 @@ public class BoardsController(ISender mediator) : ApiController
     {
         var command = new DeleteBoardCommand(boardId);
 
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command);
 
         return result.Match(
             _ => NoContent(),
@@ -107,7 +109,10 @@ public class BoardsController(ISender mediator) : ApiController
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> CreateColumn(Guid projectId, Guid boardId, CreateColumnRequest request)
+    public async Task<IActionResult> CreateColumn(
+        Guid projectId,
+        Guid boardId,
+        CreateColumnRequest request)
     {
         var command = new CreateColumnCommand(
             boardId,
@@ -115,7 +120,7 @@ public class BoardsController(ISender mediator) : ApiController
             request.WipLimit,
             request.DefinitionOfDone);
 
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command);
 
         return result.Match(
             _ => CreatedAtAction(
@@ -137,7 +142,7 @@ public class BoardsController(ISender mediator) : ApiController
     {
         var command = new DeleteColumnCommand(boardId, columnId);
 
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command);
 
         return result.Match(
             _ => NoContent(),
@@ -166,7 +171,7 @@ public class BoardsController(ISender mediator) : ApiController
 
         var command = new CreateCardCommand(boardId, columnId, type, request.Title);
 
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command);
 
         return result.Match(
             _ => CreatedAtAction(
@@ -196,7 +201,7 @@ public class BoardsController(ISender mediator) : ApiController
             request.TargetColumnId,
             request.TargetPosition);
 
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command);
 
         return result.Match(
             _ => NoContent(),

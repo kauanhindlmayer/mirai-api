@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebApi.Controllers;
 
 [Route("api/projects/{projectId:guid}/wiki-pages")]
-public class WikiPagesController(ISender mediator) : ApiController
+public class WikiPagesController(ISender sender) : ApiController
 {
     /// <summary>
     /// Creates a new wiki page. If a ParentWikiPageId is provided, the page
@@ -25,7 +25,9 @@ public class WikiPagesController(ISender mediator) : ApiController
     [HttpPost]
     [ProducesResponseType(typeof(WikiPageDetailResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CreateWikiPage(Guid projectId, CreateWikiPageRequest request)
+    public async Task<IActionResult> CreateWikiPage(
+        Guid projectId,
+        CreateWikiPageRequest request)
     {
         var command = new CreateWikiPageCommand(
             projectId,
@@ -33,7 +35,7 @@ public class WikiPagesController(ISender mediator) : ApiController
             request.Content,
             request.ParentWikiPageId);
 
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command);
 
         return result.Match(
             wikiPage => CreatedAtAction(
@@ -54,7 +56,7 @@ public class WikiPagesController(ISender mediator) : ApiController
     {
         var query = new GetWikiPageQuery(wikiPageId);
 
-        var result = await mediator.Send(query);
+        var result = await sender.Send(query);
 
         return result.Match(
             wikiPage => Ok(ToDto(wikiPage)),
@@ -71,7 +73,7 @@ public class WikiPagesController(ISender mediator) : ApiController
     {
         var query = new ListWikiPagesQuery(projectId);
 
-        var result = await mediator.Send(query);
+        var result = await sender.Send(query);
 
         return result.Match(
             wikiPages => Ok(wikiPages.ConvertAll(ToSummaryDto)),
@@ -88,11 +90,14 @@ public class WikiPagesController(ISender mediator) : ApiController
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> AddComment(Guid projectId, Guid wikiPageId, AddCommentRequest request)
+    public async Task<IActionResult> AddComment(
+        Guid projectId,
+        Guid wikiPageId,
+        AddCommentRequest request)
     {
         var command = new AddCommentCommand(wikiPageId, request.Content);
 
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command);
 
         return result.Match(
             _ => CreatedAtAction(
@@ -113,7 +118,7 @@ public class WikiPagesController(ISender mediator) : ApiController
     {
         var command = new DeleteWikiPageCommand(wikiPageId);
 
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command);
 
         return result.Match(
             _ => NoContent(),
@@ -128,14 +133,16 @@ public class WikiPagesController(ISender mediator) : ApiController
     [HttpPut("{wikiPageId:guid}")]
     [ProducesResponseType(typeof(WikiPageDetailResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateWikiPage(Guid wikiPageId, UpdateWikiPageRequest request)
+    public async Task<IActionResult> UpdateWikiPage(
+        Guid wikiPageId,
+        UpdateWikiPageRequest request)
     {
         var command = new UpdateWikiPageCommand(
             wikiPageId,
             request.Title,
             request.Content);
 
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command);
 
         return result.Match(
             wikiPage => Ok(ToDto(wikiPage)),
@@ -152,7 +159,10 @@ public class WikiPagesController(ISender mediator) : ApiController
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> MoveWikiPage(Guid projectId, Guid wikiPageId, MoveWikiPageRequest request)
+    public async Task<IActionResult> MoveWikiPage(
+        Guid projectId,
+        Guid wikiPageId,
+        MoveWikiPageRequest request)
     {
         var command = new MoveWikiPageCommand(
             projectId,
@@ -160,7 +170,7 @@ public class WikiPagesController(ISender mediator) : ApiController
             request.TargetParentId,
             request.TargetPosition);
 
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command);
 
         return result.Match(
             _ => NoContent(),

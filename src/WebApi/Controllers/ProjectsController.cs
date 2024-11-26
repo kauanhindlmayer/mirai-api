@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebApi.Controllers;
 
 [Route("api/organizations/{organizationId:guid}/projects")]
-public class ProjectsController(ISender mediator) : ApiController
+public class ProjectsController(ISender sender) : ApiController
 {
     /// <summary>
     /// Create a new project.
@@ -20,14 +20,16 @@ public class ProjectsController(ISender mediator) : ApiController
     [HttpPost]
     [ProducesResponseType(typeof(ProjectResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CreateProject(Guid organizationId, CreateProjectRequest request)
+    public async Task<IActionResult> CreateProject(
+        Guid organizationId,
+        CreateProjectRequest request)
     {
         var command = new CreateProjectCommand(
             request.Name,
             request.Description,
             organizationId);
 
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command);
 
         return result.Match(
             project => CreatedAtAction(
@@ -48,7 +50,7 @@ public class ProjectsController(ISender mediator) : ApiController
     {
         var query = new GetProjectQuery(projectId);
 
-        var result = await mediator.Send(query);
+        var result = await sender.Send(query);
 
         return result.Match(
             project => Ok(ToDto(project)),
@@ -66,7 +68,7 @@ public class ProjectsController(ISender mediator) : ApiController
     {
         var query = new ListProjectsQuery(organizationId);
 
-        var result = await mediator.Send(query);
+        var result = await sender.Send(query);
 
         return result.Match(
             projects => Ok(projects.ConvertAll(ToDto)),
@@ -83,7 +85,10 @@ public class ProjectsController(ISender mediator) : ApiController
     [ProducesResponseType(typeof(ProjectResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateProject(Guid organizationId, Guid projectId, UpdateProjectRequest request)
+    public async Task<IActionResult> UpdateProject(
+        Guid organizationId,
+        Guid projectId,
+        UpdateProjectRequest request)
     {
         var command = new UpdateProjectCommand(
             organizationId,
@@ -91,7 +96,7 @@ public class ProjectsController(ISender mediator) : ApiController
             request.Name,
             request.Description);
 
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command);
 
         return result.Match(
             project => Ok(ToDto(project)),

@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebApi.Controllers;
 
 [Route("api/projects/{projectId:guid}/teams")]
-public class TeamsController(ISender mediator) : ApiController
+public class TeamsController(ISender sender) : ApiController
 {
     /// <summary>
     /// Create a new team.
@@ -21,11 +21,13 @@ public class TeamsController(ISender mediator) : ApiController
     [ProducesResponseType(typeof(TeamResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> CreateTeam(Guid projectId, CreateTeamRequest request)
+    public async Task<IActionResult> CreateTeam(
+        Guid projectId,
+        CreateTeamRequest request)
     {
         var command = new CreateTeamCommand(projectId, request.Name);
 
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command);
 
         return result.Match(
             team => CreatedAtAction(
@@ -46,7 +48,7 @@ public class TeamsController(ISender mediator) : ApiController
     {
         var query = new GetTeamQuery(teamId);
 
-        var result = await mediator.Send(query);
+        var result = await sender.Send(query);
 
         return result.Match(
             team => Ok(ToDto(team)),
@@ -61,11 +63,13 @@ public class TeamsController(ISender mediator) : ApiController
     [HttpPost("{teamId:guid}/members")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> AddMember(Guid teamId, AddMemberRequest request)
+    public async Task<IActionResult> AddMember(
+        Guid teamId,
+        AddMemberRequest request)
     {
         var command = new AddMemberCommand(teamId, request.MemberId);
 
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command);
 
         return result.Match(
             _ => NoContent(),

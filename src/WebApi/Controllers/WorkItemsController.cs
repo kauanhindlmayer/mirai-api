@@ -19,7 +19,7 @@ using WorkItemType = Contracts.Common.WorkItemType;
 namespace WebApi.Controllers;
 
 [Route("api/projects/{projectId:guid}/work-items")]
-public class WorkItemsController(ISender mediator) : ApiController
+public class WorkItemsController(ISender sender) : ApiController
 {
     /// <summary>
     /// Create a new work item.
@@ -29,7 +29,9 @@ public class WorkItemsController(ISender mediator) : ApiController
     [HttpPost]
     [ProducesResponseType(typeof(WorkItemResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CreateWorkItem(Guid projectId, CreateWorkItemRequest request)
+    public async Task<IActionResult> CreateWorkItem(
+        Guid projectId,
+        CreateWorkItemRequest request)
     {
         if (!DomainWorkItemType.TryFromName(request.Type.ToString(), out var type))
         {
@@ -40,7 +42,7 @@ public class WorkItemsController(ISender mediator) : ApiController
 
         var command = new CreateWorkItemCommand(projectId, type, request.Title);
 
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command);
 
         return result.Match(
             workItem => CreatedAtAction(
@@ -61,7 +63,7 @@ public class WorkItemsController(ISender mediator) : ApiController
     {
         var query = new GetWorkItemQuery(workItemId);
 
-        var result = await mediator.Send(query);
+        var result = await sender.Send(query);
 
         return result.Match(
             workItem => Ok(ToDto(workItem)),
@@ -78,11 +80,14 @@ public class WorkItemsController(ISender mediator) : ApiController
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> AddComment(Guid projectId, Guid workItemId, AddCommentRequest request)
+    public async Task<IActionResult> AddComment(
+        Guid projectId,
+        Guid workItemId,
+        AddCommentRequest request)
     {
         var command = new AddCommentCommand(workItemId, request.Content);
 
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command);
 
         return result.Match(
             _ => CreatedAtAction(
@@ -102,7 +107,7 @@ public class WorkItemsController(ISender mediator) : ApiController
     {
         var query = new ListWorkItemsQuery(projectId);
 
-        var result = await mediator.Send(query);
+        var result = await sender.Send(query);
 
         return result.Match(
             workItems => Ok(workItems.ConvertAll(ToDto)),
@@ -118,11 +123,13 @@ public class WorkItemsController(ISender mediator) : ApiController
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> AssignWorkItem(Guid workItemId, AssignWorkItemRequest request)
+    public async Task<IActionResult> AssignWorkItem(
+        Guid workItemId,
+        AssignWorkItemRequest request)
     {
         var command = new AssignWorkItemCommand(workItemId, request.AssigneeId);
 
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command);
 
         return result.Match(
             _ => NoContent(),
@@ -138,11 +145,13 @@ public class WorkItemsController(ISender mediator) : ApiController
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> AddTagToWorkItem(Guid workItemId, CreateTagRequest request)
+    public async Task<IActionResult> AddTagToWorkItem(
+        Guid workItemId,
+        CreateTagRequest request)
     {
         var command = new AddTagCommand(workItemId, request.Name);
 
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command);
 
         return result.Match(
             _ => NoContent(),
@@ -157,11 +166,13 @@ public class WorkItemsController(ISender mediator) : ApiController
     [HttpDelete("{workItemId:guid}/tags/{tagName}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> RemoveTagFromWorkItem(Guid workItemId, string tagName)
+    public async Task<IActionResult> RemoveTagFromWorkItem(
+        Guid workItemId,
+        string tagName)
     {
         var command = new RemoveTagCommand(workItemId, tagName);
 
-        var result = await mediator.Send(command);
+        var result = await sender.Send(command);
 
         return result.Match(
             _ => NoContent(),
