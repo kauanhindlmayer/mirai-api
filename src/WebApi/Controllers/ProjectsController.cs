@@ -22,14 +22,15 @@ public class ProjectsController(ISender sender) : ApiController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateProject(
         Guid organizationId,
-        CreateProjectRequest request)
+        CreateProjectRequest request,
+        CancellationToken cancellationToken)
     {
         var command = new CreateProjectCommand(
             request.Name,
             request.Description,
             organizationId);
 
-        var result = await sender.Send(command);
+        var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
             project => CreatedAtAction(
@@ -46,11 +47,13 @@ public class ProjectsController(ISender sender) : ApiController
     [HttpGet("{projectId:guid}")]
     [ProducesResponseType(typeof(ProjectResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetProject(Guid projectId)
+    public async Task<IActionResult> GetProject(
+        Guid projectId,
+        CancellationToken cancellationToken)
     {
         var query = new GetProjectQuery(projectId);
 
-        var result = await sender.Send(query);
+        var result = await sender.Send(query, cancellationToken);
 
         return result.Match(
             project => Ok(ToDto(project)),
@@ -64,11 +67,13 @@ public class ProjectsController(ISender sender) : ApiController
     [HttpGet]
     [ProducesResponseType(typeof(List<ProjectResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> ListProjects(Guid organizationId)
+    public async Task<IActionResult> ListProjects(
+        Guid organizationId,
+        CancellationToken cancellationToken)
     {
         var query = new ListProjectsQuery(organizationId);
 
-        var result = await sender.Send(query);
+        var result = await sender.Send(query, cancellationToken);
 
         return result.Match(
             projects => Ok(projects.ConvertAll(ToDto)),
@@ -88,7 +93,8 @@ public class ProjectsController(ISender sender) : ApiController
     public async Task<IActionResult> UpdateProject(
         Guid organizationId,
         Guid projectId,
-        UpdateProjectRequest request)
+        UpdateProjectRequest request,
+        CancellationToken cancellationToken)
     {
         var command = new UpdateProjectCommand(
             organizationId,
@@ -96,7 +102,7 @@ public class ProjectsController(ISender sender) : ApiController
             request.Name,
             request.Description);
 
-        var result = await sender.Send(command);
+        var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
             project => Ok(ToDto(project)),

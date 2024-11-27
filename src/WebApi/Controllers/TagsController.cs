@@ -22,11 +22,12 @@ public class TagsController(ISender sender) : ApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> CreateTag(
         Guid projectId,
-        CreateTagRequest request)
+        CreateTagRequest request,
+        CancellationToken cancellationToken)
     {
         var command = new CreateTagCommand(projectId, request.Name);
 
-        var result = await sender.Send(command);
+        var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => NoContent(),
@@ -43,11 +44,12 @@ public class TagsController(ISender sender) : ApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ListTags(
         Guid projectId,
-        string? searchTerm = null)
+        string? searchTerm = null,
+        CancellationToken cancellationToken = default)
     {
         var query = new ListTagsQuery(projectId, searchTerm);
 
-        var result = await sender.Send(query);
+        var result = await sender.Send(query, cancellationToken);
 
         return result.Match(
             tags => Ok(tags.ConvertAll(ToDto)),
@@ -66,11 +68,12 @@ public class TagsController(ISender sender) : ApiController
     public async Task<IActionResult> UpdateTag(
         Guid projectId,
         Guid tagId,
-        CreateTagRequest request)
+        CreateTagRequest request,
+        CancellationToken cancellationToken)
     {
         var command = new UpdateTagCommand(projectId, tagId, request.Name);
 
-        var result = await sender.Send(command);
+        var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => NoContent(),
@@ -87,11 +90,12 @@ public class TagsController(ISender sender) : ApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteTag(
         Guid projectId,
-        string tagName)
+        string tagName,
+        CancellationToken cancellationToken)
     {
         var command = new DeleteTagCommand(projectId, tagName);
 
-        var result = await sender.Send(command);
+        var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => NoContent(),

@@ -27,14 +27,15 @@ public class BoardsController(ISender sender) : ApiController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateBoard(
         Guid projectId,
-        CreateBoardRequest request)
+        CreateBoardRequest request,
+        CancellationToken cancellationToken)
     {
         var command = new CreateBoardCommand(
             projectId,
             request.Name,
             request.Description);
 
-        var result = await sender.Send(command);
+        var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
             board => CreatedAtAction(
@@ -51,11 +52,13 @@ public class BoardsController(ISender sender) : ApiController
     [HttpGet("{boardId:guid}")]
     [ProducesResponseType(typeof(BoardResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetBoard(Guid boardId)
+    public async Task<IActionResult> GetBoard(
+        Guid boardId,
+        CancellationToken cancellationToken)
     {
         var query = new GetBoardQuery(boardId);
 
-        var result = await sender.Send(query);
+        var result = await sender.Send(query, cancellationToken);
 
         return result.Match(
             board => Ok(ToDto(board)),
@@ -70,11 +73,13 @@ public class BoardsController(ISender sender) : ApiController
     [HttpGet]
     [ProducesResponseType(typeof(List<BoardResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> ListBoards(Guid projectId)
+    public async Task<IActionResult> ListBoards(
+        Guid projectId,
+        CancellationToken cancellationToken)
     {
         var query = new ListBoardsQuery(projectId);
 
-        var result = await sender.Send(query);
+        var result = await sender.Send(query, cancellationToken);
 
         return result.Match(
             boards => Ok(boards.Select(ToSummaryDto)),
@@ -88,11 +93,13 @@ public class BoardsController(ISender sender) : ApiController
     [HttpDelete("{boardId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteBoard(Guid boardId)
+    public async Task<IActionResult> DeleteBoard(
+        Guid boardId,
+        CancellationToken cancellationToken)
     {
         var command = new DeleteBoardCommand(boardId);
 
-        var result = await sender.Send(command);
+        var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => NoContent(),
@@ -112,7 +119,8 @@ public class BoardsController(ISender sender) : ApiController
     public async Task<IActionResult> CreateColumn(
         Guid projectId,
         Guid boardId,
-        CreateColumnRequest request)
+        CreateColumnRequest request,
+        CancellationToken cancellationToken)
     {
         var command = new CreateColumnCommand(
             boardId,
@@ -120,7 +128,7 @@ public class BoardsController(ISender sender) : ApiController
             request.WipLimit,
             request.DefinitionOfDone);
 
-        var result = await sender.Send(command);
+        var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => CreatedAtAction(
@@ -138,11 +146,14 @@ public class BoardsController(ISender sender) : ApiController
     [HttpDelete("{boardId:guid}/columns/{columnId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteColumn(Guid boardId, Guid columnId)
+    public async Task<IActionResult> DeleteColumn(
+        Guid boardId,
+        Guid columnId,
+        CancellationToken cancellationToken)
     {
         var command = new DeleteColumnCommand(boardId, columnId);
 
-        var result = await sender.Send(command);
+        var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => NoContent(),
@@ -160,7 +171,12 @@ public class BoardsController(ISender sender) : ApiController
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> CreateCard(Guid projectId, Guid boardId, Guid columnId, CreateCardRequest request)
+    public async Task<IActionResult> CreateCard(
+        Guid projectId,
+        Guid boardId,
+        Guid columnId,
+        CreateCardRequest request,
+        CancellationToken cancellationToken)
     {
         if (!DomainWorkItemType.TryFromName(request.Type.ToString(), out var type))
         {
@@ -171,7 +187,7 @@ public class BoardsController(ISender sender) : ApiController
 
         var command = new CreateCardCommand(boardId, columnId, type, request.Title);
 
-        var result = await sender.Send(command);
+        var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => CreatedAtAction(
@@ -192,7 +208,12 @@ public class BoardsController(ISender sender) : ApiController
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> MoveCard(Guid boardId, Guid columnId, Guid cardId, MoveCardRequest request)
+    public async Task<IActionResult> MoveCard(
+        Guid boardId,
+        Guid columnId,
+        Guid cardId,
+        MoveCardRequest request,
+        CancellationToken cancellationToken)
     {
         var command = new MoveCardCommand(
             boardId,
@@ -201,7 +222,7 @@ public class BoardsController(ISender sender) : ApiController
             request.TargetColumnId,
             request.TargetPosition);
 
-        var result = await sender.Send(command);
+        var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => NoContent(),

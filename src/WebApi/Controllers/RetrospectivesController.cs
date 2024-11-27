@@ -28,14 +28,15 @@ public class RetrospectivesController(
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateRetrospective(
         Guid teamId,
-        CreateRetrospectiveRequest request)
+        CreateRetrospectiveRequest request,
+        CancellationToken cancellationToken)
     {
         var command = new CreateRetrospectiveCommand(
             request.Title,
             request.Description,
             teamId);
 
-        var result = await sender.Send(command);
+        var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
             retrospective => CreatedAtAction(
@@ -52,11 +53,13 @@ public class RetrospectivesController(
     [HttpGet("{retrospectiveId:guid}")]
     [ProducesResponseType(typeof(RetrospectiveResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetRetrospective(Guid retrospectiveId)
+    public async Task<IActionResult> GetRetrospective(
+        Guid retrospectiveId,
+        CancellationToken cancellationToken)
     {
         var query = new GetRetrospectiveQuery(retrospectiveId);
 
-        var result = await sender.Send(query);
+        var result = await sender.Send(query, cancellationToken);
 
         return result.Match(
             retrospective => Ok(ToDto(retrospective)),
@@ -73,11 +76,12 @@ public class RetrospectivesController(
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> CreateColumn(
         Guid retrospectiveId,
-        CreateColumnRequest request)
+        CreateColumnRequest request,
+        CancellationToken cancellationToken)
     {
         var command = new CreateColumnCommand(request.Title, retrospectiveId);
 
-        var result = await sender.Send(command);
+        var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => NoContent(),
@@ -96,10 +100,11 @@ public class RetrospectivesController(
     public async Task<IActionResult> CreateItem(
         Guid retrospectiveId,
         Guid columnId,
-        CreateItemRequest request)
+        CreateItemRequest request,
+        CancellationToken cancellationToken)
     {
         var command = new CreateItemCommand(request.Description, retrospectiveId, columnId);
-        var result = await sender.Send(command);
+        var result = await sender.Send(command, cancellationToken);
 
         if (result.IsError)
         {
@@ -123,11 +128,12 @@ public class RetrospectivesController(
     public async Task<IActionResult> DeleteItem(
         Guid retrospectiveId,
         Guid columnId,
-        Guid itemId)
+        Guid itemId,
+        CancellationToken cancellationToken)
     {
         var command = new DeleteItemCommand(retrospectiveId, columnId, itemId);
 
-        var result = await sender.Send(command);
+        var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => NoContent(),
@@ -141,11 +147,13 @@ public class RetrospectivesController(
     [HttpGet]
     [ProducesResponseType(typeof(List<RetrospectiveResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> ListRetrospectives(Guid teamId)
+    public async Task<IActionResult> ListRetrospectives(
+        Guid teamId,
+        CancellationToken cancellationToken)
     {
         var query = new ListRetrospectivesQuery(teamId);
 
-        var result = await sender.Send(query);
+        var result = await sender.Send(query, cancellationToken);
 
         return result.Match(
             retrospectives => Ok(retrospectives.Select(ToDto)),

@@ -20,11 +20,15 @@ public class OrganizationsController(ISender sender) : ApiController
     [HttpPost]
     [ProducesResponseType(typeof(OrganizationResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CreateOrganization(CreateOrganizationRequest request)
+    public async Task<IActionResult> CreateOrganization(
+        CreateOrganizationRequest request,
+        CancellationToken cancellationToken)
     {
-        var command = new CreateOrganizationCommand(request.Name, request.Description);
+        var command = new CreateOrganizationCommand(
+            request.Name,
+            request.Description);
 
-        var result = await sender.Send(command);
+        var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
             organization => CreatedAtAction(
@@ -41,11 +45,13 @@ public class OrganizationsController(ISender sender) : ApiController
     [HttpGet("{organizationId:guid}")]
     [ProducesResponseType(typeof(OrganizationResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetOrganization(Guid organizationId)
+    public async Task<IActionResult> GetOrganization(
+        Guid organizationId,
+        CancellationToken cancellationToken)
     {
         var query = new GetOrganizationQuery(organizationId);
 
-        var result = await sender.Send(query);
+        var result = await sender.Send(query, cancellationToken);
 
         return result.Match(
             organization => Ok(ToDto(organization)),
@@ -57,11 +63,11 @@ public class OrganizationsController(ISender sender) : ApiController
     /// </summary>
     [HttpGet]
     [ProducesResponseType(typeof(List<OrganizationResponse>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> ListOrganizations()
+    public async Task<IActionResult> ListOrganizations(CancellationToken cancellationToken)
     {
         var query = new ListOrganizationsQuery();
 
-        var result = await sender.Send(query);
+        var result = await sender.Send(query, cancellationToken);
 
         return result.Match(
             organizations => Ok(organizations.ConvertAll(ToDto)),
@@ -79,11 +85,15 @@ public class OrganizationsController(ISender sender) : ApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateOrganization(
         Guid organizationId,
-        UpdateOrganizationRequest request)
+        UpdateOrganizationRequest request,
+        CancellationToken cancellationToken)
     {
-        var command = new UpdateOrganizationCommand(organizationId, request.Name, request.Description);
+        var command = new UpdateOrganizationCommand(
+            organizationId,
+            request.Name,
+            request.Description);
 
-        var result = await sender.Send(command);
+        var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
             organization => Ok(ToDto(organization)),
@@ -97,11 +107,13 @@ public class OrganizationsController(ISender sender) : ApiController
     [HttpDelete("{organizationId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteOrganization(Guid organizationId)
+    public async Task<IActionResult> DeleteOrganization(
+        Guid organizationId,
+        CancellationToken cancellationToken)
     {
         var command = new DeleteOrganizationCommand(organizationId);
 
-        var result = await sender.Send(command);
+        var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => NoContent(),

@@ -27,7 +27,8 @@ public class WikiPagesController(ISender sender) : ApiController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateWikiPage(
         Guid projectId,
-        CreateWikiPageRequest request)
+        CreateWikiPageRequest request,
+        CancellationToken cancellationToken)
     {
         var command = new CreateWikiPageCommand(
             projectId,
@@ -35,7 +36,7 @@ public class WikiPagesController(ISender sender) : ApiController
             request.Content,
             request.ParentWikiPageId);
 
-        var result = await sender.Send(command);
+        var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
             wikiPage => CreatedAtAction(
@@ -52,11 +53,13 @@ public class WikiPagesController(ISender sender) : ApiController
     [HttpGet("{wikiPageId:guid}")]
     [ProducesResponseType(typeof(WikiPageDetailResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetWikiPage(Guid wikiPageId)
+    public async Task<IActionResult> GetWikiPage(
+        Guid wikiPageId,
+        CancellationToken cancellationToken)
     {
         var query = new GetWikiPageQuery(wikiPageId);
 
-        var result = await sender.Send(query);
+        var result = await sender.Send(query, cancellationToken);
 
         return result.Match(
             wikiPage => Ok(ToDto(wikiPage)),
@@ -69,11 +72,13 @@ public class WikiPagesController(ISender sender) : ApiController
     /// <param name="projectId">The ID of the project to list wiki pages for.</param>
     [HttpGet]
     [ProducesResponseType(typeof(List<WikiPageSummaryResponse>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> ListWikiPages(Guid projectId)
+    public async Task<IActionResult> ListWikiPages(
+        Guid projectId,
+        CancellationToken cancellationToken)
     {
         var query = new ListWikiPagesQuery(projectId);
 
-        var result = await sender.Send(query);
+        var result = await sender.Send(query, cancellationToken);
 
         return result.Match(
             wikiPages => Ok(wikiPages.ConvertAll(ToSummaryDto)),
@@ -93,11 +98,12 @@ public class WikiPagesController(ISender sender) : ApiController
     public async Task<IActionResult> AddComment(
         Guid projectId,
         Guid wikiPageId,
-        AddCommentRequest request)
+        AddCommentRequest request,
+        CancellationToken cancellationToken)
     {
         var command = new AddCommentCommand(wikiPageId, request.Content);
 
-        var result = await sender.Send(command);
+        var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => CreatedAtAction(
@@ -114,11 +120,13 @@ public class WikiPagesController(ISender sender) : ApiController
     [HttpDelete("{wikiPageId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteWikiPage(Guid wikiPageId)
+    public async Task<IActionResult> DeleteWikiPage(
+        Guid wikiPageId,
+        CancellationToken cancellationToken)
     {
         var command = new DeleteWikiPageCommand(wikiPageId);
 
-        var result = await sender.Send(command);
+        var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => NoContent(),
@@ -135,14 +143,15 @@ public class WikiPagesController(ISender sender) : ApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateWikiPage(
         Guid wikiPageId,
-        UpdateWikiPageRequest request)
+        UpdateWikiPageRequest request,
+        CancellationToken cancellationToken)
     {
         var command = new UpdateWikiPageCommand(
             wikiPageId,
             request.Title,
             request.Content);
 
-        var result = await sender.Send(command);
+        var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
             wikiPage => Ok(ToDto(wikiPage)),
@@ -162,7 +171,8 @@ public class WikiPagesController(ISender sender) : ApiController
     public async Task<IActionResult> MoveWikiPage(
         Guid projectId,
         Guid wikiPageId,
-        MoveWikiPageRequest request)
+        MoveWikiPageRequest request,
+        CancellationToken cancellationToken)
     {
         var command = new MoveWikiPageCommand(
             projectId,
@@ -170,7 +180,7 @@ public class WikiPagesController(ISender sender) : ApiController
             request.TargetParentId,
             request.TargetPosition);
 
-        var result = await sender.Send(command);
+        var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => NoContent(),

@@ -31,7 +31,8 @@ public class WorkItemsController(ISender sender) : ApiController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateWorkItem(
         Guid projectId,
-        CreateWorkItemRequest request)
+        CreateWorkItemRequest request,
+        CancellationToken cancellationToken)
     {
         if (!DomainWorkItemType.TryFromName(request.Type.ToString(), out var type))
         {
@@ -42,7 +43,7 @@ public class WorkItemsController(ISender sender) : ApiController
 
         var command = new CreateWorkItemCommand(projectId, type, request.Title);
 
-        var result = await sender.Send(command);
+        var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
             workItem => CreatedAtAction(
@@ -59,11 +60,13 @@ public class WorkItemsController(ISender sender) : ApiController
     [HttpGet("{workItemId:guid}")]
     [ProducesResponseType(typeof(WorkItemResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetWorkItem(Guid workItemId)
+    public async Task<IActionResult> GetWorkItem(
+        Guid workItemId,
+        CancellationToken cancellationToken)
     {
         var query = new GetWorkItemQuery(workItemId);
 
-        var result = await sender.Send(query);
+        var result = await sender.Send(query, cancellationToken);
 
         return result.Match(
             workItem => Ok(ToDto(workItem)),
@@ -83,11 +86,12 @@ public class WorkItemsController(ISender sender) : ApiController
     public async Task<IActionResult> AddComment(
         Guid projectId,
         Guid workItemId,
-        AddCommentRequest request)
+        AddCommentRequest request,
+        CancellationToken cancellationToken)
     {
         var command = new AddCommentCommand(workItemId, request.Content);
 
-        var result = await sender.Send(command);
+        var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => CreatedAtAction(
@@ -103,11 +107,13 @@ public class WorkItemsController(ISender sender) : ApiController
     /// <param name="projectId">The ID of the project to list work items for.</param>
     [HttpGet]
     [ProducesResponseType(typeof(List<WorkItemResponse>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> ListWorkItems(Guid projectId)
+    public async Task<IActionResult> ListWorkItems(
+        Guid projectId,
+        CancellationToken cancellationToken)
     {
         var query = new ListWorkItemsQuery(projectId);
 
-        var result = await sender.Send(query);
+        var result = await sender.Send(query, cancellationToken);
 
         return result.Match(
             workItems => Ok(workItems.ConvertAll(ToDto)),
@@ -125,11 +131,12 @@ public class WorkItemsController(ISender sender) : ApiController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AssignWorkItem(
         Guid workItemId,
-        AssignWorkItemRequest request)
+        AssignWorkItemRequest request,
+        CancellationToken cancellationToken)
     {
         var command = new AssignWorkItemCommand(workItemId, request.AssigneeId);
 
-        var result = await sender.Send(command);
+        var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => NoContent(),
@@ -147,11 +154,12 @@ public class WorkItemsController(ISender sender) : ApiController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddTagToWorkItem(
         Guid workItemId,
-        CreateTagRequest request)
+        CreateTagRequest request,
+        CancellationToken cancellationToken)
     {
         var command = new AddTagCommand(workItemId, request.Name);
 
-        var result = await sender.Send(command);
+        var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => NoContent(),
@@ -168,11 +176,12 @@ public class WorkItemsController(ISender sender) : ApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> RemoveTagFromWorkItem(
         Guid workItemId,
-        string tagName)
+        string tagName,
+        CancellationToken cancellationToken)
     {
         var command = new RemoveTagCommand(workItemId, tagName);
 
-        var result = await sender.Send(command);
+        var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => NoContent(),

@@ -23,11 +23,12 @@ public class TeamsController(ISender sender) : ApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> CreateTeam(
         Guid projectId,
-        CreateTeamRequest request)
+        CreateTeamRequest request,
+        CancellationToken cancellationToken)
     {
         var command = new CreateTeamCommand(projectId, request.Name);
 
-        var result = await sender.Send(command);
+        var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
             team => CreatedAtAction(
@@ -44,11 +45,13 @@ public class TeamsController(ISender sender) : ApiController
     [HttpGet("{teamId:guid}")]
     [ProducesResponseType(typeof(TeamResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetTeam(Guid teamId)
+    public async Task<IActionResult> GetTeam(
+        Guid teamId,
+        CancellationToken cancellationToken)
     {
         var query = new GetTeamQuery(teamId);
 
-        var result = await sender.Send(query);
+        var result = await sender.Send(query, cancellationToken);
 
         return result.Match(
             team => Ok(ToDto(team)),
@@ -65,11 +68,12 @@ public class TeamsController(ISender sender) : ApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> AddMember(
         Guid teamId,
-        AddMemberRequest request)
+        AddMemberRequest request,
+        CancellationToken cancellationToken)
     {
         var command = new AddMemberCommand(teamId, request.MemberId);
 
-        var result = await sender.Send(command);
+        var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => NoContent(),
