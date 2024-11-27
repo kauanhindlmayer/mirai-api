@@ -6,4 +6,4 @@ namespace Application.Organizations.Commands.CreateOrganization;
 
 public sealed record CreateOrganizationCommand(
     string Name,
-    string? Description) : IRequest<ErrorOr<Organization>>;
+    string Description) : IRequest<ErrorOr<Organization>>;

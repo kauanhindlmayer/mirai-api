@@ -3,7 +3,7 @@ namespace Contracts.Projects;
 public sealed record ProjectResponse(
     Guid Id,
     string Name,
-    string? Description,
+    string Description,
     Guid OrganizationId,
     DateTime CreatedAt,
     DateTime? UpdatedAt);

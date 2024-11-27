@@ -11,6 +11,7 @@ public sealed class UpdateOrganizationCommandValidator : AbstractValidator<Updat
             .MaximumLength(255);
 
         RuleFor(x => x.Description)
+            .NotNull()
             .MaximumLength(500);
     }
 }

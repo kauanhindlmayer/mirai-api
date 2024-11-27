@@ -11,6 +11,7 @@ public sealed class CreateOrganizationCommandValidator : AbstractValidator<Creat
             .MaximumLength(255);
 
         RuleFor(x => x.Description)
+            .NotNull()
             .MaximumLength(500);
     }
 }

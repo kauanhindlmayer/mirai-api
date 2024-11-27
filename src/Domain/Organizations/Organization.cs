@@ -9,11 +9,11 @@ namespace Domain.Organizations;
 public sealed class Organization : AggregateRoot
 {
     public string Name { get; private set; } = null!;
-    public string? Description { get; private set; }
+    public string Description { get; private set; } = string.Empty;
     public ICollection<Project> Projects { get; private set; } = [];
     public ICollection<User> Members { get; private set; } = [];
 
-    public Organization(string name, string? description)
+    public Organization(string name, string description)
     {
         Name = name;
         Description = description;
@@ -24,7 +24,7 @@ public sealed class Organization : AggregateRoot
     {
     }
 
-    public void Update(string name, string? description)
+    public void Update(string name, string description)
     {
         Name = name;
         Description = description;
