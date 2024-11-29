@@ -12,7 +12,7 @@ public interface IWorkItemsRepository
     Task<int> GetNextWorkItemCodeAsync(
         Guid projectId,
         CancellationToken cancellationToken = default);
-    Task<List<WorkItemSummary>> SearchAsync(
+    Task<List<WorkItem>> SearchAsync(
         Guid projectId,
         float[] searchTermEmbedding,
         int topK = 10,

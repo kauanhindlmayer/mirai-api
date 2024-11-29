@@ -9,21 +9,21 @@ namespace Application.WorkItems.Queries.SearchWorkItems;
 internal sealed class SearchWorkItemsQueryHandler(
     IEmbeddingService embeddingService,
     IWorkItemsRepository workItemsRepository)
-    : IRequestHandler<SearchWorkItemsQuery, ErrorOr<List<WorkItemSummary>>>
+    : IRequestHandler<SearchWorkItemsQuery, ErrorOr<List<WorkItem>>>
 {
-    public async Task<ErrorOr<List<WorkItemSummary>>> Handle(
+    public async Task<ErrorOr<List<WorkItem>>> Handle(
         SearchWorkItemsQuery query,
         CancellationToken cancellationToken)
     {
-        var result = await embeddingService.GenerateEmbeddingAsync(query.SearchTerm);
-        if (result.IsError)
+        var embeddingResult = await embeddingService.GenerateEmbeddingAsync(query.SearchTerm);
+        if (embeddingResult.IsError)
         {
-            return result.Errors;
+            return embeddingResult.Errors;
         }
 
         var workItems = await workItemsRepository.SearchAsync(
             query.ProjectId,
-            result.Value,
+            embeddingResult.Value,
             cancellationToken: cancellationToken);
 
         return workItems;

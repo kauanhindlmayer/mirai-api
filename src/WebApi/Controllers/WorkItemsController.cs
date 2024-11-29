@@ -117,7 +117,7 @@ public class WorkItemsController(ISender sender) : ApiController
         var result = await sender.Send(query, cancellationToken);
 
         return result.Match(
-            workItems => Ok(workItems.ConvertAll(ToDto)),
+            workItems => Ok(workItems.ConvertAll(ToSummaryDto)),
             Problem);
     }
 
@@ -205,7 +205,9 @@ public class WorkItemsController(ISender sender) : ApiController
 
         var result = await sender.Send(query, cancellationToken);
 
-        return result.Match(Ok, Problem);
+        return result.Match(
+            workItems => Ok(workItems.ConvertAll(ToSummaryDto)),
+            Problem);
     }
 
     private static WorkItemResponse ToDto(WorkItem workItem)
@@ -223,6 +225,15 @@ public class WorkItemsController(ISender sender) : ApiController
             workItem.Tags.Select(t => t.Name).ToList(),
             workItem.CreatedAt,
             workItem.UpdatedAt);
+    }
+
+    private static WorkItemSummaryResponse ToSummaryDto(WorkItem workItem)
+    {
+        return new(
+            workItem.Id,
+            workItem.Title,
+            ToDto(workItem.Status),
+            ToDto(workItem.Type));
     }
 
     private static WorkItemType ToDto(DomainWorkItemType workItemType)

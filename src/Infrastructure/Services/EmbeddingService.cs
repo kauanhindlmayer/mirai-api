@@ -10,22 +10,23 @@ internal sealed class EmbeddingService(
     HttpClient httpClient,
     ILogger<EmbeddingService> logger) : IEmbeddingService
 {
+    public const string ErrorMessage = "An error occurred while generating the embedding.";
+
     public async Task<ErrorOr<float[]>> GenerateEmbeddingAsync(string text)
     {
         try
         {
             var request = new EmbeddingRequest(text);
             var response = await httpClient.PostAsJsonAsync("/embed", request);
-            response.EnsureSuccessStatusCode();
             var embeddingResponse = await response.Content.ReadFromJsonAsync<EmbeddingResponse>();
             return embeddingResponse!.Embedding;
         }
         catch (Exception exception)
         {
-            logger.LogError(exception, "An error occurred while calling the embedding service.");
+            logger.LogError(exception, ErrorMessage);
             return Error.Failure(
                 code: "EmbeddingService.Failure",
-                description: "An error occurred while calling the embedding service.");
+                description: ErrorMessage);
         }
     }
 }
