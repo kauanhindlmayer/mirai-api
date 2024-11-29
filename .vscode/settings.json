@@ -1,14 +1,17 @@
 {
   "cSpell.words": [
     "Ardalis",
+    "ASPNETCORE",
     "Authorizeable",
-    "Hasher",
+    "datalust",
+    "isready",
     "Keycloak",
     "Mediat",
     "Npgsql",
     "Serilog",
     "Swashbuckle",
     "Testcontainers",
+    "usersecrets",
     "Xunit"
   ]
 }
