@@ -19,13 +19,15 @@ namespace Infrastructure;
 
 public static class DependencyInjection
 {
+    private const string ApiKeyHeaderName = "X-API-Key";
+
     public static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
         IConfiguration configuration)
     {
         services
             .AddHttpContextAccessor()
-            .AddServices()
+            .AddServices(configuration)
             .AddAuthorization()
             .AddAuthentication(configuration)
             .AddPersistence(configuration)
@@ -35,9 +37,21 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IServiceCollection AddServices(this IServiceCollection services)
+    private static IServiceCollection AddServices(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+
+        var embeddingServiceOptions = configuration.GetSection(EmbeddingServiceOptions.SectionName);
+        services.Configure<EmbeddingServiceOptions>(embeddingServiceOptions);
+
+        services.AddHttpClient<IEmbeddingService, EmbeddingService>((serviceProvider, httpClient) =>
+        {
+            var options = serviceProvider.GetRequiredService<IOptions<EmbeddingServiceOptions>>().Value;
+            httpClient.BaseAddress = new Uri(options.BaseUrl);
+            httpClient.DefaultRequestHeaders.Add(ApiKeyHeaderName, options.ApiKey);
+        });
 
         return services;
     }
@@ -47,7 +61,8 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         var connectionString = configuration.GetConnectionString("Database");
-        services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
+        services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseNpgsql(connectionString, options => options.UseVector()));
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IOrganizationsRepository, OrganizationsRepository>();
@@ -109,11 +124,13 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         var keycloakServiceUri = new Uri(configuration["Keycloak:BaseUrl"]!);
+        var embeddingServiceUri = new Uri($"{configuration["EmbeddingService:BaseUrl"]!}/health");
 
         services.AddHealthChecks()
             .AddNpgSql(configuration.GetConnectionString("Database")!)
             .AddRedis(configuration.GetConnectionString("Redis")!)
-            .AddUrlGroup(keycloakServiceUri, HttpMethod.Get, "keycloak");
+            .AddUrlGroup(keycloakServiceUri, HttpMethod.Get, "keycloak")
+            .AddUrlGroup(embeddingServiceUri, HttpMethod.Get, "embedding");
 
         return services;
     }

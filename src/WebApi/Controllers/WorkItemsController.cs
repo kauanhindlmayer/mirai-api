@@ -5,6 +5,7 @@ using Application.WorkItems.Commands.CreateWorkItem;
 using Application.WorkItems.Commands.RemoveTag;
 using Application.WorkItems.Queries.GetWorkItem;
 using Application.WorkItems.Queries.ListWorkItems;
+using Application.WorkItems.Queries.SearchWorkItems;
 using Contracts.Common;
 using Contracts.Tags;
 using Contracts.WorkItems;
@@ -186,6 +187,25 @@ public class WorkItemsController(ISender sender) : ApiController
         return result.Match(
             _ => NoContent(),
             Problem);
+    }
+
+    /// <summary>
+    /// Search work items in a project by a search term using semantic search.
+    /// </summary>
+    /// <param name="projectId">The ID of the project to search work items in.</param>
+    /// <param name="searchTerm">The search term to use.</param>
+    [HttpGet("search")]
+    [ProducesResponseType(typeof(List<WorkItemResponse>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> SearchWorkItems(
+        Guid projectId,
+        string searchTerm,
+        CancellationToken cancellationToken)
+    {
+        var query = new SearchWorkItemsQuery(projectId, searchTerm);
+
+        var result = await sender.Send(query, cancellationToken);
+
+        return result.Match(Ok, Problem);
     }
 
     private static WorkItemResponse ToDto(WorkItem workItem)

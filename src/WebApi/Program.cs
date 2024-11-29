@@ -27,8 +27,7 @@ var app = builder.Build();
         app.UseSwaggerUI();
 
         app.ApplyMigrations();
-
-        // app.SeedData();
+        app.SeedData();
     }
 
     app.UseSerilogRequestLogging();

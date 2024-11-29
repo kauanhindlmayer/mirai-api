@@ -1,4 +1,5 @@
 using Application.Common.Interfaces.Persistence;
+using Application.Common.Interfaces.Services;
 using Application.WorkItems.Commands.CreateWorkItem;
 using Domain.Projects;
 using Domain.WorkItems;
@@ -16,14 +17,17 @@ public class CreateWorkItemTests
     private readonly CreateWorkItemCommandHandler _handler;
     private readonly IProjectsRepository _projectsRepository;
     private readonly IWorkItemsRepository _workItemsRepository;
+    private readonly IEmbeddingService _embeddingService;
 
     public CreateWorkItemTests()
     {
         _projectsRepository = Substitute.For<IProjectsRepository>();
         _workItemsRepository = Substitute.For<IWorkItemsRepository>();
+        _embeddingService = Substitute.For<IEmbeddingService>();
         _handler = new CreateWorkItemCommandHandler(
             _projectsRepository,
-            _workItemsRepository);
+            _workItemsRepository,
+            _embeddingService);
     }
 
     [Fact]

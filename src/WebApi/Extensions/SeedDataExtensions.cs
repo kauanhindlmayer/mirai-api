@@ -4,6 +4,7 @@ using Domain.Projects;
 using Domain.WorkItems;
 using Domain.WorkItems.Enums;
 using Infrastructure.Persistence;
+using Pgvector;
 
 namespace WebApi.Extensions;
 

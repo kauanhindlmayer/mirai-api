@@ -16,7 +16,7 @@ services:
 
   mirai-db:
     container_name: mirai-db
-    image: postgres:latest
+    image: ankane/pgvector:latest
     ports:
       - 5432:5432
     environment:
@@ -59,6 +59,16 @@ services:
     restart: always
     ports:
       - 6379:6379
+
+  mirai-embedding-api:
+    container_name: mirai-embedding-api
+    build:
+      context: ../mirai-embedding-api
+      dockerfile: Dockerfile
+    environment:
+      - ENVIRONMENT=development
+    ports:
+      - 8000:8000
 
 volumes:
   postgres_data:

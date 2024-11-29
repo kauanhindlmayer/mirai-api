@@ -1,4 +1,5 @@
 using Application.Common.Interfaces.Persistence;
+using Application.Common.Interfaces.Services;
 using Domain.Projects;
 using Domain.WorkItems;
 using ErrorOr;
@@ -8,7 +9,8 @@ namespace Application.WorkItems.Commands.CreateWorkItem;
 
 internal sealed class CreateWorkItemCommandHandler(
     IProjectsRepository projectsRepository,
-    IWorkItemsRepository workItemsRepository)
+    IWorkItemsRepository workItemsRepository,
+    IEmbeddingService embeddingService)
     : IRequestHandler<CreateWorkItemCommand, ErrorOr<WorkItem>>
 {
     public async Task<ErrorOr<WorkItem>> Handle(
@@ -33,6 +35,15 @@ internal sealed class CreateWorkItemCommandHandler(
             workItemCode,
             command.Title,
             command.Type);
+
+        var embeddingResponse = await embeddingService.GenerateEmbeddingAsync(
+            $"{workItem.Title} {workItem.Description}");
+        if (embeddingResponse.IsError)
+        {
+            return embeddingResponse.Errors;
+        }
+
+        workItem.SetSearchVector(embeddingResponse.Value);
 
         var result = project.AddWorkItem(workItem);
         if (result.IsError)

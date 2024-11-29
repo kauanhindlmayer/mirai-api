@@ -48,6 +48,9 @@ internal sealed class WorkItemConfigurations : IEntityTypeConfiguration<WorkItem
                 v => v.Name,
                 v => ValueAreaType.FromName(v, false));
 
+        builder.Property(wi => wi.SearchVector)
+            .HasColumnType("vector");
+
         builder.Property(wi => wi.AssigneeId);
 
         builder.Property(wi => wi.ProjectId)

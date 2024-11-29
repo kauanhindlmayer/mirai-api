@@ -5,6 +5,7 @@ using Domain.Users;
 using Domain.WorkItems.Enums;
 using Domain.WorkItems.ValueObjects;
 using ErrorOr;
+using Pgvector;
 
 namespace Domain.WorkItems;
 
@@ -18,6 +19,7 @@ public sealed class WorkItem : AggregateRoot
     public WorkItemStatus Status { get; private set; } = null!;
     public Planning Planning { get; private set; } = new();
     public Classification Classification { get; private set; } = new();
+    public Vector? SearchVector { get; private set; }
     public Guid? AssigneeId { get; private set; }
     public User? Assignee { get; private set; }
     public Guid ProjectId { get; private set; }
@@ -88,5 +90,10 @@ public sealed class WorkItem : AggregateRoot
 
         Tags.Remove(tag);
         return Result.Success;
+    }
+
+    public void SetSearchVector(float[] embedding)
+    {
+        SearchVector = new Vector(embedding);
     }
 }
