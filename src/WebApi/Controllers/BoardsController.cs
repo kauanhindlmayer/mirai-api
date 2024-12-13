@@ -6,6 +6,7 @@ using Application.Boards.Commands.DeleteColumn;
 using Application.Boards.Commands.MoveCard;
 using Application.Boards.Queries.GetBoard;
 using Application.Boards.Queries.ListBoards;
+using Asp.Versioning;
 using Contracts.Boards;
 using Domain.Boards;
 using MediatR;
@@ -14,7 +15,8 @@ using DomainWorkItemType = Domain.WorkItems.Enums.WorkItemType;
 
 namespace WebApi.Controllers;
 
-[Route("api/projects/{projectId:guid}/boards")]
+[ApiVersion(ApiVersions.V1)]
+[Route("api/v{version:apiVersion}/projects/{projectId:guid}/boards")]
 public class BoardsController(ISender sender) : ApiController
 {
     /// <summary>

@@ -5,6 +5,7 @@ using Application.WikiPages.Commands.MoveWikiPage;
 using Application.WikiPages.Commands.UpdateWikiPage;
 using Application.WikiPages.Queries.GetWikiPage;
 using Application.WikiPages.Queries.ListWikiPages;
+using Asp.Versioning;
 using Contracts.Common;
 using Contracts.WikiPages;
 using Domain.WikiPages;
@@ -13,7 +14,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;
 
-[Route("api/projects/{projectId:guid}/wiki-pages")]
+[ApiVersion(ApiVersions.V1)]
+[Route("api/v{version:apiVersion}/projects/{projectId:guid}/wiki-pages")]
 public class WikiPagesController(ISender sender) : ApiController
 {
     /// <summary>

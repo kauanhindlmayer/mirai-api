@@ -2,6 +2,7 @@ using Application.Projects.Commands.CreateProject;
 using Application.Projects.Commands.UpdateProject;
 using Application.Projects.Queries.GetProject;
 using Application.Projects.Queries.ListProjects;
+using Asp.Versioning;
 using Contracts.Projects;
 using Domain.Projects;
 using MediatR;
@@ -9,7 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;
 
-[Route("api/organizations/{organizationId:guid}/projects")]
+[ApiVersion(ApiVersions.V1)]
+[Route("api/v{version:apiVersion}/organizations/{organizationId:guid}/projects")]
 public class ProjectsController(ISender sender) : ApiController
 {
     /// <summary>

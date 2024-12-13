@@ -6,6 +6,7 @@ using Application.WorkItems.Commands.RemoveTag;
 using Application.WorkItems.Queries.GetWorkItem;
 using Application.WorkItems.Queries.ListWorkItems;
 using Application.WorkItems.Queries.SearchWorkItems;
+using Asp.Versioning;
 using Contracts.Common;
 using Contracts.Tags;
 using Contracts.WorkItems;
@@ -19,7 +20,8 @@ using WorkItemType = Contracts.Common.WorkItemType;
 
 namespace WebApi.Controllers;
 
-[Route("api/projects/{projectId:guid}/work-items")]
+[ApiVersion(ApiVersions.V1)]
+[Route("api/v{version:apiVersion}/projects/{projectId:guid}/work-items")]
 public class WorkItemsController(ISender sender) : ApiController
 {
     /// <summary>

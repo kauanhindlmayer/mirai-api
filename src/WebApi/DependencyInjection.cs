@@ -2,18 +2,17 @@ using System.Reflection;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using WebApi.Hubs;
+using WebApi.OpenApi;
 
 namespace WebApi;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddPresentation(
-        this IServiceCollection services,
-        IConfiguration configuration)
+    public static IServiceCollection AddPresentation(this IServiceCollection services)
     {
         services.AddControllers();
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen(configuration);
+        services.AddSwaggerGen();
         services.AddProblemDetails();
         services.AddSignalR();
         services.AddCorsPolicy();
@@ -21,18 +20,15 @@ public static class DependencyInjection
         return services;
     }
 
-    public static IServiceCollection AddSwaggerGen(
-        this IServiceCollection services,
-        IConfiguration configuration)
+    public static IServiceCollection AddSwaggerGen(this IServiceCollection services)
     {
+        services.ConfigureOptions<ConfigureSwaggerOptions>();
         services.AddSwaggerGen(options =>
         {
             var xmlFilePath = GetXmlCommentsPath();
-
-            ConfigureSwaggerDoc(options);
             ConfigureXmlComments(options, xmlFilePath);
             ConfigureSignalRSwagger(options, xmlFilePath);
-            ConfigureSecurity(options, configuration);
+            ConfigureSecurity(options);
         });
 
         return services;
@@ -46,28 +42,10 @@ public static class DependencyInjection
         return app;
     }
 
-    private static void AddCorsPolicy(this IServiceCollection services)
-    {
-        services.AddCors(options => options.AddDefaultPolicy(builder =>
-            builder.WithOrigins("http://localhost:4200")
-                .AllowAnyMethod()
-                .AllowAnyHeader()));
-    }
-
     private static string GetXmlCommentsPath()
     {
         var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
         return Path.Combine(AppContext.BaseDirectory, xmlFilename);
-    }
-
-    private static void ConfigureSwaggerDoc(SwaggerGenOptions options)
-    {
-        options.SwaggerDoc("v1", new OpenApiInfo
-        {
-            Title = "Mirai",
-            Version = "v1",
-            Description = "Mirai (Japanese word for \"future\") is a web-based project management tool that aims to help teams collaborate and manage their projects more effectively.",
-        });
     }
 
     private static void ConfigureXmlComments(SwaggerGenOptions options, string xmlFilePath)
@@ -86,7 +64,7 @@ public static class DependencyInjection
         });
     }
 
-    private static void ConfigureSecurity(SwaggerGenOptions options, IConfiguration configuration)
+    private static void ConfigureSecurity(SwaggerGenOptions options)
     {
         options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
         {
@@ -110,5 +88,13 @@ public static class DependencyInjection
                 Array.Empty<string>()
             },
         });
+    }
+
+    private static void AddCorsPolicy(this IServiceCollection services)
+    {
+        services.AddCors(options => options.AddDefaultPolicy(builder =>
+            builder.WithOrigins("http://localhost:5173")
+                .AllowAnyMethod()
+                .AllowAnyHeader()));
     }
 }

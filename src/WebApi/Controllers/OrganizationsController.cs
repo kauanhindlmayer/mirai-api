@@ -3,6 +3,7 @@ using Application.Organizations.Commands.DeleteOrganization;
 using Application.Organizations.Commands.UpdateOrganization;
 using Application.Organizations.Queries.GetOrganization;
 using Application.Organizations.Queries.ListOrganizations;
+using Asp.Versioning;
 using Contracts.Organizations;
 using Domain.Organizations;
 using MediatR;
@@ -10,7 +11,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;
 
-[Route("api/organizations")]
+[ApiVersion(ApiVersions.V1)]
+[Route("api/v{version:apiVersion}/organizations")]
 public class OrganizationsController(ISender sender) : ApiController
 {
     /// <summary>

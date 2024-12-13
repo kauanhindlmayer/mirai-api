@@ -1,5 +1,6 @@
 using Application.Common.Interfaces.Persistence;
 using Application.Common.Interfaces.Services;
+using Asp.Versioning;
 using Infrastructure.Authentication;
 using Infrastructure.Authorization;
 using Infrastructure.Persistence;
@@ -32,6 +33,7 @@ public static class DependencyInjection
             .AddAuthentication(configuration)
             .AddPersistence(configuration)
             .AddHealthChecks(configuration)
+            .AddApiVersioning()
             .AddCaching(configuration);
 
         return services;
@@ -131,6 +133,24 @@ public static class DependencyInjection
             .AddRedis(configuration.GetConnectionString("Redis")!)
             .AddUrlGroup(keycloakServiceUri, HttpMethod.Get, "keycloak")
             .AddUrlGroup(embeddingServiceUri, HttpMethod.Get, "embedding");
+
+        return services;
+    }
+
+    private static IServiceCollection AddApiVersioning(this IServiceCollection services)
+    {
+        services.AddApiVersioning(options =>
+        {
+            options.DefaultApiVersion = new ApiVersion(1);
+            options.ReportApiVersions = true;
+            options.ApiVersionReader = new UrlSegmentApiVersionReader();
+        })
+        .AddMvc()
+        .AddApiExplorer(options =>
+        {
+            options.GroupNameFormat = "'v'V";
+            options.SubstituteApiVersionInUrl = true;
+        });
 
         return services;
     }

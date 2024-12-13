@@ -2,6 +2,7 @@ using Application.Tags.Commands.CreateTag;
 using Application.Tags.Commands.DeleteTag;
 using Application.Tags.Commands.UpdateTag;
 using Application.Tags.Queries.ListTags;
+using Asp.Versioning;
 using Contracts.Tags;
 using Domain.Tags;
 using MediatR;
@@ -9,7 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;
 
-[Route("api/projects/{projectId:guid}/tags")]
+[ApiVersion(ApiVersions.V1)]
+[Route("api/v{version:apiVersion}/projects/{projectId:guid}/tags")]
 public class TagsController(ISender sender) : ApiController
 {
     /// <summary>

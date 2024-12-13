@@ -4,6 +4,7 @@ using Application.Retrospectives.Commands.CreateRetrospective;
 using Application.Retrospectives.Commands.DeleteItem;
 using Application.Retrospectives.Queries.GetRetrospective;
 using Application.Retrospectives.Queries.ListRetrospectives;
+using Asp.Versioning;
 using Contracts.Retrospectives;
 using Domain.Retrospectives;
 using MediatR;
@@ -13,7 +14,8 @@ using WebApi.Hubs;
 
 namespace WebApi.Controllers;
 
-[Route("api/teams/{teamId:guid}/retrospectives")]
+[ApiVersion(ApiVersions.V1)]
+[Route("api/v{version:apiVersion}/teams/{teamId:guid}/retrospectives")]
 public class RetrospectivesController(
     ISender sender,
     IHubContext<RetrospectiveHub, IRetrospectiveHub> hubContext) : ApiController

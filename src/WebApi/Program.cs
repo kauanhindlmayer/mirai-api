@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
         config.ReadFrom.Configuration(builder.Configuration));
 
     builder.Services
-        .AddPresentation(builder.Configuration)
+        .AddPresentation()
         .AddApplication()
         .AddInfrastructure(builder.Configuration);
 }
@@ -24,7 +24,16 @@ var app = builder.Build();
     if (app.Environment.IsDevelopment())
     {
         app.UseSwagger();
-        app.UseSwaggerUI();
+        app.UseSwaggerUI(options =>
+        {
+            var descriptions = app.DescribeApiVersions();
+            foreach (var description in descriptions)
+            {
+                var url = $"/swagger/{description.GroupName}/swagger.json";
+                var name = description.GroupName.ToUpperInvariant();
+                options.SwaggerEndpoint(url, name);
+            }
+        });
 
         app.ApplyMigrations();
         app.SeedData();

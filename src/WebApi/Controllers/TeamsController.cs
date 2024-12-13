@@ -1,6 +1,7 @@
 using Application.Teams.Commands.AddMember;
 using Application.Teams.Commands.CreateTeam;
 using Application.Teams.Queries.GetTeam;
+using Asp.Versioning;
 using Contracts.Teams;
 using Domain.Teams;
 using Domain.Users;
@@ -9,7 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;
 
-[Route("api/projects/{projectId:guid}/teams")]
+[ApiVersion(ApiVersions.V1)]
+[Route("api/v{version:apiVersion}/projects/{projectId:guid}/teams")]
 public class TeamsController(ISender sender) : ApiController
 {
     /// <summary>

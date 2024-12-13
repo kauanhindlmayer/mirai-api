@@ -3,6 +3,7 @@ using Application.Users.Commands.UpdateUserProfile;
 using Application.Users.Common;
 using Application.Users.Queries.GetCurrentUser;
 using Application.Users.Queries.LoginUser;
+using Asp.Versioning;
 using Contracts.Users;
 using Domain.Users;
 using MediatR;
@@ -11,7 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;
 
-[Route("api/users")]
+[ApiVersion(ApiVersions.V1)]
+[Route("api/v{version:apiVersion}/users")]
 public class UsersController(ISender sender) : ApiController
 {
     /// <summary>
