@@ -4,6 +4,8 @@ namespace Contracts.WorkItems;
 
 public sealed record WorkItemSummaryResponse(
     Guid Id,
+    int Code,
     string Title,
     WorkItemStatus Status,
-    WorkItemType Type);
+    WorkItemType Type,
+    DateTime? UpdatedAt);

@@ -233,9 +233,11 @@ public class WorkItemsController(ISender sender) : ApiController
     {
         return new(
             workItem.Id,
+            workItem.Code,
             workItem.Title,
             ToDto(workItem.Status),
-            ToDto(workItem.Type));
+            ToDto(workItem.Type),
+            workItem.UpdatedAt);
     }
 
     private static WorkItemType ToDto(DomainWorkItemType workItemType)
