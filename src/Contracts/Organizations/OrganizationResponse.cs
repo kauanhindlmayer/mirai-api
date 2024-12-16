@@ -5,4 +5,4 @@ public sealed record OrganizationResponse(
     string Name,
     string Description,
     DateTime CreatedAt,
-    DateTime? UpdatedAt);
+    DateTime UpdatedAt);

@@ -45,7 +45,9 @@ public static class SeedDataExtensions
     {
         var organizationFaker = new Faker<Organization>()
             .RuleFor(o => o.Name, f => f.Company.CompanyName())
-            .RuleFor(o => o.Description, f => f.Company.CatchPhrase());
+            .RuleFor(o => o.Description, f => f.Company.CatchPhrase())
+            .RuleFor(wi => wi.CreatedAt, f => DateTime.UtcNow)
+            .RuleFor(wi => wi.UpdatedAt, f => DateTime.UtcNow);
 
         return organizationFaker.Generate(count);
     }
@@ -55,7 +57,9 @@ public static class SeedDataExtensions
         var projectFaker = new Faker<Project>()
             .RuleFor(p => p.Name, f => f.Commerce.ProductName())
             .RuleFor(p => p.Description, f => f.Commerce.ProductDescription())
-            .RuleFor(p => p.OrganizationId, f => organization.Id);
+            .RuleFor(p => p.OrganizationId, f => organization.Id)
+            .RuleFor(wi => wi.CreatedAt, f => DateTime.UtcNow)
+            .RuleFor(wi => wi.UpdatedAt, f => DateTime.UtcNow);
 
         return projectFaker.Generate(count);
     }
@@ -71,7 +75,9 @@ public static class SeedDataExtensions
             .RuleFor(wi => wi.AcceptanceCriteria, f => f.Lorem.Paragraph())
             .RuleFor(wi => wi.ProjectId, f => project.Id)
             .RuleFor(wi => wi.Type, f => f.PickRandom<WorkItemType>(WorkItemType.List))
-            .RuleFor(wi => wi.Status, f => f.PickRandom<WorkItemStatus>(WorkItemStatus.List));
+            .RuleFor(wi => wi.Status, f => f.PickRandom<WorkItemStatus>(WorkItemStatus.List))
+            .RuleFor(wi => wi.CreatedAt, f => DateTime.UtcNow)
+            .RuleFor(wi => wi.UpdatedAt, f => DateTime.UtcNow);
 
         return workItemFaker.Generate(count);
     }

@@ -6,4 +6,4 @@ public sealed record ProjectResponse(
     string Description,
     Guid OrganizationId,
     DateTime CreatedAt,
-    DateTime? UpdatedAt);
+    DateTime UpdatedAt);

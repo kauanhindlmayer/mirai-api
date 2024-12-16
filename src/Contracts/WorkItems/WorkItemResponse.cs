@@ -14,7 +14,7 @@ public sealed record WorkItemResponse(
     List<CommentResponse> Comments,
     List<string> Tags,
     DateTime CreatedAt,
-    DateTime? UpdatedAt);
+    DateTime UpdatedAt);
 
 public sealed record CommentResponse(
     Guid Id,

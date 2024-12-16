@@ -19,4 +19,4 @@ public sealed record BoardCardResponse(
     Guid Id,
     int Position,
     DateTime CreatedAt,
-    DateTime? UpdatedAt);
+    DateTime UpdatedAt);
