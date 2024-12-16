@@ -2,6 +2,7 @@ using Application.WorkItems.Commands.AddComment;
 using Application.WorkItems.Commands.AddTag;
 using Application.WorkItems.Commands.AssignWorkItem;
 using Application.WorkItems.Commands.CreateWorkItem;
+using Application.WorkItems.Commands.DeleteWorkItem;
 using Application.WorkItems.Commands.RemoveTag;
 using Application.WorkItems.Queries.GetWorkItem;
 using Application.WorkItems.Queries.ListWorkItems;
@@ -209,6 +210,26 @@ public class WorkItemsController(ISender sender) : ApiController
 
         return result.Match(
             workItems => Ok(workItems.ConvertAll(ToSummaryDto)),
+            Problem);
+    }
+
+    /// <summary>
+    /// Delete a work item.
+    /// </summary>
+    /// <param name="workItemId">The ID of the work item to delete.</param>
+    [HttpDelete("{workItemId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteWorkItem(
+        Guid workItemId,
+        CancellationToken cancellationToken)
+    {
+        var command = new DeleteWorkItemCommand(workItemId);
+
+        var result = await sender.Send(command, cancellationToken);
+
+        return result.Match(
+            _ => NoContent(),
             Problem);
     }
 
