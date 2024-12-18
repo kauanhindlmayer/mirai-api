@@ -10,4 +10,5 @@ public enum WorkItemStatus
     Closed,
     Resolved,
     Reopened,
+    Removed,
 }

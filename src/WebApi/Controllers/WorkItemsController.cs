@@ -1,3 +1,4 @@
+using Application.Common;
 using Application.WorkItems.Commands.AddComment;
 using Application.WorkItems.Commands.AddTag;
 using Application.WorkItems.Commands.AssignWorkItem;
@@ -106,21 +107,29 @@ public class WorkItemsController(ISender sender) : ApiController
     }
 
     /// <summary>
-    /// List all work items belonging to a project.
+    /// List all work items belonging to a project. Supports pagination, sorting, and searching.
     /// </summary>
-    /// <param name="projectId">The ID of the project to list work items for.</param>
+    /// <param name="projectId">The ID of the project.</param>
+    /// <param name="request">The details of the page.</param>
     [HttpGet]
     [ProducesResponseType(typeof(List<WorkItemResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> ListWorkItems(
         Guid projectId,
+        [FromQuery] PageRequest request,
         CancellationToken cancellationToken)
     {
-        var query = new ListWorkItemsQuery(projectId);
+        var query = new ListWorkItemsQuery(
+            projectId,
+            request.PageNumber,
+            request.PageSize,
+            request.SortColumn,
+            request.SortOrder,
+            request.SearchTerm);
 
         var result = await sender.Send(query, cancellationToken);
 
         return result.Match(
-            workItems => Ok(workItems.ConvertAll(ToSummaryDto)),
+            workItemsPage => Ok(workItemsPage.Map(ToSummaryDto)),
             Problem);
     }
 
@@ -283,6 +292,7 @@ public class WorkItemsController(ISender sender) : ApiController
             nameof(DomainWorkItemStatus.Closed) => WorkItemStatus.Closed,
             nameof(DomainWorkItemStatus.Resolved) => WorkItemStatus.Resolved,
             nameof(DomainWorkItemStatus.Reopened) => WorkItemStatus.Reopened,
+            nameof(DomainWorkItemStatus.Removed) => WorkItemStatus.Removed,
             _ => throw new InvalidOperationException(),
         };
     }

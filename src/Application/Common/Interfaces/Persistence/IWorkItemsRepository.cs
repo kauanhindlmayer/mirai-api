@@ -17,4 +17,13 @@ public interface IWorkItemsRepository
         float[] searchTermEmbedding,
         int topK = 10,
         CancellationToken cancellationToken = default);
+
+    Task<PagedList<WorkItem>> PaginatedListAsync(
+        Guid projectId,
+        int pageNumber,
+        int pageSize,
+        string? sortColumn,
+        string? sortOrder,
+        string? searchTerm,
+        CancellationToken cancellationToken = default);
 }

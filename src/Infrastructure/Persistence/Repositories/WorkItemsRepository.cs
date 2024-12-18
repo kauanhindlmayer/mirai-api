@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+using Application.Common;
 using Application.Common.Interfaces.Persistence;
 using Domain.WorkItems;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +25,6 @@ internal sealed class WorkItemsRepository : Repository<WorkItem>, IWorkItemsRepo
             .FirstOrDefaultAsync(wi => wi.Id == id, cancellationToken);
     }
 
-    // TODO: Refactor this to use a sequence per project.
     public async Task<int> GetNextWorkItemCodeAsync(
         Guid projectId,
         CancellationToken cancellationToken = default)
@@ -34,6 +35,40 @@ internal sealed class WorkItemsRepository : Repository<WorkItem>, IWorkItemsRepo
             .CountAsync(cancellationToken);
 
         return workItemCount + 1;
+    }
+
+    public Task<PagedList<WorkItem>> PaginatedListAsync(
+        Guid projectId,
+        int pageNumber,
+        int pageSize,
+        string? sortColumn,
+        string? sortOrder,
+        string? searchTerm,
+        CancellationToken cancellationToken = default)
+    {
+        var query = _dbContext.WorkItems
+            .AsNoTracking()
+            .Where(wi => wi.ProjectId == projectId);
+
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            query = query.Where(wi => wi.Title.ToLower().Contains(searchTerm.ToLower()));
+        }
+
+        if (sortOrder?.ToLower() == "desc")
+        {
+            query = query.OrderByDescending(GetSortProperty(sortColumn));
+        }
+        else
+        {
+            query = query.OrderBy(GetSortProperty(sortColumn));
+        }
+
+        return PagedList<WorkItem>.CreateAsync(
+            query,
+            pageNumber,
+            pageSize,
+            cancellationToken);
     }
 
     public Task<List<WorkItem>> SearchAsync(
@@ -50,5 +85,17 @@ internal sealed class WorkItemsRepository : Repository<WorkItem>, IWorkItemsRepo
             .OrderBy(wi => wi.SearchVector!.CosineDistance(searchTermVector))
             .Take(topK)
             .ToListAsync(cancellationToken);
+    }
+
+    private static Expression<Func<WorkItem, object>> GetSortProperty(string? sortColumn)
+    {
+        return sortColumn?.ToLower() switch
+        {
+            "title" => wi => wi.Title,
+            "description" => wi => wi.Description,
+            "status" => wi => wi.Status,
+            "type" => wi => wi.Type,
+            _ => wi => wi.Code,
+        };
     }
 }

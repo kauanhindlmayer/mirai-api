@@ -1,7 +1,14 @@
+using Application.Common;
 using Domain.WorkItems;
 using ErrorOr;
 using MediatR;
 
 namespace Application.WorkItems.Queries.ListWorkItems;
 
-public sealed record ListWorkItemsQuery(Guid ProjectId) : IRequest<ErrorOr<List<WorkItem>>>;
+public sealed record ListWorkItemsQuery(
+    Guid ProjectId,
+    int PageNumber,
+    int PageSize,
+    string? SortColumn,
+    string? SortOrder,
+    string? SearchTerm) : IRequest<ErrorOr<PagedList<WorkItem>>>;

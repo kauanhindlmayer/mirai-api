@@ -1,27 +1,27 @@
+using Application.Common;
 using Application.Common.Interfaces.Persistence;
-using Domain.Projects;
 using Domain.WorkItems;
 using ErrorOr;
 using MediatR;
 
 namespace Application.WorkItems.Queries.ListWorkItems;
 
-internal sealed class ListWorkItemsQueryHandler(IProjectsRepository projectsRepository)
-    : IRequestHandler<ListWorkItemsQuery, ErrorOr<List<WorkItem>>>
+internal sealed class ListWorkItemsQueryHandler(IWorkItemsRepository workItemsRepository)
+    : IRequestHandler<ListWorkItemsQuery, ErrorOr<PagedList<WorkItem>>>
 {
-    public async Task<ErrorOr<List<WorkItem>>> Handle(
+    public async Task<ErrorOr<PagedList<WorkItem>>> Handle(
         ListWorkItemsQuery query,
         CancellationToken cancellationToken)
     {
-        var project = await projectsRepository.GetByIdWithWorkItemsAsync(
+        var workItems = await workItemsRepository.PaginatedListAsync(
             query.ProjectId,
+            query.PageNumber,
+            query.PageSize,
+            query.SortColumn,
+            query.SortOrder,
+            query.SearchTerm,
             cancellationToken);
 
-        if (project is null)
-        {
-            return ProjectErrors.NotFound;
-        }
-
-        return project.WorkItems.ToList();
+        return workItems;
     }
 }
