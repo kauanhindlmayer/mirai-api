@@ -2,11 +2,8 @@ using Domain.Retrospectives;
 
 namespace Application.Common.Interfaces.Persistence;
 
-public interface IRetrospectivesRepository
+public interface IRetrospectivesRepository : IRepository<Retrospective>
 {
-    Task AddAsync(Retrospective retrospective, CancellationToken cancellationToken = default);
     Task<Retrospective?> GetByIdWithColumnsAsync(Guid id, CancellationToken cancellationToken = default);
     Task<List<Retrospective>> ListAsync(Guid teamId, CancellationToken cancellationToken = default);
-    void Update(Retrospective retrospective);
-    void Remove(Retrospective retrospective);
 }
