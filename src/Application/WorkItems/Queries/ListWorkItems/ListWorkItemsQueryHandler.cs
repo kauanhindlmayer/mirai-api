@@ -17,7 +17,7 @@ internal sealed class ListWorkItemsQueryHandler(IWorkItemsRepository workItemsRe
             query.ProjectId,
             query.PageNumber,
             query.PageSize,
-            query.SortColumn,
+            query.SortField,
             query.SortOrder,
             query.SearchTerm,
             cancellationToken);

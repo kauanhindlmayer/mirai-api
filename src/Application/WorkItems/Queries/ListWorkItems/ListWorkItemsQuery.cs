@@ -9,6 +9,6 @@ public sealed record ListWorkItemsQuery(
     Guid ProjectId,
     int PageNumber,
     int PageSize,
-    string? SortColumn,
+    string? SortField,
     string? SortOrder,
     string? SearchTerm) : IRequest<ErrorOr<PagedList<WorkItem>>>;

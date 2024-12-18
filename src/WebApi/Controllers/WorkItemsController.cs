@@ -122,7 +122,7 @@ public class WorkItemsController(ISender sender) : ApiController
             projectId,
             request.PageNumber,
             request.PageSize,
-            request.SortColumn,
+            request.SortField,
             request.SortOrder,
             request.SearchTerm);
 

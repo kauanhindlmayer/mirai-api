@@ -41,7 +41,7 @@ public static class SeedDataExtensions
         logger.LogInformation("Data seeded");
     }
 
-    private static List<Organization> GenerateOrganizations(int count = 5)
+    private static List<Organization> GenerateOrganizations(int count = 1)
     {
         var organizationFaker = new Faker<Organization>()
             .RuleFor(o => o.Name, f => f.Company.CompanyName())
@@ -64,7 +64,7 @@ public static class SeedDataExtensions
         return projectFaker.Generate(count);
     }
 
-    private static List<WorkItem> GenerateWorkItems(Project project, int count = 5)
+    private static List<WorkItem> GenerateWorkItems(Project project, int count = 250)
     {
         var workItemCode = 1;
 

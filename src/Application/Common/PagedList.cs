@@ -10,6 +10,7 @@ public sealed class PagedList<T>
     public IReadOnlyList<T> Items { get; } = [];
     public bool HasPreviousPage => PageNumber > 1;
     public bool HasNextPage => PageNumber * PageSize < TotalCount;
+    public int TotalPages => (int)Math.Ceiling(TotalCount / (double)PageSize);
 
     private PagedList(
         int totalCount,

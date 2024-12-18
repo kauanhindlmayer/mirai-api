@@ -41,7 +41,7 @@ internal sealed class WorkItemsRepository : Repository<WorkItem>, IWorkItemsRepo
         Guid projectId,
         int pageNumber,
         int pageSize,
-        string? sortColumn,
+        string? sortField,
         string? sortOrder,
         string? searchTerm,
         CancellationToken cancellationToken = default)
@@ -57,11 +57,11 @@ internal sealed class WorkItemsRepository : Repository<WorkItem>, IWorkItemsRepo
 
         if (sortOrder?.ToLower() == "desc")
         {
-            query = query.OrderByDescending(GetSortProperty(sortColumn));
+            query = query.OrderByDescending(GetSortProperty(sortField));
         }
         else
         {
-            query = query.OrderBy(GetSortProperty(sortColumn));
+            query = query.OrderBy(GetSortProperty(sortField));
         }
 
         return PagedList<WorkItem>.CreateAsync(
@@ -87,14 +87,14 @@ internal sealed class WorkItemsRepository : Repository<WorkItem>, IWorkItemsRepo
             .ToListAsync(cancellationToken);
     }
 
-    private static Expression<Func<WorkItem, object>> GetSortProperty(string? sortColumn)
+    private static Expression<Func<WorkItem, object>> GetSortProperty(string? sortField)
     {
-        return sortColumn?.ToLower() switch
+        return sortField?.ToLower() switch
         {
             "title" => wi => wi.Title,
-            "description" => wi => wi.Description,
             "status" => wi => wi.Status,
             "type" => wi => wi.Type,
+            "updatedAt" => wi => wi.UpdatedAt,
             _ => wi => wi.Code,
         };
     }

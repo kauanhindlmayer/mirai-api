@@ -18,7 +18,7 @@ public interface IWorkItemsRepository : IRepository<WorkItem>
         Guid projectId,
         int pageNumber,
         int pageSize,
-        string? sortColumn,
+        string? sortField,
         string? sortOrder,
         string? searchTerm,
         CancellationToken cancellationToken = default);
