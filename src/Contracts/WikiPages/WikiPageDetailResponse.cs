@@ -7,13 +7,13 @@ public sealed record WikiPageDetailResponse(
     string Content,
     List<WikiPageCommentResponse> Comments,
     DateTime CreatedAt,
-    DateTime UpdatedAt);
+    DateTime? UpdatedAt);
 
 public sealed record WikiPageCommentResponse(
     Guid Id,
     AuthorResponse Author,
     string Content,
     DateTime CreatedAt,
-    DateTime UpdatedAt);
+    DateTime? UpdatedAt);
 
 public sealed record AuthorResponse(string Name);

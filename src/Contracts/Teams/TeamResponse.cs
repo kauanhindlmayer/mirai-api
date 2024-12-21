@@ -6,7 +6,7 @@ public sealed record TeamResponse(
     string Name,
     List<MemberResponse> Members,
     DateTime CreatedAt,
-    DateTime UpdatedAt);
+    DateTime? UpdatedAt);
 
 public sealed record MemberResponse(
     Guid Id,

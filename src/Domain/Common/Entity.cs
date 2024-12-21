@@ -6,7 +6,7 @@ public abstract class Entity
 
     public DateTime CreatedAt { get; protected init; } = DateTime.UtcNow;
 
-    public DateTime UpdatedAt { get; protected set; } = DateTime.UtcNow;
+    public DateTime? UpdatedAt { get; protected set; }
 
     protected readonly List<IDomainEvent> _domainEvents = [];
 
