@@ -8,6 +8,7 @@ using Application.WikiPages.Queries.ListWikiPages;
 using Asp.Versioning;
 using Contracts.Common;
 using Contracts.WikiPages;
+using Domain.Users;
 using Domain.WikiPages;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -205,10 +206,15 @@ public class WikiPagesController(ISender sender) : ApiController
     {
         return new(
             comment.Id,
-            comment.UserId,
+            ToDto(comment.Author),
             comment.Content,
             comment.CreatedAt,
             comment.UpdatedAt);
+    }
+
+    private static AuthorResponse ToDto(User author)
+    {
+        return new(author.FullName);
     }
 
     private static WikiPageSummaryResponse ToSummaryDto(WikiPage wikiPage)

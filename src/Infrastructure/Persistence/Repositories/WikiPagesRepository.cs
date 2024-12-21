@@ -11,13 +11,14 @@ internal sealed class WikiPagesRepository : Repository<WikiPage>, IWikiPagesRepo
     {
     }
 
-    public new async Task<WikiPage?> GetByIdAsync(
+    public async Task<WikiPage?> GetByIdWithCommentsAsync(
         Guid id,
         CancellationToken cancellationToken = default)
     {
         return await _dbContext.WikiPages
             .Include(wp => wp.SubWikiPages)
             .Include(wp => wp.Comments)
+                .ThenInclude(c => c.Author)
             .FirstOrDefaultAsync(wp => wp.Id == id, cancellationToken);
     }
 }

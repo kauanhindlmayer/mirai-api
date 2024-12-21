@@ -1,6 +1,7 @@
 using Bogus;
 using Domain.Organizations;
 using Domain.Projects;
+using Domain.WikiPages;
 using Domain.WorkItems;
 using Domain.WorkItems.Enums;
 using Infrastructure.Persistence;
@@ -34,6 +35,9 @@ public static class SeedDataExtensions
             {
                 var workItems = GenerateWorkItems(project);
                 dbContext.WorkItems.AddRange(workItems);
+
+                var wikiPages = GenerateWikiPages(project);
+                dbContext.WikiPages.AddRange(wikiPages);
             }
         }
 
@@ -80,5 +84,22 @@ public static class SeedDataExtensions
             .RuleFor(wi => wi.UpdatedAt, f => DateTime.UtcNow);
 
         return workItemFaker.Generate(count);
+    }
+
+    private static List<WikiPage> GenerateWikiPages(Project project, int count = 10, bool isSubPage = false)
+    {
+        var position = 1;
+        var subPages = !isSubPage ? GenerateWikiPages(project, 3, true) : [];
+
+        var wikiPageFaker = new Faker<WikiPage>()
+            .RuleFor(wp => wp.Title, f => f.Lorem.Sentence())
+            .RuleFor(wp => wp.Content, f => f.Lorem.Paragraph())
+            .RuleFor(wp => wp.Position, f => position++)
+            .RuleFor(wp => wp.ProjectId, f => project.Id)
+            .RuleFor(wp => wp.SubWikiPages, f => subPages)
+            .RuleFor(wp => wp.CreatedAt, f => DateTime.UtcNow)
+            .RuleFor(wp => wp.UpdatedAt, f => DateTime.UtcNow);
+
+        return wikiPageFaker.Generate(count);
     }
 }

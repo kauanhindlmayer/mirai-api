@@ -13,7 +13,11 @@ public sealed class WikiPage : AggregateRoot
     public List<WikiPage> SubWikiPages { get; private set; } = [];
     public ICollection<WikiPageComment> Comments { get; private set; } = [];
 
-    public WikiPage(Guid projectId, string title, string content, Guid? parentWikiPageId)
+    public WikiPage(
+        Guid projectId,
+        string title,
+        string content,
+        Guid? parentWikiPageId)
     {
         ProjectId = projectId;
         Title = title;
@@ -21,7 +25,7 @@ public sealed class WikiPage : AggregateRoot
         ParentWikiPageId = parentWikiPageId;
     }
 
-    private WikiPage()
+    public WikiPage()
     {
     }
 

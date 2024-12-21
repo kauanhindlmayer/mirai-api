@@ -12,7 +12,7 @@ internal sealed class GetWikiPageQueryHandler(IWikiPagesRepository wikiPagesRepo
         GetWikiPageQuery query,
         CancellationToken cancellationToken)
     {
-        var wikiPage = await wikiPagesRepository.GetByIdAsync(
+        var wikiPage = await wikiPagesRepository.GetByIdWithCommentsAsync(
             query.WikiPageId,
             cancellationToken);
 

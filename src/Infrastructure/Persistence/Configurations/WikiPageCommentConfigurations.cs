@@ -16,7 +16,7 @@ internal sealed class WikiPageCommentConfigurations : IEntityTypeConfiguration<W
         builder.Property(wpc => wpc.WikiPageId)
             .IsRequired();
 
-        builder.Property(wpc => wpc.UserId)
+        builder.Property(wpc => wpc.AuthorId)
             .IsRequired();
 
         builder.Property(wpc => wpc.Content)

@@ -11,7 +11,9 @@ public sealed record WikiPageDetailResponse(
 
 public sealed record WikiPageCommentResponse(
     Guid Id,
-    Guid UserId,
+    AuthorResponse Author,
     string Content,
     DateTime CreatedAt,
     DateTime UpdatedAt);
+
+public sealed record AuthorResponse(string Name);

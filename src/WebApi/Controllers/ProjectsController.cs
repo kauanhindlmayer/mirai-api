@@ -46,7 +46,7 @@ public class ProjectsController(ISender sender) : ApiController
     /// Get a project by ID.
     /// </summary>
     /// <param name="projectId">The project ID.</param>
-    [HttpGet("{projectId:guid}")]
+    [HttpGet("/api/v{version:apiVersion}/projects/{projectId:guid}")]
     [ProducesResponseType(typeof(ProjectResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetProject(
