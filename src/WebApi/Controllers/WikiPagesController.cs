@@ -1,5 +1,6 @@
 using Application.WikiPages.Commands.AddComment;
 using Application.WikiPages.Commands.CreateWikiPage;
+using Application.WikiPages.Commands.DeleteComment;
 using Application.WikiPages.Commands.DeleteWikiPage;
 using Application.WikiPages.Commands.MoveWikiPage;
 using Application.WikiPages.Commands.UpdateWikiPage;
@@ -113,6 +114,28 @@ public class WikiPagesController(ISender sender) : ApiController
                 actionName: nameof(GetWikiPage),
                 routeValues: new { ProjectId = projectId, WikiPageId = wikiPageId },
                 value: null),
+            Problem);
+    }
+
+    /// <summary>
+    /// Delete a comment from a wiki page.
+    /// </summary>
+    /// <param name="wikiPageId">The ID of the wiki page the comment belongs to.</param>
+    /// <param name="commentId">The ID of the comment to delete.</param>
+    [HttpDelete("{wikiPageId:guid}/comments/{commentId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteComment(
+        Guid wikiPageId,
+        Guid commentId,
+        CancellationToken cancellationToken)
+    {
+        var command = new DeleteCommentCommand(wikiPageId, commentId);
+
+        var result = await sender.Send(command, cancellationToken);
+
+        return result.Match(
+            _ => NoContent(),
             Problem);
     }
 

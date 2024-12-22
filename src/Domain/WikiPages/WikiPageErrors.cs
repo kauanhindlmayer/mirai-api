@@ -15,4 +15,8 @@ public static class WikiPageErrors
     public static readonly Error HasSubWikiPages = Error.Conflict(
         code: "WikiPage.HasSubWikiPages",
         description: "Wiki Page has sub Wiki Pages.");
+
+    public static readonly Error CommentNotFound = Error.NotFound(
+        code: "WikiPage.CommentNotFound",
+        description: "Comment not found.");
 }
