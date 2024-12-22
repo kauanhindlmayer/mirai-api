@@ -1,4 +1,5 @@
 using Application.Common.Interfaces.Persistence;
+using Application.Common.Interfaces.Services;
 using Domain.Projects;
 using Domain.WikiPages;
 using ErrorOr;
@@ -6,7 +7,9 @@ using MediatR;
 
 namespace Application.WikiPages.Commands.CreateWikiPage;
 
-internal sealed class CreateWikiPageCommandHandler(IProjectsRepository projectsRepository)
+internal sealed class CreateWikiPageCommandHandler(
+    IProjectsRepository projectsRepository,
+    IUserContext userContext)
     : IRequestHandler<CreateWikiPageCommand, ErrorOr<WikiPage>>
 {
     public async Task<ErrorOr<WikiPage>> Handle(
@@ -37,6 +40,7 @@ internal sealed class CreateWikiPageCommandHandler(IProjectsRepository projectsR
             command.ProjectId,
             command.Title,
             command.Content,
+            userContext.UserId,
             command.ParentWikiPageId);
 
         var result = project.AddWikiPage(wikiPage);

@@ -5,6 +5,7 @@ using Application.WikiPages.Commands.DeleteWikiPage;
 using Application.WikiPages.Commands.MoveWikiPage;
 using Application.WikiPages.Commands.UpdateWikiPage;
 using Application.WikiPages.Queries.GetWikiPage;
+using Application.WikiPages.Queries.GetWikiPageStats;
 using Application.WikiPages.Queries.ListWikiPages;
 using Asp.Versioning;
 using Contracts.Common;
@@ -27,7 +28,7 @@ public class WikiPagesController(ISender sender) : ApiController
     /// <param name="projectId">The ID of the project to create the wiki page in.</param>
     /// <param name="request">The details of the wiki page to create.</param>
     [HttpPost]
-    [ProducesResponseType(typeof(WikiPageDetailResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(WikiPageResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateWikiPage(
         Guid projectId,
@@ -55,7 +56,7 @@ public class WikiPagesController(ISender sender) : ApiController
     /// </summary>
     /// <param name="wikiPageId">The ID of the wiki page to get.</param>
     [HttpGet("{wikiPageId:guid}")]
-    [ProducesResponseType(typeof(WikiPageDetailResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(WikiPageResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetWikiPage(
         Guid wikiPageId,
@@ -67,6 +68,30 @@ public class WikiPagesController(ISender sender) : ApiController
 
         return result.Match(
             wikiPage => Ok(ToDto(wikiPage)),
+            Problem);
+    }
+
+    /// <summary>
+    /// Get the stats for a wiki page by its ID.
+    /// </summary>
+    /// <param name="wikiPageId">The ID of the wiki page to get stats for.</param>
+    /// <param name="request">The details of the stats to get.</param>
+    [HttpGet("{wikiPageId:guid}/stats")]
+    [ProducesResponseType(typeof(WikiPageStatsResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetWikiPageStats(
+        Guid wikiPageId,
+        [FromQuery] GetWikiPageStatsRequest request,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetWikiPageStatsQuery(
+            wikiPageId,
+            request.PageViewsForDays);
+
+        var result = await sender.Send(query, cancellationToken);
+
+        return result.Match(
+            stats => Ok(ToDto(stats)),
             Problem);
     }
 
@@ -165,7 +190,7 @@ public class WikiPagesController(ISender sender) : ApiController
     /// <param name="wikiPageId">The ID of the wiki page to update.</param>
     /// <param name="request">The details of the wiki page to update.</param>
     [HttpPut("{wikiPageId:guid}")]
-    [ProducesResponseType(typeof(WikiPageDetailResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(WikiPageResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateWikiPage(
         Guid wikiPageId,
@@ -213,13 +238,14 @@ public class WikiPagesController(ISender sender) : ApiController
             Problem);
     }
 
-    private static WikiPageDetailResponse ToDto(WikiPage wikiPage)
+    private static WikiPageResponse ToDto(WikiPage wikiPage)
     {
         return new(
             wikiPage.Id,
             wikiPage.ProjectId,
             wikiPage.Title,
             wikiPage.Content,
+            ToDto(wikiPage.Author),
             wikiPage.Comments.Select(ToCommentDto).ToList(),
             wikiPage.CreatedAt,
             wikiPage.UpdatedAt);
@@ -246,5 +272,10 @@ public class WikiPagesController(ISender sender) : ApiController
             wikiPage.Id,
             wikiPage.Title,
             wikiPage.SubWikiPages.Select(ToSummaryDto).ToList());
+    }
+
+    private static WikiPageStatsResponse ToDto(WikiPageStats stats)
+    {
+        return new(stats.Views);
     }
 }

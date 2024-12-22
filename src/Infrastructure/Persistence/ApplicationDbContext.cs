@@ -39,6 +39,8 @@ public sealed class ApplicationDbContext(
 
     public DbSet<WikiPageComment> WikiPageComments { get; init; } = null!;
 
+    public DbSet<WikiPageView> WikiPageViews { get; init; } = null!;
+
     public DbSet<Retrospective> Retrospectives { get; init; } = null!;
 
     public DbSet<RetrospectiveColumn> RetrospectiveColumns { get; init; } = null!;

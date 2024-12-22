@@ -14,7 +14,7 @@ using Pgvector;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241221225720_InitialCreate")]
+    [Migration("20241222165608_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -49,7 +49,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
@@ -73,7 +73,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<int>("Position")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("WorkItemId")
@@ -112,7 +112,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<int>("Position")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("WipLimit")
@@ -143,7 +143,7 @@ namespace Infrastructure.Persistence.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
@@ -172,7 +172,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<Guid>("OrganizationId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
@@ -203,7 +203,7 @@ namespace Infrastructure.Persistence.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
@@ -232,7 +232,7 @@ namespace Infrastructure.Persistence.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
@@ -263,7 +263,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<Guid>("RetrospectiveColumnId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("Votes")
@@ -294,7 +294,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
@@ -320,7 +320,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
@@ -360,7 +360,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<Guid?>("TeamId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
@@ -379,6 +379,9 @@ namespace Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Domain.WikiPages.WikiPage", b =>
                 {
                     b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("AuthorId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Content")
@@ -402,10 +405,12 @@ namespace Infrastructure.Persistence.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
 
                     b.HasIndex("ParentWikiPageId");
 
@@ -429,7 +434,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("WikiPageId")
@@ -442,6 +447,27 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasIndex("WikiPageId");
 
                     b.ToTable("WikiPageComments");
+                });
+
+            modelBuilder.Entity("Domain.WikiPages.WikiPageView", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("ViewedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ViewerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("WikiPageId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WikiPageId");
+
+                    b.ToTable("WikiPageViews");
                 });
 
             modelBuilder.Entity("Domain.WorkItems.WorkItem", b =>
@@ -488,7 +514,7 @@ namespace Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.ComplexProperty<Dictionary<string, object>>("Classification", "Domain.WorkItems.WorkItem.Classification#Classification", b1 =>
@@ -535,7 +561,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("UserId")
@@ -707,6 +733,12 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.WikiPages.WikiPage", b =>
                 {
+                    b.HasOne("Domain.Users.User", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("Domain.WikiPages.WikiPage", "ParentWikiPage")
                         .WithMany("SubWikiPages")
                         .HasForeignKey("ParentWikiPageId")
@@ -717,6 +749,8 @@ namespace Infrastructure.Persistence.Migrations
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Author");
 
                     b.Navigation("ParentWikiPage");
                 });
@@ -736,6 +770,17 @@ namespace Infrastructure.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Author");
+
+                    b.Navigation("WikiPage");
+                });
+
+            modelBuilder.Entity("Domain.WikiPages.WikiPageView", b =>
+                {
+                    b.HasOne("Domain.WikiPages.WikiPage", "WikiPage")
+                        .WithMany("Views")
+                        .HasForeignKey("WikiPageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("WikiPage");
                 });
@@ -867,6 +912,8 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("SubWikiPages");
+
+                    b.Navigation("Views");
                 });
 
             modelBuilder.Entity("Domain.WorkItems.WorkItem", b =>

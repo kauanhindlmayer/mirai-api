@@ -8,12 +8,14 @@ public static class WikiPageFactory
         Guid? projectId = null,
         string title = "Title",
         string content = "Content",
+        Guid? authorId = null,
         Guid? parentWikiPageId = null)
     {
         return new(
             projectId ?? Guid.NewGuid(),
             title,
             content,
+            authorId ?? Guid.NewGuid(),
             parentWikiPageId);
     }
 }

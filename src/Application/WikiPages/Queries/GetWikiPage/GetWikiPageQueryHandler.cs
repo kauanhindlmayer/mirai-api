@@ -1,11 +1,14 @@
 using Application.Common.Interfaces.Persistence;
+using Application.Common.Interfaces.Services;
 using Domain.WikiPages;
 using ErrorOr;
 using MediatR;
 
 namespace Application.WikiPages.Queries.GetWikiPage;
 
-internal sealed class GetWikiPageQueryHandler(IWikiPagesRepository wikiPagesRepository)
+internal sealed class GetWikiPageQueryHandler(
+    IWikiPagesRepository wikiPagesRepository,
+    IUserContext userContext)
     : IRequestHandler<GetWikiPageQuery, ErrorOr<WikiPage>>
 {
     public async Task<ErrorOr<WikiPage>> Handle(
@@ -20,6 +23,11 @@ internal sealed class GetWikiPageQueryHandler(IWikiPagesRepository wikiPagesRepo
         {
             return WikiPageErrors.NotFound;
         }
+
+        await wikiPagesRepository.LogViewAsync(
+            wikiPage.Id,
+            userContext.UserId,
+            cancellationToken);
 
         return wikiPage;
     }

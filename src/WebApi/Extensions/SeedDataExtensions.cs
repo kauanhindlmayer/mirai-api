@@ -1,6 +1,7 @@
 using Bogus;
 using Domain.Organizations;
 using Domain.Projects;
+using Domain.Users;
 using Domain.WikiPages;
 using Domain.WorkItems;
 using Domain.WorkItems.Enums;
@@ -23,6 +24,9 @@ public static class SeedDataExtensions
             return;
         }
 
+        var users = GenerateUsers();
+        dbContext.Users.AddRange(users);
+
         var organizations = GenerateOrganizations();
         dbContext.Organizations.AddRange(organizations);
 
@@ -36,13 +40,24 @@ public static class SeedDataExtensions
                 var workItems = GenerateWorkItems(project);
                 dbContext.WorkItems.AddRange(workItems);
 
-                var wikiPages = GenerateWikiPages(project);
+                var wikiPages = GenerateWikiPages(project, users.First());
                 dbContext.WikiPages.AddRange(wikiPages);
             }
         }
 
         dbContext.SaveChanges();
         logger.LogInformation("Data seeded");
+    }
+
+    private static List<User> GenerateUsers(int count = 10)
+    {
+        var userFaker = new Faker<User>()
+            .RuleFor(u => u.IdentityId, f => f.Random.Guid().ToString())
+            .RuleFor(u => u.FirstName, f => f.Name.FirstName())
+            .RuleFor(u => u.LastName, f => f.Name.LastName())
+            .RuleFor(u => u.Email, f => f.Internet.Email());
+
+        return userFaker.Generate(count);
     }
 
     private static List<Organization> GenerateOrganizations(int count = 1)
@@ -80,15 +95,20 @@ public static class SeedDataExtensions
         return workItemFaker.Generate(count);
     }
 
-    private static List<WikiPage> GenerateWikiPages(Project project, int count = 10, bool isSubPage = false)
+    private static List<WikiPage> GenerateWikiPages(
+        Project project,
+        User author,
+        int count = 10,
+        bool isSubPage = false)
     {
         var position = 1;
-        var subPages = !isSubPage ? GenerateWikiPages(project, 3, true) : [];
+        var subPages = !isSubPage ? GenerateWikiPages(project, author, 3, true) : [];
 
         var wikiPageFaker = new Faker<WikiPage>()
             .RuleFor(wp => wp.Title, f => f.Lorem.Sentence())
             .RuleFor(wp => wp.Content, f => f.Lorem.Paragraph())
             .RuleFor(wp => wp.Position, f => position++)
+            .RuleFor(wp => wp.AuthorId, f => author.Id)
             .RuleFor(wp => wp.ProjectId, f => project.Id)
             .RuleFor(wp => wp.SubWikiPages, f => subPages)
             .RuleFor(wp => wp.CreatedAt, f => DateTime.UtcNow)

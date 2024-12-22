@@ -1,4 +1,5 @@
 using Domain.Common;
+using Domain.Users;
 using ErrorOr;
 
 namespace Domain.WikiPages;
@@ -9,20 +10,25 @@ public sealed class WikiPage : AggregateRoot
     public string Title { get; private set; } = string.Empty;
     public string Content { get; private set; } = string.Empty;
     public int Position { get; private set; }
+    public Guid AuthorId { get; private set; }
+    public User Author { get; private set; } = null!;
     public Guid? ParentWikiPageId { get; private set; }
     public WikiPage? ParentWikiPage { get; private set; }
     public List<WikiPage> SubWikiPages { get; private set; } = [];
     public ICollection<WikiPageComment> Comments { get; private set; } = [];
+    public List<WikiPageView> Views { get; private set; } = [];
 
     public WikiPage(
         Guid projectId,
         string title,
         string content,
+        Guid authorId,
         Guid? parentWikiPageId)
     {
         ProjectId = projectId;
         Title = title;
         Content = content;
+        AuthorId = authorId;
         ParentWikiPageId = parentWikiPageId;
     }
 

@@ -26,6 +26,14 @@ internal sealed class WikiPageConfigurations : IEntityTypeConfiguration<WikiPage
         builder.Property(p => p.Position)
             .IsRequired();
 
+        builder.Property(p => p.AuthorId)
+            .IsRequired();
+
+        builder.HasOne(p => p.Author)
+            .WithMany()
+            .HasForeignKey(p => p.AuthorId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         builder.HasMany(p => p.SubWikiPages)
             .WithOne(p => p.ParentWikiPage)
             .HasForeignKey(p => p.ParentWikiPageId)
@@ -34,6 +42,11 @@ internal sealed class WikiPageConfigurations : IEntityTypeConfiguration<WikiPage
         builder.HasMany(p => p.Comments)
             .WithOne(c => c.WikiPage)
             .HasForeignKey(c => c.WikiPageId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(p => p.Views)
+            .WithOne(v => v.WikiPage)
+            .HasForeignKey(v => v.WikiPageId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

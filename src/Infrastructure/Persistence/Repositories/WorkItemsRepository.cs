@@ -94,7 +94,7 @@ internal sealed class WorkItemsRepository : Repository<WorkItem>, IWorkItemsRepo
             "title" => wi => wi.Title,
             "status" => wi => wi.Status,
             "type" => wi => wi.Type,
-            "updatedAt" => wi => wi.UpdatedAt,
+            "activityDate" => wi => wi.UpdatedAt ?? wi.CreatedAt,
             _ => wi => wi.Code,
         };
     }
