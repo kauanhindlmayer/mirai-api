@@ -4,15 +4,16 @@ using Domain.Users;
 using ErrorOr;
 using MediatR;
 
-namespace Application.Users.Commands.UpdateUserProfile;
+namespace Application.Users.Commands.UpdateUserProfilePicture;
 
-internal sealed class UpdateUserProfileCommandHandler(
+internal sealed class UpdateUserProfilePictureCommandHandler(
     IUsersRepository usersRepository,
-    IUserContext userContext)
-    : IRequestHandler<UpdateUserProfileCommand, ErrorOr<Success>>
+    IUserContext userContext,
+    IBlobService blobService)
+    : IRequestHandler<UpdateUserProfilePictureCommand, ErrorOr<Success>>
 {
     public async Task<ErrorOr<Success>> Handle(
-        UpdateUserProfileCommand command,
+        UpdateUserProfilePictureCommand command,
         CancellationToken cancellationToken)
     {
         var user = await usersRepository.GetByIdAsync(
@@ -24,7 +25,12 @@ internal sealed class UpdateUserProfileCommandHandler(
             return UserErrors.NotFound;
         }
 
-        user.UpdateProfile(command.FirstName, command.LastName);
+        var profilePictureUrl = await blobService.UploadAsync(
+            command.File.OpenReadStream(),
+            command.File.ContentType,
+            cancellationToken: cancellationToken);
+
+        user.SetImageUrl(profilePictureUrl);
         usersRepository.Update(user);
 
         return Result.Success;

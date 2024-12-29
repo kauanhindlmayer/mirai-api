@@ -14,7 +14,7 @@ using Pgvector;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241222165608_InitialCreate")]
+    [Migration("20241229131502_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -349,6 +349,10 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(50)");
 
                     b.Property<string>("IdentityId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("text");
 

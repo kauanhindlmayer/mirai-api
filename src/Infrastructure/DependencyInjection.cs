@@ -1,6 +1,7 @@
 using Application.Common.Interfaces.Persistence;
 using Application.Common.Interfaces.Services;
 using Asp.Versioning;
+using Azure.Storage.Blobs;
 using Infrastructure.Authentication;
 using Infrastructure.Authorization;
 using Infrastructure.Persistence;
@@ -54,6 +55,9 @@ public static class DependencyInjection
             httpClient.BaseAddress = new Uri(options.BaseUrl);
             httpClient.DefaultRequestHeaders.Add(ApiKeyHeaderName, options.ApiKey);
         });
+
+        services.AddSingleton<IBlobService, BlobService>();
+        services.AddSingleton(_ => new BlobServiceClient(configuration.GetConnectionString("BlobStorage")!));
 
         return services;
     }

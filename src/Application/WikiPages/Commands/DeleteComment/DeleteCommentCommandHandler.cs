@@ -13,7 +13,7 @@ internal sealed class DeleteCommentCommandHandler(
         DeleteCommentCommand command,
         CancellationToken cancellationToken)
     {
-        var wikiPage = await wikiPagesRepository.GetByIdAsync(
+        var wikiPage = await wikiPagesRepository.GetByIdWithCommentsAsync(
             command.WikiPageId,
             cancellationToken);
 

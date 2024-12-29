@@ -1,5 +1,6 @@
 using Application.Users.Commands.RegisterUser;
 using Application.Users.Commands.UpdateUserProfile;
+using Application.Users.Commands.UpdateUserProfilePicture;
 using Application.Users.Common;
 using Application.Users.Queries.GetCurrentUser;
 using Application.Users.Queries.LoginUser;
@@ -84,20 +85,38 @@ public class UsersController(ISender sender) : ApiController
     }
 
     /// <summary>
-    /// Update the profile of the current user.
+    /// Update the profile personal details of the current user.
     /// </summary>
-    /// <param name="userId">The ID of the user to update.</param>
     /// <param name="request">The details of the user to update.</param>
-    [HttpPut("{userId:guid}/profile")]
-    public async Task<IActionResult> UpdateProfile(
-        Guid userId,
+    [HttpPut("profile")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UpdateUserProfile(
         UpdateUserProfileRequest request,
         CancellationToken cancellationToken)
     {
         var command = new UpdateUserProfileCommand(
-            userId,
             request.FirstName,
             request.LastName);
+
+        var result = await sender.Send(command, cancellationToken);
+
+        return result.Match(
+            _ => Ok(),
+            Problem);
+    }
+
+    /// <summary>
+    /// Update the profile picture of the current user.
+    /// </summary>
+    [HttpPut("profile/picture")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UpdateProfilePicture(
+        IFormFile file,
+        CancellationToken cancellationToken)
+    {
+        var command = new UpdateUserProfilePictureCommand(file);
 
         var result = await sender.Send(command, cancellationToken);
 
@@ -112,6 +131,8 @@ public class UsersController(ISender sender) : ApiController
             user.Id,
             user.Email,
             user.FirstName,
-            user.LastName);
+            user.LastName,
+            user.FullName,
+            user.ImageUrl);
     }
 }

@@ -24,6 +24,7 @@ internal sealed class ListWikiPagesQueryHandler(IProjectsRepository projectsRepo
 
         var rootPages = project.WikiPages
             .Where(page => page.ParentWikiPageId is null)
+            .OrderBy(page => page.Position)
             .ToList();
 
         return rootPages;

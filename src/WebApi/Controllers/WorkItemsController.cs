@@ -112,7 +112,7 @@ public class WorkItemsController(ISender sender) : ApiController
     /// <param name="projectId">The ID of the project.</param>
     /// <param name="request">The details of the page.</param>
     [HttpGet]
-    [ProducesResponseType(typeof(List<WorkItemResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(PagedList<WorkItemSummary>), StatusCodes.Status200OK)]
     public async Task<IActionResult> ListWorkItems(
         Guid projectId,
         [FromQuery] PageRequest request,
@@ -267,6 +267,7 @@ public class WorkItemsController(ISender sender) : ApiController
             workItem.Title,
             ToDto(workItem.Status),
             ToDto(workItem.Type),
+            workItem.CreatedAt,
             workItem.UpdatedAt);
     }
 

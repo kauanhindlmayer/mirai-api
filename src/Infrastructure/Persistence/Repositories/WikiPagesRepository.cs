@@ -23,14 +23,26 @@ internal sealed class WikiPagesRepository : Repository<WikiPage>, IWikiPagesRepo
             .FirstOrDefaultAsync(wp => wp.Id == id, cancellationToken);
     }
 
-    public Task LogViewAsync(
+    public async Task LogViewAsync(
         Guid wikiPageId,
         Guid viewerId,
         CancellationToken cancellationToken = default)
     {
+        var hasRecentView = await _dbContext.WikiPageViews
+            .AnyAsync(
+                wpv => wpv.WikiPageId == wikiPageId &&
+                       wpv.ViewerId == viewerId &&
+                       wpv.ViewedAt > DateTime.UtcNow.AddMinutes(-30),
+                cancellationToken);
+
+        if (hasRecentView)
+        {
+            return;
+        }
+
         var wikiPageView = new WikiPageView(wikiPageId, viewerId);
         _dbContext.WikiPageViews.Add(wikiPageView);
-        return _dbContext.SaveChangesAsync(cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
     public Task<int> GetViewsForLastDaysAsync(
@@ -41,6 +53,9 @@ internal sealed class WikiPagesRepository : Repository<WikiPage>, IWikiPagesRepo
         var startDate = DateTime.UtcNow.Date.AddDays(-days);
         return _dbContext.WikiPageViews
             .AsNoTracking()
-            .CountAsync(wpv => wpv.WikiPageId == wikiPageId && wpv.ViewedAt >= startDate, cancellationToken);
+            .CountAsync(
+                wpv => wpv.WikiPageId == wikiPageId &&
+                       wpv.ViewedAt >= startDate,
+                cancellationToken);
     }
 }

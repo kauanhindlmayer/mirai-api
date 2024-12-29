@@ -8,4 +8,5 @@ public sealed record WorkItemSummaryResponse(
     string Title,
     WorkItemStatus Status,
     WorkItemType Type,
+    DateTime CreatedAt,
     DateTime? UpdatedAt);

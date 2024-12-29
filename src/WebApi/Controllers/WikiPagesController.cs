@@ -47,7 +47,7 @@ public class WikiPagesController(ISender sender) : ApiController
             wikiPage => CreatedAtAction(
                 actionName: nameof(GetWikiPage),
                 routeValues: new { ProjectId = projectId, WikiPageId = wikiPage.Id },
-                value: ToDto(wikiPage)),
+                value: ToSummaryDto(wikiPage)),
             Problem);
     }
 
@@ -205,7 +205,7 @@ public class WikiPagesController(ISender sender) : ApiController
         var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
-            wikiPage => Ok(ToDto(wikiPage)),
+            wikiPage => Ok(ToSummaryDto(wikiPage)),
             Problem);
     }
 
@@ -263,7 +263,9 @@ public class WikiPagesController(ISender sender) : ApiController
 
     private static AuthorResponse ToDto(User author)
     {
-        return new(author.FullName);
+        return new(
+            author.FullName,
+            author.ImageUrl);
     }
 
     private static WikiPageSummaryResponse ToSummaryDto(WikiPage wikiPage)
@@ -271,6 +273,7 @@ public class WikiPagesController(ISender sender) : ApiController
         return new(
             wikiPage.Id,
             wikiPage.Title,
+            wikiPage.Position,
             wikiPage.SubWikiPages.Select(ToSummaryDto).ToList());
     }
 

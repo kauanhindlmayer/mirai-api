@@ -6,9 +6,6 @@ public sealed class UpdateUserProfileCommandValidator : AbstractValidator<Update
 {
     public UpdateUserProfileCommandValidator()
     {
-        RuleFor(x => x.UserId)
-            .NotEmpty();
-
         RuleFor(x => x.FirstName)
             .NotEmpty()
             .MaximumLength(50)

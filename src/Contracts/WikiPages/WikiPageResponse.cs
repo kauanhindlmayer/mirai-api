@@ -17,4 +17,6 @@ public sealed record WikiPageCommentResponse(
     DateTime CreatedAt,
     DateTime? UpdatedAt);
 
-public sealed record AuthorResponse(string Name);
+public sealed record AuthorResponse(
+    string Name,
+    string ImageUrl);
