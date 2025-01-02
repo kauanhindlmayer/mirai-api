@@ -1,27 +1,26 @@
 using Application.Common.Interfaces.Persistence;
-using Domain.Boards;
-using Domain.Projects;
 using ErrorOr;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Boards.Queries.ListBoards;
 
-internal sealed class ListBoardsQueryHandler(IProjectsRepository projectsRepository)
-    : IRequestHandler<ListBoardsQuery, ErrorOr<List<Board>>>
+internal sealed class ListBoardsQueryHandler(IApplicationDbContext dbContext)
+    : IRequestHandler<ListBoardsQuery, ErrorOr<IReadOnlyList<BoardSummaryResponse>>>
 {
-    public async Task<ErrorOr<List<Board>>> Handle(
+    public async Task<ErrorOr<IReadOnlyList<BoardSummaryResponse>>> Handle(
         ListBoardsQuery query,
         CancellationToken cancellationToken)
     {
-        var project = await projectsRepository.GetByIdWithBoardsAsync(
-            query.ProjectId,
-            cancellationToken);
+        var boards = await dbContext.Boards
+            .Where(b => b.ProjectId == query.ProjectId)
+            .Select(b => new BoardSummaryResponse
+            {
+                Id = b.Id,
+                Name = b.Name,
+            })
+            .ToListAsync(cancellationToken);
 
-        if (project is null)
-        {
-            return ProjectErrors.NotFound;
-        }
-
-        return project.Boards.ToList();
+        return boards;
     }
 }

@@ -1,4 +1,3 @@
-using Domain.Boards;
 using ErrorOr;
 using MediatR;
 
@@ -8,4 +7,4 @@ public sealed record CreateColumnCommand(
     Guid BoardId,
     string Name,
     int WipLimit,
-    string DefinitionOfDone) : IRequest<ErrorOr<BoardColumn>>;
+    string DefinitionOfDone) : IRequest<ErrorOr<Guid>>;

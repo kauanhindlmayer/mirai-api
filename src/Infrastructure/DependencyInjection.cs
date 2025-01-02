@@ -81,6 +81,9 @@ public static class DependencyInjection
         services.AddScoped<ITagsRepository, TagsRepository>();
         services.AddScoped<IBoardsRepository, BoardsRepository>();
 
+        services.AddScoped<IApplicationDbContext>(sp =>
+            sp.GetRequiredService<ApplicationDbContext>());
+
         return services;
     }
 

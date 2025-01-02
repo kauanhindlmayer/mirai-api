@@ -9,9 +9,9 @@ namespace Application.Boards.Commands.CreateCard;
 internal sealed class CreateCardCommandHandler(
     IWorkItemsRepository workItemsRepository,
     IBoardsRepository boardRepository)
-    : IRequestHandler<CreateCardCommand, ErrorOr<BoardCard>>
+    : IRequestHandler<CreateCardCommand, ErrorOr<Guid>>
 {
-    public async Task<ErrorOr<BoardCard>> Handle(
+    public async Task<ErrorOr<Guid>> Handle(
         CreateCardCommand command,
         CancellationToken cancellationToken)
     {
@@ -42,9 +42,14 @@ internal sealed class CreateCardCommandHandler(
             return BoardErrors.ColumnNotFound;
         }
 
-        var card = column.AddCard(workItem);
+        var result = column.AddCard(workItem);
+        if (result.IsError)
+        {
+            return result.Errors;
+        }
+
         boardRepository.Update(board);
 
-        return card;
+        return result.Value.Id;
     }
 }

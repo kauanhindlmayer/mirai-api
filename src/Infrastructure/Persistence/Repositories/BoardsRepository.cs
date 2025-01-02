@@ -11,13 +11,15 @@ internal sealed class BoardsRepository : Repository<Board>, IBoardsRepository
     {
     }
 
-    public new async Task<Board?> GetByIdAsync(
+    public async Task<Board?> GetByIdWithColumnsAsync(
         Guid id,
         CancellationToken cancellationToken = default)
     {
         return await _dbContext.Boards
             .Include(board => board.Columns)
                 .ThenInclude(column => column.Cards)
+                    .ThenInclude(card => card.WorkItem)
+                        .ThenInclude(workItem => workItem.Assignee)
             .FirstOrDefaultAsync(board => board.Id == id, cancellationToken);
     }
 }

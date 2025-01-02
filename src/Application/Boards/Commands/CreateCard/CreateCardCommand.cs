@@ -9,4 +9,4 @@ public sealed record CreateCardCommand(
     Guid BoardId,
     Guid ColumnId,
     WorkItemType Type,
-    string Title) : IRequest<ErrorOr<BoardCard>>;
+    string Title) : IRequest<ErrorOr<Guid>>;

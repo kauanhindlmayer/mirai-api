@@ -8,7 +8,6 @@ using Application.Boards.Queries.GetBoard;
 using Application.Boards.Queries.ListBoards;
 using Asp.Versioning;
 using Contracts.Boards;
-using Domain.Boards;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using DomainWorkItemType = Domain.WorkItems.Enums.WorkItemType;
@@ -25,7 +24,7 @@ public class BoardsController(ISender sender) : ApiController
     /// <param name="projectId">The ID of the project to create a new board for.</param>
     /// <param name="request">The request to create a new board.</param>
     [HttpPost]
-    [ProducesResponseType(typeof(BoardResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateBoard(
         Guid projectId,
@@ -40,10 +39,10 @@ public class BoardsController(ISender sender) : ApiController
         var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
-            board => CreatedAtAction(
-                actionName: nameof(GetBoard),
-                routeValues: new { ProjectId = projectId, BoardId = board.Id },
-                value: ToDto(board)),
+            boardId => CreatedAtAction(
+                nameof(GetBoard),
+                new { ProjectId = projectId, BoardId = boardId },
+                boardId),
             Problem);
     }
 
@@ -62,9 +61,7 @@ public class BoardsController(ISender sender) : ApiController
 
         var result = await sender.Send(query, cancellationToken);
 
-        return result.Match(
-            board => Ok(ToDto(board)),
-            Problem);
+        return result.Match(Ok, Problem);
     }
 
     /// <summary>
@@ -83,9 +80,7 @@ public class BoardsController(ISender sender) : ApiController
 
         var result = await sender.Send(query, cancellationToken);
 
-        return result.Match(
-            boards => Ok(boards.Select(ToSummaryDto)),
-            Problem);
+        return result.Match(Ok, Problem);
     }
 
     /// <summary>
@@ -133,10 +128,10 @@ public class BoardsController(ISender sender) : ApiController
         var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
-            _ => CreatedAtAction(
-                actionName: nameof(GetBoard),
-                routeValues: new { ProjectId = projectId, BoardId = boardId },
-                value: null),
+            columnId => CreatedAtAction(
+                nameof(GetBoard),
+                new { ProjectId = projectId, BoardId = boardId },
+                columnId),
             Problem);
     }
 
@@ -192,10 +187,10 @@ public class BoardsController(ISender sender) : ApiController
         var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
-            _ => CreatedAtAction(
-                actionName: nameof(GetBoard),
-                routeValues: new { ProjectId = projectId, BoardId = boardId },
-                value: null),
+            cardId => CreatedAtAction(
+                nameof(GetBoard),
+                new { ProjectId = projectId, BoardId = boardId },
+                cardId),
             Problem);
     }
 
@@ -229,40 +224,5 @@ public class BoardsController(ISender sender) : ApiController
         return result.Match(
             _ => NoContent(),
             Problem);
-    }
-
-    private static BoardResponse ToDto(Board board)
-    {
-        return new(
-            board.Id,
-            board.ProjectId,
-            board.Name,
-            board.Description,
-            board.Columns.Select(ToDto));
-    }
-
-    private static BoardSummaryResponse ToSummaryDto(Board board)
-    {
-        return new(board.Id, board.Name);
-    }
-
-    private static BoardColumnResponse ToDto(BoardColumn column)
-    {
-        return new(
-            column.Id,
-            column.Name,
-            column.Position,
-            column.WipLimit,
-            column.DefinitionOfDone,
-            column.Cards.Select(ToDto));
-    }
-
-    private static BoardCardResponse ToDto(BoardCard card)
-    {
-        return new(
-            card.Id,
-            card.Position,
-            card.CreatedAt,
-            card.UpdatedAt);
     }
 }

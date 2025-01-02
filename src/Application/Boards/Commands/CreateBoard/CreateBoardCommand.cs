@@ -7,4 +7,4 @@ namespace Application.Boards.Commands.CreateBoard;
 public sealed record CreateBoardCommand(
     Guid ProjectId,
     string Name,
-    string Description) : IRequest<ErrorOr<Board>>;
+    string Description) : IRequest<ErrorOr<Guid>>;

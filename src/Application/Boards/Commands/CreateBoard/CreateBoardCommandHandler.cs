@@ -9,9 +9,9 @@ namespace Application.Boards.Commands.CreateBoard;
 internal sealed class CreateBoardCommandHandler(
     IProjectsRepository projectRepository,
     IBoardsRepository boardRepository)
-    : IRequestHandler<CreateBoardCommand, ErrorOr<Board>>
+    : IRequestHandler<CreateBoardCommand, ErrorOr<Guid>>
 {
-    public async Task<ErrorOr<Board>> Handle(
+    public async Task<ErrorOr<Guid>> Handle(
         CreateBoardCommand command,
         CancellationToken cancellationToken)
     {
@@ -31,6 +31,6 @@ internal sealed class CreateBoardCommandHandler(
 
         await boardRepository.AddAsync(board, cancellationToken);
 
-        return board;
+        return board.Id;
     }
 }

@@ -6,9 +6,9 @@ using MediatR;
 namespace Application.Boards.Commands.CreateColumn;
 
 internal sealed class CreateColumnCommandHandler(IBoardsRepository boardsRepository)
-    : IRequestHandler<CreateColumnCommand, ErrorOr<BoardColumn>>
+    : IRequestHandler<CreateColumnCommand, ErrorOr<Guid>>
 {
-    public async Task<ErrorOr<BoardColumn>> Handle(
+    public async Task<ErrorOr<Guid>> Handle(
         CreateColumnCommand command,
         CancellationToken cancellationToken)
     {
@@ -35,6 +35,6 @@ internal sealed class CreateColumnCommandHandler(IBoardsRepository boardsReposit
 
         boardsRepository.Update(board);
 
-        return result.Value;
+        return column.Id;
     }
 }
