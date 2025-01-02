@@ -12,7 +12,7 @@ internal sealed class DeleteColumnCommandHandler(IBoardsRepository boardsReposit
         DeleteColumnCommand command,
         CancellationToken cancellationToken)
     {
-        var board = await boardsRepository.GetByIdAsync(
+        var board = await boardsRepository.GetByIdWithColumnsAsync(
             command.BoardId,
             cancellationToken);
 

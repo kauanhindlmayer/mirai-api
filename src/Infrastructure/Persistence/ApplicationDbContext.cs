@@ -28,13 +28,25 @@ public sealed class ApplicationDbContext(
 
     public DbSet<Board> Boards { get; init; } = null!;
 
+    public DbSet<BoardColumn> BoardColumns { get; init; } = null!;
+
+    public DbSet<BoardCard> BoardCards { get; init; } = null!;
+
     public DbSet<WorkItem> WorkItems { get; init; } = null!;
 
+    public DbSet<WorkItemComment> WorkItemComments { get; init; } = null!;
+
     public DbSet<WikiPage> WikiPages { get; init; } = null!;
+
+    public DbSet<WikiPageComment> WikiPageComments { get; init; } = null!;
 
     public DbSet<WikiPageView> WikiPageViews { get; init; } = null!;
 
     public DbSet<Retrospective> Retrospectives { get; init; } = null!;
+
+    public DbSet<RetrospectiveColumn> RetrospectiveColumns { get; init; } = null!;
+
+    public DbSet<RetrospectiveItem> RetrospectiveItems { get; init; } = null!;
 
     public DbSet<Tag> Tags { get; init; } = null!;
 

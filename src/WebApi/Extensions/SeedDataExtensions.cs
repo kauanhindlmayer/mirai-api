@@ -40,7 +40,7 @@ public static class SeedDataExtensions
                 var workItems = GenerateWorkItems(project);
                 dbContext.WorkItems.AddRange(workItems);
 
-                var wikiPages = GenerateWikiPages(project, users.First());
+                var wikiPages = GenerateWikiPages(project, users);
                 dbContext.WikiPages.AddRange(wikiPages);
             }
         }
@@ -97,12 +97,14 @@ public static class SeedDataExtensions
 
     private static List<WikiPage> GenerateWikiPages(
         Project project,
-        User author,
+        List<User> users,
         int count = 10,
-        bool isSubPage = false)
+        int maxDepth = 2,
+        int currentDepth = 0)
     {
         var position = 1;
-        var subPages = !isSubPage ? GenerateWikiPages(project, author, 3, true) : [];
+        var random = new Random();
+        var author = users[random.Next(users.Count)];
 
         var wikiPageFaker = new Faker<WikiPage>()
             .RuleFor(wp => wp.Title, f => f.Lorem.Sentence())
@@ -110,10 +112,30 @@ public static class SeedDataExtensions
             .RuleFor(wp => wp.Position, f => position++)
             .RuleFor(wp => wp.AuthorId, f => author.Id)
             .RuleFor(wp => wp.ProjectId, f => project.Id)
-            .RuleFor(wp => wp.SubWikiPages, f => subPages)
+            .RuleFor(wp => wp.SubWikiPages, f => GenerateSubWikiPages(
+                project,
+                users,
+                random.Next(1, 4),
+                maxDepth,
+                currentDepth + 1))
             .RuleFor(wp => wp.CreatedAt, f => DateTime.UtcNow)
             .RuleFor(wp => wp.UpdatedAt, f => DateTime.UtcNow);
 
         return wikiPageFaker.Generate(count);
+    }
+
+    private static List<WikiPage> GenerateSubWikiPages(
+        Project project,
+        List<User> users,
+        int count = 5,
+        int maxDepth = 2,
+        int currentDepth = 0)
+    {
+        var random = new Random();
+        var shouldGenerateSubPages = currentDepth < maxDepth && random.NextDouble() < 0.5;
+        var subWikiPages = shouldGenerateSubPages
+            ? GenerateWikiPages(project, users, count, maxDepth, currentDepth + 1)
+            : [];
+        return subWikiPages;
     }
 }

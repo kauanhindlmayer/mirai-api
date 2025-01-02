@@ -12,7 +12,7 @@ internal sealed class CreateColumnCommandHandler(IBoardsRepository boardsReposit
         CreateColumnCommand command,
         CancellationToken cancellationToken)
     {
-        var board = await boardsRepository.GetByIdAsync(
+        var board = await boardsRepository.GetByIdWithColumnsAsync(
             command.BoardId,
             cancellationToken);
 

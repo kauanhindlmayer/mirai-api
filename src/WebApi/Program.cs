@@ -19,7 +19,6 @@ var app = builder.Build();
 {
     app.UseExceptionHandler();
     app.UsePresentation();
-    app.UseInfrastructure();
 
     if (app.Environment.IsDevelopment())
     {

@@ -12,7 +12,7 @@ internal sealed class MoveCardCommandHandler(IBoardsRepository boardRepository)
         MoveCardCommand command,
         CancellationToken cancellationToken)
     {
-        var board = await boardRepository.GetByIdAsync(
+        var board = await boardRepository.GetByIdWithCardsAsync(
             command.BoardId,
             cancellationToken);
 
