@@ -14,7 +14,7 @@ public interface IWorkItemsRepository : IRepository<WorkItem>
         int topK = 10,
         CancellationToken cancellationToken = default);
 
-    Task<PagedList<WorkItem>> PaginatedListAsync(
+    Task<PaginatedList<WorkItem>> PaginatedListAsync(
         Guid projectId,
         int pageNumber,
         int pageSize,

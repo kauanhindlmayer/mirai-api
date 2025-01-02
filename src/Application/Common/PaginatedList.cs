@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Common;
 
-public sealed class PagedList<T>
+public sealed class PaginatedList<T>
 {
     public int TotalCount { get; }
     public int PageNumber { get; }
@@ -12,7 +12,7 @@ public sealed class PagedList<T>
     public bool HasNextPage => PageNumber * PageSize < TotalCount;
     public int TotalPages => (int)Math.Ceiling(TotalCount / (double)PageSize);
 
-    private PagedList(
+    private PaginatedList(
         int totalCount,
         int pageNumber,
         int pageSize,
@@ -24,7 +24,7 @@ public sealed class PagedList<T>
         Items = items;
     }
 
-    public static async Task<PagedList<T>> CreateAsync(
+    public static async Task<PaginatedList<T>> CreateAsync(
         IQueryable<T> query,
         int pageNumber,
         int pageSize,
@@ -35,12 +35,12 @@ public sealed class PagedList<T>
             .Take(pageSize)
             .ToListAsync(cancellationToken);
 
-        return new PagedList<T>(totalCount, pageNumber, pageSize, items);
+        return new PaginatedList<T>(totalCount, pageNumber, pageSize, items);
     }
 
-    public PagedList<TOutput> Map<TOutput>(Func<T, TOutput> map)
+    public PaginatedList<TOutput> Map<TOutput>(Func<T, TOutput> map)
     {
-        return new PagedList<TOutput>(
+        return new PaginatedList<TOutput>(
             TotalCount,
             PageNumber,
             PageSize,

@@ -1,7 +1,6 @@
-using Microsoft.AspNetCore.Http;
 using Serilog.Context;
 
-namespace Infrastructure.Middlewares;
+namespace WebApi.Middlewares;
 
 internal sealed class RequestContextLoggingMiddleware(RequestDelegate next)
 {

@@ -7,6 +7,7 @@ namespace Infrastructure.Services;
 internal sealed class BlobService(BlobServiceClient blobServiceClient)
     : IBlobService
 {
+    // TODO: Replace with configuration
     private const string ContainerName = "files";
 
     public async Task<string> UploadAsync(

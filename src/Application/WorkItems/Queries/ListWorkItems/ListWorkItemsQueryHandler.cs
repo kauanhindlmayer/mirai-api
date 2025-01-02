@@ -7,9 +7,9 @@ using MediatR;
 namespace Application.WorkItems.Queries.ListWorkItems;
 
 internal sealed class ListWorkItemsQueryHandler(IWorkItemsRepository workItemsRepository)
-    : IRequestHandler<ListWorkItemsQuery, ErrorOr<PagedList<WorkItem>>>
+    : IRequestHandler<ListWorkItemsQuery, ErrorOr<PaginatedList<WorkItem>>>
 {
-    public async Task<ErrorOr<PagedList<WorkItem>>> Handle(
+    public async Task<ErrorOr<PaginatedList<WorkItem>>> Handle(
         ListWorkItemsQuery query,
         CancellationToken cancellationToken)
     {

@@ -37,7 +37,7 @@ internal sealed class WorkItemsRepository : Repository<WorkItem>, IWorkItemsRepo
         return workItemCount + 1;
     }
 
-    public Task<PagedList<WorkItem>> PaginatedListAsync(
+    public Task<PaginatedList<WorkItem>> PaginatedListAsync(
         Guid projectId,
         int pageNumber,
         int pageSize,
@@ -64,7 +64,7 @@ internal sealed class WorkItemsRepository : Repository<WorkItem>, IWorkItemsRepo
             query = query.OrderBy(GetSortProperty(sortField));
         }
 
-        return PagedList<WorkItem>.CreateAsync(
+        return PaginatedList<WorkItem>.CreateAsync(
             query,
             pageNumber,
             pageSize,

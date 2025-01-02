@@ -1,7 +1,10 @@
 using System.Reflection;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using WebApi.Hubs;
+using WebApi.Middlewares;
 using WebApi.OpenApi;
 
 namespace WebApi;
@@ -38,6 +41,8 @@ public static class DependencyInjection
     {
         app.UseCors();
         app.MapHub<RetrospectiveHub>("/hubs/retrospective");
+        app.UseMiddleware<RequestContextLoggingMiddleware>();
+        app.ConfigureHealthChecks();
 
         return app;
     }
@@ -96,5 +101,13 @@ public static class DependencyInjection
             builder.WithOrigins("http://localhost:5173")
                 .AllowAnyMethod()
                 .AllowAnyHeader()));
+    }
+
+    private static void ConfigureHealthChecks(this WebApplication app)
+    {
+        app.MapHealthChecks("/health", new HealthCheckOptions
+        {
+            ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
+        });
     }
 }
