@@ -23,22 +23,26 @@ internal sealed class GetBoardQueryHandler(IApplicationDbContext dbContext)
                 ProjectId = board.ProjectId,
                 Name = board.Name,
                 Description = board.Description,
-                Columns = board.Columns.Select(column => new BoardColumnResponse
-                {
-                    Id = column.Id,
-                    Name = column.Name,
-                    Position = column.Position,
-                    WipLimit = column.WipLimit,
-                    DefinitionOfDone = column.DefinitionOfDone,
-                    Cards = column.Cards.Select(card => new BoardCardResponse
+                Columns = board.Columns
+                    .OrderBy(card => card.Position)
+                    .Select(column => new BoardColumnResponse
                     {
-                        Id = card.Id,
-                        Position = card.Position,
-                        WorkItem = ToDto(card.WorkItem),
-                        CreatedAt = card.CreatedAt,
-                        UpdatedAt = card.UpdatedAt,
+                        Id = column.Id,
+                        Name = column.Name,
+                        Position = column.Position,
+                        WipLimit = column.WipLimit,
+                        DefinitionOfDone = column.DefinitionOfDone,
+                        Cards = column.Cards
+                            .OrderBy(column => column.Position)
+                            .Select(card => new BoardCardResponse
+                            {
+                                Id = card.Id,
+                                Position = card.Position,
+                                WorkItem = ToDto(card.WorkItem),
+                                CreatedAt = card.CreatedAt,
+                                UpdatedAt = card.UpdatedAt,
+                            }),
                     }),
-                }),
             })
             .FirstOrDefaultAsync(cancellationToken);
 
