@@ -1,6 +1,7 @@
 using Domain.Common;
 using Domain.Projects;
 using Domain.Retrospectives;
+using Domain.Teams.Events;
 using Domain.Users;
 using ErrorOr;
 
@@ -18,6 +19,7 @@ public sealed class Team : Entity
     {
         ProjectId = projectId;
         Name = name;
+        _domainEvents.Add(new TeamCreatedDomainEvent(Id, Name, ProjectId));
     }
 
     private Team()
