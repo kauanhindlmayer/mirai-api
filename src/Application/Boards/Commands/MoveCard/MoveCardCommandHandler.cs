@@ -36,7 +36,12 @@ internal sealed class MoveCardCommandHandler(IBoardsRepository boardRepository)
             return BoardErrors.TargetColumnNotFound;
         }
 
-        targetColumn.Cards.Insert(command.TargetPosition, card);
+        var result = targetColumn.AddCardAtPosition(card, command.TargetPosition);
+        if (result.IsError)
+        {
+            return result.Errors;
+        }
+
         boardRepository.Update(board);
 
         return Result.Success;

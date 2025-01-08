@@ -49,10 +49,22 @@ public sealed class BoardColumn : Entity
         return card;
     }
 
+    public ErrorOr<Success> AddCardAtPosition(BoardCard card, int position)
+    {
+        if (position < 0 || position > Cards.Count)
+        {
+            return BoardErrors.InvalidPosition;
+        }
+
+        Cards.Insert(position, card);
+        ReorderCards();
+        return Result.Success;
+    }
+
     public void ReorderCards()
     {
         var position = 0;
-        foreach (var card in Cards.OrderBy(c => c.Position))
+        foreach (var card in Cards)
         {
             card.UpdatePosition(position);
             position++;
