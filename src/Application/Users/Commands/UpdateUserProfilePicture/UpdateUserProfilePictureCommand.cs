@@ -1,8 +1,9 @@
 using ErrorOr;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 
 namespace Application.Users.Commands.UpdateUserProfilePicture;
 
-public sealed record UpdateUserProfilePictureCommand(IFormFile File)
+public sealed record UpdateUserProfilePictureCommand(
+    Stream Stream,
+    string ContentType)
     : IRequest<ErrorOr<Success>>;

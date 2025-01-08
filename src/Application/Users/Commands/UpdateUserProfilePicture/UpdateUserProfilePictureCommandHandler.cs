@@ -26,8 +26,8 @@ internal sealed class UpdateUserProfilePictureCommandHandler(
         }
 
         var profilePictureUrl = await blobService.UploadAsync(
-            command.File.OpenReadStream(),
-            command.File.ContentType,
+            command.Stream,
+            command.ContentType,
             cancellationToken: cancellationToken);
 
         user.SetImageUrl(profilePictureUrl);

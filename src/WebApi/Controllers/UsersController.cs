@@ -116,7 +116,9 @@ public class UsersController(ISender sender) : ApiController
         IFormFile file,
         CancellationToken cancellationToken)
     {
-        var command = new UpdateUserProfilePictureCommand(file);
+        var command = new UpdateUserProfilePictureCommand(
+            file.OpenReadStream(),
+            file.ContentType);
 
         var result = await sender.Send(command, cancellationToken);
 
