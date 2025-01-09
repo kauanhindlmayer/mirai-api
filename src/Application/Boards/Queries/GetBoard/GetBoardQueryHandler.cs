@@ -37,6 +37,7 @@ internal sealed class GetBoardQueryHandler(IApplicationDbContext dbContext)
                             .Select(card => new BoardCardResponse
                             {
                                 Id = card.Id,
+                                ColumnId = card.BoardColumnId,
                                 Position = card.Position,
                                 WorkItem = ToDto(card.WorkItem),
                                 CreatedAt = card.CreatedAt,

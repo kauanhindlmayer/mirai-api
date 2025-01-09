@@ -22,6 +22,7 @@ public sealed class BoardColumnResponse
 public sealed class BoardCardResponse
 {
     public Guid Id { get; init; }
+    public Guid ColumnId { get; init; }
     public int Position { get; init; }
     public WorkItemResponse WorkItem { get; init; } = null!;
     public DateTime CreatedAt { get; init; }
