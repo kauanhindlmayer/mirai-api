@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-	  <InternalsVisibleTo Include="Application.UnitTests" />
+    <InternalsVisibleTo Include="Application.UnitTests" />
   </ItemGroup>
-
+  
 </Project>
