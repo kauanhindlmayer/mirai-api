@@ -24,7 +24,7 @@ internal sealed class GetBoardQueryHandler(IApplicationDbContext dbContext)
                 Name = board.Name,
                 Description = board.Description,
                 Columns = board.Columns
-                    .OrderBy(card => card.Position)
+                    .OrderBy(column => column.Position)
                     .Select(column => new BoardColumnResponse
                     {
                         Id = column.Id,
@@ -33,7 +33,7 @@ internal sealed class GetBoardQueryHandler(IApplicationDbContext dbContext)
                         WipLimit = column.WipLimit,
                         DefinitionOfDone = column.DefinitionOfDone,
                         Cards = column.Cards
-                            .OrderBy(column => column.Position)
+                            .OrderBy(card => card.Position)
                             .Select(card => new BoardCardResponse
                             {
                                 Id = card.Id,

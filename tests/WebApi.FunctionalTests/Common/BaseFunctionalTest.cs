@@ -26,7 +26,7 @@ public abstract class BaseFunctionalTest : IClassFixture<FunctionalTestWebAppFac
     private async Task<string> GetAccessToken()
     {
         var loginResponse = await _httpClient.PostAsJsonAsync(
-            "api/users/login",
+            "api/v1/users/login",
             UserRequestFactory.CreateLoginUserRequest());
 
         var accessTokenResponse = await loginResponse.Content.ReadFromJsonAsync<AccessTokenResponse>();

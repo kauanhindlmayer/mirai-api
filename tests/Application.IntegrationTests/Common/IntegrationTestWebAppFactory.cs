@@ -9,7 +9,7 @@ namespace Application.IntegrationTests.Common;
 public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly PostgreSqlContainer _dbContainer = new PostgreSqlBuilder()
-        .WithImage("postgres:latest")
+        .WithImage("ankane/pgvector:latest")
         .WithDatabase("mirai-db")
         .WithUsername("postgres")
         .WithPassword("postgres")

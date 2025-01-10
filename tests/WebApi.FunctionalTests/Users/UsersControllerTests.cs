@@ -30,7 +30,7 @@ public class UserControllerTests : BaseFunctionalTest
             lastName);
 
         // Act
-        var response = await _httpClient.PostAsJsonAsync("api/users/register", request);
+        var response = await _httpClient.PostAsJsonAsync("api/v1/users/register", request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -43,7 +43,7 @@ public class UserControllerTests : BaseFunctionalTest
         var request = UserRequestFactory.CreateRegisterUserRequest(email: "johndoe@email.com");
 
         // Act
-        var response = await _httpClient.PostAsJsonAsync("api/users/register", request);
+        var response = await _httpClient.PostAsJsonAsync("api/v1/users/register", request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -58,12 +58,13 @@ public class UserControllerTests : BaseFunctionalTest
         var request = UserRequestFactory.CreateLoginUserRequest();
 
         // Act
-        var response = await _httpClient.PostAsJsonAsync("api/users/login", request);
+        var response = await _httpClient.PostAsJsonAsync("api/v1/users/login", request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var accessToken = await response.Content.ReadFromJsonAsync<AccessTokenResponse>();
-        accessToken!.AccessToken.Should().NotBeEmpty();
+        accessToken.Should().NotBeNull();
+        accessToken.AccessToken.Should().NotBeEmpty();
     }
 
     [Fact]
@@ -73,7 +74,7 @@ public class UserControllerTests : BaseFunctionalTest
         var request = UserRequestFactory.CreateLoginUserRequest("invalid-email");
 
         // Act
-        var response = await _httpClient.PostAsJsonAsync("api/users/login", request);
+        var response = await _httpClient.PostAsJsonAsync("api/v1/users/login", request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
@@ -86,12 +87,13 @@ public class UserControllerTests : BaseFunctionalTest
         await SetAuthorizationHeaderAsync();
 
         // Act
-        var response = await _httpClient.GetAsync("api/users/me");
+        var response = await _httpClient.GetAsync("api/v1/users/me");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var user = await response.Content.ReadFromJsonAsync<UserResponse>();
-        user!.Id.Should().NotBeEmpty();
+        user.Should().NotBeNull();
+        user.Id.Should().NotBeEmpty();
         user.Email.Should().Be(UserRequestFactory.Email);
         user.FirstName.Should().Be(UserRequestFactory.FirstName);
         user.LastName.Should().Be(UserRequestFactory.LastName);
@@ -101,7 +103,7 @@ public class UserControllerTests : BaseFunctionalTest
     public async Task GetLoggedInUser_WhenAccessTokenIsMissing_ShouldReturnUnauthorized()
     {
         // Act
-        var response = await _httpClient.GetAsync("api/users/me");
+        var response = await _httpClient.GetAsync("api/v1/users/me");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
@@ -113,12 +115,12 @@ public class UserControllerTests : BaseFunctionalTest
         // Arrange
         await SetAuthorizationHeaderAsync();
         var registerUserRequest = UserRequestFactory.CreateRegisterUserRequest();
-        var registerUserResponse = await _httpClient.PostAsJsonAsync("api/users/register", registerUserRequest);
+        var registerUserResponse = await _httpClient.PostAsJsonAsync("api/v1/users/register", registerUserRequest);
         var userId = await registerUserResponse.Content.ReadFromJsonAsync<Guid>();
         var request = UserRequestFactory.CreateUpdateUserProfileRequest();
 
         // Act
-        var response = await _httpClient.PutAsJsonAsync($"api/users/{userId}/profile", request);
+        var response = await _httpClient.PutAsJsonAsync($"api/v1/users/{userId}/profile", request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);

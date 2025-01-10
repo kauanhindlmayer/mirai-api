@@ -11,7 +11,7 @@ namespace WebApi.FunctionalTests.Common;
 public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly PostgreSqlContainer _dbContainer = new PostgreSqlBuilder()
-        .WithImage("postgres:latest")
+        .WithImage("ankane/pgvector:latest")
         .WithDatabase("mirai-db")
         .WithUsername("postgres")
         .WithPassword("postgres")
@@ -46,9 +46,8 @@ public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyn
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        Environment.SetEnvironmentVariable(
-            "ConnectionStrings:Database",
-            _dbContainer.GetConnectionString());
+        string connectionString = $"{_dbContainer.GetConnectionString()};Pooling=False";
+        Environment.SetEnvironmentVariable("ConnectionStrings:Database", connectionString);
 
         Environment.SetEnvironmentVariable(
             "ConnectionStrings:Redis",
@@ -75,7 +74,7 @@ public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyn
         {
             using HttpClient httpClient = CreateClient();
             await httpClient.PostAsJsonAsync(
-                "api/users/register",
+                "api/v1/users/register",
                 UserRequestFactory.CreateRegisterUserRequest());
         }
         catch

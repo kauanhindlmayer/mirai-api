@@ -22,19 +22,19 @@ public class OrganizationsControllerTests : BaseFunctionalTest
 
         // Act
         var createOrganizationResponse = await _httpClient.PostAsJsonAsync(
-            "api/organizations",
+            "api/v1/organizations",
             createOrganizationRequest);
 
         // Assert
         createOrganizationResponse.StatusCode.Should().Be(HttpStatusCode.Created);
         var createdOrganization = await createOrganizationResponse.Content.ReadFromJsonAsync<OrganizationResponse>();
         createdOrganization.Should().NotBeNull();
-        createdOrganization!.Id.Should().NotBeEmpty();
+        createdOrganization.Id.Should().NotBeEmpty();
         createdOrganization.Name.Should().Be(createOrganizationRequest.Name);
         createdOrganization.Description.Should().Be(createOrganizationRequest.Description);
         createOrganizationResponse.Headers.Location.Should().NotBeNull();
-        createOrganizationResponse.Headers.Location!.AbsolutePath.Should()
-            .Be($"/api/organizations/{createdOrganization.Id}");
+        createOrganizationResponse.Headers.Location.AbsolutePath.Should()
+            .Be($"/api/v1/organizations/{createdOrganization.Id}");
     }
 
     [Fact]
@@ -46,7 +46,7 @@ public class OrganizationsControllerTests : BaseFunctionalTest
 
         // Act
         var createOrganizationResponse = await _httpClient.PostAsJsonAsync(
-            "api/organizations",
+            "api/v1/organizations",
             createOrganizationRequest);
 
         // Assert
@@ -62,7 +62,7 @@ public class OrganizationsControllerTests : BaseFunctionalTest
 
         // Act
         var createOrganizationResponse = await _httpClient.PostAsJsonAsync(
-            "api/organizations",
+            "api/v1/organizations",
             createOrganizationRequest);
 
         // Assert
@@ -78,7 +78,7 @@ public class OrganizationsControllerTests : BaseFunctionalTest
 
         // Act
         var createOrganizationResponse = await _httpClient.PostAsJsonAsync(
-            "api/organizations",
+            "api/v1/organizations",
             createOrganizationRequest);
 
         // Assert
@@ -91,19 +91,19 @@ public class OrganizationsControllerTests : BaseFunctionalTest
         // Arrange
         await SetAuthorizationHeaderAsync();
         var createOrganizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest();
-        var createOrganizationResponse = await _httpClient.PostAsJsonAsync("api/organizations", createOrganizationRequest);
+        var createOrganizationResponse = await _httpClient.PostAsJsonAsync("api/v1/organizations", createOrganizationRequest);
         var createdOrganization = await createOrganizationResponse.Content.ReadFromJsonAsync<OrganizationResponse>();
 
         // Act
-        var getOrganizationResponse = await _httpClient.GetAsync($"api/organizations/{createdOrganization?.Id}");
+        var getOrganizationResponse = await _httpClient.GetAsync($"api/v1/organizations/{createdOrganization?.Id}");
 
         // Assert
         getOrganizationResponse.StatusCode.Should().Be(HttpStatusCode.OK);
         var fetchedOrganization = await getOrganizationResponse.Content.ReadFromJsonAsync<OrganizationResponse>();
         fetchedOrganization.Should().NotBeNull();
-        fetchedOrganization?.Id.Should().NotBeEmpty();
-        fetchedOrganization?.Name.Should().Be(createOrganizationRequest.Name);
-        fetchedOrganization?.Description.Should().Be(createOrganizationRequest.Description);
+        fetchedOrganization.Id.Should().NotBeEmpty();
+        fetchedOrganization.Name.Should().Be(createOrganizationRequest.Name);
+        fetchedOrganization.Description.Should().Be(createOrganizationRequest.Description);
     }
 
     [Fact]
@@ -114,7 +114,7 @@ public class OrganizationsControllerTests : BaseFunctionalTest
         var organizationId = Guid.NewGuid();
 
         // Act
-        var getOrganizationResponse = await _httpClient.GetAsync($"api/organizations/{organizationId}");
+        var getOrganizationResponse = await _httpClient.GetAsync($"api/v1/organizations/{organizationId}");
 
         // Assert
         getOrganizationResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -127,13 +127,13 @@ public class OrganizationsControllerTests : BaseFunctionalTest
         await SetAuthorizationHeaderAsync();
         var createOrganizationRequest1 = OrganizationRequestFactory.CreateCreateOrganizationRequest(name: "Organization 1");
         var createOrganizationRequest2 = OrganizationRequestFactory.CreateCreateOrganizationRequest(name: "Organization 2");
-        var createOrganizationResponse1 = await _httpClient.PostAsJsonAsync("api/organizations", createOrganizationRequest1);
-        var createOrganizationResponse2 = await _httpClient.PostAsJsonAsync("api/organizations", createOrganizationRequest2);
+        var createOrganizationResponse1 = await _httpClient.PostAsJsonAsync("api/v1/organizations", createOrganizationRequest1);
+        var createOrganizationResponse2 = await _httpClient.PostAsJsonAsync("api/v1/organizations", createOrganizationRequest2);
         var createdOrganization1 = await createOrganizationResponse1.Content.ReadFromJsonAsync<OrganizationResponse>();
         var createdOrganization2 = await createOrganizationResponse2.Content.ReadFromJsonAsync<OrganizationResponse>();
 
         // Act
-        var listOrganizationsResponse = await _httpClient.GetAsync("api/organizations");
+        var listOrganizationsResponse = await _httpClient.GetAsync("api/v1/organizations");
 
         // Assert
         listOrganizationsResponse.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -149,19 +149,20 @@ public class OrganizationsControllerTests : BaseFunctionalTest
         // Arrange
         await SetAuthorizationHeaderAsync();
         var createOrganizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest();
-        var createOrganizationResponse = await _httpClient.PostAsJsonAsync("api/organizations", createOrganizationRequest);
+        var createOrganizationResponse = await _httpClient.PostAsJsonAsync("api/v1/organizations", createOrganizationRequest);
         var createdOrganization = await createOrganizationResponse.Content.ReadFromJsonAsync<OrganizationResponse>();
         var updateOrganizationRequest = OrganizationRequestFactory.CreateUpdateOrganizationRequest();
 
         // Act
         var updateOrganizationResponse = await _httpClient.PutAsJsonAsync(
-            $"api/organizations/{createdOrganization?.Id}", updateOrganizationRequest);
+            $"api/v1/organizations/{createdOrganization?.Id}", updateOrganizationRequest);
 
         // Assert
         updateOrganizationResponse.StatusCode.Should().Be(HttpStatusCode.OK);
         var updatedOrganization = await updateOrganizationResponse.Content.ReadFromJsonAsync<OrganizationResponse>();
-        updatedOrganization?.Name.Should().Be(updateOrganizationRequest.Name);
-        updatedOrganization?.Description.Should().Be(updateOrganizationRequest.Description);
+        updatedOrganization.Should().NotBeNull();
+        updatedOrganization.Name.Should().Be(updateOrganizationRequest.Name);
+        updatedOrganization.Description.Should().Be(updateOrganizationRequest.Description);
     }
 
     [Fact]
@@ -174,7 +175,7 @@ public class OrganizationsControllerTests : BaseFunctionalTest
 
         // Act
         var updateOrganizationResponse = await _httpClient.PutAsJsonAsync(
-            $"api/organizations/{organizationId}",
+            $"api/v1/organizations/{organizationId}",
             updateOrganizationRequest);
 
         // Assert
@@ -187,12 +188,12 @@ public class OrganizationsControllerTests : BaseFunctionalTest
         // Arrange
         await SetAuthorizationHeaderAsync();
         var createOrganizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest();
-        var createOrganizationResponse = await _httpClient.PostAsJsonAsync("api/organizations", createOrganizationRequest);
+        var createOrganizationResponse = await _httpClient.PostAsJsonAsync("api/v1/organizations", createOrganizationRequest);
         var createdOrganization = await createOrganizationResponse.Content.ReadFromJsonAsync<OrganizationResponse>();
         var updateOrganizationRequest = OrganizationRequestFactory.CreateUpdateOrganizationRequest(name: string.Empty);
 
         // Act
-        var updateOrganizationResponse = await _httpClient.PutAsJsonAsync($"api/organizations/{createdOrganization?.Id}", updateOrganizationRequest);
+        var updateOrganizationResponse = await _httpClient.PutAsJsonAsync($"api/v1/organizations/{createdOrganization?.Id}", updateOrganizationRequest);
 
         // Assert
         updateOrganizationResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -204,12 +205,12 @@ public class OrganizationsControllerTests : BaseFunctionalTest
         // Arrange
         await SetAuthorizationHeaderAsync();
         var createOrganizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest();
-        var createOrganizationResponse = await _httpClient.PostAsJsonAsync("api/organizations", createOrganizationRequest);
+        var createOrganizationResponse = await _httpClient.PostAsJsonAsync("api/v1/organizations", createOrganizationRequest);
         var createdOrganization = await createOrganizationResponse.Content.ReadFromJsonAsync<OrganizationResponse>();
         var updateOrganizationRequest = OrganizationRequestFactory.CreateUpdateOrganizationRequest(name: new string('a', 256));
 
         // Act
-        var updateOrganizationResponse = await _httpClient.PutAsJsonAsync($"api/organizations/{createdOrganization?.Id}", updateOrganizationRequest);
+        var updateOrganizationResponse = await _httpClient.PutAsJsonAsync($"api/v1/organizations/{createdOrganization?.Id}", updateOrganizationRequest);
 
         // Assert
         updateOrganizationResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -221,11 +222,11 @@ public class OrganizationsControllerTests : BaseFunctionalTest
         // Arrange
         await SetAuthorizationHeaderAsync();
         var createOrganizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest();
-        var createOrganizationResponse = await _httpClient.PostAsJsonAsync("api/organizations", createOrganizationRequest);
+        var createOrganizationResponse = await _httpClient.PostAsJsonAsync("api/v1/organizations", createOrganizationRequest);
         var createdOrganization = await createOrganizationResponse.Content.ReadFromJsonAsync<OrganizationResponse>();
 
         // Act
-        var deleteOrganizationResponse = await _httpClient.DeleteAsync($"api/organizations/{createdOrganization?.Id}");
+        var deleteOrganizationResponse = await _httpClient.DeleteAsync($"api/v1/organizations/{createdOrganization?.Id}");
 
         // Assert
         deleteOrganizationResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
@@ -239,7 +240,7 @@ public class OrganizationsControllerTests : BaseFunctionalTest
         var organizationId = Guid.NewGuid();
 
         // Act
-        var deleteOrganizationResponse = await _httpClient.DeleteAsync($"api/organizations/{organizationId}");
+        var deleteOrganizationResponse = await _httpClient.DeleteAsync($"api/v1/organizations/{organizationId}");
 
         // Assert
         deleteOrganizationResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
