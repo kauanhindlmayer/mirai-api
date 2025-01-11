@@ -1,4 +1,3 @@
-using Domain.Boards;
 using ErrorOr;
 using MediatR;
 

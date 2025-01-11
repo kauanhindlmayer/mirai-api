@@ -1,4 +1,4 @@
-using Contracts.Retrospectives;
+using Domain.Retrospectives;
 using SignalRSwaggerGen.Attributes;
 
 namespace WebApi.Hubs;
@@ -11,7 +11,7 @@ public interface IRetrospectiveHub
     /// </summary>
     /// <param name="retrospectiveItem">The retrospective item to send.</param>
     [SignalRMethod(name: "send-retrospective-item")]
-    Task SendRetrospectiveItem(RetrospectiveItemResponse retrospectiveItem);
+    Task SendRetrospectiveItem(RetrospectiveItem retrospectiveItem);
 
     /// <summary>
     /// Deletes a retrospective item.

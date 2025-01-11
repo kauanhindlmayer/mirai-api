@@ -2,6 +2,7 @@ using Application.Common.Interfaces.Persistence;
 using Domain.Boards;
 using Domain.Users;
 using Domain.WorkItems;
+using Domain.WorkItems.Enums;
 using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,8 @@ namespace Application.Boards.Queries.GetBoard;
 internal sealed class GetBoardQueryHandler(IApplicationDbContext dbContext)
     : IRequestHandler<GetBoardQuery, ErrorOr<BoardResponse>>
 {
+    private const int MaxCardsPerColumn = 20;
+
     public async Task<ErrorOr<BoardResponse>> Handle(
         GetBoardQuery query,
         CancellationToken cancellationToken)
@@ -34,6 +37,7 @@ internal sealed class GetBoardQueryHandler(IApplicationDbContext dbContext)
                         DefinitionOfDone = column.DefinitionOfDone,
                         Cards = column.Cards
                             .OrderBy(card => card.Position)
+                            .Take(MaxCardsPerColumn)
                             .Select(card => new BoardCardResponse
                             {
                                 Id = card.Id,

@@ -5,16 +5,24 @@ using MediatR;
 
 namespace Application.Tags.Commands.DeleteTag;
 
-internal sealed class DeleteTagCommandHandler(
-    IProjectsRepository projectsRepository,
-    ITagsRepository tagsRepository)
-    : IRequestHandler<DeleteTagCommand, ErrorOr<Success>>
+internal sealed class DeleteTagCommandHandler : IRequestHandler<DeleteTagCommand, ErrorOr<Success>>
 {
+    private readonly IProjectsRepository _projectsRepository;
+    private readonly ITagsRepository _tagsRepository;
+
+    public DeleteTagCommandHandler(
+        IProjectsRepository projectsRepository,
+        ITagsRepository tagsRepository)
+    {
+        _projectsRepository = projectsRepository;
+        _tagsRepository = tagsRepository;
+    }
+
     public async Task<ErrorOr<Success>> Handle(
         DeleteTagCommand command,
         CancellationToken cancellationToken)
     {
-        var project = await projectsRepository.GetByIdWithTagsAsync(
+        var project = await _projectsRepository.GetByIdWithTagsAsync(
             command.ProjectId,
             cancellationToken);
 
@@ -23,7 +31,7 @@ internal sealed class DeleteTagCommandHandler(
             return ProjectErrors.NotFound;
         }
 
-        if (await tagsRepository.IsTagLinkedToAnyWorkItemsAsync(
+        if (await _tagsRepository.IsTagLinkedToAnyWorkItemsAsync(
             project.Id,
             command.TagName,
             cancellationToken))
@@ -32,7 +40,7 @@ internal sealed class DeleteTagCommandHandler(
         }
 
         project.RemoveTag(command.TagName);
-        projectsRepository.Update(project);
+        _projectsRepository.Update(project);
 
         return Result.Success;
     }

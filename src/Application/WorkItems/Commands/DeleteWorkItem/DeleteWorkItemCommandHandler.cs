@@ -5,14 +5,20 @@ using MediatR;
 
 namespace Application.WorkItems.Commands.DeleteWorkItem;
 
-internal sealed class DeleteWorkItemCommandHandler(IWorkItemsRepository workItemsRepository)
-    : IRequestHandler<DeleteWorkItemCommand, ErrorOr<Success>>
+internal sealed class DeleteWorkItemCommandHandler : IRequestHandler<DeleteWorkItemCommand, ErrorOr<Success>>
 {
+    private readonly IWorkItemsRepository _workItemsRepository;
+
+    public DeleteWorkItemCommandHandler(IWorkItemsRepository workItemsRepository)
+    {
+        _workItemsRepository = workItemsRepository;
+    }
+
     public async Task<ErrorOr<Success>> Handle(
         DeleteWorkItemCommand command,
         CancellationToken cancellationToken)
     {
-        var workItem = await workItemsRepository.GetByIdAsync(
+        var workItem = await _workItemsRepository.GetByIdAsync(
             command.WorkItemId,
             cancellationToken);
 
@@ -21,7 +27,7 @@ internal sealed class DeleteWorkItemCommandHandler(IWorkItemsRepository workItem
             return WorkItemErrors.NotFound;
         }
 
-        workItemsRepository.Remove(workItem);
+        _workItemsRepository.Remove(workItem);
 
         return Result.Success;
     }

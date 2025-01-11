@@ -4,7 +4,6 @@ using Application.Tags.Commands.UpdateTag;
 using Application.Tags.Queries.ListTags;
 using Asp.Versioning;
 using Contracts.Tags;
-using Domain.Tags;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,7 +19,7 @@ public class TagsController(ISender sender) : ApiController
     /// <param name="projectId">The project ID.</param>
     /// <param name="request">The tag data.</param>
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> CreateTag(
         Guid projectId,
@@ -32,7 +31,7 @@ public class TagsController(ISender sender) : ApiController
         var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
-            _ => NoContent(),
+            tagId => Ok(tagId),
             Problem);
     }
 
@@ -53,9 +52,7 @@ public class TagsController(ISender sender) : ApiController
 
         var result = await sender.Send(query, cancellationToken);
 
-        return result.Match(
-            tags => Ok(tags.ConvertAll(ToDto)),
-            Problem);
+        return result.Match(Ok, Problem);
     }
 
     /// <summary>
@@ -65,7 +62,7 @@ public class TagsController(ISender sender) : ApiController
     /// <param name="tagId">The tag ID.</param>
     /// <param name="request">The new tag data.</param>
     [HttpPut("{tagId:guid}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateTag(
         Guid projectId,
@@ -78,7 +75,7 @@ public class TagsController(ISender sender) : ApiController
         var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
-            _ => NoContent(),
+            _ => Ok(tagId),
             Problem);
     }
 
@@ -102,14 +99,5 @@ public class TagsController(ISender sender) : ApiController
         return result.Match(
             _ => NoContent(),
             Problem);
-    }
-
-    private static TagResponse ToDto(Tag tag)
-    {
-        return new(
-            tag.Id,
-            tag.Name,
-            tag.CreatedAt,
-            tag.UpdatedAt);
     }
 }

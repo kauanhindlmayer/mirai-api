@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using Application.Users.Common;
+using Application.Users.Queries.GetCurrentUser;
 using Contracts.Users;
 using FluentAssertions;
 using WebApi.FunctionalTests.Common;

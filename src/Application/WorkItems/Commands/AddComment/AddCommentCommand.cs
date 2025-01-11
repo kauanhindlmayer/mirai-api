@@ -6,4 +6,4 @@ namespace Application.WorkItems.Commands.AddComment;
 
 public sealed record AddCommentCommand(
     Guid WorkItemId,
-    string Content) : IRequest<ErrorOr<WorkItemComment>>;
+    string Content) : IRequest<ErrorOr<Guid>>;

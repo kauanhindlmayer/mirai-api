@@ -5,18 +5,22 @@ using MediatR;
 
 namespace Application.Teams.Events;
 
-internal sealed class TeamCreatedDomainEventHandler(IBoardsRepository boardRepository)
-    : INotificationHandler<TeamCreatedDomainEvent>
+internal sealed class TeamCreatedDomainEventHandler : INotificationHandler<TeamCreatedDomainEvent>
 {
-    public async Task Handle(
-        TeamCreatedDomainEvent notification,
-        CancellationToken cancellationToken)
+    private readonly IBoardsRepository _boardsRepository;
+
+    public TeamCreatedDomainEventHandler(IBoardsRepository boardsRepository)
+    {
+        _boardsRepository = boardsRepository;
+    }
+
+    public async Task Handle(TeamCreatedDomainEvent notification, CancellationToken cancellationToken)
     {
         var board = new Board(
             notification.ProjectId,
             notification.Name,
             string.Empty);
 
-        await boardRepository.AddAsync(board, cancellationToken);
+        await _boardsRepository.AddAsync(board, cancellationToken);
     }
 }

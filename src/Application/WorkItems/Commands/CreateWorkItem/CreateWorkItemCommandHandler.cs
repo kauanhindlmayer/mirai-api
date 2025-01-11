@@ -7,17 +7,27 @@ using MediatR;
 
 namespace Application.WorkItems.Commands.CreateWorkItem;
 
-internal sealed class CreateWorkItemCommandHandler(
-    IProjectsRepository projectsRepository,
-    IWorkItemsRepository workItemsRepository,
-    IEmbeddingService embeddingService)
-    : IRequestHandler<CreateWorkItemCommand, ErrorOr<WorkItem>>
+internal sealed class CreateWorkItemCommandHandler : IRequestHandler<CreateWorkItemCommand, ErrorOr<Guid>>
 {
-    public async Task<ErrorOr<WorkItem>> Handle(
+    private readonly IProjectsRepository _projectsRepository;
+    private readonly IWorkItemsRepository _workItemsRepository;
+    private readonly IEmbeddingService _embeddingService;
+
+    public CreateWorkItemCommandHandler(
+        IProjectsRepository projectsRepository,
+        IWorkItemsRepository workItemsRepository,
+        IEmbeddingService embeddingService)
+    {
+        _projectsRepository = projectsRepository;
+        _workItemsRepository = workItemsRepository;
+        _embeddingService = embeddingService;
+    }
+
+    public async Task<ErrorOr<Guid>> Handle(
         CreateWorkItemCommand command,
         CancellationToken cancellationToken)
     {
-        var project = await projectsRepository.GetByIdAsync(
+        var project = await _projectsRepository.GetByIdAsync(
             command.ProjectId,
             cancellationToken);
 
@@ -26,7 +36,7 @@ internal sealed class CreateWorkItemCommandHandler(
             return ProjectErrors.NotFound;
         }
 
-        var workItemCode = await workItemsRepository.GetNextWorkItemCodeAsync(
+        var workItemCode = await _workItemsRepository.GetNextWorkItemCodeAsync(
             command.ProjectId,
             cancellationToken);
 
@@ -36,7 +46,7 @@ internal sealed class CreateWorkItemCommandHandler(
             command.Title,
             command.Type);
 
-        var embeddingResponse = await embeddingService.GenerateEmbeddingAsync(
+        var embeddingResponse = await _embeddingService.GenerateEmbeddingAsync(
             $"{workItem.Title} {workItem.Description}");
         if (embeddingResponse.IsError)
         {
@@ -51,8 +61,8 @@ internal sealed class CreateWorkItemCommandHandler(
             return result.Errors;
         }
 
-        projectsRepository.Update(project);
+        _projectsRepository.Update(project);
 
-        return workItem;
+        return workItem.Id;
     }
 }

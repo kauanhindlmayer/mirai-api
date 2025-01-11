@@ -6,16 +6,24 @@ using MediatR;
 
 namespace Application.Boards.Commands.CreateCard;
 
-internal sealed class CreateCardCommandHandler(
-    IWorkItemsRepository workItemsRepository,
-    IBoardsRepository boardRepository)
-    : IRequestHandler<CreateCardCommand, ErrorOr<Guid>>
+internal sealed class CreateCardCommandHandler : IRequestHandler<CreateCardCommand, ErrorOr<Guid>>
 {
+    private readonly IWorkItemsRepository _workItemsRepository;
+    private readonly IBoardsRepository _boardsRepository;
+
+    public CreateCardCommandHandler(
+        IWorkItemsRepository workItemsRepository,
+        IBoardsRepository boardsRepository)
+    {
+        _workItemsRepository = workItemsRepository;
+        _boardsRepository = boardsRepository;
+    }
+
     public async Task<ErrorOr<Guid>> Handle(
         CreateCardCommand command,
         CancellationToken cancellationToken)
     {
-        var board = await boardRepository.GetByIdWithCardsAsync(
+        var board = await _boardsRepository.GetByIdWithCardsAsync(
             command.BoardId,
             cancellationToken);
 
@@ -24,7 +32,7 @@ internal sealed class CreateCardCommandHandler(
             return BoardErrors.NotFound;
         }
 
-        var workItemCode = await workItemsRepository.GetNextWorkItemCodeAsync(
+        var workItemCode = await _workItemsRepository.GetNextWorkItemCodeAsync(
             board.ProjectId,
             cancellationToken);
 
@@ -34,7 +42,7 @@ internal sealed class CreateCardCommandHandler(
             command.Title,
             command.Type);
 
-        await workItemsRepository.AddAsync(workItem, cancellationToken);
+        await _workItemsRepository.AddAsync(workItem, cancellationToken);
 
         var column = board.Columns.SingleOrDefault(c => c.Id == command.ColumnId);
         if (column is null)
@@ -48,7 +56,7 @@ internal sealed class CreateCardCommandHandler(
             return result.Errors;
         }
 
-        boardRepository.Update(board);
+        _boardsRepository.Update(board);
 
         return result.Value.Id;
     }

@@ -4,7 +4,6 @@ using Application.Projects.Queries.GetProject;
 using Application.Projects.Queries.ListProjects;
 using Asp.Versioning;
 using Contracts.Projects;
-using Domain.Projects;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,7 +19,7 @@ public class ProjectsController(ISender sender) : ApiController
     /// <param name="organizationId">The ID of the organization to create the project for.</param>
     /// <param name="request">The project data.</param>
     [HttpPost]
-    [ProducesResponseType(typeof(ProjectResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateProject(
         Guid organizationId,
@@ -35,10 +34,10 @@ public class ProjectsController(ISender sender) : ApiController
         var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
-            project => CreatedAtAction(
-                actionName: nameof(GetProject),
-                routeValues: new { OrganizationId = organizationId, ProjectId = project.Id },
-                value: ToDto(project)),
+            projectId => CreatedAtAction(
+                nameof(GetProject),
+                new { ProjectId = projectId },
+                projectId),
             Problem);
     }
 
@@ -57,9 +56,7 @@ public class ProjectsController(ISender sender) : ApiController
 
         var result = await sender.Send(query, cancellationToken);
 
-        return result.Match(
-            project => Ok(ToDto(project)),
-            Problem);
+        return result.Match(Ok, Problem);
     }
 
     /// <summary>
@@ -77,9 +74,7 @@ public class ProjectsController(ISender sender) : ApiController
 
         var result = await sender.Send(query, cancellationToken);
 
-        return result.Match(
-            projects => Ok(projects.ConvertAll(ToDto)),
-            Problem);
+        return result.Match(Ok, Problem);
     }
 
     /// <summary>
@@ -89,7 +84,7 @@ public class ProjectsController(ISender sender) : ApiController
     /// <param name="projectId">The project ID.</param>
     /// <param name="request">The project data.</param>
     [HttpPut("{projectId:guid}")]
-    [ProducesResponseType(typeof(ProjectResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateProject(
@@ -107,18 +102,7 @@ public class ProjectsController(ISender sender) : ApiController
         var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
-            project => Ok(ToDto(project)),
+            _ => Ok(projectId),
             Problem);
-    }
-
-    private static ProjectResponse ToDto(Project project)
-    {
-        return new(
-            project.Id,
-            project.Name,
-            project.Description,
-            project.OrganizationId,
-            project.CreatedAt,
-            project.UpdatedAt);
     }
 }

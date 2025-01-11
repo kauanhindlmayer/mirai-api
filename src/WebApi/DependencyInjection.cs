@@ -23,7 +23,15 @@ public static class DependencyInjection
         return services;
     }
 
-    public static IServiceCollection AddSwaggerGen(this IServiceCollection services)
+    public static void UsePresentation(this WebApplication app)
+    {
+        app.UseCors();
+        app.MapHub<RetrospectiveHub>("/hubs/retrospective");
+        app.UseMiddleware<RequestContextLoggingMiddleware>();
+        app.ConfigureHealthChecks();
+    }
+
+    private static void AddSwaggerGen(this IServiceCollection services)
     {
         services.ConfigureOptions<ConfigureSwaggerOptions>();
         services.AddSwaggerGen(options =>
@@ -33,18 +41,6 @@ public static class DependencyInjection
             ConfigureSignalRSwagger(options, xmlFilePath);
             ConfigureSecurity(options);
         });
-
-        return services;
-    }
-
-    public static WebApplication UsePresentation(this WebApplication app)
-    {
-        app.UseCors();
-        app.MapHub<RetrospectiveHub>("/hubs/retrospective");
-        app.UseMiddleware<RequestContextLoggingMiddleware>();
-        app.ConfigureHealthChecks();
-
-        return app;
     }
 
     private static string GetXmlCommentsPath()

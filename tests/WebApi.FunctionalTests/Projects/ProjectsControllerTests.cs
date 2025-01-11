@@ -1,5 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
+using Application.Organizations.Queries.GetOrganization;
+using Application.Projects.Queries.GetProject;
 using Contracts.Organizations;
 using Contracts.Projects;
 using FluentAssertions;

@@ -5,15 +5,21 @@ using MediatR;
 
 namespace Application.Organizations.Commands.CreateOrganization;
 
-internal sealed class CreateOrganizationCommandHandler(
-    IOrganizationsRepository organizationsRepository)
-    : IRequestHandler<CreateOrganizationCommand, ErrorOr<Organization>>
+internal sealed class CreateOrganizationCommandHandler
+    : IRequestHandler<CreateOrganizationCommand, ErrorOr<Guid>>
 {
-    public async Task<ErrorOr<Organization>> Handle(
+    private readonly IOrganizationsRepository _organizationsRepository;
+
+    public CreateOrganizationCommandHandler(IOrganizationsRepository organizationsRepository)
+    {
+        _organizationsRepository = organizationsRepository;
+    }
+
+    public async Task<ErrorOr<Guid>> Handle(
         CreateOrganizationCommand command,
         CancellationToken cancellationToken)
     {
-        if (await organizationsRepository.ExistsByNameAsync(command.Name, cancellationToken))
+        if (await _organizationsRepository.ExistsByNameAsync(command.Name, cancellationToken))
         {
             return OrganizationErrors.AlreadyExists;
         }
@@ -22,8 +28,8 @@ internal sealed class CreateOrganizationCommandHandler(
             command.Name,
             command.Description);
 
-        await organizationsRepository.AddAsync(organization, cancellationToken);
+        await _organizationsRepository.AddAsync(organization, cancellationToken);
 
-        return organization;
+        return organization.Id;
     }
 }

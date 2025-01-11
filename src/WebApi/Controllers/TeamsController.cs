@@ -20,7 +20,7 @@ public class TeamsController(ISender sender) : ApiController
     /// <param name="projectId">The ID of the project to create the team in.</param>
     /// <param name="request">The details of the team to create.</param>
     [HttpPost]
-    [ProducesResponseType(typeof(TeamResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> CreateTeam(
@@ -33,10 +33,10 @@ public class TeamsController(ISender sender) : ApiController
         var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
-            team => CreatedAtAction(
-                actionName: nameof(GetTeam),
-                routeValues: new { ProjectId = projectId, TeamId = team.Id },
-                value: ToDto(team)),
+            teamId => CreatedAtAction(
+                nameof(GetTeam),
+                new { ProjectId = projectId, TeamId = teamId },
+                teamId),
             Problem);
     }
 
@@ -55,9 +55,7 @@ public class TeamsController(ISender sender) : ApiController
 
         var result = await sender.Send(query, cancellationToken);
 
-        return result.Match(
-            team => Ok(ToDto(team)),
-            Problem);
+        return result.Match(Ok, Problem);
     }
 
     /// <summary>
@@ -81,17 +79,4 @@ public class TeamsController(ISender sender) : ApiController
             _ => NoContent(),
             Problem);
     }
-
-    private static TeamResponse ToDto(Team team)
-    {
-        return new(
-            team.Id,
-            team.ProjectId,
-            team.Name,
-            team.Members.Select(ToDto).ToList(),
-            team.CreatedAt,
-            team.UpdatedAt);
-    }
-
-    private static MemberResponse ToDto(User user) => new(user.Id, user.FullName);
 }

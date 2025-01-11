@@ -5,14 +5,20 @@ using MediatR;
 
 namespace Application.Boards.Commands.DeleteColumn;
 
-internal sealed class DeleteColumnCommandHandler(IBoardsRepository boardsRepository)
-    : IRequestHandler<DeleteColumnCommand, ErrorOr<Success>>
+internal sealed class DeleteColumnCommandHandler : IRequestHandler<DeleteColumnCommand, ErrorOr<Success>>
 {
+    private readonly IBoardsRepository _boardsRepository;
+
+    public DeleteColumnCommandHandler(IBoardsRepository boardsRepository)
+    {
+        _boardsRepository = boardsRepository;
+    }
+
     public async Task<ErrorOr<Success>> Handle(
         DeleteColumnCommand command,
         CancellationToken cancellationToken)
     {
-        var board = await boardsRepository.GetByIdWithColumnsAsync(
+        var board = await _boardsRepository.GetByIdWithColumnsAsync(
             command.BoardId,
             cancellationToken);
 
@@ -27,7 +33,7 @@ internal sealed class DeleteColumnCommandHandler(IBoardsRepository boardsReposit
             return result.Errors;
         }
 
-        boardsRepository.Update(board);
+        _boardsRepository.Update(board);
 
         return Result.Success;
     }

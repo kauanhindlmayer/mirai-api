@@ -8,4 +8,4 @@ public sealed record UpdateProjectCommand(
     Guid OrganizationId,
     Guid ProjectId,
     string Name,
-    string Description) : IRequest<ErrorOr<Project>>;
+    string Description) : IRequest<ErrorOr<Guid>>;

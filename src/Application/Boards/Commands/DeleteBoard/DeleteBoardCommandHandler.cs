@@ -5,14 +5,20 @@ using MediatR;
 
 namespace Application.Boards.Commands.DeleteBoard;
 
-internal sealed class DeleteBoardCommandHandler(IBoardsRepository boardRepository)
-    : IRequestHandler<DeleteBoardCommand, ErrorOr<Success>>
+internal sealed class DeleteBoardCommandHandler : IRequestHandler<DeleteBoardCommand, ErrorOr<Success>>
 {
+    private readonly IBoardsRepository _boardsRepository;
+
+    public DeleteBoardCommandHandler(IBoardsRepository boardsRepository)
+    {
+        _boardsRepository = boardsRepository;
+    }
+
     public async Task<ErrorOr<Success>> Handle(
         DeleteBoardCommand command,
         CancellationToken cancellationToken)
     {
-        var board = await boardRepository.GetByIdAsync(
+        var board = await _boardsRepository.GetByIdAsync(
             command.BoardId,
             cancellationToken);
 
@@ -21,7 +27,7 @@ internal sealed class DeleteBoardCommandHandler(IBoardsRepository boardRepositor
             return BoardErrors.NotFound;
         }
 
-        boardRepository.Remove(board);
+        _boardsRepository.Remove(board);
 
         return Result.Success;
     }

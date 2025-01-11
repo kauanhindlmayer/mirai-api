@@ -1,4 +1,4 @@
-using Contracts.Retrospectives;
+using Domain.Retrospectives;
 using Microsoft.AspNetCore.SignalR;
 
 namespace WebApi.Hubs;
@@ -7,7 +7,7 @@ public class RetrospectiveHub : Hub<IRetrospectiveHub>
 {
     private int _connectedClientsCount;
 
-    public async Task SendRetrospectiveItem(RetrospectiveItemResponse retrospectiveItem)
+    public async Task SendRetrospectiveItem(RetrospectiveItem retrospectiveItem)
     {
         await Clients.All.SendRetrospectiveItem(retrospectiveItem);
     }

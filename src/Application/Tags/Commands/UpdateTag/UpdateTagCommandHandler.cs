@@ -6,15 +6,20 @@ using MediatR;
 
 namespace Application.Tags.Commands.UpdateTag;
 
-internal sealed class UpdateTagCommandHandler(
-    IProjectsRepository projectsRepository)
-    : IRequestHandler<UpdateTagCommand, ErrorOr<Tag>>
+internal sealed class UpdateTagCommandHandler : IRequestHandler<UpdateTagCommand, ErrorOr<Guid>>
 {
-    public async Task<ErrorOr<Tag>> Handle(
+    private readonly IProjectsRepository _projectsRepository;
+
+    public UpdateTagCommandHandler(IProjectsRepository projectsRepository)
+    {
+        _projectsRepository = projectsRepository;
+    }
+
+    public async Task<ErrorOr<Guid>> Handle(
         UpdateTagCommand command,
         CancellationToken cancellationToken)
     {
-        var project = await projectsRepository.GetByIdWithTagsAsync(
+        var project = await _projectsRepository.GetByIdWithTagsAsync(
             command.ProjectId,
             cancellationToken);
 
@@ -23,15 +28,15 @@ internal sealed class UpdateTagCommandHandler(
             return ProjectErrors.NotFound;
         }
 
-        var existingTag = project.Tags.FirstOrDefault(t => t.Id == command.TagId);
-        if (existingTag is null)
+        var tag = project.Tags.FirstOrDefault(t => t.Id == command.TagId);
+        if (tag is null)
         {
             return TagErrors.NotFound;
         }
 
-        existingTag.UpdateName(command.Name);
-        projectsRepository.Update(project);
+        tag.UpdateName(command.Name);
+        _projectsRepository.Update(project);
 
-        return existingTag;
+        return tag.Id;
     }
 }

@@ -6,15 +6,20 @@ using MediatR;
 
 namespace Application.Projects.Commands.UpdateProject;
 
-internal sealed class UpdateProjectCommandHandler(
-    IOrganizationsRepository organizationsRepository)
-    : IRequestHandler<UpdateProjectCommand, ErrorOr<Project>>
+internal sealed class UpdateProjectCommandHandler : IRequestHandler<UpdateProjectCommand, ErrorOr<Guid>>
 {
-    public async Task<ErrorOr<Project>> Handle(
+    private readonly IOrganizationsRepository _organizationsRepository;
+
+    public UpdateProjectCommandHandler(IOrganizationsRepository organizationsRepository)
+    {
+        _organizationsRepository = organizationsRepository;
+    }
+
+    public async Task<ErrorOr<Guid>> Handle(
         UpdateProjectCommand command,
         CancellationToken cancellationToken)
     {
-        var organization = await organizationsRepository.GetByIdWithProjectsAsync(
+        var organization = await _organizationsRepository.GetByIdWithProjectsAsync(
             command.OrganizationId,
             cancellationToken);
 
@@ -30,8 +35,8 @@ internal sealed class UpdateProjectCommandHandler(
         }
 
         project.Update(command.Name, command.Description);
-        organizationsRepository.Update(organization);
+        _organizationsRepository.Update(organization);
 
-        return project;
+        return project.Id;
     }
 }

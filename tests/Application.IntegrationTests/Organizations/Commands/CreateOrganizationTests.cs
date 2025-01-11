@@ -1,5 +1,6 @@
 using Application.IntegrationTests.Common;
 using Application.Organizations.Commands.CreateOrganization;
+using Application.Organizations.Queries.GetOrganization;
 using Domain.Organizations;
 using FluentAssertions;
 
@@ -23,9 +24,7 @@ public class CreateOrganizationTests : BaseIntegrationTest
 
         // Assert
         result.IsError.Should().BeFalse();
-        result.Value.Should().BeOfType<Organization>();
-        result.Value.Name.Should().Be(command.Name);
-        result.Value.Description.Should().Be(command.Description);
+        result.Value.Should().NotBeEmpty();
     }
 
     [Fact]

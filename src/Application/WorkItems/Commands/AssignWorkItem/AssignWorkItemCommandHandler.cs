@@ -5,16 +5,24 @@ using MediatR;
 
 namespace Application.WorkItems.Commands.AssignWorkItem;
 
-internal sealed class AssignWorkItemCommandHandler(
-    IWorkItemsRepository workItemsRepository,
-    IUsersRepository usersRepository)
-    : IRequestHandler<AssignWorkItemCommand, ErrorOr<Success>>
+internal sealed class AssignWorkItemCommandHandler : IRequestHandler<AssignWorkItemCommand, ErrorOr<Success>>
 {
+    private readonly IWorkItemsRepository _workItemsRepository;
+    private readonly IUsersRepository _usersRepository;
+
+    public AssignWorkItemCommandHandler(
+        IWorkItemsRepository workItemsRepository,
+        IUsersRepository usersRepository)
+    {
+        _workItemsRepository = workItemsRepository;
+        _usersRepository = usersRepository;
+    }
+
     public async Task<ErrorOr<Success>> Handle(
         AssignWorkItemCommand command,
         CancellationToken cancellationToken)
     {
-        var workItem = await workItemsRepository.GetByIdAsync(
+        var workItem = await _workItemsRepository.GetByIdAsync(
             command.WorkItemId,
             cancellationToken);
 
@@ -23,7 +31,7 @@ internal sealed class AssignWorkItemCommandHandler(
             return WorkItemErrors.NotFound;
         }
 
-        var assignee = await usersRepository.GetByIdAsync(
+        var assignee = await _usersRepository.GetByIdAsync(
             command.AssigneeId,
             cancellationToken);
 
@@ -33,7 +41,7 @@ internal sealed class AssignWorkItemCommandHandler(
         }
 
         workItem.Assign(command.AssigneeId);
-        workItemsRepository.Update(workItem);
+        _workItemsRepository.Update(workItem);
 
         return Result.Success;
     }

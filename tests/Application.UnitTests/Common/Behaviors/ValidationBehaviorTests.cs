@@ -9,13 +9,13 @@ namespace Application.UnitTests.Common.Behaviors;
 
 public class ValidationBehaviorTests
 {
-    private readonly ValidationBehavior<CreateOrganizationCommand, ErrorOr<Organization>> _validationBehavior;
+    private readonly ValidationBehavior<CreateOrganizationCommand, ErrorOr<Guid>> _validationBehavior;
     private readonly IValidator<CreateOrganizationCommand> _mockValidator;
-    private readonly RequestHandlerDelegate<ErrorOr<Organization>> _mockNextBehavior;
+    private readonly RequestHandlerDelegate<ErrorOr<Guid>> _mockNextBehavior;
 
     public ValidationBehaviorTests()
     {
-        _mockNextBehavior = Substitute.For<RequestHandlerDelegate<ErrorOr<Organization>>>();
+        _mockNextBehavior = Substitute.For<RequestHandlerDelegate<ErrorOr<Guid>>>();
         _mockValidator = Substitute.For<IValidator<CreateOrganizationCommand>>();
         _validationBehavior = new(_mockValidator);
     }
@@ -26,19 +26,17 @@ public class ValidationBehaviorTests
         // Arrange
         var createOrganizationCommand = new CreateOrganizationCommand("Organization", "Description");
         var organization = new Organization("Organization", "Description");
-
         _mockValidator
             .ValidateAsync(createOrganizationCommand, Arg.Any<CancellationToken>())
             .Returns(new ValidationResult());
-
-        _mockNextBehavior.Invoke().Returns(organization);
+        _mockNextBehavior.Invoke().Returns(organization.Id);
 
         // Act
         var result = await _validationBehavior.Handle(createOrganizationCommand, _mockNextBehavior, default);
 
         // Assert
         result.IsError.Should().BeFalse();
-        result.Value.Should().BeEquivalentTo(organization);
+        result.Value.Should().NotBeEmpty();
     }
 
     [Fact]
@@ -68,10 +66,10 @@ public class ValidationBehaviorTests
     {
         // Arrange
         var createOrganizationCommand = new CreateOrganizationCommand("Organization", "Description");
-        var validationBehavior = new ValidationBehavior<CreateOrganizationCommand, ErrorOr<Organization>>();
+        var validationBehavior = new ValidationBehavior<CreateOrganizationCommand, ErrorOr<Guid>>();
 
         var organization = new Organization("Organization", "Description");
-        _mockNextBehavior.Invoke().Returns(organization);
+        _mockNextBehavior.Invoke().Returns(organization.Id);
 
         // Act
         var result = await validationBehavior.Handle(
@@ -81,6 +79,6 @@ public class ValidationBehaviorTests
 
         // Assert
         result.IsError.Should().BeFalse();
-        result.Value.Should().Be(organization);
+        result.Value.Should().NotBeEmpty();
     }
 }

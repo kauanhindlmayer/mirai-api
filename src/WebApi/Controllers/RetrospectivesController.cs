@@ -26,7 +26,7 @@ public class RetrospectivesController(
     /// <param name="teamId">The team ID.</param>
     /// <param name="request">The details of the retrospective session to create.</param>
     [HttpPost]
-    [ProducesResponseType(typeof(RetrospectiveResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateRetrospective(
         Guid teamId,
@@ -41,10 +41,10 @@ public class RetrospectivesController(
         var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
-            retrospective => CreatedAtAction(
-                actionName: nameof(GetRetrospective),
-                routeValues: new { TeamId = teamId, RetrospectiveId = retrospective.Id },
-                value: ToDto(retrospective)),
+            retrospectiveId => CreatedAtAction(
+                nameof(GetRetrospective),
+                new { TeamId = teamId, RetrospectiveId = retrospectiveId },
+                retrospectiveId),
             Problem);
     }
 
@@ -63,20 +63,20 @@ public class RetrospectivesController(
 
         var result = await sender.Send(query, cancellationToken);
 
-        return result.Match(
-            retrospective => Ok(ToDto(retrospective)),
-            Problem);
+        return result.Match(Ok, Problem);
     }
 
     /// <summary>
     /// Create a new column in a retrospective session.
     /// </summary>
+    /// <param name="teamId">The team ID.</param>
     /// <param name="retrospectiveId">The ID of the retrospective session to create the column in.</param>
     /// <param name="request">The details of the column to create.</param>
     [HttpPost("{retrospectiveId:guid}/columns")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> CreateColumn(
+        Guid teamId,
         Guid retrospectiveId,
         CreateColumnRequest request,
         CancellationToken cancellationToken)
@@ -86,20 +86,25 @@ public class RetrospectivesController(
         var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
-            _ => NoContent(),
+            _ => CreatedAtAction(
+                nameof(GetRetrospective),
+                new { TeamId = teamId, RetrospectiveId = retrospectiveId },
+                retrospectiveId),
             Problem);
     }
 
     /// <summary>
     /// Create a new item in a column in a retrospective session.
     /// </summary>
+    /// <param name="teamId">The team ID.</param>
     /// <param name="retrospectiveId">The ID of the retrospective session to create the item in.</param>
     /// <param name="columnId">The ID of the column to create the item in.</param>
     /// <param name="request">The details of the item to create.</param>
     [HttpPost("{retrospectiveId:guid}/columns/{columnId:guid}/items")]
-    [ProducesResponseType(typeof(RetrospectiveItemResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> CreateItem(
+        Guid teamId,
         Guid retrospectiveId,
         Guid columnId,
         CreateItemRequest request,
@@ -113,9 +118,11 @@ public class RetrospectivesController(
             return Problem(result.Errors);
         }
 
-        var retrospectiveItem = ToDto(result.Value);
-        await hubContext.Clients.All.SendRetrospectiveItem(retrospectiveItem);
-        return StatusCode(StatusCodes.Status201Created, retrospectiveItem);
+        await hubContext.Clients.All.SendRetrospectiveItem(result.Value);
+        return CreatedAtAction(
+            nameof(GetRetrospective),
+            new { TeamId = teamId, RetrospectiveId = retrospectiveId },
+            result.Value.Id);
     }
 
     /// <summary>
@@ -157,36 +164,6 @@ public class RetrospectivesController(
 
         var result = await sender.Send(query, cancellationToken);
 
-        return result.Match(
-            retrospectives => Ok(retrospectives.Select(ToDto)),
-            Problem);
-    }
-
-    private static RetrospectiveResponse ToDto(Retrospective retrospective)
-    {
-        return new(
-            retrospective.Id,
-            retrospective.Title,
-            retrospective.Description,
-            retrospective.Columns.OrderBy(c => c.Position).Select(ToDto).ToList());
-    }
-
-    private static RetrospectiveColumnResponse ToDto(RetrospectiveColumn column)
-    {
-        return new(
-            column.Id,
-            column.Title,
-            column.Position,
-            column.Items.OrderBy(c => c.Position).Select(ToDto).ToList());
-    }
-
-    private static RetrospectiveItemResponse ToDto(RetrospectiveItem item)
-    {
-        return new(
-            item.Id,
-            item.Description,
-            item.Position,
-            item.AuthorId,
-            item.Votes);
+        return result.Match(Ok, Problem);
     }
 }

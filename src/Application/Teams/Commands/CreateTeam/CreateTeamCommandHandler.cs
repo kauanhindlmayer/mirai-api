@@ -6,15 +6,20 @@ using MediatR;
 
 namespace Application.Teams.Commands.CreateTeam;
 
-internal sealed class CreateTeamCommandHandler(
-    IProjectsRepository projectsRepository)
-    : IRequestHandler<CreateTeamCommand, ErrorOr<Team>>
+internal sealed class CreateTeamCommandHandler : IRequestHandler<CreateTeamCommand, ErrorOr<Guid>>
 {
-    public async Task<ErrorOr<Team>> Handle(
+    private readonly IProjectsRepository _projectsRepository;
+
+    public CreateTeamCommandHandler(IProjectsRepository projectsRepository)
+    {
+        _projectsRepository = projectsRepository;
+    }
+
+    public async Task<ErrorOr<Guid>> Handle(
         CreateTeamCommand command,
         CancellationToken cancellationToken)
     {
-        var project = await projectsRepository.GetByIdAsync(
+        var project = await _projectsRepository.GetByIdAsync(
             command.ProjectId,
             cancellationToken);
 
@@ -31,8 +36,8 @@ internal sealed class CreateTeamCommandHandler(
             return addTeamResult.Errors;
         }
 
-        projectsRepository.Update(project);
+        _projectsRepository.Update(project);
 
-        return team;
+        return team.Id;
     }
 }

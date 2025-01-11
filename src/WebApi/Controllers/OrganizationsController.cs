@@ -5,7 +5,6 @@ using Application.Organizations.Queries.GetOrganization;
 using Application.Organizations.Queries.ListOrganizations;
 using Asp.Versioning;
 using Contracts.Organizations;
-using Domain.Organizations;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,7 +19,7 @@ public class OrganizationsController(ISender sender) : ApiController
     /// </summary>
     /// <param name="request">The request to create a new organization.</param>
     [HttpPost]
-    [ProducesResponseType(typeof(OrganizationResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateOrganization(
         CreateOrganizationRequest request,
@@ -33,10 +32,10 @@ public class OrganizationsController(ISender sender) : ApiController
         var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
-            organization => CreatedAtAction(
-                actionName: nameof(GetOrganization),
-                routeValues: new { OrganizationId = organization.Id },
-                value: ToDto(organization)),
+            organizationId => CreatedAtAction(
+                nameof(GetOrganization),
+                new { OrganizationId = organizationId },
+                organizationId),
             Problem);
     }
 
@@ -55,25 +54,21 @@ public class OrganizationsController(ISender sender) : ApiController
 
         var result = await sender.Send(query, cancellationToken);
 
-        return result.Match(
-            organization => Ok(ToDto(organization)),
-            Problem);
+        return result.Match(Ok, Problem);
     }
 
     /// <summary>
     /// List all organizations.
     /// </summary>
     [HttpGet]
-    [ProducesResponseType(typeof(List<OrganizationResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(List<OrganizationBriefResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> ListOrganizations(CancellationToken cancellationToken)
     {
         var query = new ListOrganizationsQuery();
 
         var result = await sender.Send(query, cancellationToken);
 
-        return result.Match(
-            organizations => Ok(organizations.ConvertAll(ToDto)),
-            Problem);
+        return result.Match(Ok, Problem);
     }
 
     /// <summary>
@@ -82,7 +77,7 @@ public class OrganizationsController(ISender sender) : ApiController
     /// <param name="organizationId">The ID of the organization to update.</param>
     /// <param name="request">The request to update the organization.</param>
     [HttpPut("{organizationId:guid}")]
-    [ProducesResponseType(typeof(OrganizationResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateOrganization(
@@ -98,7 +93,7 @@ public class OrganizationsController(ISender sender) : ApiController
         var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
-            organization => Ok(ToDto(organization)),
+            _ => Ok(organizationId),
             Problem);
     }
 
@@ -120,15 +115,5 @@ public class OrganizationsController(ISender sender) : ApiController
         return result.Match(
             _ => NoContent(),
             Problem);
-    }
-
-    private static OrganizationResponse ToDto(Organization organization)
-    {
-        return new(
-            organization.Id,
-            organization.Name,
-            organization.Description,
-            organization.CreatedAt,
-            organization.UpdatedAt);
     }
 }

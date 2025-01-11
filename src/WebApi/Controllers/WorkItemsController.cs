@@ -32,7 +32,7 @@ public class WorkItemsController(ISender sender) : ApiController
     /// <param name="projectId">The ID of the project to create the work item in.</param>
     /// <param name="request">The details of the work item to create.</param>
     [HttpPost]
-    [ProducesResponseType(typeof(WorkItemResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateWorkItem(
         Guid projectId,
@@ -51,10 +51,10 @@ public class WorkItemsController(ISender sender) : ApiController
         var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
-            workItem => CreatedAtAction(
-                actionName: nameof(GetWorkItem),
-                routeValues: new { ProjectId = projectId, WorkItemId = workItem.Id },
-                value: ToDto(workItem)),
+            workItemId => CreatedAtAction(
+                nameof(GetWorkItem),
+                new { ProjectId = projectId, WorkItemId = workItemId },
+                workItemId),
             Problem);
     }
 
@@ -73,9 +73,7 @@ public class WorkItemsController(ISender sender) : ApiController
 
         var result = await sender.Send(query, cancellationToken);
 
-        return result.Match(
-            workItem => Ok(ToDto(workItem)),
-            Problem);
+        return result.Match(Ok, Problem);
     }
 
     /// <summary>
@@ -99,10 +97,10 @@ public class WorkItemsController(ISender sender) : ApiController
         var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
-            _ => CreatedAtAction(
-                actionName: nameof(GetWorkItem),
-                routeValues: new { ProjectId = projectId, WorkItemId = workItemId },
-                value: null),
+            commentId => CreatedAtAction(
+                nameof(GetWorkItem),
+                new { ProjectId = projectId, WorkItemId = workItemId },
+                commentId),
             Problem);
     }
 
@@ -128,9 +126,7 @@ public class WorkItemsController(ISender sender) : ApiController
 
         var result = await sender.Send(query, cancellationToken);
 
-        return result.Match(
-            workItemsPage => Ok(workItemsPage.Map(ToSummaryDto)),
-            Problem);
+        return result.Match(Ok, Problem);
     }
 
     /// <summary>
@@ -217,9 +213,7 @@ public class WorkItemsController(ISender sender) : ApiController
 
         var result = await sender.Send(query, cancellationToken);
 
-        return result.Match(
-            workItems => Ok(workItems.ConvertAll(ToSummaryDto)),
-            Problem);
+        return result.Match(Ok, Problem);
     }
 
     /// <summary>
@@ -241,63 +235,4 @@ public class WorkItemsController(ISender sender) : ApiController
             _ => NoContent(),
             Problem);
     }
-
-    private static WorkItemResponse ToDto(WorkItem workItem)
-    {
-        return new(
-            workItem.Id,
-            workItem.ProjectId,
-            workItem.Code,
-            workItem.Title,
-            workItem.Description,
-            workItem.AcceptanceCriteria,
-            ToDto(workItem.Status),
-            ToDto(workItem.Type),
-            workItem.Comments.Select(ToDto).ToList(),
-            workItem.Tags.Select(t => t.Name).ToList(),
-            workItem.CreatedAt,
-            workItem.UpdatedAt);
-    }
-
-    private static WorkItemSummaryResponse ToSummaryDto(WorkItem workItem)
-    {
-        return new(
-            workItem.Id,
-            workItem.Code,
-            workItem.Title,
-            ToDto(workItem.Status),
-            ToDto(workItem.Type),
-            workItem.CreatedAt,
-            workItem.UpdatedAt);
-    }
-
-    private static WorkItemType ToDto(DomainWorkItemType workItemType)
-    {
-        return workItemType.Name switch
-        {
-            nameof(DomainWorkItemType.UserStory) => WorkItemType.UserStory,
-            nameof(DomainWorkItemType.Bug) => WorkItemType.Bug,
-            nameof(DomainWorkItemType.Defect) => WorkItemType.Defect,
-            nameof(DomainWorkItemType.Epic) => WorkItemType.Epic,
-            nameof(DomainWorkItemType.Feature) => WorkItemType.Feature,
-            _ => throw new InvalidOperationException(),
-        };
-    }
-
-    private static WorkItemStatus ToDto(DomainWorkItemStatus workItemStatus)
-    {
-        return workItemStatus.Name switch
-        {
-            nameof(DomainWorkItemStatus.New) => WorkItemStatus.New,
-            nameof(DomainWorkItemStatus.InProgress) => WorkItemStatus.InProgress,
-            nameof(DomainWorkItemStatus.Closed) => WorkItemStatus.Closed,
-            nameof(DomainWorkItemStatus.Resolved) => WorkItemStatus.Resolved,
-            nameof(DomainWorkItemStatus.Reopened) => WorkItemStatus.Reopened,
-            nameof(DomainWorkItemStatus.Removed) => WorkItemStatus.Removed,
-            _ => throw new InvalidOperationException(),
-        };
-    }
-
-    private static CommentResponse ToDto(WorkItemComment comment)
-        => new(comment.Id, comment.Content, comment.CreatedAt);
 }

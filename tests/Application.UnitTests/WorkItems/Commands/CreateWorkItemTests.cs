@@ -61,10 +61,7 @@ public class CreateWorkItemTests
 
         // Assert
         result.IsError.Should().BeFalse();
-        result.Value.ProjectId.Should().Be(project.Id);
-        result.Value.Code.Should().Be(1);
-        result.Value.Title.Should().Be("Title");
-        result.Value.Type.Should().Be(WorkItemType.UserStory);
+        result.Value.Should().NotBeEmpty();
     }
 
     [Fact]

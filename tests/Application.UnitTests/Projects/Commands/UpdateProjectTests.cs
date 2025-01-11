@@ -33,7 +33,7 @@ public class UpdateProjectTests
         var result = await _handler.Handle(Command, CancellationToken.None);
 
         // Assert
-        result.Should().BeOfType<ErrorOr<Project>>();
+        result.Should().BeOfType<ErrorOr<Guid>>();
         result.IsError.Should().BeTrue();
         result.FirstError.Should().Be(OrganizationErrors.NotFound);
     }
@@ -50,7 +50,7 @@ public class UpdateProjectTests
         var result = await _handler.Handle(Command, CancellationToken.None);
 
         // Assert
-        result.Should().BeOfType<ErrorOr<Project>>();
+        result.Should().BeOfType<ErrorOr<Guid>>();
         result.IsError.Should().BeTrue();
         result.FirstError.Should().Be(ProjectErrors.NotFound);
     }
@@ -70,10 +70,8 @@ public class UpdateProjectTests
         var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        result.Should().BeOfType<ErrorOr<Project>>();
+        result.Should().BeOfType<ErrorOr<Guid>>();
         result.IsError.Should().BeFalse();
-        result.Value.Name.Should().Be(command.Name);
-        result.Value.Description.Should().Be(command.Description);
-        result.Value.OrganizationId.Should().Be(organization.Id);
+        result.Value.Should().NotBeEmpty();
     }
 }

@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
+using Application.Organizations.Queries.GetOrganization;
 using Contracts.Organizations;
 using FluentAssertions;
 using WebApi.FunctionalTests.Common;

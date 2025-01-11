@@ -30,12 +30,12 @@ public class CreateOrganizationTests
         var result = await _handler.Handle(Command, CancellationToken.None);
 
         // Assert
-        result.Should().BeOfType<ErrorOr<Organization>>();
+        result.Should().BeOfType<ErrorOr<Guid>>();
         result.FirstError.Should().Be(OrganizationErrors.AlreadyExists);
     }
 
     [Fact]
-    public async Task Handle_WhenOrganizationDoesNotExist_ShouldReturnOrganization()
+    public async Task Handle_WhenOrganizationDoesNotExist_ShouldReturnOrganizationId()
     {
         // Arrange
         _mockOrganizationsRepository.ExistsByNameAsync(Command.Name, Arg.Any<CancellationToken>())
@@ -45,8 +45,7 @@ public class CreateOrganizationTests
         var result = await _handler.Handle(Command, CancellationToken.None);
 
         // Assert
-        result.Should().BeOfType<ErrorOr<Organization>>();
-        result.Value.Name.Should().Be(Command.Name);
-        result.Value.Description.Should().Be(Command.Description);
+        result.Should().BeOfType<ErrorOr<Guid>>();
+        result.Value.Should().NotBeEmpty();
     }
 }

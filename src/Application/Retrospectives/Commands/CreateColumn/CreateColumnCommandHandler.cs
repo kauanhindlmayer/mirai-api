@@ -5,14 +5,20 @@ using MediatR;
 
 namespace Application.Retrospectives.Commands.CreateColumn;
 
-internal sealed class CreateColumnCommandHandler(IRetrospectivesRepository retrospectivesRepository)
-    : IRequestHandler<CreateColumnCommand, ErrorOr<Retrospective>>
+internal sealed class CreateColumnCommandHandler : IRequestHandler<CreateColumnCommand, ErrorOr<Guid>>
 {
-    public async Task<ErrorOr<Retrospective>> Handle(
+    private readonly IRetrospectivesRepository _retrospectivesRepository;
+
+    public CreateColumnCommandHandler(IRetrospectivesRepository retrospectivesRepository)
+    {
+        _retrospectivesRepository = retrospectivesRepository;
+    }
+
+    public async Task<ErrorOr<Guid>> Handle(
         CreateColumnCommand command,
         CancellationToken cancellationToken)
     {
-        var retrospective = await retrospectivesRepository.GetByIdWithColumnsAsync(
+        var retrospective = await _retrospectivesRepository.GetByIdWithColumnsAsync(
             command.RetrospectiveId,
             cancellationToken);
 
@@ -29,8 +35,8 @@ internal sealed class CreateColumnCommandHandler(IRetrospectivesRepository retro
             return result.Errors;
         }
 
-        retrospectivesRepository.Update(retrospective);
+        _retrospectivesRepository.Update(retrospective);
 
-        return retrospective;
+        return retrospective.Id;
     }
 }

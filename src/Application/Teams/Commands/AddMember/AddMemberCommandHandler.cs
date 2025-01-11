@@ -5,16 +5,24 @@ using MediatR;
 
 namespace Application.Teams.Commands.AddMember;
 
-internal sealed class AddMemberCommandHandler(
-    ITeamsRepository teamsRepository,
-    IUsersRepository usersRepository)
-    : IRequestHandler<AddMemberCommand, ErrorOr<Success>>
+internal sealed class AddMemberCommandHandler : IRequestHandler<AddMemberCommand, ErrorOr<Success>>
 {
+    private readonly ITeamsRepository _teamsRepository;
+    private readonly IUsersRepository _usersRepository;
+
+    public AddMemberCommandHandler(
+        ITeamsRepository teamsRepository,
+        IUsersRepository usersRepository)
+    {
+        _teamsRepository = teamsRepository;
+        _usersRepository = usersRepository;
+    }
+
     public async Task<ErrorOr<Success>> Handle(
         AddMemberCommand command,
         CancellationToken cancellationToken)
     {
-        var team = await teamsRepository.GetByIdAsync(
+        var team = await _teamsRepository.GetByIdAsync(
             command.TeamId,
             cancellationToken);
 
@@ -23,7 +31,7 @@ internal sealed class AddMemberCommandHandler(
             return TeamErrors.NotFound;
         }
 
-        var member = await usersRepository.GetByIdAsync(
+        var member = await _usersRepository.GetByIdAsync(
             command.MemberId,
             cancellationToken);
 
@@ -38,7 +46,7 @@ internal sealed class AddMemberCommandHandler(
             return result.Errors;
         }
 
-        teamsRepository.Update(team);
+        _teamsRepository.Update(team);
 
         return Result.Success;
     }

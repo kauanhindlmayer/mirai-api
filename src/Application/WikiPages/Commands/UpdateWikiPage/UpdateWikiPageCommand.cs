@@ -7,4 +7,4 @@ namespace Application.WikiPages.Commands.UpdateWikiPage;
 public sealed record UpdateWikiPageCommand(
     Guid WikiPageId,
     string Title,
-    string Content) : IRequest<ErrorOr<WikiPage>>;
+    string Content) : IRequest<ErrorOr<Guid>>;

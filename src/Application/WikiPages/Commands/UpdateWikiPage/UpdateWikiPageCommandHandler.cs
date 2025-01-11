@@ -5,14 +5,20 @@ using MediatR;
 
 namespace Application.WikiPages.Commands.UpdateWikiPage;
 
-internal sealed class UpdateWikiPageCommandHandler(IWikiPagesRepository wikiPagesRepository)
-    : IRequestHandler<UpdateWikiPageCommand, ErrorOr<WikiPage>>
+internal sealed class UpdateWikiPageCommandHandler : IRequestHandler<UpdateWikiPageCommand, ErrorOr<Guid>>
 {
-    public async Task<ErrorOr<WikiPage>> Handle(
+    private readonly IWikiPagesRepository _wikiPagesRepository;
+
+    public UpdateWikiPageCommandHandler(IWikiPagesRepository wikiPagesRepository)
+    {
+        _wikiPagesRepository = wikiPagesRepository;
+    }
+
+    public async Task<ErrorOr<Guid>> Handle(
         UpdateWikiPageCommand command,
         CancellationToken cancellationToken)
     {
-        var wikiPage = await wikiPagesRepository.GetByIdAsync(
+        var wikiPage = await _wikiPagesRepository.GetByIdAsync(
             command.WikiPageId,
             cancellationToken);
 
@@ -22,8 +28,8 @@ internal sealed class UpdateWikiPageCommandHandler(IWikiPagesRepository wikiPage
         }
 
         wikiPage.Update(command.Title, command.Content);
-        wikiPagesRepository.Update(wikiPage);
+        _wikiPagesRepository.Update(wikiPage);
 
-        return wikiPage;
+        return wikiPage.Id;
     }
 }

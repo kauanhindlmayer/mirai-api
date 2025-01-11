@@ -1,33 +1,41 @@
 using Application.Common.Interfaces.Persistence;
-using Domain.Projects;
-using Domain.Tags;
 using ErrorOr;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Tags.Queries.ListTags;
 
-internal sealed class ListTagsQueryHandler(
-    IProjectsRepository projectsRepository,
-    ITagsRepository tagsRepository)
-    : IRequestHandler<ListTagsQuery, ErrorOr<List<Tag>>>
+internal sealed class ListTagsQueryHandler : IRequestHandler<ListTagsQuery, ErrorOr<List<TagResponse>>>
 {
-    public async Task<ErrorOr<List<Tag>>> Handle(
+    private readonly IApplicationDbContext _context;
+
+    public ListTagsQueryHandler(IApplicationDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<ErrorOr<List<TagResponse>>> Handle(
         ListTagsQuery query,
         CancellationToken cancellationToken)
     {
-        var project = await projectsRepository.GetByIdAsync(
-            query.ProjectId,
-            cancellationToken);
+        var tagsQuery = _context.Tags
+            .AsNoTracking()
+            .Where(t => t.ProjectId == query.ProjectId);
 
-        if (project is null)
+        if (!string.IsNullOrWhiteSpace(query.SearchTerm))
         {
-            return ProjectErrors.NotFound;
+            tagsQuery = tagsQuery.Where(t => t.Name.Contains(query.SearchTerm));
         }
 
-        var tags = await tagsRepository.GetByProjectAsync(
-            query.ProjectId,
-            query.SearchTerm,
-            cancellationToken);
+        var tags = await tagsQuery
+            .Select(t => new TagResponse
+            {
+                Id = t.Id,
+                Name = t.Name,
+                CreatedAt = t.CreatedAt,
+                UpdatedAt = t.UpdatedAt,
+            })
+            .ToListAsync(cancellationToken);
 
         return tags;
     }

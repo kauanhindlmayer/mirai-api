@@ -1,8 +1,8 @@
-using Domain.Projects;
+using Application.Projects.Queries.GetProject;
 using ErrorOr;
 using MediatR;
 
 namespace Application.Projects.Queries.ListProjects;
 
 public sealed record ListProjectsQuery(Guid OrganizationId)
-    : IRequest<ErrorOr<List<Project>>>;
+    : IRequest<ErrorOr<List<ProjectResponse>>>;

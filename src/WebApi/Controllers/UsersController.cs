@@ -79,9 +79,7 @@ public class UsersController(ISender sender) : ApiController
 
         var result = await sender.Send(query, cancellationToken);
 
-        return result.Match(
-            user => Ok(ToDto(user)),
-            Problem);
+        return result.Match(Ok, Problem);
     }
 
     /// <summary>
@@ -125,16 +123,5 @@ public class UsersController(ISender sender) : ApiController
         return result.Match(
             _ => Ok(),
             Problem);
-    }
-
-    private static UserResponse ToDto(User user)
-    {
-        return new(
-            user.Id,
-            user.Email,
-            user.FirstName,
-            user.LastName,
-            user.FullName,
-            user.ImageUrl);
     }
 }

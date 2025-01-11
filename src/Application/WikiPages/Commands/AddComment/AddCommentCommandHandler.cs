@@ -6,16 +6,24 @@ using MediatR;
 
 namespace Application.WikiPages.Commands.AddComment;
 
-internal sealed class AddCommentCommandHandler(
-    IWikiPagesRepository wikiPagesRepository,
-    IUserContext userContext)
-    : IRequestHandler<AddCommentCommand, ErrorOr<WikiPageComment>>
+internal sealed class AddCommentCommandHandler : IRequestHandler<AddCommentCommand, ErrorOr<Guid>>
 {
-    public async Task<ErrorOr<WikiPageComment>> Handle(
+    private readonly IWikiPagesRepository _wikiPagesRepository;
+    private readonly IUserContext _userContext;
+
+    public AddCommentCommandHandler(
+        IWikiPagesRepository wikiPagesRepository,
+        IUserContext userContext)
+    {
+        _wikiPagesRepository = wikiPagesRepository;
+        _userContext = userContext;
+    }
+
+    public async Task<ErrorOr<Guid>> Handle(
         AddCommentCommand command,
         CancellationToken cancellationToken)
     {
-        var wikiPage = await wikiPagesRepository.GetByIdAsync(
+        var wikiPage = await _wikiPagesRepository.GetByIdAsync(
             command.WikiPageId,
             cancellationToken);
 
@@ -26,12 +34,12 @@ internal sealed class AddCommentCommandHandler(
 
         var comment = new WikiPageComment(
             wikiPage.Id,
-            userContext.UserId,
+            _userContext.UserId,
             command.Content);
 
         wikiPage.AddComment(comment);
-        wikiPagesRepository.Update(wikiPage);
+        _wikiPagesRepository.Update(wikiPage);
 
-        return comment;
+        return comment.Id;
     }
 }

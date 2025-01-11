@@ -5,14 +5,20 @@ using MediatR;
 
 namespace Application.Boards.Commands.MoveCard;
 
-internal sealed class MoveCardCommandHandler(IBoardsRepository boardRepository)
-    : IRequestHandler<MoveCardCommand, ErrorOr<Success>>
+internal sealed class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, ErrorOr<Success>>
 {
+    private readonly IBoardsRepository _boardsRepository;
+
+    public MoveCardCommandHandler(IBoardsRepository boardsRepository)
+    {
+        _boardsRepository = boardsRepository;
+    }
+
     public async Task<ErrorOr<Success>> Handle(
         MoveCardCommand command,
         CancellationToken cancellationToken)
     {
-        var board = await boardRepository.GetByIdWithCardsAsync(
+        var board = await _boardsRepository.GetByIdWithCardsAsync(
             command.BoardId,
             cancellationToken);
 
@@ -42,7 +48,7 @@ internal sealed class MoveCardCommandHandler(IBoardsRepository boardRepository)
             return result.Errors;
         }
 
-        boardRepository.Update(board);
+        _boardsRepository.Update(board);
 
         return Result.Success;
     }

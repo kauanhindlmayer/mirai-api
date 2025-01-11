@@ -3,30 +3,43 @@ using Domain.Projects;
 using Domain.WikiPages;
 using ErrorOr;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.WikiPages.Queries.ListWikiPages;
 
-internal sealed class ListWikiPagesQueryHandler(IProjectsRepository projectsRepository)
-    : IRequestHandler<ListWikiPagesQuery, ErrorOr<List<WikiPage>>>
+internal sealed class ListWikiPagesQueryHandler
+    : IRequestHandler<ListWikiPagesQuery, ErrorOr<List<WikiPageBriefResponse>>>
 {
-    public async Task<ErrorOr<List<WikiPage>>> Handle(
+    private readonly IApplicationDbContext _context;
+
+    public ListWikiPagesQueryHandler(IApplicationDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<ErrorOr<List<WikiPageBriefResponse>>> Handle(
         ListWikiPagesQuery query,
         CancellationToken cancellationToken)
     {
-        var project = await projectsRepository.GetByIdWithWikiPagesAsync(
-            query.ProjectId,
-            cancellationToken);
-
-        if (project is null)
-        {
-            return ProjectErrors.NotFound;
-        }
-
-        var rootPages = project.WikiPages
-            .Where(page => page.ParentWikiPageId is null)
-            .OrderBy(page => page.Position)
-            .ToList();
+        var rootPages = await _context.WikiPages
+            .AsNoTracking()
+            .Where(wp => wp.ProjectId == query.ProjectId &&
+                         wp.ParentWikiPageId == null)
+            .Select(wp => ToDto(wp))
+            .OrderBy(wp => wp.Position)
+            .ToListAsync(cancellationToken);
 
         return rootPages;
+    }
+
+    private static WikiPageBriefResponse ToDto(WikiPage wikiPage)
+    {
+        return new WikiPageBriefResponse
+        {
+            Id = wikiPage.Id,
+            Title = wikiPage.Title,
+            Position = wikiPage.Position,
+            SubPages = wikiPage.SubWikiPages.Select(ToDto),
+        };
     }
 }

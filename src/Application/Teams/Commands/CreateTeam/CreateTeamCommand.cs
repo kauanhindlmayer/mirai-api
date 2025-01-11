@@ -6,4 +6,4 @@ namespace Application.Teams.Commands.CreateTeam;
 
 public sealed record CreateTeamCommand(
     Guid ProjectId,
-    string Name) : IRequest<ErrorOr<Team>>;
+    string Name) : IRequest<ErrorOr<Guid>>;

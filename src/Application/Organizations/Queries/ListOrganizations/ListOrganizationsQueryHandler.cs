@@ -1,18 +1,33 @@
 using Application.Common.Interfaces.Persistence;
-using Domain.Organizations;
 using ErrorOr;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Organizations.Queries.ListOrganizations;
 
-internal sealed class ListOrganizationsQueryHandler(
-    IOrganizationsRepository organizationsRepository)
-    : IRequestHandler<ListOrganizationsQuery, ErrorOr<List<Organization>>>
+internal sealed class ListOrganizationsQueryHandler
+    : IRequestHandler<ListOrganizationsQuery, ErrorOr<List<OrganizationBriefResponse>>>
 {
-    public async Task<ErrorOr<List<Organization>>> Handle(
+    private readonly IApplicationDbContext _context;
+
+    public ListOrganizationsQueryHandler(IApplicationDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<ErrorOr<List<OrganizationBriefResponse>>> Handle(
         ListOrganizationsQuery request,
         CancellationToken cancellationToken)
     {
-        return await organizationsRepository.ListAsync(cancellationToken);
+        var organizations = await _context.Organizations
+            .AsNoTracking()
+            .Select(o => new OrganizationBriefResponse
+            {
+                Id = o.Id,
+                Name = o.Name,
+            })
+            .ToListAsync(cancellationToken);
+
+        return organizations;
     }
 }

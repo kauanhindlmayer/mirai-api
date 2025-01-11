@@ -32,7 +32,7 @@ public class CreateProjectTests
         var result = await _handler.Handle(Command, CancellationToken.None);
 
         // Assert
-        result.Should().BeOfType<ErrorOr<Project>>();
+        result.Should().BeOfType<ErrorOr<Guid>>();
         result.FirstError.Should().Be(OrganizationErrors.NotFound);
     }
 
@@ -49,10 +49,8 @@ public class CreateProjectTests
         var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        result.Should().BeOfType<ErrorOr<Project>>();
-        result.Value.Name.Should().Be(command.Name);
-        result.Value.Description.Should().Be(command.Description);
-        result.Value.OrganizationId.Should().Be(organization.Id);
+        result.Should().BeOfType<ErrorOr<Guid>>();
+        result.Value.Should().NotBeEmpty();
     }
 
     [Fact]
@@ -70,7 +68,7 @@ public class CreateProjectTests
         var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        result.Should().BeOfType<ErrorOr<Project>>();
+        result.Should().BeOfType<ErrorOr<Guid>>();
         result.FirstError.Should().Be(ProjectErrors.AlreadyExists);
     }
 }

@@ -6,16 +6,24 @@ using MediatR;
 
 namespace Application.WorkItems.Commands.AddTag;
 
-internal sealed class AddTagCommandHandler(
-    IWorkItemsRepository workItemsRepository,
-    ITagsRepository tagsRepository)
-    : IRequestHandler<AddTagCommand, ErrorOr<Success>>
+internal sealed class AddTagCommandHandler : IRequestHandler<AddTagCommand, ErrorOr<Success>>
 {
+    private readonly IWorkItemsRepository _workItemsRepository;
+    private readonly ITagsRepository _tagsRepository;
+
+    public AddTagCommandHandler(
+        IWorkItemsRepository workItemsRepository,
+        ITagsRepository tagsRepository)
+    {
+        _workItemsRepository = workItemsRepository;
+        _tagsRepository = tagsRepository;
+    }
+
     public async Task<ErrorOr<Success>> Handle(
         AddTagCommand command,
         CancellationToken cancellationToken)
     {
-        var workItem = await workItemsRepository.GetByIdAsync(
+        var workItem = await _workItemsRepository.GetByIdAsync(
             command.WorkItemId,
             cancellationToken);
 
@@ -24,11 +32,11 @@ internal sealed class AddTagCommandHandler(
             return WorkItemErrors.NotFound;
         }
 
-        var tag = await tagsRepository.GetByNameAsync(command.TagName, cancellationToken)
+        var tag = await _tagsRepository.GetByNameAsync(command.TagName, cancellationToken)
             ?? new Tag(command.TagName);
 
         workItem.AddTag(tag);
-        workItemsRepository.Update(workItem);
+        _workItemsRepository.Update(workItem);
 
         return Result.Success;
     }

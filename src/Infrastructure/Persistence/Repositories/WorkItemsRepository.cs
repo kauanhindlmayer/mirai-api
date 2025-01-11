@@ -37,40 +37,6 @@ internal sealed class WorkItemsRepository : Repository<WorkItem>, IWorkItemsRepo
         return workItemCount + 1;
     }
 
-    public Task<PaginatedList<WorkItem>> PaginatedListAsync(
-        Guid projectId,
-        int pageNumber,
-        int pageSize,
-        string? sortField,
-        string? sortOrder,
-        string? searchTerm,
-        CancellationToken cancellationToken = default)
-    {
-        var query = _dbContext.WorkItems
-            .AsNoTracking()
-            .Where(wi => wi.ProjectId == projectId);
-
-        if (!string.IsNullOrWhiteSpace(searchTerm))
-        {
-            query = query.Where(wi => wi.Title.ToLower().Contains(searchTerm.ToLower()));
-        }
-
-        if (sortOrder?.ToLower() == "desc")
-        {
-            query = query.OrderByDescending(GetSortProperty(sortField));
-        }
-        else
-        {
-            query = query.OrderBy(GetSortProperty(sortField));
-        }
-
-        return PaginatedList<WorkItem>.CreateAsync(
-            query,
-            pageNumber,
-            pageSize,
-            cancellationToken);
-    }
-
     public Task<List<WorkItem>> SearchAsync(
         Guid projectId,
         float[] searchTermEmbedding,
@@ -85,17 +51,5 @@ internal sealed class WorkItemsRepository : Repository<WorkItem>, IWorkItemsRepo
             .OrderBy(wi => wi.SearchVector!.CosineDistance(searchTermVector))
             .Take(topK)
             .ToListAsync(cancellationToken);
-    }
-
-    private static Expression<Func<WorkItem, object>> GetSortProperty(string? sortField)
-    {
-        return sortField?.ToLower() switch
-        {
-            "title" => wi => wi.Title,
-            "status" => wi => wi.Status,
-            "type" => wi => wi.Type,
-            "activityDate" => wi => wi.UpdatedAt ?? wi.CreatedAt,
-            _ => wi => wi.Code,
-        };
     }
 }

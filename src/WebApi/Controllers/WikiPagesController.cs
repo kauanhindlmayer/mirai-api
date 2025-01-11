@@ -28,7 +28,7 @@ public class WikiPagesController(ISender sender) : ApiController
     /// <param name="projectId">The ID of the project to create the wiki page in.</param>
     /// <param name="request">The details of the wiki page to create.</param>
     [HttpPost]
-    [ProducesResponseType(typeof(WikiPageResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateWikiPage(
         Guid projectId,
@@ -44,10 +44,10 @@ public class WikiPagesController(ISender sender) : ApiController
         var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
-            wikiPage => CreatedAtAction(
-                actionName: nameof(GetWikiPage),
-                routeValues: new { ProjectId = projectId, WikiPageId = wikiPage.Id },
-                value: ToSummaryDto(wikiPage)),
+            wikiPageId => CreatedAtAction(
+                nameof(GetWikiPage),
+                new { ProjectId = projectId, WikiPageId = wikiPageId },
+                wikiPageId),
             Problem);
     }
 
@@ -66,9 +66,7 @@ public class WikiPagesController(ISender sender) : ApiController
 
         var result = await sender.Send(query, cancellationToken);
 
-        return result.Match(
-            wikiPage => Ok(ToDto(wikiPage)),
-            Problem);
+        return result.Match(Ok, Problem);
     }
 
     /// <summary>
@@ -90,9 +88,7 @@ public class WikiPagesController(ISender sender) : ApiController
 
         var result = await sender.Send(query, cancellationToken);
 
-        return result.Match(
-            stats => Ok(ToDto(stats)),
-            Problem);
+        return result.Match(Ok, Problem);
     }
 
     /// <summary>
@@ -100,7 +96,7 @@ public class WikiPagesController(ISender sender) : ApiController
     /// </summary>
     /// <param name="projectId">The ID of the project to list wiki pages for.</param>
     [HttpGet]
-    [ProducesResponseType(typeof(List<WikiPageSummaryResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(List<WikiPageBriefResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> ListWikiPages(
         Guid projectId,
         CancellationToken cancellationToken)
@@ -109,9 +105,7 @@ public class WikiPagesController(ISender sender) : ApiController
 
         var result = await sender.Send(query, cancellationToken);
 
-        return result.Match(
-            wikiPages => Ok(wikiPages.ConvertAll(ToSummaryDto)),
-            Problem);
+        return result.Match(Ok, Problem);
     }
 
     /// <summary>
@@ -121,7 +115,7 @@ public class WikiPagesController(ISender sender) : ApiController
     /// <param name="wikiPageId">The ID of the wiki page to add a comment to.</param>
     /// <param name="request">The details of the comment to add.</param>
     [HttpPost("{wikiPageId:guid}/comments")]
-    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddComment(
@@ -135,10 +129,10 @@ public class WikiPagesController(ISender sender) : ApiController
         var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
-            _ => CreatedAtAction(
-                actionName: nameof(GetWikiPage),
-                routeValues: new { ProjectId = projectId, WikiPageId = wikiPageId },
-                value: null),
+            commentId => CreatedAtAction(
+                nameof(GetWikiPage),
+                new { ProjectId = projectId, WikiPageId = wikiPageId },
+                commentId),
             Problem);
     }
 
@@ -190,7 +184,7 @@ public class WikiPagesController(ISender sender) : ApiController
     /// <param name="wikiPageId">The ID of the wiki page to update.</param>
     /// <param name="request">The details of the wiki page to update.</param>
     [HttpPut("{wikiPageId:guid}")]
-    [ProducesResponseType(typeof(WikiPageResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateWikiPage(
         Guid wikiPageId,
@@ -205,7 +199,7 @@ public class WikiPagesController(ISender sender) : ApiController
         var result = await sender.Send(command, cancellationToken);
 
         return result.Match(
-            wikiPage => Ok(ToSummaryDto(wikiPage)),
+            _ => Ok(wikiPageId),
             Problem);
     }
 
@@ -236,49 +230,5 @@ public class WikiPagesController(ISender sender) : ApiController
         return result.Match(
             _ => NoContent(),
             Problem);
-    }
-
-    private static WikiPageResponse ToDto(WikiPage wikiPage)
-    {
-        return new(
-            wikiPage.Id,
-            wikiPage.ProjectId,
-            wikiPage.Title,
-            wikiPage.Content,
-            ToDto(wikiPage.Author),
-            wikiPage.Comments.Select(ToCommentDto).ToList(),
-            wikiPage.CreatedAt,
-            wikiPage.UpdatedAt);
-    }
-
-    private static WikiPageCommentResponse ToCommentDto(WikiPageComment comment)
-    {
-        return new(
-            comment.Id,
-            ToDto(comment.Author),
-            comment.Content,
-            comment.CreatedAt,
-            comment.UpdatedAt);
-    }
-
-    private static AuthorResponse ToDto(User author)
-    {
-        return new(
-            author.FullName,
-            author.ImageUrl);
-    }
-
-    private static WikiPageSummaryResponse ToSummaryDto(WikiPage wikiPage)
-    {
-        return new(
-            wikiPage.Id,
-            wikiPage.Title,
-            wikiPage.Position,
-            wikiPage.SubWikiPages.Select(ToSummaryDto).ToList());
-    }
-
-    private static WikiPageStatsResponse ToDto(WikiPageStats stats)
-    {
-        return new(stats.Views);
     }
 }

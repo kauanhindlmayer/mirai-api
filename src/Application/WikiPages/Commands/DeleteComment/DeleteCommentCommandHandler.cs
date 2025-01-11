@@ -5,15 +5,20 @@ using MediatR;
 
 namespace Application.WikiPages.Commands.DeleteComment;
 
-internal sealed class DeleteCommentCommandHandler(
-    IWikiPagesRepository wikiPagesRepository)
-    : IRequestHandler<DeleteCommentCommand, ErrorOr<Success>>
+internal sealed class DeleteCommentCommandHandler : IRequestHandler<DeleteCommentCommand, ErrorOr<Success>>
 {
+    private readonly IWikiPagesRepository _wikiPagesRepository;
+
+    public DeleteCommentCommandHandler(IWikiPagesRepository wikiPagesRepository)
+    {
+        _wikiPagesRepository = wikiPagesRepository;
+    }
+
     public async Task<ErrorOr<Success>> Handle(
         DeleteCommentCommand command,
         CancellationToken cancellationToken)
     {
-        var wikiPage = await wikiPagesRepository.GetByIdWithCommentsAsync(
+        var wikiPage = await _wikiPagesRepository.GetByIdWithCommentsAsync(
             command.WikiPageId,
             cancellationToken);
 
@@ -28,7 +33,7 @@ internal sealed class DeleteCommentCommandHandler(
             return result.Errors;
         }
 
-        wikiPagesRepository.Update(wikiPage);
+        _wikiPagesRepository.Update(wikiPage);
 
         return Result.Success;
     }

@@ -6,22 +6,30 @@ using MediatR;
 
 namespace Application.WorkItems.Queries.SearchWorkItems;
 
-internal sealed class SearchWorkItemsQueryHandler(
-    IEmbeddingService embeddingService,
-    IWorkItemsRepository workItemsRepository)
-    : IRequestHandler<SearchWorkItemsQuery, ErrorOr<List<WorkItem>>>
+internal sealed class SearchWorkItemsQueryHandler : IRequestHandler<SearchWorkItemsQuery, ErrorOr<List<WorkItem>>>
 {
+    private readonly IEmbeddingService _embeddingService;
+    private readonly IWorkItemsRepository _workItemsRepository;
+
+    public SearchWorkItemsQueryHandler(
+        IEmbeddingService embeddingService,
+        IWorkItemsRepository workItemsRepository)
+    {
+        _embeddingService = embeddingService;
+        _workItemsRepository = workItemsRepository;
+    }
+
     public async Task<ErrorOr<List<WorkItem>>> Handle(
         SearchWorkItemsQuery query,
         CancellationToken cancellationToken)
     {
-        var embeddingResult = await embeddingService.GenerateEmbeddingAsync(query.SearchTerm);
+        var embeddingResult = await _embeddingService.GenerateEmbeddingAsync(query.SearchTerm);
         if (embeddingResult.IsError)
         {
             return embeddingResult.Errors;
         }
 
-        var workItems = await workItemsRepository.SearchAsync(
+        var workItems = await _workItemsRepository.SearchAsync(
             query.ProjectId,
             embeddingResult.Value,
             cancellationToken: cancellationToken);
