@@ -5,10 +5,15 @@ using Infrastructure.Authentication.Models;
 
 namespace Infrastructure.Authentication;
 
-internal sealed class AuthenticationService(HttpClient httpClient) : IAuthenticationService
+internal sealed class AuthenticationService : IAuthenticationService
 {
     private const string PasswordCredentialType = "password";
-    private readonly HttpClient _httpClient = httpClient;
+    private readonly HttpClient _httpClient;
+
+    public AuthenticationService(HttpClient httpClient)
+    {
+        _httpClient = httpClient;
+    }
 
     public async Task<string> RegisterAsync(
         User user,

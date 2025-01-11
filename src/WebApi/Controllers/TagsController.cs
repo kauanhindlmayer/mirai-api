@@ -41,7 +41,7 @@ public class TagsController(ISender sender) : ApiController
     /// <param name="projectId">The project ID.</param>
     /// <param name="searchTerm">The search term to filter tags by name.</param>
     [HttpGet]
-    [ProducesResponseType(typeof(List<TagResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IReadOnlyList<TagResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ListTags(
         Guid projectId,

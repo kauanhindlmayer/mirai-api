@@ -1,4 +1,4 @@
-namespace Application.WorkItems.Queries.ListWorkItems;
+namespace Application.WorkItems.Queries.SearchWorkItems;
 
 public sealed class WorkItemBriefResponse
 {

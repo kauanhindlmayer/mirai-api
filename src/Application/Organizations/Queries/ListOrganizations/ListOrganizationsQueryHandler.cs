@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Application.Organizations.Queries.ListOrganizations;
 
 internal sealed class ListOrganizationsQueryHandler
-    : IRequestHandler<ListOrganizationsQuery, ErrorOr<List<OrganizationBriefResponse>>>
+    : IRequestHandler<ListOrganizationsQuery, ErrorOr<IReadOnlyList<OrganizationBriefResponse>>>
 {
     private readonly IApplicationDbContext _context;
 
@@ -15,7 +15,7 @@ internal sealed class ListOrganizationsQueryHandler
         _context = context;
     }
 
-    public async Task<ErrorOr<List<OrganizationBriefResponse>>> Handle(
+    public async Task<ErrorOr<IReadOnlyList<OrganizationBriefResponse>>> Handle(
         ListOrganizationsQuery request,
         CancellationToken cancellationToken)
     {

@@ -37,13 +37,4 @@ public sealed class PaginatedList<T>
 
         return new PaginatedList<T>(totalCount, pageNumber, pageSize, items);
     }
-
-    public PaginatedList<TOutput> Map<TOutput>(Func<T, TOutput> map)
-    {
-        return new PaginatedList<TOutput>(
-            TotalCount,
-            PageNumber,
-            PageSize,
-            Items.Select(map).ToList());
-    }
 }

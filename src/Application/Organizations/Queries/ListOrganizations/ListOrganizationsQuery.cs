@@ -4,7 +4,7 @@ using ErrorOr;
 
 namespace Application.Organizations.Queries.ListOrganizations;
 
-public sealed record ListOrganizationsQuery : ICachedQuery<ErrorOr<List<OrganizationBriefResponse>>>
+public sealed record ListOrganizationsQuery : ICachedQuery<ErrorOr<IReadOnlyList<OrganizationBriefResponse>>>
 {
     public string CacheKey => CacheKeys.GetOrganizationsKey();
 

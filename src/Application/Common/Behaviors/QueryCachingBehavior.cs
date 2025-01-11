@@ -5,19 +5,27 @@ using Microsoft.Extensions.Logging;
 
 namespace Application.Common.Behaviors;
 
-internal sealed class QueryCachingBehavior<TRequest, TResponse>(
-    ICacheService cacheService,
-    ILogger<QueryCachingBehavior<TRequest, TResponse>> logger)
-    : IPipelineBehavior<TRequest, TResponse>
+internal sealed class QueryCachingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : ICachedQuery
     where TResponse : IErrorOr
 {
+    private readonly ICacheService _cacheService;
+    private readonly ILogger<QueryCachingBehavior<TRequest, TResponse>> _logger;
+
+    public QueryCachingBehavior(
+        ICacheService cacheService,
+        ILogger<QueryCachingBehavior<TRequest, TResponse>> logger)
+    {
+        _cacheService = cacheService;
+        _logger = logger;
+    }
+
     public async Task<TResponse> Handle(
         TRequest request,
         RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
     {
-        var cachedResult = await cacheService.GetAsync<TResponse>(
+        var cachedResult = await _cacheService.GetAsync<TResponse>(
             request.CacheKey,
             cancellationToken);
 
@@ -25,20 +33,19 @@ internal sealed class QueryCachingBehavior<TRequest, TResponse>(
 
         if (IsValidCachedResult(cachedResult))
         {
-            logger.LogInformation("Cache hit for query {@QueryName}", queryName);
+            _logger.LogInformation("Cache hit for query {@QueryName}", queryName);
             return cachedResult!;
         }
 
-        logger.LogInformation("Cache miss for query {@QueryName}", queryName);
+        _logger.LogInformation("Cache miss for query {@QueryName}", queryName);
 
         var result = await next();
-
         if (result.IsError)
         {
             return result;
         }
 
-        await cacheService.SetAsync(
+        await _cacheService.SetAsync(
             request.CacheKey,
             result,
             request.Expiration,

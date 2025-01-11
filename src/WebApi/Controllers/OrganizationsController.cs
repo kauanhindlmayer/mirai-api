@@ -61,7 +61,7 @@ public class OrganizationsController(ISender sender) : ApiController
     /// List all organizations.
     /// </summary>
     [HttpGet]
-    [ProducesResponseType(typeof(List<OrganizationBriefResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IReadOnlyList<OrganizationBriefResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> ListOrganizations(CancellationToken cancellationToken)
     {
         var query = new ListOrganizationsQuery();

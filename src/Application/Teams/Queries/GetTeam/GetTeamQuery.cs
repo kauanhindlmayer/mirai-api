@@ -1,4 +1,3 @@
-using Domain.Teams;
 using ErrorOr;
 using MediatR;
 

@@ -2,7 +2,6 @@ using Application.Common.Interfaces.Persistence;
 using Domain.Boards;
 using Domain.Users;
 using Domain.WorkItems;
-using Domain.WorkItems.Enums;
 using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

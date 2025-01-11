@@ -6,10 +6,14 @@ using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Authentication;
 
-internal sealed class AdminAuthorizationDelegatingHandler(IOptions<KeycloakOptions> keycloakOptions)
-    : DelegatingHandler
+internal sealed class AdminAuthorizationDelegatingHandler : DelegatingHandler
 {
-    private readonly KeycloakOptions _keycloakOptions = keycloakOptions.Value;
+    private readonly KeycloakOptions _keycloakOptions;
+
+    public AdminAuthorizationDelegatingHandler(IOptions<KeycloakOptions> keycloakOptions)
+    {
+        _keycloakOptions = keycloakOptions.Value;
+    }
 
     protected override async Task<HttpResponseMessage> SendAsync(
         HttpRequestMessage request,

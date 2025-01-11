@@ -64,7 +64,7 @@ public class ProjectsController(ISender sender) : ApiController
     /// </summary>
     /// <param name="organizationId">The organization ID.</param>
     [HttpGet]
-    [ProducesResponseType(typeof(List<ProjectResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IReadOnlyList<ProjectResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ListProjects(
         Guid organizationId,

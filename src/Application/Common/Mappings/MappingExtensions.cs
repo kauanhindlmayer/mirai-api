@@ -11,6 +11,10 @@ public static class MappingExtensions
         CancellationToken cancellationToken)
         where TDestination : class
     {
-        return PaginatedList<TDestination>.CreateAsync(queryable.AsNoTracking(), pageNumber, pageSize, cancellationToken);
+        return PaginatedList<TDestination>.CreateAsync(
+            queryable.AsNoTracking(),
+            pageNumber,
+            pageSize,
+            cancellationToken);
     }
 }

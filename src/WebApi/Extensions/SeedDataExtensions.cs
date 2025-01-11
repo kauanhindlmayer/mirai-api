@@ -74,7 +74,7 @@ public static class SeedDataExtensions
         var projectFaker = new Faker<Project>()
             .RuleFor(p => p.Name, f => f.Commerce.ProductName())
             .RuleFor(p => p.Description, f => f.Commerce.ProductDescription())
-            .RuleFor(p => p.OrganizationId, f => organization.Id);
+            .RuleFor(p => p.OrganizationId, _ => organization.Id);
 
         return projectFaker.Generate(count);
     }
@@ -84,11 +84,11 @@ public static class SeedDataExtensions
         var workItemCode = 1;
 
         var workItemFaker = new Faker<WorkItem>()
-            .RuleFor(wi => wi.Code, f => workItemCode++)
+            .RuleFor(wi => wi.Code, _ => workItemCode++)
             .RuleFor(wi => wi.Title, f => f.Random.Words(3))
             .RuleFor(wi => wi.Description, f => f.Lorem.Paragraph())
             .RuleFor(wi => wi.AcceptanceCriteria, f => f.Lorem.Paragraph())
-            .RuleFor(wi => wi.ProjectId, f => project.Id)
+            .RuleFor(wi => wi.ProjectId, _ => project.Id)
             .RuleFor(wi => wi.Type, f => f.PickRandom<WorkItemType>(WorkItemType.List))
             .RuleFor(wi => wi.Status, f => f.PickRandom<WorkItemStatus>(WorkItemStatus.List));
 
@@ -109,17 +109,17 @@ public static class SeedDataExtensions
         var wikiPageFaker = new Faker<WikiPage>()
             .RuleFor(wp => wp.Title, f => f.Lorem.Sentence())
             .RuleFor(wp => wp.Content, f => f.Lorem.Paragraph())
-            .RuleFor(wp => wp.Position, f => position++)
-            .RuleFor(wp => wp.AuthorId, f => author.Id)
-            .RuleFor(wp => wp.ProjectId, f => project.Id)
-            .RuleFor(wp => wp.SubWikiPages, f => GenerateSubWikiPages(
+            .RuleFor(wp => wp.Position, _ => position++)
+            .RuleFor(wp => wp.AuthorId, _ => author.Id)
+            .RuleFor(wp => wp.ProjectId, _ => project.Id)
+            .RuleFor(wp => wp.SubWikiPages, _ => GenerateSubWikiPages(
                 project,
                 users,
                 random.Next(1, 4),
                 maxDepth,
                 currentDepth + 1))
-            .RuleFor(wp => wp.CreatedAt, f => DateTime.UtcNow)
-            .RuleFor(wp => wp.UpdatedAt, f => DateTime.UtcNow);
+            .RuleFor(wp => wp.CreatedAt, _ => DateTime.UtcNow)
+            .RuleFor(wp => wp.UpdatedAt, _ => DateTime.UtcNow);
 
         return wikiPageFaker.Generate(count);
     }

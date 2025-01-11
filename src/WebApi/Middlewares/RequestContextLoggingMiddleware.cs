@@ -2,10 +2,15 @@ using Serilog.Context;
 
 namespace WebApi.Middlewares;
 
-internal sealed class RequestContextLoggingMiddleware(RequestDelegate next)
+internal sealed class RequestContextLoggingMiddleware
 {
     private const string CorrelationIdHeaderName = "X-Correlation-ID";
-    private readonly RequestDelegate _next = next;
+    private readonly RequestDelegate _next;
+
+    public RequestContextLoggingMiddleware(RequestDelegate next)
+    {
+        _next = next;
+    }
 
     public async Task InvokeAsync(HttpContext httpContext)
     {

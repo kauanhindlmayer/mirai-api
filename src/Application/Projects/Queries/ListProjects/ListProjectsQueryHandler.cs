@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Projects.Queries.ListProjects;
 
-internal sealed class ListProjectsQueryHandler : IRequestHandler<ListProjectsQuery, ErrorOr<List<ProjectResponse>>>
+internal sealed class ListProjectsQueryHandler : IRequestHandler<ListProjectsQuery, ErrorOr<IReadOnlyList<ProjectResponse>>>
 {
     private readonly IApplicationDbContext _context;
 
@@ -17,7 +17,7 @@ internal sealed class ListProjectsQueryHandler : IRequestHandler<ListProjectsQue
         _context = context;
     }
 
-    public async Task<ErrorOr<List<ProjectResponse>>> Handle(
+    public async Task<ErrorOr<IReadOnlyList<ProjectResponse>>> Handle(
         ListProjectsQuery query,
         CancellationToken cancellationToken)
     {

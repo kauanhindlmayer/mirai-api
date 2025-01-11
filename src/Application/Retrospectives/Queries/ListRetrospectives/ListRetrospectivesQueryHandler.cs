@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Application.Retrospectives.Queries.ListRetrospectives;
 
 internal sealed class ListRetrospectivesQueryHandler
-    : IRequestHandler<ListRetrospectivesQuery, ErrorOr<List<RetrospectiveBriefResponse>>>
+    : IRequestHandler<ListRetrospectivesQuery, ErrorOr<IReadOnlyList<RetrospectiveBriefResponse>>>
 {
     private readonly IApplicationDbContext _context;
 
@@ -17,7 +17,7 @@ internal sealed class ListRetrospectivesQueryHandler
         _context = context;
     }
 
-    public async Task<ErrorOr<List<RetrospectiveBriefResponse>>> Handle(
+    public async Task<ErrorOr<IReadOnlyList<RetrospectiveBriefResponse>>> Handle(
         ListRetrospectivesQuery query,
         CancellationToken cancellationToken)
     {

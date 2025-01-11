@@ -70,7 +70,7 @@ public class BoardsController(ISender sender) : ApiController
     /// <returns>A list of all boards.</returns>
     /// <param name="projectId">The ID of the project to list boards for.</param>
     [HttpGet]
-    [ProducesResponseType(typeof(List<BoardResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IReadOnlyList<BoardResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ListBoards(
         Guid projectId,

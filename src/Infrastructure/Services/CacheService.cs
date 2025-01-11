@@ -5,13 +5,20 @@ using Microsoft.Extensions.Caching.Distributed;
 
 namespace Infrastructure.Services;
 
-internal sealed class CacheService(IDistributedCache cache) : ICacheService
+internal sealed class CacheService : ICacheService
 {
+    private readonly IDistributedCache _cache;
+
+    public CacheService(IDistributedCache cache)
+    {
+        _cache = cache;
+    }
+
     public async Task<T?> GetAsync<T>(
         string key,
         CancellationToken cancellationToken = default)
     {
-        var bytes = await cache.GetAsync(key, cancellationToken);
+        var bytes = await _cache.GetAsync(key, cancellationToken);
         return bytes is null ? default : Deserialize<T>(bytes);
     }
 
@@ -23,7 +30,7 @@ internal sealed class CacheService(IDistributedCache cache) : ICacheService
     {
         byte[] bytes = Serialize(value);
 
-        return cache.SetAsync(
+        return _cache.SetAsync(
             key,
             bytes,
             CacheOptions.Create(expiration),
@@ -34,7 +41,7 @@ internal sealed class CacheService(IDistributedCache cache) : ICacheService
         string key,
         CancellationToken cancellationToken = default)
     {
-        return cache.RemoveAsync(key, cancellationToken);
+        return _cache.RemoveAsync(key, cancellationToken);
     }
 
     private static T Deserialize<T>(byte[] bytes)

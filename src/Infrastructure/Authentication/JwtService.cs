@@ -7,12 +7,18 @@ using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Authentication;
 
-internal sealed class JwtService(
-    HttpClient httpClient,
-    IOptions<KeycloakOptions> keycloakOptions) : IJwtService
+internal sealed class JwtService : IJwtService
 {
-    private readonly HttpClient _httpClient = httpClient;
-    private readonly KeycloakOptions _keycloakOptions = keycloakOptions.Value;
+    private readonly HttpClient _httpClient;
+    private readonly KeycloakOptions _keycloakOptions;
+
+    public JwtService(
+        HttpClient httpClient,
+        IOptions<KeycloakOptions> keycloakOptions)
+    {
+        _httpClient = httpClient;
+        _keycloakOptions = keycloakOptions.Value;
+    }
 
     public async Task<ErrorOr<string>> GetAccessTokenAsync(
         string email,

@@ -1,4 +1,3 @@
-using Domain.WikiPages;
 using ErrorOr;
 using MediatR;
 

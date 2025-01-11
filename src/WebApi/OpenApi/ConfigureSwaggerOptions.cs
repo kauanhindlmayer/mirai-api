@@ -5,12 +5,18 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace WebApi.OpenApi;
 
-internal sealed class ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider)
-    : IConfigureNamedOptions<SwaggerGenOptions>
+internal sealed class ConfigureSwaggerOptions : IConfigureNamedOptions<SwaggerGenOptions>
 {
+    private readonly IApiVersionDescriptionProvider _provider;
+
+    public ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider)
+    {
+        _provider = provider;
+    }
+
     public void Configure(SwaggerGenOptions options)
     {
-        foreach (var description in provider.ApiVersionDescriptions)
+        foreach (var description in _provider.ApiVersionDescriptions)
         {
             options.SwaggerDoc(description.GroupName, CreateVersionInfo(description));
         }
@@ -27,7 +33,8 @@ internal sealed class ConfigureSwaggerOptions(IApiVersionDescriptionProvider pro
         {
             Title = $"Mirai.Api v{apiVersionDescription.ApiVersion}",
             Version = apiVersionDescription.ApiVersion.ToString(),
-            Description = "Mirai (Japanese word for \"future\") is a web-based project management tool that aims to help teams collaborate and manage their projects more effectively.",
+            Description = "Mirai (Japanese word for \"future\") is a web-based project management tool that aims to"
+                          + " help teams collaborate and manage their projects more effectively.",
         };
 
         if (apiVersionDescription.IsDeprecated)

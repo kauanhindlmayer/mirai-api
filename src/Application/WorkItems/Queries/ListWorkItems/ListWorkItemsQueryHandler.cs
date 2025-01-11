@@ -2,6 +2,7 @@ using System.Linq.Expressions;
 using Application.Common;
 using Application.Common.Interfaces.Persistence;
 using Application.Common.Mappings;
+using Application.WorkItems.Queries.SearchWorkItems;
 using Domain.WorkItems;
 using ErrorOr;
 using MediatR;

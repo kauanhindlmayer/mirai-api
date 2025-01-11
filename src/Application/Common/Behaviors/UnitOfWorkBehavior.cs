@@ -3,11 +3,16 @@ using MediatR;
 
 namespace Application.Common.Behaviors;
 
-internal sealed class UnitOfWorkBehavior<TRequest, TResponse>(
-    IUnitOfWork unitOfWork)
-    : IPipelineBehavior<TRequest, TResponse>
+internal sealed class UnitOfWorkBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : notnull
 {
+    private readonly IUnitOfWork _unitOfWork;
+
+    public UnitOfWorkBehavior(IUnitOfWork unitOfWork)
+    {
+        _unitOfWork = unitOfWork;
+    }
+
     public async Task<TResponse> Handle(
         TRequest request,
         RequestHandlerDelegate<TResponse> next,
@@ -20,7 +25,7 @@ internal sealed class UnitOfWorkBehavior<TRequest, TResponse>(
 
         var response = await next();
 
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return response;
     }

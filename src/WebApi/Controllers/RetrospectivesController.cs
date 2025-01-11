@@ -154,7 +154,7 @@ public class RetrospectivesController(
     /// </summary>
     /// <param name="teamId">The team ID.</param>
     [HttpGet]
-    [ProducesResponseType(typeof(List<RetrospectiveResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IReadOnlyList<RetrospectiveResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ListRetrospectives(
         Guid teamId,

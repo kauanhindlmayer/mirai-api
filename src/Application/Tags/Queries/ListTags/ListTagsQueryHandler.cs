@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Tags.Queries.ListTags;
 
-internal sealed class ListTagsQueryHandler : IRequestHandler<ListTagsQuery, ErrorOr<List<TagResponse>>>
+internal sealed class ListTagsQueryHandler : IRequestHandler<ListTagsQuery, ErrorOr<IReadOnlyList<TagResponse>>>
 {
     private readonly IApplicationDbContext _context;
 
@@ -14,7 +14,7 @@ internal sealed class ListTagsQueryHandler : IRequestHandler<ListTagsQuery, Erro
         _context = context;
     }
 
-    public async Task<ErrorOr<List<TagResponse>>> Handle(
+    public async Task<ErrorOr<IReadOnlyList<TagResponse>>> Handle(
         ListTagsQuery query,
         CancellationToken cancellationToken)
     {

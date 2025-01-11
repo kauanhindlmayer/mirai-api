@@ -6,24 +6,32 @@ using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Services;
 
-internal sealed class EmbeddingService(
-    HttpClient httpClient,
-    ILogger<EmbeddingService> logger) : IEmbeddingService
+internal sealed class EmbeddingService : IEmbeddingService
 {
-    public const string ErrorMessage = "An error occurred while generating the embedding.";
+    private const string ErrorMessage = "An error occurred while generating the embedding.";
+    private readonly HttpClient _httpClient;
+    private readonly ILogger<EmbeddingService> _logger;
+
+    public EmbeddingService(
+        HttpClient httpClient,
+        ILogger<EmbeddingService> logger)
+    {
+        _httpClient = httpClient;
+        _logger = logger;
+    }
 
     public async Task<ErrorOr<float[]>> GenerateEmbeddingAsync(string text)
     {
         try
         {
             var request = new EmbeddingRequest(text);
-            var response = await httpClient.PostAsJsonAsync("/embed", request);
+            var response = await _httpClient.PostAsJsonAsync("/embed", request);
             var embeddingResponse = await response.Content.ReadFromJsonAsync<EmbeddingResponse>();
             return embeddingResponse!.Embedding;
         }
         catch (Exception exception)
         {
-            logger.LogError(exception, ErrorMessage);
+            _logger.LogError(exception, ErrorMessage);
             return Error.Failure(
                 code: "EmbeddingService.Failure",
                 description: ErrorMessage);

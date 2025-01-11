@@ -3,15 +3,22 @@ using Microsoft.AspNetCore.Http;
 
 namespace Infrastructure.Authentication;
 
-internal sealed class UserContext(IHttpContextAccessor contextAccessor) : IUserContext
+internal sealed class UserContext : IUserContext
 {
+    private readonly IHttpContextAccessor _contextAccessor;
+
+    public UserContext(IHttpContextAccessor contextAccessor)
+    {
+        _contextAccessor = contextAccessor;
+    }
+
     public Guid UserId =>
-        contextAccessor
+        _contextAccessor
             .HttpContext?.User
             .GetUserId() ?? throw new ApplicationException("User context is unavailable");
 
     public string IdentityId =>
-        contextAccessor
+        _contextAccessor
             .HttpContext?.User
             .GetIdentityId() ?? throw new ApplicationException("User context is unavailable");
 }

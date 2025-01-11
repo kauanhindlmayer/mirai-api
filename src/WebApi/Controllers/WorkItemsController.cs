@@ -12,13 +12,9 @@ using Asp.Versioning;
 using Contracts.Common;
 using Contracts.Tags;
 using Contracts.WorkItems;
-using Domain.WorkItems;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using DomainWorkItemStatus = Domain.WorkItems.Enums.WorkItemStatus;
 using DomainWorkItemType = Domain.WorkItems.Enums.WorkItemType;
-using WorkItemStatus = Contracts.Common.WorkItemStatus;
-using WorkItemType = Contracts.Common.WorkItemType;
 
 namespace WebApi.Controllers;
 
@@ -110,7 +106,7 @@ public class WorkItemsController(ISender sender) : ApiController
     /// <param name="projectId">The ID of the project.</param>
     /// <param name="request">The details of the page.</param>
     [HttpGet]
-    [ProducesResponseType(typeof(PaginatedList<WorkItemSummary>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(PaginatedList<WorkItemBriefResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> ListWorkItems(
         Guid projectId,
         [FromQuery] PageRequest request,
@@ -203,7 +199,7 @@ public class WorkItemsController(ISender sender) : ApiController
     /// <param name="projectId">The ID of the project to search work items in.</param>
     /// <param name="searchTerm">The search term to use.</param>
     [HttpGet("search")]
-    [ProducesResponseType(typeof(List<WorkItemResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IReadOnlyList<WorkItemBriefResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> SearchWorkItems(
         Guid projectId,
         string searchTerm,

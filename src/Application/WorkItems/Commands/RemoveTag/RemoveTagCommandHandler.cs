@@ -18,7 +18,7 @@ internal sealed class RemoveTagCommandHandler : IRequestHandler<RemoveTagCommand
         RemoveTagCommand command,
         CancellationToken cancellationToken)
     {
-        var workItem = await _workItemsRepository.GetByIdAsync(
+        var workItem = await _workItemsRepository.GetByIdWithTagsAsync(
             command.WorkItemId,
             cancellationToken);
 

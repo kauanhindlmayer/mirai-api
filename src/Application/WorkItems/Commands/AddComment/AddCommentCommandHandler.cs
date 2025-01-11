@@ -23,7 +23,7 @@ internal sealed class AddCommentCommandHandler : IRequestHandler<AddCommentComma
         AddCommentCommand command,
         CancellationToken cancellationToken)
     {
-        var workItem = await _workItemsRepository.GetByIdAsync(
+        var workItem = await _workItemsRepository.GetByIdWithCommentsAsync(
             command.WorkItemId,
             cancellationToken);
 

@@ -1,5 +1,5 @@
 using Application.Common;
-using Domain.WorkItems;
+using Application.WorkItems.Queries.SearchWorkItems;
 using ErrorOr;
 using MediatR;
 

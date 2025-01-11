@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Application.WikiPages.Queries.ListWikiPages;
 
 internal sealed class ListWikiPagesQueryHandler
-    : IRequestHandler<ListWikiPagesQuery, ErrorOr<List<WikiPageBriefResponse>>>
+    : IRequestHandler<ListWikiPagesQuery, ErrorOr<IReadOnlyList<WikiPageBriefResponse>>>
 {
     private readonly IApplicationDbContext _context;
 
@@ -17,7 +17,7 @@ internal sealed class ListWikiPagesQueryHandler
         _context = context;
     }
 
-    public async Task<ErrorOr<List<WikiPageBriefResponse>>> Handle(
+    public async Task<ErrorOr<IReadOnlyList<WikiPageBriefResponse>>> Handle(
         ListWikiPagesQuery query,
         CancellationToken cancellationToken)
     {

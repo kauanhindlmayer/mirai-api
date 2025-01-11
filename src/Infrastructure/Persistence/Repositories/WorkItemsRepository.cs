@@ -1,10 +1,6 @@
-using System.Linq.Expressions;
-using Application.Common;
 using Application.Common.Interfaces.Persistence;
 using Domain.WorkItems;
 using Microsoft.EntityFrameworkCore;
-using Pgvector;
-using Pgvector.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Repositories;
 
@@ -15,12 +11,20 @@ internal sealed class WorkItemsRepository : Repository<WorkItem>, IWorkItemsRepo
     {
     }
 
-    public new async Task<WorkItem?> GetByIdAsync(
+    public async Task<WorkItem?> GetByIdWithCommentsAsync(
         Guid id,
         CancellationToken cancellationToken = default)
     {
         return await _dbContext.WorkItems
             .Include(wi => wi.Comments)
+            .FirstOrDefaultAsync(wi => wi.Id == id, cancellationToken);
+    }
+
+    public async Task<WorkItem?> GetByIdWithTagsAsync(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.WorkItems
             .Include(wi => wi.Tags)
             .FirstOrDefaultAsync(wi => wi.Id == id, cancellationToken);
     }
@@ -35,21 +39,5 @@ internal sealed class WorkItemsRepository : Repository<WorkItem>, IWorkItemsRepo
             .CountAsync(cancellationToken);
 
         return workItemCount + 1;
-    }
-
-    public Task<List<WorkItem>> SearchAsync(
-        Guid projectId,
-        float[] searchTermEmbedding,
-        int topK = 10,
-        CancellationToken cancellationToken = default)
-    {
-        var searchTermVector = new Vector(searchTermEmbedding);
-
-        return _dbContext.WorkItems
-            .AsNoTracking()
-            .Where(wi => wi.ProjectId == projectId && wi.SearchVector != null)
-            .OrderBy(wi => wi.SearchVector!.CosineDistance(searchTermVector))
-            .Take(topK)
-            .ToListAsync(cancellationToken);
     }
 }

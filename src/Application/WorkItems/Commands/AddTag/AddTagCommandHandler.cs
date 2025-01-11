@@ -23,7 +23,7 @@ internal sealed class AddTagCommandHandler : IRequestHandler<AddTagCommand, Erro
         AddTagCommand command,
         CancellationToken cancellationToken)
     {
-        var workItem = await _workItemsRepository.GetByIdAsync(
+        var workItem = await _workItemsRepository.GetByIdWithTagsAsync(
             command.WorkItemId,
             cancellationToken);
 
