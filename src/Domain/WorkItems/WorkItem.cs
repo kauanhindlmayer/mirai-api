@@ -29,6 +29,7 @@ public sealed class WorkItem : AggregateRoot
     public ICollection<WorkItem> ChildWorkItems { get; private set; } = [];
     public ICollection<Tag> Tags { get; private set; } = [];
     public ICollection<WorkItemComment> Comments { get; private set; } = [];
+    public DateTime? CompletedAt { get; private set; }
 
     public WorkItem(
         Guid projectId,

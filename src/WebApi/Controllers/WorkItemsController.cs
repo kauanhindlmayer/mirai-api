@@ -6,6 +6,7 @@ using Application.WorkItems.Commands.CreateWorkItem;
 using Application.WorkItems.Commands.DeleteWorkItem;
 using Application.WorkItems.Commands.RemoveTag;
 using Application.WorkItems.Queries.GetWorkItem;
+using Application.WorkItems.Queries.GetWorkItemsStats;
 using Application.WorkItems.Queries.ListWorkItems;
 using Application.WorkItems.Queries.SearchWorkItems;
 using Asp.Versioning;
@@ -66,6 +67,27 @@ public class WorkItemsController(ISender sender) : ApiController
         CancellationToken cancellationToken)
     {
         var query = new GetWorkItemQuery(workItemId);
+
+        var result = await sender.Send(query, cancellationToken);
+
+        return result.Match(Ok, Problem);
+    }
+
+    /// <summary>
+    /// Get the stats for work items in a project.
+    /// </summary>
+    /// <param name="projectId">The ID of the project to create the work item in.</param>
+    [HttpGet("stats")]
+    [ProducesResponseType(typeof(WorkItemResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetWorkItemsStats(
+        Guid projectId,
+        [FromQuery] GetWorkItemsStatsRequest request,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetWorkItemsStatsQuery(
+            projectId,
+            request.PeriodInDays);
 
         var result = await sender.Send(query, cancellationToken);
 

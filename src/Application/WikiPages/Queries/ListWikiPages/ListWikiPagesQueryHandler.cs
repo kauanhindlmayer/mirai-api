@@ -25,11 +25,11 @@ internal sealed class ListWikiPagesQueryHandler
             .AsNoTracking()
             .Where(wp => wp.ProjectId == query.ProjectId &&
                          wp.ParentWikiPageId == null)
-            .Select(wp => ToDto(wp))
             .OrderBy(wp => wp.Position)
             .ToListAsync(cancellationToken);
 
-        return rootPages;
+        // Mapping client-side due to non-translatable hierarchical transformations.
+        return rootPages.ConvertAll(ToDto);
     }
 
     private static WikiPageBriefResponse ToDto(WikiPage wikiPage)
