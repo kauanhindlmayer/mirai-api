@@ -26,7 +26,11 @@ public class TagsController(ISender sender) : ApiController
         CreateTagRequest request,
         CancellationToken cancellationToken)
     {
-        var command = new CreateTagCommand(projectId, request.Name);
+        var command = new CreateTagCommand(
+            projectId,
+            request.Name,
+            request.Description,
+            request.Color);
 
         var result = await sender.Send(command, cancellationToken);
 
@@ -67,10 +71,15 @@ public class TagsController(ISender sender) : ApiController
     public async Task<IActionResult> UpdateTag(
         Guid projectId,
         Guid tagId,
-        CreateTagRequest request,
+        UpdateTagRequest request,
         CancellationToken cancellationToken)
     {
-        var command = new UpdateTagCommand(projectId, tagId, request.Name);
+        var command = new UpdateTagCommand(
+            projectId,
+            tagId,
+            request.Name,
+            request.Description,
+            request.Color);
 
         var result = await sender.Send(command, cancellationToken);
 
@@ -83,16 +92,16 @@ public class TagsController(ISender sender) : ApiController
     /// Delete a tag from a project.
     /// </summary>
     /// <param name="projectId">The project ID.</param>
-    /// <param name="tagName">The tag name.</param>
-    [HttpDelete("{tagName}")]
+    /// <param name="tagId">The tag ID.</param>
+    [HttpDelete("{tagId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteTag(
         Guid projectId,
-        string tagName,
+        Guid tagId,
         CancellationToken cancellationToken)
     {
-        var command = new DeleteTagCommand(projectId, tagName);
+        var command = new DeleteTagCommand(projectId, tagId);
 
         var result = await sender.Send(command, cancellationToken);
 

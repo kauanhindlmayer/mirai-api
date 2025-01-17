@@ -5,4 +5,6 @@ namespace Application.Tags.Commands.CreateTag;
 
 public sealed record CreateTagCommand(
     Guid ProjectId,
-    string Name) : IRequest<ErrorOr<Guid>>;
+    string Name,
+    string Description,
+    string Color) : IRequest<ErrorOr<Guid>>;

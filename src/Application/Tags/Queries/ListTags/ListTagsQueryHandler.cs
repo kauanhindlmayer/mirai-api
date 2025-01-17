@@ -32,8 +32,9 @@ internal sealed class ListTagsQueryHandler : IRequestHandler<ListTagsQuery, Erro
             {
                 Id = t.Id,
                 Name = t.Name,
-                CreatedAt = t.CreatedAt,
-                UpdatedAt = t.UpdatedAt,
+                Description = t.Description,
+                Color = t.Color,
+                WorkItemsCount = t.WorkItems.Count,
             })
             .ToListAsync(cancellationToken);
 

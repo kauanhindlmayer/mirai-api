@@ -1,5 +1,6 @@
 using Application.Common.Interfaces.Persistence;
 using Domain.Projects;
+using Domain.Tags;
 using ErrorOr;
 using MediatR;
 
@@ -31,15 +32,19 @@ internal sealed class DeleteTagCommandHandler : IRequestHandler<DeleteTagCommand
             return ProjectErrors.NotFound;
         }
 
-        if (await _tagsRepository.IsTagLinkedToAnyWorkItemsAsync(
-            project.Id,
-            command.TagName,
-            cancellationToken))
+        var tag = project.Tags.FirstOrDefault(t => t.Id == command.TagId);
+        if (tag is null)
         {
-            return ProjectErrors.TagHasWorkItems;
+            return TagErrors.NotFound;
         }
 
-        project.RemoveTag(command.TagName);
+        var result = project.RemoveTag(tag);
+        if (result.IsError)
+        {
+            return result.Errors;
+        }
+
+        _tagsRepository.Remove(tag);
         _projectsRepository.Update(project);
 
         return Result.Success;

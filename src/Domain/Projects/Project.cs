@@ -124,12 +124,11 @@ public sealed class Project : AggregateRoot
         return Result.Success;
     }
 
-    public ErrorOr<Success> RemoveTag(string tagName)
+    public ErrorOr<Success> RemoveTag(Tag tag)
     {
-        var tag = Tags.FirstOrDefault(t => t.Name == tagName);
-        if (tag is null)
+        if (tag.WorkItems.Count > 0)
         {
-            return TagErrors.NotFound;
+            return TagErrors.TagHasWorkItems;
         }
 
         Tags.Remove(tag);

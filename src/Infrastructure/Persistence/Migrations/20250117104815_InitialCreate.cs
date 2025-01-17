@@ -80,6 +80,8 @@ namespace Infrastructure.Persistence.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    Color = table.Column<string>(type: "character varying(7)", maxLength: 7, nullable: false),
                     ProjectId = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
@@ -283,6 +285,7 @@ namespace Infrastructure.Persistence.Migrations
                     AssigneeId = table.Column<Guid>(type: "uuid", nullable: true),
                     ProjectId = table.Column<Guid>(type: "uuid", nullable: false),
                     ParentWorkItemId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CompletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     Classification_ValueArea = table.Column<string>(type: "text", nullable: false),
                     Planning_Priority = table.Column<int>(type: "integer", nullable: true),
                     Planning_StoryPoints = table.Column<int>(type: "integer", nullable: true),

@@ -44,6 +44,7 @@ internal sealed class ProjectsRepository : Repository<Project>, IProjectsReposit
     {
         return await _dbContext.Projects
             .Include(p => p.Tags)
+                .ThenInclude(t => t.WorkItems)
             .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
     }
 

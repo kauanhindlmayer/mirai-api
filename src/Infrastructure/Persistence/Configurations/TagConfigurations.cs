@@ -17,6 +17,12 @@ internal sealed class TagConfigurations : IEntityTypeConfiguration<Tag>
             .HasMaxLength(50)
             .IsRequired();
 
+        builder.Property(t => t.Description)
+            .HasMaxLength(500);
+
+        builder.Property(t => t.Color)
+            .HasMaxLength(7);
+
         builder.HasOne(t => t.Project)
             .WithMany(p => p.Tags)
             .HasForeignKey(t => t.ProjectId)

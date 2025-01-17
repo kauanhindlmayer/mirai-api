@@ -33,7 +33,7 @@ internal sealed class AddTagCommandHandler : IRequestHandler<AddTagCommand, Erro
         }
 
         var tag = await _tagsRepository.GetByNameAsync(command.TagName, cancellationToken)
-            ?? new Tag(command.TagName);
+            ?? new Tag(command.TagName, string.Empty, string.Empty);
 
         workItem.AddTag(tag);
         _workItemsRepository.Update(workItem);

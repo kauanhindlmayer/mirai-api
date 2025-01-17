@@ -175,7 +175,7 @@ public class ProjectTests
         var tag = TagFactory.CreateTag();
 
         // Act
-        var result = project.RemoveTag(tag.Name);
+        var result = project.RemoveTag(tag);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -192,7 +192,7 @@ public class ProjectTests
         project.AddTag(tag);
 
         // Act
-        var result = project.RemoveTag(tag.Name);
+        var result = project.RemoveTag(tag);
 
         // Assert
         result.IsError.Should().BeFalse();

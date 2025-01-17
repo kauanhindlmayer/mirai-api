@@ -34,7 +34,7 @@ internal sealed class UpdateTagCommandHandler : IRequestHandler<UpdateTagCommand
             return TagErrors.NotFound;
         }
 
-        tag.UpdateName(command.Name);
+        tag.Update(command.Name, command.Description, command.Color);
         _projectsRepository.Update(project);
 
         return tag.Id;

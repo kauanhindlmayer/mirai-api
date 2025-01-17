@@ -28,7 +28,10 @@ internal sealed class CreateTagCommandHandler : IRequestHandler<CreateTagCommand
             return ProjectErrors.NotFound;
         }
 
-        var tag = new Tag(command.Name);
+        var tag = new Tag(
+            command.Name,
+            command.Description,
+            command.Color);
 
         var result = project.AddTag(tag);
         if (result.IsError)
