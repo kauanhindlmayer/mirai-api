@@ -2,7 +2,7 @@ using System.Linq.Expressions;
 using Application.Common;
 using Application.Common.Interfaces.Persistence;
 using Application.Common.Mappings;
-using Application.WorkItems.Queries.SearchWorkItems;
+using Application.WorkItems.Queries.Common;
 using Domain.WorkItems;
 using ErrorOr;
 using MediatR;
@@ -37,24 +37,25 @@ internal sealed class ListWorkItemsQueryHandler
             : workItemsQuery.OrderBy(sortProperty);
 
         var workItems = await workItemsQuery
-            .Select(wi => ToDto(wi))
+            .Select(wi => new WorkItemBriefResponse
+            {
+                Id = wi.Id,
+                Code = wi.Code,
+                Title = wi.Title,
+                Status = wi.Status.Name,
+                Type = wi.Type.Name,
+                Tags = wi.Tags.Select(t => new TagBriefResponse
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                    Color = t.Color,
+                }),
+                CreatedAt = wi.CreatedAt,
+                UpdatedAt = wi.UpdatedAt,
+            })
             .PaginatedListAsync(query.PageNumber, query.PageSize, cancellationToken);
 
         return workItems;
-    }
-
-    private static WorkItemBriefResponse ToDto(WorkItem workItem)
-    {
-        return new WorkItemBriefResponse
-        {
-            Id = workItem.Id,
-            Code = workItem.Code,
-            Title = workItem.Title,
-            Status = workItem.Status.Name,
-            Type = workItem.Type.Name,
-            CreatedAt = workItem.CreatedAt,
-            UpdatedAt = workItem.UpdatedAt,
-        };
     }
 
     private static Expression<Func<WorkItem, object>> GetSortProperty(string? sortField)

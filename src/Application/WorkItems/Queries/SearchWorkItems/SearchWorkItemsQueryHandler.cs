@@ -1,7 +1,6 @@
 using Application.Common.Interfaces.Persistence;
 using Application.Common.Interfaces.Services;
-using Application.WorkItems.Queries.ListWorkItems;
-using Domain.WorkItems;
+using Application.WorkItems.Queries.Common;
 using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

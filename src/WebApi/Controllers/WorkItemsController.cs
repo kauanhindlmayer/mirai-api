@@ -5,6 +5,7 @@ using Application.WorkItems.Commands.AssignWorkItem;
 using Application.WorkItems.Commands.CreateWorkItem;
 using Application.WorkItems.Commands.DeleteWorkItem;
 using Application.WorkItems.Commands.RemoveTag;
+using Application.WorkItems.Queries.Common;
 using Application.WorkItems.Queries.GetWorkItem;
 using Application.WorkItems.Queries.GetWorkItemsStats;
 using Application.WorkItems.Queries.ListWorkItems;
@@ -181,7 +182,7 @@ public class WorkItemsController(ISender sender) : ApiController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddTagToWorkItem(
         Guid workItemId,
-        CreateTagRequest request,
+        AddTagToWorkItemRequest request,
         CancellationToken cancellationToken)
     {
         var command = new AddTagCommand(workItemId, request.Name);
