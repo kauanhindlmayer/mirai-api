@@ -123,7 +123,8 @@ public class BoardsController(ISender sender) : ApiController
             boardId,
             request.Name,
             request.WipLimit,
-            request.DefinitionOfDone);
+            request.DefinitionOfDone,
+            request.Position);
 
         var result = await sender.Send(command, cancellationToken);
 

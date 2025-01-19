@@ -10,7 +10,7 @@ public sealed class Board : AggregateRoot
     public Project Project { get; private set; } = null!;
     public string Name { get; private set; } = null!;
     public string Description { get; private set; } = string.Empty;
-    public ICollection<BoardColumn> Columns { get; private set; } = [];
+    public List<BoardColumn> Columns { get; private set; } = [];
 
     public Board(Guid projectId, string name, string description)
     {
@@ -32,6 +32,23 @@ public sealed class Board : AggregateRoot
 
         column.UpdatePosition(Columns.Count);
         Columns.Add(column);
+        return column;
+    }
+
+    public ErrorOr<BoardColumn> AddColumnAtPosition(BoardColumn column, int position)
+    {
+        if (position < 0 || position > Columns.Count)
+        {
+            return BoardErrors.InvalidPosition;
+        }
+
+        if (Columns.Any(c => c.Name == column.Name))
+        {
+            return BoardErrors.ColumnAlreadyExists;
+        }
+
+        Columns.Insert(position, column);
+        ReorderColumns();
         return column;
     }
 

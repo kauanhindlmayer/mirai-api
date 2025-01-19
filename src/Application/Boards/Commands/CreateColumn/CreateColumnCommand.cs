@@ -7,4 +7,5 @@ public sealed record CreateColumnCommand(
     Guid BoardId,
     string Name,
     int WipLimit,
-    string DefinitionOfDone) : IRequest<ErrorOr<Guid>>;
+    string DefinitionOfDone,
+    int Position) : IRequest<ErrorOr<Guid>>;

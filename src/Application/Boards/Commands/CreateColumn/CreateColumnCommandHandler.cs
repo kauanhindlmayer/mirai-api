@@ -33,7 +33,7 @@ internal sealed class CreateColumnCommandHandler : IRequestHandler<CreateColumnC
             command.WipLimit,
             command.DefinitionOfDone);
 
-        var result = board.AddColumn(column);
+        var result = board.AddColumnAtPosition(column, command.Position);
         if (result.IsError)
         {
             return result.Errors;
