@@ -8,6 +8,6 @@ public static class TagFactory
         string name = "Tag Name",
         string description = "Tag Description")
     {
-        return new(name, description);
+        return new(name, description, string.Empty);
     }
 }

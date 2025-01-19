@@ -1,3 +1,4 @@
+using Domain.Boards.Enums;
 using Domain.Common;
 using Domain.Projects;
 using ErrorOr;
@@ -12,11 +13,16 @@ public sealed class Board : AggregateRoot
     public string Description { get; private set; } = string.Empty;
     public List<BoardColumn> Columns { get; private set; } = [];
 
-    public Board(Guid projectId, string name, string description)
+    public Board(
+        Guid projectId,
+        string name,
+        string description,
+        ProcessTemplate? processTemplate = null)
     {
         ProjectId = projectId;
         Name = name;
         Description = description;
+        InitializeDefaultColumns(processTemplate ?? ProcessTemplate.Agile);
     }
 
     private Board()
@@ -68,6 +74,15 @@ public sealed class Board : AggregateRoot
         Columns.Remove(column);
         ReorderColumns();
         return Result.Success;
+    }
+
+    private void InitializeDefaultColumns(ProcessTemplate processTemplate)
+    {
+        var columnTemplates = BoardColumnTemplates.Templates[processTemplate];
+        foreach (var template in columnTemplates)
+        {
+            AddColumn(new BoardColumn(Id, template.Name, template.WipLimit));
+        }
     }
 
     private void ReorderColumns()
