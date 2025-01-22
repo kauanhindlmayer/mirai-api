@@ -17,7 +17,7 @@ public sealed class Organization : AggregateRoot
     {
         Name = name;
         Description = description;
-        _domainEvents.Add(new OrganizationCreatedDomainEvent(Id));
+        AddDomainEvent(new OrganizationCreatedDomainEvent(this));
     }
 
     public Organization()
@@ -28,12 +28,12 @@ public sealed class Organization : AggregateRoot
     {
         Name = name;
         Description = description;
-        _domainEvents.Add(new OrganizationUpdatedDomainEvent(Id));
+        AddDomainEvent(new OrganizationUpdatedDomainEvent(this));
     }
 
     public void Delete()
     {
-        _domainEvents.Add(new OrganizationDeletedDomainEvent(Id));
+        AddDomainEvent(new OrganizationDeletedDomainEvent(this));
     }
 
     public ErrorOr<Success> AddProject(Project project)

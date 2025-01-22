@@ -13,7 +13,7 @@ internal sealed class ListBoardsQueryHandler(IApplicationDbContext dbContext)
         CancellationToken cancellationToken)
     {
         var boards = await dbContext.Boards
-            .Where(b => b.ProjectId == query.ProjectId)
+            .Where(b => b.Team.ProjectId == query.ProjectId)
             .Select(b => new BoardBriefResponse
             {
                 Id = b.Id,

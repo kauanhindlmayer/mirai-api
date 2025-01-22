@@ -39,7 +39,7 @@ internal sealed class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, 
         var targetColumn = board.Columns.FirstOrDefault(c => c.Id == command.TargetColumnId);
         if (targetColumn is null)
         {
-            return BoardErrors.TargetColumnNotFound;
+            return BoardErrors.ColumnNotFound;
         }
 
         var result = targetColumn.AddCardAtPosition(card, command.TargetPosition);

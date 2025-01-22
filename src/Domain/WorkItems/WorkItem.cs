@@ -1,6 +1,7 @@
 using Domain.Common;
 using Domain.Projects;
 using Domain.Tags;
+using Domain.Teams;
 using Domain.Users;
 using Domain.WorkItems.Enums;
 using Domain.WorkItems.ValueObjects;
@@ -24,6 +25,8 @@ public sealed class WorkItem : AggregateRoot
     public User? Assignee { get; private set; }
     public Guid ProjectId { get; private set; }
     public Project Project { get; private set; } = null!;
+    public Guid? AssignedTeamId { get; private set; }
+    public Team AssignedTeam { get; private set; } = null!;
     public Guid? ParentWorkItemId { get; private set; }
     public WorkItem? ParentWorkItem { get; private set; }
     public ICollection<WorkItem> ChildWorkItems { get; private set; } = [];
@@ -35,13 +38,15 @@ public sealed class WorkItem : AggregateRoot
         Guid projectId,
         int code,
         string title,
-        WorkItemType type)
+        WorkItemType type,
+        Guid? assignedTeamId = null)
     {
         ProjectId = projectId;
         Code = code;
         Title = title;
         Type = type;
         Status = WorkItemStatus.New;
+        AssignedTeamId = assignedTeamId;
     }
 
     public WorkItem()

@@ -21,21 +21,21 @@ internal sealed class CacheInvalidationOrganizationHandler :
         OrganizationCreatedDomainEvent notification,
         CancellationToken cancellationToken)
     {
-        return InvalidateCache(notification.Id, cancellationToken);
+        return InvalidateCache(notification.Organization.Id, cancellationToken);
     }
 
     public Task Handle(
         OrganizationUpdatedDomainEvent notification,
         CancellationToken cancellationToken)
     {
-        return InvalidateCache(notification.Id, cancellationToken);
+        return InvalidateCache(notification.Organization.Id, cancellationToken);
     }
 
     public Task Handle(
         OrganizationDeletedDomainEvent notification,
         CancellationToken cancellationToken)
     {
-        return InvalidateCache(notification.Id, cancellationToken);
+        return InvalidateCache(notification.Organization.Id, cancellationToken);
     }
 
     private async Task InvalidateCache(

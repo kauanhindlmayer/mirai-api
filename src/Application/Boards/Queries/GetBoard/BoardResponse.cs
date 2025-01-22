@@ -3,7 +3,7 @@ namespace Application.Boards.Queries.GetBoard;
 public sealed class BoardResponse
 {
     public Guid Id { get; init; }
-    public Guid ProjectId { get; init; }
+    public Guid TeamId { get; init; }
     public string Name { get; init; } = null!;
     public string Description { get; init; } = null!;
     public IEnumerable<BoardColumnResponse> Columns { get; init; } = [];
@@ -15,7 +15,7 @@ public sealed class BoardColumnResponse
     public string Name { get; init; } = null!;
     public int Position { get; init; }
     public int? WipLimit { get; init; }
-    public string DefinitionOfDone { get; init; } = null!;
+    public string? DefinitionOfDone { get; init; } = null!;
     public IEnumerable<BoardCardResponse> Cards { get; init; } = [];
 }
 

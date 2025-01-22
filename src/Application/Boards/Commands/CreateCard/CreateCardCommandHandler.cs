@@ -33,14 +33,15 @@ internal sealed class CreateCardCommandHandler : IRequestHandler<CreateCardComma
         }
 
         var workItemCode = await _workItemsRepository.GetNextWorkItemCodeAsync(
-            board.ProjectId,
+            board.Team.ProjectId,
             cancellationToken);
 
         var workItem = new WorkItem(
-            board.ProjectId,
+            board.Team.ProjectId,
             workItemCode,
             command.Title,
-            command.Type);
+            command.Type,
+            board.Team.Id);
 
         await _workItemsRepository.AddAsync(workItem, cancellationToken);
 

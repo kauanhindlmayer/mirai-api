@@ -25,6 +25,7 @@ internal sealed class BoardsRepository : Repository<Board>, IBoardsRepository
         CancellationToken cancellationToken)
     {
         return _dbContext.Boards
+            .Include(b => b.Team)
             .Include(b => b.Columns)
                 .ThenInclude(c => c.Cards)
             .SingleOrDefaultAsync(b => b.Id == boardId, cancellationToken);

@@ -1,4 +1,3 @@
-using Application.Boards.Commands.CreateBoard;
 using Application.Boards.Commands.CreateCard;
 using Application.Boards.Commands.CreateColumn;
 using Application.Boards.Commands.DeleteBoard;
@@ -15,37 +14,9 @@ using DomainWorkItemType = Domain.WorkItems.Enums.WorkItemType;
 namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
-[Route("api/v{version:apiVersion}/projects/{projectId:guid}/boards")]
+[Route("api/v{version:apiVersion}/teams/{teamId:guid}/boards")]
 public class BoardsController(ISender sender) : ApiController
 {
-    /// <summary>
-    /// Create a new board.
-    /// </summary>
-    /// <param name="projectId">The ID of the project to create a new board for.</param>
-    /// <param name="request">The request to create a new board.</param>
-    [HttpPost]
-    [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CreateBoard(
-        Guid projectId,
-        CreateBoardRequest request,
-        CancellationToken cancellationToken)
-    {
-        var command = new CreateBoardCommand(
-            projectId,
-            request.Name,
-            request.Description);
-
-        var result = await sender.Send(command, cancellationToken);
-
-        return result.Match(
-            boardId => CreatedAtAction(
-                nameof(GetBoard),
-                new { ProjectId = projectId, BoardId = boardId },
-                boardId),
-            Problem);
-    }
-
     /// <summary>
     /// Get a board by its ID.
     /// </summary>
@@ -69,7 +40,7 @@ public class BoardsController(ISender sender) : ApiController
     /// </summary>
     /// <returns>A list of all boards.</returns>
     /// <param name="projectId">The ID of the project to list boards for.</param>
-    [HttpGet]
+    [HttpGet("/api/v{version:apiVersion}/projects/{projectId:guid}/boards")]
     [ProducesResponseType(typeof(IReadOnlyList<BoardResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ListBoards(
@@ -106,7 +77,7 @@ public class BoardsController(ISender sender) : ApiController
     /// <summary>
     /// Create a new column on a board.
     /// </summary>
-    /// <param name="projectId">The ID of the project to create a new column on a board.</param>
+    /// <param name="teamId">The ID of the team to create a new column on a board.</param>
     /// <param name="boardId">The ID of the board to create a new column on.</param>
     /// <param name="request">The request to create a new column on a board.</param>
     [HttpPost("{boardId:guid}/columns")]
@@ -114,7 +85,7 @@ public class BoardsController(ISender sender) : ApiController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> CreateColumn(
-        Guid projectId,
+        Guid teamId,
         Guid boardId,
         CreateColumnRequest request,
         CancellationToken cancellationToken)
@@ -131,7 +102,7 @@ public class BoardsController(ISender sender) : ApiController
         return result.Match(
             columnId => CreatedAtAction(
                 nameof(GetBoard),
-                new { ProjectId = projectId, BoardId = boardId },
+                new { TeamId = teamId, BoardId = boardId },
                 columnId),
             Problem);
     }
@@ -161,7 +132,7 @@ public class BoardsController(ISender sender) : ApiController
     /// <summary>
     /// Create a new card in a column on a board.
     /// </summary>
-    /// <param name="projectId">The ID of the project to create a new card on a board.</param>
+    /// <param name="teamId">The ID of the team to create a new card on a board.</param>
     /// <param name="boardId">The ID of the board to create a new card on.</param>
     /// <param name="columnId">The ID of the column to create a new card in.</param>
     /// <param name="request">The request to create a new card in a column on a board.</param>
@@ -170,7 +141,7 @@ public class BoardsController(ISender sender) : ApiController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> CreateCard(
-        Guid projectId,
+        Guid teamId,
         Guid boardId,
         Guid columnId,
         CreateCardRequest request,
@@ -190,7 +161,7 @@ public class BoardsController(ISender sender) : ApiController
         return result.Match(
             cardId => CreatedAtAction(
                 nameof(GetBoard),
-                new { ProjectId = projectId, BoardId = boardId },
+                new { TeamId = teamId, BoardId = boardId },
                 cardId),
             Problem);
     }

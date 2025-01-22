@@ -53,28 +53,6 @@ namespace Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Boards",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    ProjectId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    Description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Boards", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Boards_Projects_ProjectId",
-                        column: x => x.ProjectId,
-                        principalTable: "Projects",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Tags",
                 columns: table => new
                 {
@@ -103,6 +81,7 @@ namespace Infrastructure.Persistence.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     ProjectId = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    Description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
@@ -118,25 +97,22 @@ namespace Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BoardColumns",
+                name: "Boards",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    BoardId = table.Column<Guid>(type: "uuid", nullable: false),
+                    TeamId = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    Position = table.Column<int>(type: "integer", nullable: false),
-                    WipLimit = table.Column<int>(type: "integer", nullable: true),
-                    DefinitionOfDone = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BoardColumns", x => x.Id);
+                    table.PrimaryKey("PK_Boards", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_BoardColumns_Boards_BoardId",
-                        column: x => x.BoardId,
-                        principalTable: "Boards",
+                        name: "FK_Boards_Teams_TeamId",
+                        column: x => x.TeamId,
+                        principalTable: "Teams",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -157,6 +133,29 @@ namespace Infrastructure.Persistence.Migrations
                     table.PrimaryKey("PK_Retrospectives", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Retrospectives_Teams_TeamId",
+                        column: x => x.TeamId,
+                        principalTable: "Teams",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Sprint",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    TeamId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Sprint", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Sprint_Teams_TeamId",
                         column: x => x.TeamId,
                         principalTable: "Teams",
                         principalColumn: "Id",
@@ -185,6 +184,30 @@ namespace Infrastructure.Persistence.Migrations
                         column: x => x.TeamId,
                         principalTable: "Teams",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BoardColumns",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    BoardId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    Position = table.Column<int>(type: "integer", nullable: false),
+                    WipLimit = table.Column<int>(type: "integer", nullable: true),
+                    DefinitionOfDone = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BoardColumns", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BoardColumns_Boards_BoardId",
+                        column: x => x.BoardId,
+                        principalTable: "Boards",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -284,6 +307,7 @@ namespace Infrastructure.Persistence.Migrations
                     SearchVector = table.Column<Vector>(type: "vector", nullable: true),
                     AssigneeId = table.Column<Guid>(type: "uuid", nullable: true),
                     ProjectId = table.Column<Guid>(type: "uuid", nullable: false),
+                    AssignedTeamId = table.Column<Guid>(type: "uuid", nullable: true),
                     ParentWorkItemId = table.Column<Guid>(type: "uuid", nullable: true),
                     CompletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     Classification_ValueArea = table.Column<string>(type: "text", nullable: false),
@@ -301,6 +325,11 @@ namespace Infrastructure.Persistence.Migrations
                         principalTable: "Projects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_WorkItems_Teams_AssignedTeamId",
+                        column: x => x.AssignedTeamId,
+                        principalTable: "Teams",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_WorkItems_Users_AssigneeId",
                         column: x => x.AssigneeId,
@@ -486,9 +515,9 @@ namespace Infrastructure.Persistence.Migrations
                 column: "BoardId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Boards_ProjectId",
+                name: "IX_Boards_TeamId",
                 table: "Boards",
-                column: "ProjectId");
+                column: "TeamId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrganizationUser_OrganizationsId",
@@ -518,6 +547,11 @@ namespace Infrastructure.Persistence.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Retrospectives_TeamId",
                 table: "Retrospectives",
+                column: "TeamId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Sprint_TeamId",
+                table: "Sprint",
                 column: "TeamId");
 
             migrationBuilder.CreateIndex(
@@ -588,6 +622,11 @@ namespace Infrastructure.Persistence.Migrations
                 column: "WorkItemId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_WorkItems_AssignedTeamId",
+                table: "WorkItems",
+                column: "AssignedTeamId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_WorkItems_AssigneeId",
                 table: "WorkItems",
                 column: "AssigneeId");
@@ -620,6 +659,9 @@ namespace Infrastructure.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "RetrospectiveItems");
+
+            migrationBuilder.DropTable(
+                name: "Sprint");
 
             migrationBuilder.DropTable(
                 name: "WikiPageComments");

@@ -6,13 +6,11 @@ public static class BoardFactory
 {
     public static Board CreateBoard(
         Guid? projectId = null,
-        string name = "Board",
-        string description = "Description")
+        string name = "Board")
     {
         return new(
             projectId ?? Guid.NewGuid(),
-            name,
-            description);
+            name);
     }
 
     public static BoardColumn CreateBoardColumn(

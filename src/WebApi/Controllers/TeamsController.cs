@@ -28,7 +28,10 @@ public class TeamsController(ISender sender) : ApiController
         CreateTeamRequest request,
         CancellationToken cancellationToken)
     {
-        var command = new CreateTeamCommand(projectId, request.Name);
+        var command = new CreateTeamCommand(
+            projectId,
+            request.Name,
+            request.Description);
 
         var result = await sender.Send(command, cancellationToken);
 

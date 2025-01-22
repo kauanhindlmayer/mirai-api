@@ -19,14 +19,12 @@ internal sealed class TeamCreatedDomainEventHandler : INotificationHandler<TeamC
         _logger = logger;
     }
 
-    public async Task Handle(TeamCreatedDomainEvent notification, CancellationToken cancellationToken)
+    public async Task Handle(
+        TeamCreatedDomainEvent notification,
+        CancellationToken cancellationToken)
     {
-        var board = new Board(
-            notification.ProjectId,
-            notification.Name,
-            string.Empty);
-
+        var board = new Board(notification.Team.Id, notification.Team.Name);
         await _boardsRepository.AddAsync(board, cancellationToken);
-        _logger.LogInformation("Board created for team {TeamId}", notification.Id);
+        _logger.LogInformation("Board created for team {TeamName}", notification.Team.Name);
     }
 }

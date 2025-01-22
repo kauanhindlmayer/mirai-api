@@ -17,7 +17,7 @@ public class OrganizationTests : BaseTest
 
         // Assert
         var domainEvent = AssertDomainEventWasPublished<OrganizationCreatedDomainEvent>(organization);
-        domainEvent.Id.Should().Be(organization.Id);
+        domainEvent.Organization.Should().Be(organization);
     }
 
     [Fact]
@@ -42,7 +42,7 @@ public class OrganizationTests : BaseTest
 
         // Assert
         var domainEvent = AssertDomainEventWasPublished<OrganizationUpdatedDomainEvent>(organization);
-        domainEvent.Id.Should().Be(organization.Id);
+        domainEvent.Should().Be(organization);
     }
 
     [Fact]
@@ -70,7 +70,7 @@ public class OrganizationTests : BaseTest
 
         // Assert
         var domainEvent = AssertDomainEventWasPublished<OrganizationDeletedDomainEvent>(organization);
-        domainEvent.Id.Should().Be(organization.Id);
+        domainEvent.Should().Be(organization);
     }
 
     [Fact]

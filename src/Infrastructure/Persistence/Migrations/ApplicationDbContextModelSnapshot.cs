@@ -33,17 +33,12 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
-                    b.Property<Guid>("ProjectId")
+                    b.Property<Guid>("TeamId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -51,7 +46,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProjectId");
+                    b.HasIndex("TeamId");
 
                     b.ToTable("Boards");
                 });
@@ -97,7 +92,6 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("DefinitionOfDone")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
@@ -275,6 +269,38 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("RetrospectiveItems");
                 });
 
+            modelBuilder.Entity("Domain.Sprints.Sprint", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("TeamId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TeamId");
+
+                    b.ToTable("Sprint");
+                });
+
             modelBuilder.Entity("Domain.Tags.Tag", b =>
                 {
                     b.Property<Guid>("Id")
@@ -318,6 +344,11 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -490,6 +521,9 @@ namespace Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Guid?>("AssignedTeamId")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid?>("AssigneeId")
                         .HasColumnType("uuid");
 
@@ -552,6 +586,8 @@ namespace Infrastructure.Persistence.Migrations
                         });
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AssignedTeamId");
 
                     b.HasIndex("AssigneeId");
 
@@ -625,13 +661,13 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.Boards.Board", b =>
                 {
-                    b.HasOne("Domain.Projects.Project", "Project")
+                    b.HasOne("Domain.Teams.Team", "Team")
                         .WithMany("Boards")
-                        .HasForeignKey("ProjectId")
+                        .HasForeignKey("TeamId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Project");
+                    b.Navigation("Team");
                 });
 
             modelBuilder.Entity("Domain.Boards.BoardCard", b =>
@@ -714,6 +750,17 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Author");
 
                     b.Navigation("RetrospectiveColumn");
+                });
+
+            modelBuilder.Entity("Domain.Sprints.Sprint", b =>
+                {
+                    b.HasOne("Domain.Teams.Team", "Team")
+                        .WithMany("Sprints")
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Team");
                 });
 
             modelBuilder.Entity("Domain.Tags.Tag", b =>
@@ -801,6 +848,10 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.WorkItems.WorkItem", b =>
                 {
+                    b.HasOne("Domain.Teams.Team", "AssignedTeam")
+                        .WithMany("WorkItems")
+                        .HasForeignKey("AssignedTeamId");
+
                     b.HasOne("Domain.Users.User", "Assignee")
                         .WithMany("WorkItems")
                         .HasForeignKey("AssigneeId");
@@ -814,6 +865,8 @@ namespace Infrastructure.Persistence.Migrations
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("AssignedTeam");
 
                     b.Navigation("Assignee");
 
@@ -888,8 +941,6 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.Projects.Project", b =>
                 {
-                    b.Navigation("Boards");
-
                     b.Navigation("Tags");
 
                     b.Navigation("Teams");
@@ -911,9 +962,15 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.Teams.Team", b =>
                 {
+                    b.Navigation("Boards");
+
                     b.Navigation("Members");
 
                     b.Navigation("Retrospectives");
+
+                    b.Navigation("Sprints");
+
+                    b.Navigation("WorkItems");
                 });
 
             modelBuilder.Entity("Domain.Users.User", b =>

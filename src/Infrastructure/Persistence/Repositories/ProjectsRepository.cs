@@ -11,15 +11,6 @@ internal sealed class ProjectsRepository : Repository<Project>, IProjectsReposit
     {
     }
 
-    public async Task<Project?> GetByIdWithBoardsAsync(
-        Guid id,
-        CancellationToken cancellationToken = default)
-    {
-        return await _dbContext.Projects
-            .Include(p => p.Boards)
-            .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
-    }
-
     public async Task<Project?> GetByIdWithWorkItemsAsync(
         Guid id,
         CancellationToken cancellationToken = default)

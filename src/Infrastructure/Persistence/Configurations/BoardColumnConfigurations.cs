@@ -25,7 +25,7 @@ internal sealed class BoardColumnConfigurations : IEntityTypeConfiguration<Board
 
         builder.Property(bc => bc.DefinitionOfDone)
             .HasMaxLength(255)
-            .IsRequired();
+            .IsRequired(false);
 
         builder.Property(bc => bc.BoardId)
             .IsRequired();

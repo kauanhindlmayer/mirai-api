@@ -14,7 +14,7 @@ namespace WebApi.Controllers;
 public class ProjectsController(ISender sender) : ApiController
 {
     /// <summary>
-    /// Create a new project.
+    /// Create a new project, along with a default team and board.
     /// </summary>
     /// <param name="organizationId">The ID of the organization to create the project for.</param>
     /// <param name="request">The project data.</param>

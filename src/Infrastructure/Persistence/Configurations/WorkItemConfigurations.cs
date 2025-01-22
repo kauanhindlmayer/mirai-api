@@ -56,6 +56,9 @@ internal sealed class WorkItemConfigurations : IEntityTypeConfiguration<WorkItem
         builder.Property(wi => wi.ProjectId)
             .IsRequired();
 
+        builder.Property(wi => wi.AssignedTeamId)
+            .IsRequired(false);
+
         builder.HasOne(wi => wi.Assignee)
             .WithMany(u => u.WorkItems)
             .HasForeignKey(wi => wi.AssigneeId);
@@ -63,6 +66,10 @@ internal sealed class WorkItemConfigurations : IEntityTypeConfiguration<WorkItem
         builder.HasOne(wi => wi.Project)
             .WithMany(wi => wi.WorkItems)
             .HasForeignKey(wi => wi.ProjectId);
+
+        builder.HasOne(wi => wi.AssignedTeam)
+            .WithMany(t => t.WorkItems)
+            .HasForeignKey(wi => wi.AssignedTeamId);
 
         builder.HasOne(wi => wi.ParentWorkItem)
             .WithMany(wi => wi.ChildWorkItems)

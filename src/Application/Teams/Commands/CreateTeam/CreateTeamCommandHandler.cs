@@ -28,12 +28,16 @@ internal sealed class CreateTeamCommandHandler : IRequestHandler<CreateTeamComma
             return ProjectErrors.NotFound;
         }
 
-        var team = new Team(project.Id, command.Name);
-        var addTeamResult = project.AddTeam(team);
+        var team = new Team(
+            project.Id,
+            command.Name,
+            command.Description);
 
-        if (addTeamResult.IsError)
+        var result = project.AddTeam(team);
+
+        if (result.IsError)
         {
-            return addTeamResult.Errors;
+            return result.Errors;
         }
 
         _projectsRepository.Update(project);

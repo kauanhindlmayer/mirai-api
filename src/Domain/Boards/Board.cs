@@ -1,27 +1,24 @@
 using Domain.Boards.Enums;
 using Domain.Common;
-using Domain.Projects;
+using Domain.Teams;
 using ErrorOr;
 
 namespace Domain.Boards;
 
 public sealed class Board : AggregateRoot
 {
-    public Guid ProjectId { get; private set; }
-    public Project Project { get; private set; } = null!;
+    public Guid TeamId { get; private set; }
+    public Team Team { get; private set; } = null!;
     public string Name { get; private set; } = null!;
-    public string Description { get; private set; } = string.Empty;
     public List<BoardColumn> Columns { get; private set; } = [];
 
     public Board(
-        Guid projectId,
+        Guid teamId,
         string name,
-        string description,
         ProcessTemplate? processTemplate = null)
     {
-        ProjectId = projectId;
+        TeamId = teamId;
         Name = name;
-        Description = description;
         InitializeDefaultColumns(processTemplate ?? ProcessTemplate.Agile);
     }
 

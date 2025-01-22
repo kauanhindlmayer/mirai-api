@@ -17,15 +17,12 @@ internal sealed class BoardConfigurations : IEntityTypeConfiguration<Board>
             .HasMaxLength(255)
             .IsRequired();
 
-        builder.Property(b => b.Description)
-            .HasMaxLength(500);
-
-        builder.Property(b => b.ProjectId)
+        builder.Property(b => b.TeamId)
             .IsRequired();
 
-        builder.HasOne(b => b.Project)
+        builder.HasOne(b => b.Team)
             .WithMany(o => o.Boards)
-            .HasForeignKey(b => b.ProjectId);
+            .HasForeignKey(b => b.TeamId);
 
         builder.HasMany(b => b.Columns)
             .WithOne(c => c.Board)

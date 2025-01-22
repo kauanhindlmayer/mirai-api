@@ -1,25 +1,34 @@
+using System.Collections;
+using Domain.Boards;
 using Domain.Common;
 using Domain.Projects;
 using Domain.Retrospectives;
+using Domain.Sprints;
 using Domain.Teams.Events;
 using Domain.Users;
+using Domain.WorkItems;
 using ErrorOr;
 
 namespace Domain.Teams;
 
-public sealed class Team : Entity
+public sealed class Team : AggregateRoot
 {
     public Guid ProjectId { get; private set; }
     public Project Project { get; private set; } = null!;
     public string Name { get; private set; } = null!;
+    public string Description { get; private set; } = string.Empty;
     public ICollection<User> Members { get; private set; } = [];
     public ICollection<Retrospective> Retrospectives { get; private set; } = [];
+    public ICollection<Board> Boards { get; private set; } = [];
+    public ICollection<Sprint> Sprints { get; private set; } = [];
+    public ICollection<WorkItem> WorkItems { get; private set; } = [];
 
-    public Team(Guid projectId, string name)
+    public Team(Guid projectId, string name, string description)
     {
         ProjectId = projectId;
         Name = name;
-        _domainEvents.Add(new TeamCreatedDomainEvent(Id, Name, ProjectId));
+        Description = description;
+        AddDomainEvent(new TeamCreatedDomainEvent(this));
     }
 
     private Team()
@@ -56,6 +65,17 @@ public sealed class Team : Entity
         }
 
         Retrospectives.Add(retrospective);
+        return Result.Success;
+    }
+
+    public ErrorOr<Success> AddBoard(Board board)
+    {
+        if (Boards.Any(b => b.Name == board.Name))
+        {
+            return BoardErrors.AlreadyExists;
+        }
+
+        Boards.Add(board);
         return Result.Success;
     }
 }

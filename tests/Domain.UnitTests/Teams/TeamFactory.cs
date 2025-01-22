@@ -6,10 +6,12 @@ public static class TeamFactory
 {
     public static Team CreateTeam(
         Guid? projectId = null,
-        string name = "Team")
+        string name = "Team",
+        string description = "Description")
     {
         return new(
             projectId ?? Guid.NewGuid(),
-            name);
+            name,
+            description);
     }
 }

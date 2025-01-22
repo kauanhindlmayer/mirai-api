@@ -10,11 +10,19 @@ public abstract class Entity
 
     protected readonly List<IDomainEvent> _domainEvents = [];
 
-    public List<IDomainEvent> GetDomainEvents()
+    public IReadOnlyList<IDomainEvent> GetDomainEvents()
     {
-        var copy = _domainEvents.ToList();
+        return _domainEvents.ToList();
+    }
+
+    public void ClearDomainEvents()
+    {
         _domainEvents.Clear();
-        return copy;
+    }
+
+    public void AddDomainEvent(IDomainEvent domainEvent)
+    {
+        _domainEvents.Add(domainEvent);
     }
 
     protected Entity() { }

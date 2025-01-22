@@ -53,7 +53,12 @@ public sealed class ApplicationDbContext(
     public async override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         var domainEvents = ChangeTracker.Entries<Entity>()
-           .SelectMany(entry => entry.Entity.GetDomainEvents())
+           .SelectMany(entry =>
+            {
+                var domainEvents = entry.Entity.GetDomainEvents();
+                entry.Entity.ClearDomainEvents();
+                return domainEvents;
+            })
            .ToList();
 
         await PublishDomainEvents(domainEvents);

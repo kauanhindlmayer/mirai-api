@@ -17,11 +17,14 @@ internal sealed class TeamConfigurations : IEntityTypeConfiguration<Team>
             .HasMaxLength(255)
             .IsRequired();
 
+        builder.Property(t => t.Description)
+            .HasMaxLength(500);
+
         builder.Property(t => t.ProjectId)
             .IsRequired();
 
         builder.HasOne(t => t.Project)
-            .WithMany(o => o.Teams)
+            .WithMany(p => p.Teams)
             .HasForeignKey(t => t.ProjectId);
     }
 }

@@ -22,9 +22,8 @@ internal sealed class GetBoardQueryHandler(IApplicationDbContext dbContext)
             .Select(board => new BoardResponse
             {
                 Id = board.Id,
-                ProjectId = board.ProjectId,
+                TeamId = board.TeamId,
                 Name = board.Name,
-                Description = board.Description,
                 Columns = board.Columns
                     .OrderBy(column => column.Position)
                     .Select(column => new BoardColumnResponse

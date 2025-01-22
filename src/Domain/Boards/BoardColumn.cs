@@ -16,14 +16,14 @@ public sealed class BoardColumn : Entity
     /// This is advisory only, not enforced.
     /// </summary>
     public int? WipLimit { get; private set; }
-    public string DefinitionOfDone { get; private set; } = null!;
+    public string? DefinitionOfDone { get; private set; }
     public List<BoardCard> Cards { get; private set; } = [];
 
     public BoardColumn(
         Guid boardId,
         string name,
         int? wipLimit = null,
-        string definitionOfDone = "")
+        string? definitionOfDone = null)
     {
         BoardId = boardId;
         Name = name;

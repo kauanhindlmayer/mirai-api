@@ -1,6 +1,6 @@
-using Domain.Boards;
 using Domain.Common;
 using Domain.Organizations;
+using Domain.Projects.Events;
 using Domain.Tags;
 using Domain.Teams;
 using Domain.WikiPages;
@@ -19,13 +19,13 @@ public sealed class Project : AggregateRoot
     public List<WikiPage> WikiPages { get; private set; } = [];
     public ICollection<Team> Teams { get; private set; } = [];
     public ICollection<Tag> Tags { get; private set; } = [];
-    public ICollection<Board> Boards { get; private set; } = [];
 
     public Project(string name, string description, Guid organizationId)
     {
         Name = name;
         Description = description;
         OrganizationId = organizationId;
+        AddDomainEvent(new ProjectCreatedDomainEvent(this));
     }
 
     public Project()
