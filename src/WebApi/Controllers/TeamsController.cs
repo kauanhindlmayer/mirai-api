@@ -1,10 +1,9 @@
 using Application.Teams.Commands.AddMember;
 using Application.Teams.Commands.CreateTeam;
 using Application.Teams.Queries.GetTeam;
+using Application.Teams.Queries.ListTeams;
 using Asp.Versioning;
 using Contracts.Teams;
-using Domain.Teams;
-using Domain.Users;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -55,6 +54,24 @@ public class TeamsController(ISender sender) : ApiController
         CancellationToken cancellationToken)
     {
         var query = new GetTeamQuery(teamId);
+
+        var result = await sender.Send(query, cancellationToken);
+
+        return result.Match(Ok, Problem);
+    }
+
+    /// <summary>
+    /// List all teams in a project.
+    /// </summary>
+    /// <param name="projectId">The ID of the project to list the teams for.</param>
+    [HttpGet]
+    [ProducesResponseType(typeof(IReadOnlyList<TeamBriefResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> ListTeams(
+        Guid projectId,
+        CancellationToken cancellationToken)
+    {
+        var query = new ListTeamsQuery(projectId);
 
         var result = await sender.Send(query, cancellationToken);
 

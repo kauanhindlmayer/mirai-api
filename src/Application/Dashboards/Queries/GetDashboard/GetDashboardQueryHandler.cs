@@ -1,5 +1,6 @@
 using Application.Common.Interfaces.Persistence;
 using Domain.Projects;
+using Domain.Teams;
 using Domain.WorkItems;
 using ErrorOr;
 using MediatR;
@@ -20,13 +21,13 @@ internal class GetDashboardQueryHandler : IRequestHandler<GetDashboardQuery, Err
         GetDashboardQuery query,
         CancellationToken cancellationToken)
     {
-        if (!await _context.Projects.AnyAsync(p => p.Id == query.ProjectId, cancellationToken))
+        if (!await _context.Teams.AnyAsync(p => p.Id == query.TeamId, cancellationToken))
         {
-            return ProjectErrors.NotFound;
+            return TeamErrors.NotFound;
         }
 
         var workItems = await _context.WorkItems
-            .Where(wi => wi.ProjectId == query.ProjectId
+            .Where(wi => wi.AssignedTeamId == query.TeamId
                          && (query.StartDate == null || wi.CompletedAt >= query.StartDate)
                          && (query.EndDate == null || wi.CompletedAt <= query.EndDate))
             .ToListAsync(cancellationToken);

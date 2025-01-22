@@ -1,3 +1,4 @@
+using Domain.Boards;
 using Domain.Teams;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -26,5 +27,10 @@ internal sealed class TeamConfigurations : IEntityTypeConfiguration<Team>
         builder.HasOne(t => t.Project)
             .WithMany(p => p.Teams)
             .HasForeignKey(t => t.ProjectId);
+
+        builder.HasOne(t => t.Board)
+            .WithOne(b => b.Team)
+            .HasForeignKey<Board>(b => b.TeamId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

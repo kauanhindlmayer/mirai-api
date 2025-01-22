@@ -17,9 +17,9 @@ public sealed class Team : AggregateRoot
     public Project Project { get; private set; } = null!;
     public string Name { get; private set; } = null!;
     public string Description { get; private set; } = string.Empty;
+    public Board Board { get; private set; } = null!;
     public ICollection<User> Members { get; private set; } = [];
     public ICollection<Retrospective> Retrospectives { get; private set; } = [];
-    public ICollection<Board> Boards { get; private set; } = [];
     public ICollection<Sprint> Sprints { get; private set; } = [];
     public ICollection<WorkItem> WorkItems { get; private set; } = [];
 
@@ -65,17 +65,6 @@ public sealed class Team : AggregateRoot
         }
 
         Retrospectives.Add(retrospective);
-        return Result.Success;
-    }
-
-    public ErrorOr<Success> AddBoard(Board board)
-    {
-        if (Boards.Any(b => b.Name == board.Name))
-        {
-            return BoardErrors.AlreadyExists;
-        }
-
-        Boards.Add(board);
         return Result.Success;
     }
 }

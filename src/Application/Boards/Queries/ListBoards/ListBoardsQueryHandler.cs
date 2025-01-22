@@ -17,6 +17,7 @@ internal sealed class ListBoardsQueryHandler(IApplicationDbContext dbContext)
             .Select(b => new BoardBriefResponse
             {
                 Id = b.Id,
+                TeamId = b.TeamId,
                 Name = b.Name,
             })
             .ToListAsync(cancellationToken);

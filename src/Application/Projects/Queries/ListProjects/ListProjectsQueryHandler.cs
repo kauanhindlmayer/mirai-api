@@ -1,7 +1,5 @@
 using Application.Common.Interfaces.Persistence;
 using Application.Projects.Queries.GetProject;
-using Domain.Organizations;
-using Domain.Projects;
 using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

@@ -46,7 +46,8 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TeamId");
+                    b.HasIndex("TeamId")
+                        .IsUnique();
 
                     b.ToTable("Boards");
                 });
@@ -662,8 +663,8 @@ namespace Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Domain.Boards.Board", b =>
                 {
                     b.HasOne("Domain.Teams.Team", "Team")
-                        .WithMany("Boards")
-                        .HasForeignKey("TeamId")
+                        .WithOne("Board")
+                        .HasForeignKey("Domain.Boards.Board", "TeamId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -962,7 +963,8 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.Teams.Team", b =>
                 {
-                    b.Navigation("Boards");
+                    b.Navigation("Board")
+                        .IsRequired();
 
                     b.Navigation("Members");
 

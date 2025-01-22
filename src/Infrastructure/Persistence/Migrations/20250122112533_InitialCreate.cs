@@ -517,7 +517,8 @@ namespace Infrastructure.Persistence.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Boards_TeamId",
                 table: "Boards",
-                column: "TeamId");
+                column: "TeamId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrganizationUser_OrganizationsId",

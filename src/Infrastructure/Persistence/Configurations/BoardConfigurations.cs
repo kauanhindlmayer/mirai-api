@@ -20,10 +20,6 @@ internal sealed class BoardConfigurations : IEntityTypeConfiguration<Board>
         builder.Property(b => b.TeamId)
             .IsRequired();
 
-        builder.HasOne(b => b.Team)
-            .WithMany(o => o.Boards)
-            .HasForeignKey(b => b.TeamId);
-
         builder.HasMany(b => b.Columns)
             .WithOne(c => c.Board)
             .HasForeignKey(c => c.BoardId)

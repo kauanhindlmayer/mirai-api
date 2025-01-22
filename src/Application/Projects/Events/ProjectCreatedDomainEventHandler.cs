@@ -9,13 +9,16 @@ namespace Application.Projects.Events;
 internal sealed class ProjectCreatedDomainEventHandler : INotificationHandler<ProjectCreatedDomainEvent>
 {
     private readonly ITeamsRepository _teamsRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<ProjectCreatedDomainEventHandler> _logger;
 
     public ProjectCreatedDomainEventHandler(
         ITeamsRepository boardsRepository,
+        IUnitOfWork unitOfWork,
         ILogger<ProjectCreatedDomainEventHandler> logger)
     {
         _teamsRepository = boardsRepository;
+        _unitOfWork = unitOfWork;
         _logger = logger;
     }
 
@@ -29,6 +32,10 @@ internal sealed class ProjectCreatedDomainEventHandler : INotificationHandler<Pr
             "The default project team.");
 
         await _teamsRepository.AddAsync(team, cancellationToken);
-        _logger.LogInformation("Team created for project {ProjectName}", notification.Project.Name);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        _logger.LogInformation(
+            "Team created for project {ProjectName}",
+            notification.Project.Name);
     }
 }

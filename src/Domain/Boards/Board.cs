@@ -12,14 +12,11 @@ public sealed class Board : AggregateRoot
     public string Name { get; private set; } = null!;
     public List<BoardColumn> Columns { get; private set; } = [];
 
-    public Board(
-        Guid teamId,
-        string name,
-        ProcessTemplate? processTemplate = null)
+    public Board(Guid teamId, string name)
     {
         TeamId = teamId;
         Name = name;
-        InitializeDefaultColumns(processTemplate ?? ProcessTemplate.Agile);
+        InitializeDefaultColumns(ProcessTemplate.Agile);
     }
 
     private Board()

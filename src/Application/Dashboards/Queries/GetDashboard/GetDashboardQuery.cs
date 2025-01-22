@@ -4,6 +4,6 @@ using MediatR;
 namespace Application.Dashboards.Queries.GetDashboard;
 
 public sealed record GetDashboardQuery(
-    Guid ProjectId,
+    Guid TeamId,
     DateTime? StartDate,
     DateTime? EndDate) : IRequest<ErrorOr<DashboardResponse>>;
