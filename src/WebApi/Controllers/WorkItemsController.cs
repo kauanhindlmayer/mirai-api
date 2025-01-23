@@ -16,7 +16,6 @@ using Contracts.Tags;
 using Contracts.WorkItems;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using DomainWorkItemType = Domain.WorkItems.Enums.WorkItemType;
 
 namespace WebApi.Controllers;
 
@@ -37,14 +36,11 @@ public class WorkItemsController(ISender sender) : ApiController
         CreateWorkItemRequest request,
         CancellationToken cancellationToken)
     {
-        if (!DomainWorkItemType.TryFromName(request.Type.ToString(), out var type))
-        {
-            return Problem(
-                statusCode: StatusCodes.Status400BadRequest,
-                detail: "Invalid work item type");
-        }
-
-        var command = new CreateWorkItemCommand(projectId, type, request.Title);
+        var command = new CreateWorkItemCommand(
+            projectId,
+            request.Type,
+            request.Title,
+            request.AssignedTeamId);
 
         var result = await sender.Send(command, cancellationToken);
 

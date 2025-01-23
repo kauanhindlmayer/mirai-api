@@ -1,11 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <PackageReference Include="Ardalis.SmartEnum" />
     <PackageReference Include="ErrorOr" />
     <PackageReference Include="MediatR" />
     <PackageReference Include="Pgvector.EntityFrameworkCore" />
-    <PackageReference Include="throw" />
   </ItemGroup>
   
 </Project>

@@ -1,13 +1,11 @@
 using System.Text.Json.Serialization;
 
-namespace Contracts.Common;
+namespace Domain.Backlogs;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum WorkItemType
+public enum BacklogLevel
 {
-    UserStory,
-    Bug,
-    Defect,
     Epic,
     Feature,
+    UserStory,
 }

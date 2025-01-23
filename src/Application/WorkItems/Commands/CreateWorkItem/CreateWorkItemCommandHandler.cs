@@ -44,7 +44,8 @@ internal sealed class CreateWorkItemCommandHandler : IRequestHandler<CreateWorkI
             command.ProjectId,
             workItemCode,
             command.Title,
-            command.Type);
+            command.Type,
+            command.AssignedTeamId);
 
         var embeddingResponse = await _embeddingService.GenerateEmbeddingAsync(
             $"{workItem.Title} {workItem.Description}");

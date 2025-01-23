@@ -6,7 +6,6 @@ using Application.Retrospectives.Queries.GetRetrospective;
 using Application.Retrospectives.Queries.ListRetrospectives;
 using Asp.Versioning;
 using Contracts.Retrospectives;
-using Domain.Retrospectives;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;

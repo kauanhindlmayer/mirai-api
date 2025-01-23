@@ -1,4 +1,4 @@
-using Contracts.Common;
+using Domain.WorkItems.Enums;
 
 namespace Contracts.Boards;
 

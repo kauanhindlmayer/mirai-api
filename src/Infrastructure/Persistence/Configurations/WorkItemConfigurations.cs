@@ -29,24 +29,18 @@ internal sealed class WorkItemConfigurations : IEntityTypeConfiguration<WorkItem
         builder.Property(wi => wi.AcceptanceCriteria);
 
         builder.Property(wi => wi.Type)
-            .HasConversion(
-                v => v.Name,
-                v => WorkItemType.FromName(v, false))
+            .HasConversion<string>()
             .IsRequired();
 
         builder.Property(wi => wi.Status)
-            .HasConversion(
-                v => v.Name,
-                v => WorkItemStatus.FromName(v, false))
+            .HasConversion<string>()
             .IsRequired();
 
         builder.ComplexProperty(wi => wi.Planning);
 
         builder.ComplexProperty(wi => wi.Classification)
             .Property(wi => wi.ValueArea)
-            .HasConversion(
-                v => v.Name,
-                v => ValueAreaType.FromName(v, false));
+            .HasConversion<string>();
 
         builder.Property(wi => wi.SearchVector)
             .HasColumnType("vector");

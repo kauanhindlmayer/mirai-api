@@ -1,11 +1,11 @@
-using Ardalis.SmartEnum;
+using System.Text.Json.Serialization;
 
 namespace Domain.Boards.Enums;
 
-public sealed class ProcessTemplate(string name, int value)
-    : SmartEnum<ProcessTemplate>(name, value)
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum ProcessTemplate
 {
-    public static readonly ProcessTemplate Basic = new(nameof(Basic), 0);
-    public static readonly ProcessTemplate Agile = new(nameof(Agile), 1);
-    public static readonly ProcessTemplate Scrum = new(nameof(Scrum), 2);
+    Basic = 1,
+    Agile = 2,
+    Scrum = 3,
 }

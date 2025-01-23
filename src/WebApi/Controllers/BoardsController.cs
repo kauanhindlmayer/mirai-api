@@ -9,7 +9,6 @@ using Asp.Versioning;
 using Contracts.Boards;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using DomainWorkItemType = Domain.WorkItems.Enums.WorkItemType;
 
 namespace WebApi.Controllers;
 
@@ -147,14 +146,11 @@ public class BoardsController(ISender sender) : ApiController
         CreateCardRequest request,
         CancellationToken cancellationToken)
     {
-        if (!DomainWorkItemType.TryFromName(request.Type.ToString(), out var type))
-        {
-            return Problem(
-                statusCode: StatusCodes.Status400BadRequest,
-                detail: "Invalid work item type");
-        }
-
-        var command = new CreateCardCommand(boardId, columnId, type, request.Title);
+        var command = new CreateCardCommand(
+            boardId,
+            columnId,
+            request.Type,
+            request.Title);
 
         var result = await sender.Send(command, cancellationToken);
 

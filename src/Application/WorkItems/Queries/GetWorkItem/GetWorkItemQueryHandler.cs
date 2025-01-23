@@ -30,8 +30,8 @@ internal sealed class GetWorkItemQueryHandler : IRequestHandler<GetWorkItemQuery
                 Title = wi.Title,
                 Description = wi.Description,
                 AcceptanceCriteria = wi.AcceptanceCriteria,
-                Status = wi.Status.Name,
-                Type = wi.Type.Name,
+                Status = wi.Status.ToString(),
+                Type = wi.Type.ToString(),
                 Comments = wi.Comments.Select(c => new CommentResponse
                 {
                     Id = c.Id,

@@ -89,8 +89,8 @@ public static class SeedDataExtensions
             .RuleFor(wi => wi.Description, f => f.Lorem.Paragraph())
             .RuleFor(wi => wi.AcceptanceCriteria, f => f.Lorem.Paragraph())
             .RuleFor(wi => wi.ProjectId, _ => project.Id)
-            .RuleFor(wi => wi.Type, f => f.PickRandom<WorkItemType>(WorkItemType.List))
-            .RuleFor(wi => wi.Status, f => f.PickRandom<WorkItemStatus>(WorkItemStatus.List));
+            .RuleFor(wi => wi.Type, f => f.PickRandom(Enum.GetValues<WorkItemType>()))
+            .RuleFor(wi => wi.Status, f => f.PickRandom(Enum.GetValues<WorkItemStatus>()));
 
         return workItemFaker.Generate(count);
     }

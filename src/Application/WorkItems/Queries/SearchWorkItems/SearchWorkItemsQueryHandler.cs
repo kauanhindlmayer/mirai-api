@@ -44,8 +44,8 @@ internal sealed class SearchWorkItemsQueryHandler
                 Id = wi.Id,
                 Code = wi.Code,
                 Title = wi.Title,
-                Status = wi.Status.Name,
-                Type = wi.Type.Name,
+                Status = wi.Status.ToString(),
+                Type = wi.Type.ToString(),
                 CreatedAt = wi.CreatedAt,
                 UpdatedAt = wi.UpdatedAt,
             })

@@ -1,7 +1,8 @@
-using Contracts.Common;
+using Domain.WorkItems.Enums;
 
 namespace Contracts.WorkItems;
 
 public sealed record CreateWorkItemRequest(
     WorkItemType Type,
-    string Title);
+    string Title,
+    Guid? AssignedTeamId);

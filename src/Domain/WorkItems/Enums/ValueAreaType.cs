@@ -1,10 +1,10 @@
-using Ardalis.SmartEnum;
+using System.Text.Json.Serialization;
 
 namespace Domain.WorkItems.Enums;
 
-public sealed class ValueAreaType(string name, int value)
-    : SmartEnum<ValueAreaType>(name, value)
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum ValueAreaType
 {
-    public static readonly ValueAreaType Architectural = new(nameof(Architectural), 0);
-    public static readonly ValueAreaType Business = new(nameof(Business), 1);
+    Architectural = 1,
+    Business = 2,
 }

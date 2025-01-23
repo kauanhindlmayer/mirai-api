@@ -14,7 +14,7 @@ using Pgvector;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250122112533_InitialCreate")]
+    [Migration("20250123105634_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
