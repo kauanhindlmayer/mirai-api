@@ -1,4 +1,5 @@
 using Application.Common.Interfaces.Persistence;
+using Domain.Backlogs;
 using Domain.WorkItems;
 using ErrorOr;
 using MediatR;
@@ -6,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Backlogs.Queries.GetBacklog;
 
-public sealed class GetBacklogQueryHandler
+internal sealed class GetBacklogQueryHandler
     : IRequestHandler<GetBacklogQuery, ErrorOr<IReadOnlyList<BacklogResponse>>>
 {
     private readonly IApplicationDbContext _context;
@@ -17,16 +18,18 @@ public sealed class GetBacklogQueryHandler
     }
 
     public async Task<ErrorOr<IReadOnlyList<BacklogResponse>>> Handle(
-    GetBacklogQuery query,
-    CancellationToken cancellationToken)
+      GetBacklogQuery query,
+      CancellationToken cancellationToken)
     {
         var backlogResponse = await _context.WorkItems
-           .Where(wi => wi.AssignedTeamId == query.TeamId
-                        && wi.ParentWorkItemId == null
-                        && (!query.BacklogLevel.HasValue
-                            || query.BacklogLevel.Value.ToString() == wi.Type.ToString()))
-           .Select(wi => ToDto(wi))
-           .ToListAsync(cancellationToken);
+            .AsNoTracking()
+            .Include(wi => wi.ChildWorkItems)
+            .Where(wi =>
+                wi.AssignedTeamId == query.TeamId &&
+                (query.BacklogLevel == BacklogLevel.UserStory || !wi.ParentWorkItemId.HasValue) &&
+                (!query.BacklogLevel.HasValue || query.BacklogLevel.Value.ToString() == wi.Type.ToString()))
+            .Select(wi => ToDto(wi))
+            .ToListAsync(cancellationToken);
 
         return backlogResponse;
     }

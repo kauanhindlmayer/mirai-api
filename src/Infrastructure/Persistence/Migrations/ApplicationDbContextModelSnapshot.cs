@@ -457,7 +457,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("ParentWikiPageId");
 
-                    b.HasIndex("ProjectId");
+                    b.HasIndex("ProjectId", "ParentWikiPageId", "Position");
 
                     b.ToTable("WikiPages");
                 });

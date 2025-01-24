@@ -48,5 +48,7 @@ internal sealed class WikiPageConfigurations : IEntityTypeConfiguration<WikiPage
             .WithOne(v => v.WikiPage)
             .HasForeignKey(v => v.WikiPageId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasIndex(p => new { p.ProjectId, p.ParentWikiPageId, p.Position });
     }
 }

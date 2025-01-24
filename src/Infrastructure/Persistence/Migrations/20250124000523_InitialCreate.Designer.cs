@@ -14,7 +14,7 @@ using Pgvector;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250123105634_InitialCreate")]
+    [Migration("20250124000523_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -460,7 +460,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("ParentWikiPageId");
 
-                    b.HasIndex("ProjectId");
+                    b.HasIndex("ProjectId", "ParentWikiPageId", "Position");
 
                     b.ToTable("WikiPages");
                 });

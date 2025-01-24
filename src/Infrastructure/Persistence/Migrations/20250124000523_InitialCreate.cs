@@ -603,9 +603,9 @@ namespace Infrastructure.Persistence.Migrations
                 column: "ParentWikiPageId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_WikiPages_ProjectId",
+                name: "IX_WikiPages_ProjectId_ParentWikiPageId_Position",
                 table: "WikiPages",
-                column: "ProjectId");
+                columns: new[] { "ProjectId", "ParentWikiPageId", "Position" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_WikiPageViews_WikiPageId",

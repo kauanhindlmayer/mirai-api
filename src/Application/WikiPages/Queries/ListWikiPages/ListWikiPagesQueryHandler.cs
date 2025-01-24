@@ -1,5 +1,4 @@
 using Application.Common.Interfaces.Persistence;
-using Domain.Projects;
 using Domain.WikiPages;
 using ErrorOr;
 using MediatR;
@@ -23,13 +22,15 @@ internal sealed class ListWikiPagesQueryHandler
     {
         var rootPages = await _context.WikiPages
             .AsNoTracking()
-            .Where(wp => wp.ProjectId == query.ProjectId &&
-                         wp.ParentWikiPageId == null)
+            .Include(wp => wp.SubWikiPages)
+            .Where(wp =>
+                wp.ProjectId == query.ProjectId &&
+                !wp.ParentWikiPageId.HasValue)
             .OrderBy(wp => wp.Position)
+            .Select(wp => ToDto(wp))
             .ToListAsync(cancellationToken);
 
-        // Mapping client-side due to non-translatable hierarchical transformations.
-        return rootPages.ConvertAll(ToDto);
+        return rootPages;
     }
 
     private static WikiPageBriefResponse ToDto(WikiPage wikiPage)
