@@ -1,12 +1,12 @@
 using Application.Common.Interfaces.Persistence;
-using Domain.Teams;
 using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Teams.Queries.ListTeams;
 
-internal sealed class ListTeamsQueryHandler : IRequestHandler<ListTeamsQuery, ErrorOr<TeamBriefResponse>>
+internal sealed class ListTeamsQueryHandler
+    : IRequestHandler<ListTeamsQuery, ErrorOr<IReadOnlyList<TeamBriefResponse>>>
 {
     private readonly IApplicationDbContext _context;
 
@@ -15,26 +15,21 @@ internal sealed class ListTeamsQueryHandler : IRequestHandler<ListTeamsQuery, Er
         _context = context;
     }
 
-    public async Task<ErrorOr<TeamBriefResponse>> Handle(
+    public async Task<ErrorOr<IReadOnlyList<TeamBriefResponse>>> Handle(
         ListTeamsQuery query,
         CancellationToken cancellationToken)
     {
-        var team = await _context.Teams
+        var teams = await _context.Teams
             .AsNoTracking()
             .Where(t => t.ProjectId == query.ProjectId)
             .Select(t => new TeamBriefResponse
             {
                 Id = t.Id,
-                BoardId = t.Board.Id,
                 Name = t.Name,
+                BoardId = t.Board.Id,
             })
-            .FirstOrDefaultAsync(cancellationToken);
+            .ToListAsync(cancellationToken);
 
-        if (team is null)
-        {
-            return TeamErrors.NotFound;
-        }
-
-        return team;
+        return teams;
     }
 }

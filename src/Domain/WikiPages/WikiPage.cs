@@ -23,7 +23,7 @@ public sealed class WikiPage : AggregateRoot
         string title,
         string content,
         Guid authorId,
-        Guid? parentWikiPageId)
+        Guid? parentWikiPageId = null)
     {
         ProjectId = projectId;
         Title = title;

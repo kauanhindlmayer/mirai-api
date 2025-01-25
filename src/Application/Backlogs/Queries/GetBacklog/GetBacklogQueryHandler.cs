@@ -18,8 +18,8 @@ internal sealed class GetBacklogQueryHandler
     }
 
     public async Task<ErrorOr<IReadOnlyList<BacklogResponse>>> Handle(
-      GetBacklogQuery query,
-      CancellationToken cancellationToken)
+        GetBacklogQuery query,
+        CancellationToken cancellationToken)
     {
         var backlogResponse = await _context.WorkItems
             .AsNoTracking()
@@ -44,6 +44,7 @@ internal sealed class GetBacklogQueryHandler
             Title = workItem.Title,
             Status = workItem.Status.ToString(),
             StoryPoints = workItem.Planning.StoryPoints,
+            ValueArea = workItem.Classification.ValueArea.ToString(),
             Tags = workItem.Tags.Select(t => t.Name),
             Children = workItem.ChildWorkItems.Select(ToDto),
         };

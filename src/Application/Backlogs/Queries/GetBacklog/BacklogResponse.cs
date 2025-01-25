@@ -8,6 +8,7 @@ public sealed class BacklogResponse
     public string Title { get; init; } = string.Empty;
     public string Status { get; init; } = string.Empty;
     public int? StoryPoints { get; init; }
+    public string ValueArea { get; init; } = string.Empty;
     public IEnumerable<string> Tags { get; init; } = [];
     public IEnumerable<BacklogResponse> Children { get; init; } = [];
 }
