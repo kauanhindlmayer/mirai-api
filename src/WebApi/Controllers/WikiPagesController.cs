@@ -10,8 +10,6 @@ using Application.WikiPages.Queries.ListWikiPages;
 using Asp.Versioning;
 using Contracts.Common;
 using Contracts.WikiPages;
-using Domain.Users;
-using Domain.WikiPages;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
