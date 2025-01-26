@@ -299,7 +299,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("TeamId");
 
-                    b.ToTable("Sprint");
+                    b.ToTable("Sprints");
                 });
 
             modelBuilder.Entity("Domain.Tags.Tag", b =>

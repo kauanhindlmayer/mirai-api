@@ -140,7 +140,7 @@ namespace Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Sprint",
+                name: "Sprints",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -153,9 +153,9 @@ namespace Infrastructure.Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Sprint", x => x.Id);
+                    table.PrimaryKey("PK_Sprints", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Sprint_Teams_TeamId",
+                        name: "FK_Sprints_Teams_TeamId",
                         column: x => x.TeamId,
                         principalTable: "Teams",
                         principalColumn: "Id",
@@ -327,9 +327,9 @@ namespace Infrastructure.Persistence.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_WorkItems_Sprint_SprintId",
+                        name: "FK_WorkItems_Sprints_SprintId",
                         column: x => x.SprintId,
-                        principalTable: "Sprint",
+                        principalTable: "Sprints",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_WorkItems_Teams_AssignedTeamId",
@@ -557,8 +557,8 @@ namespace Infrastructure.Persistence.Migrations
                 column: "TeamId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Sprint_TeamId",
-                table: "Sprint",
+                name: "IX_Sprints_TeamId",
+                table: "Sprints",
                 column: "TeamId");
 
             migrationBuilder.CreateIndex(
@@ -706,7 +706,7 @@ namespace Infrastructure.Persistence.Migrations
                 name: "Retrospectives");
 
             migrationBuilder.DropTable(
-                name: "Sprint");
+                name: "Sprints");
 
             migrationBuilder.DropTable(
                 name: "Users");

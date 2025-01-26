@@ -2,6 +2,7 @@ using Domain.Boards;
 using Domain.Organizations;
 using Domain.Projects;
 using Domain.Retrospectives;
+using Domain.Sprints;
 using Domain.Tags;
 using Domain.Teams;
 using Domain.Users;
@@ -22,4 +23,5 @@ public interface IApplicationDbContext
     DbSet<User> Users { get; }
     DbSet<WikiPage> WikiPages { get; }
     DbSet<WorkItem> WorkItems { get; }
+    DbSet<Sprint> Sprints { get; }
 }

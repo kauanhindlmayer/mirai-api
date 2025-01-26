@@ -4,6 +4,7 @@ using Domain.Common;
 using Domain.Organizations;
 using Domain.Projects;
 using Domain.Retrospectives;
+using Domain.Sprints;
 using Domain.Tags;
 using Domain.Teams;
 using Domain.Users;
@@ -49,6 +50,8 @@ public sealed class ApplicationDbContext(
     public DbSet<RetrospectiveItem> RetrospectiveItems { get; init; } = null!;
 
     public DbSet<Tag> Tags { get; init; } = null!;
+
+    public DbSet<Sprint> Sprints { get; init; } = null!;
 
     public async override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

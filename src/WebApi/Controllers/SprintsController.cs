@@ -1,4 +1,5 @@
 using Application.Sprints.Commands.CreateSprint;
+using Application.Sprints.Queries.ListSprints;
 using Asp.Versioning;
 using Contracts.Sprints;
 using MediatR;
@@ -34,5 +35,22 @@ public class SprintsController(ISender sender) : ApiController
         return result.Match(
             sprintId => Ok(sprintId),
             Problem);
+    }
+
+    /// <summary>
+    /// List sprints in a team.
+    /// </summary>
+    /// <param name="teamId">The team ID.</param>
+    [HttpGet]
+    [ProducesResponseType(typeof(IReadOnlyList<SprintResponse>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> ListSprints(
+        Guid teamId,
+        CancellationToken cancellationToken)
+    {
+        var query = new ListSprintsQuery(teamId);
+
+        var result = await sender.Send(query, cancellationToken);
+
+        return result.Match(Ok, Problem);
     }
 }

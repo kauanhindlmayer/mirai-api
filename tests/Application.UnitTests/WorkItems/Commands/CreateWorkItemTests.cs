@@ -12,7 +12,8 @@ public class CreateWorkItemTests
     private static readonly CreateWorkItemCommand Command = new(
         Guid.NewGuid(),
         WorkItemType.UserStory,
-        "Title");
+        "Title",
+        null);
 
     private readonly CreateWorkItemCommandHandler _handler;
     private readonly IProjectsRepository _projectsRepository;

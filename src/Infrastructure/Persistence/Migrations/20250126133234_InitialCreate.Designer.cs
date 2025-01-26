@@ -14,7 +14,7 @@ using Pgvector;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250126105640_InitialCreate")]
+    [Migration("20250126133234_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -302,7 +302,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("TeamId");
 
-                    b.ToTable("Sprint");
+                    b.ToTable("Sprints");
                 });
 
             modelBuilder.Entity("Domain.Tags.Tag", b =>
