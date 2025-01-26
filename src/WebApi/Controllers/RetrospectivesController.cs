@@ -15,10 +15,19 @@ namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
 [Route("api/v{version:apiVersion}/teams/{teamId:guid}/retrospectives")]
-public class RetrospectivesController(
-    ISender sender,
-    IHubContext<RetrospectiveHub, IRetrospectiveHub> hubContext) : ApiController
+public class RetrospectivesController : ApiController
 {
+    private readonly ISender _sender;
+    private readonly IHubContext<RetrospectiveHub, IRetrospectiveHub> _hubContext;
+
+    public RetrospectivesController(
+        ISender sender,
+        IHubContext<RetrospectiveHub, IRetrospectiveHub> hubContext)
+    {
+        _sender = sender;
+        _hubContext = hubContext;
+    }
+
     /// <summary>
     /// Create a new retrospective session.
     /// </summary>
@@ -37,7 +46,7 @@ public class RetrospectivesController(
             request.Description,
             teamId);
 
-        var result = await sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
             retrospectiveId => CreatedAtAction(
@@ -60,7 +69,7 @@ public class RetrospectivesController(
     {
         var query = new GetRetrospectiveQuery(retrospectiveId);
 
-        var result = await sender.Send(query, cancellationToken);
+        var result = await _sender.Send(query, cancellationToken);
 
         return result.Match(Ok, Problem);
     }
@@ -82,7 +91,7 @@ public class RetrospectivesController(
     {
         var command = new CreateColumnCommand(request.Title, retrospectiveId);
 
-        var result = await sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => CreatedAtAction(
@@ -109,15 +118,19 @@ public class RetrospectivesController(
         CreateItemRequest request,
         CancellationToken cancellationToken)
     {
-        var command = new CreateItemCommand(request.Description, retrospectiveId, columnId);
-        var result = await sender.Send(command, cancellationToken);
+        var command = new CreateItemCommand(
+            request.Description,
+            retrospectiveId,
+            columnId);
+
+        var result = await _sender.Send(command, cancellationToken);
 
         if (result.IsError)
         {
             return Problem(result.Errors);
         }
 
-        await hubContext.Clients.All.SendRetrospectiveItem(result.Value);
+        await _hubContext.Clients.All.SendRetrospectiveItem(result.Value);
         return CreatedAtAction(
             nameof(GetRetrospective),
             new { TeamId = teamId, RetrospectiveId = retrospectiveId },
@@ -141,7 +154,7 @@ public class RetrospectivesController(
     {
         var command = new DeleteItemCommand(retrospectiveId, columnId, itemId);
 
-        var result = await sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => NoContent(),
@@ -161,7 +174,7 @@ public class RetrospectivesController(
     {
         var query = new ListRetrospectivesQuery(teamId);
 
-        var result = await sender.Send(query, cancellationToken);
+        var result = await _sender.Send(query, cancellationToken);
 
         return result.Match(Ok, Problem);
     }

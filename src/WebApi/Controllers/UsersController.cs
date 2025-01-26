@@ -15,8 +15,15 @@ namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
 [Route("api/v{version:apiVersion}/users")]
-public class UsersController(ISender sender) : ApiController
+public class UsersController : ApiController
 {
+    private readonly ISender _sender;
+
+    public UsersController(ISender sender)
+    {
+        _sender = sender;
+    }
+
     /// <summary>
     /// Register a new user.
     /// </summary>
@@ -35,7 +42,7 @@ public class UsersController(ISender sender) : ApiController
             request.FirstName,
             request.LastName);
 
-        var result = await sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
             userId => Ok(userId),
@@ -56,7 +63,7 @@ public class UsersController(ISender sender) : ApiController
     {
         var query = new LoginUserQuery(request.Email, request.Password);
 
-        var result = await sender.Send(query, cancellationToken);
+        var result = await _sender.Send(query, cancellationToken);
 
         if (result.IsError && result.FirstError == UserErrors.InvalidCredentials)
         {
@@ -73,11 +80,12 @@ public class UsersController(ISender sender) : ApiController
     /// </summary>
     [HttpGet("me")]
     [ProducesResponseType(typeof(UserResponse), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetCurrentUser(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetCurrentUser(
+        CancellationToken cancellationToken)
     {
         var query = new GetCurrentUserQuery();
 
-        var result = await sender.Send(query, cancellationToken);
+        var result = await _sender.Send(query, cancellationToken);
 
         return result.Match(Ok, Problem);
     }
@@ -97,7 +105,7 @@ public class UsersController(ISender sender) : ApiController
             request.FirstName,
             request.LastName);
 
-        var result = await sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => Ok(),
@@ -118,7 +126,7 @@ public class UsersController(ISender sender) : ApiController
             file.OpenReadStream(),
             file.ContentType);
 
-        var result = await sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => Ok(),

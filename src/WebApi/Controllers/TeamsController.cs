@@ -11,8 +11,15 @@ namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
 [Route("api/v{version:apiVersion}/projects/{projectId:guid}/teams")]
-public class TeamsController(ISender sender) : ApiController
+public class TeamsController : ApiController
 {
+    private readonly ISender _sender;
+
+    public TeamsController(ISender sender)
+    {
+        _sender = sender;
+    }
+
     /// <summary>
     /// Create a new team.
     /// </summary>
@@ -32,7 +39,7 @@ public class TeamsController(ISender sender) : ApiController
             request.Name,
             request.Description);
 
-        var result = await sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
             teamId => CreatedAtAction(
@@ -55,7 +62,7 @@ public class TeamsController(ISender sender) : ApiController
     {
         var query = new GetTeamQuery(teamId);
 
-        var result = await sender.Send(query, cancellationToken);
+        var result = await _sender.Send(query, cancellationToken);
 
         return result.Match(Ok, Problem);
     }
@@ -73,7 +80,7 @@ public class TeamsController(ISender sender) : ApiController
     {
         var query = new ListTeamsQuery(projectId);
 
-        var result = await sender.Send(query, cancellationToken);
+        var result = await _sender.Send(query, cancellationToken);
 
         return result.Match(Ok, Problem);
     }
@@ -93,7 +100,7 @@ public class TeamsController(ISender sender) : ApiController
     {
         var command = new AddMemberCommand(teamId, request.MemberId);
 
-        var result = await sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => NoContent(),

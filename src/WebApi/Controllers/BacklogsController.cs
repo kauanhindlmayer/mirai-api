@@ -3,14 +3,20 @@ using Asp.Versioning;
 using Contracts.Backlogs;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using DomainBacklogLevel = Domain.Backlogs.BacklogLevel;
 
 namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
 [Route("api/v{version:apiVersion}/teams/{teamId:guid}/backlogs")]
-public class BacklogsController(ISender sender) : ApiController
+public class BacklogsController : ApiController
 {
+    private readonly ISender _sender;
+
+    public BacklogsController(ISender sender)
+    {
+        _sender = sender;
+    }
+
     /// <summary>
     /// Get the backlog for a team.
     /// </summary>
@@ -28,7 +34,7 @@ public class BacklogsController(ISender sender) : ApiController
             request.SprintId,
             request.BacklogLevel);
 
-        var result = await sender.Send(query, cancellationToken);
+        var result = await _sender.Send(query, cancellationToken);
 
         return result.Match(Ok, Problem);
     }

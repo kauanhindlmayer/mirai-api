@@ -12,8 +12,15 @@ namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
 [Route("api/v{version:apiVersion}/organizations")]
-public class OrganizationsController(ISender sender) : ApiController
+public class OrganizationsController : ApiController
 {
+    private readonly ISender _sender;
+
+    public OrganizationsController(ISender sender)
+    {
+        _sender = sender;
+    }
+
     /// <summary>
     /// Create a new organization.
     /// </summary>
@@ -29,7 +36,7 @@ public class OrganizationsController(ISender sender) : ApiController
             request.Name,
             request.Description);
 
-        var result = await sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
             organizationId => CreatedAtAction(
@@ -52,7 +59,7 @@ public class OrganizationsController(ISender sender) : ApiController
     {
         var query = new GetOrganizationQuery(organizationId);
 
-        var result = await sender.Send(query, cancellationToken);
+        var result = await _sender.Send(query, cancellationToken);
 
         return result.Match(Ok, Problem);
     }
@@ -66,7 +73,7 @@ public class OrganizationsController(ISender sender) : ApiController
     {
         var query = new ListOrganizationsQuery();
 
-        var result = await sender.Send(query, cancellationToken);
+        var result = await _sender.Send(query, cancellationToken);
 
         return result.Match(Ok, Problem);
     }
@@ -90,7 +97,7 @@ public class OrganizationsController(ISender sender) : ApiController
             request.Name,
             request.Description);
 
-        var result = await sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => Ok(organizationId),
@@ -110,7 +117,7 @@ public class OrganizationsController(ISender sender) : ApiController
     {
         var command = new DeleteOrganizationCommand(organizationId);
 
-        var result = await sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => NoContent(),

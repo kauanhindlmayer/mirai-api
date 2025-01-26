@@ -11,8 +11,15 @@ namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
 [Route("api/v{version:apiVersion}/projects/{projectId:guid}/tags")]
-public class TagsController(ISender sender) : ApiController
+public class TagsController : ApiController
 {
+    private readonly ISender _sender;
+
+    public TagsController(ISender sender)
+    {
+        _sender = sender;
+    }
+
     /// <summary>
     /// Add a tag to a project that can be used to categorize work items.
     /// </summary>
@@ -32,7 +39,7 @@ public class TagsController(ISender sender) : ApiController
             request.Description,
             request.Color);
 
-        var result = await sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
             tagId => Ok(tagId),
@@ -54,7 +61,7 @@ public class TagsController(ISender sender) : ApiController
     {
         var query = new ListTagsQuery(projectId, searchTerm);
 
-        var result = await sender.Send(query, cancellationToken);
+        var result = await _sender.Send(query, cancellationToken);
 
         return result.Match(Ok, Problem);
     }
@@ -81,7 +88,7 @@ public class TagsController(ISender sender) : ApiController
             request.Description,
             request.Color);
 
-        var result = await sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => Ok(tagId),
@@ -103,7 +110,7 @@ public class TagsController(ISender sender) : ApiController
     {
         var command = new DeleteTagCommand(projectId, tagId);
 
-        var result = await sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => NoContent(),

@@ -21,8 +21,15 @@ namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
 [Route("api/v{version:apiVersion}/projects/{projectId:guid}/work-items")]
-public class WorkItemsController(ISender sender) : ApiController
+public class WorkItemsController : ApiController
 {
+    private readonly ISender _sender;
+
+    public WorkItemsController(ISender sender)
+    {
+        _sender = sender;
+    }
+
     /// <summary>
     /// Create a new work item.
     /// </summary>
@@ -42,7 +49,7 @@ public class WorkItemsController(ISender sender) : ApiController
             request.Title,
             request.AssignedTeamId);
 
-        var result = await sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
             workItemId => CreatedAtAction(
@@ -65,7 +72,7 @@ public class WorkItemsController(ISender sender) : ApiController
     {
         var query = new GetWorkItemQuery(workItemId);
 
-        var result = await sender.Send(query, cancellationToken);
+        var result = await _sender.Send(query, cancellationToken);
 
         return result.Match(Ok, Problem);
     }
@@ -86,7 +93,7 @@ public class WorkItemsController(ISender sender) : ApiController
             projectId,
             request.PeriodInDays);
 
-        var result = await sender.Send(query, cancellationToken);
+        var result = await _sender.Send(query, cancellationToken);
 
         return result.Match(Ok, Problem);
     }
@@ -109,7 +116,7 @@ public class WorkItemsController(ISender sender) : ApiController
     {
         var command = new AddCommentCommand(workItemId, request.Content);
 
-        var result = await sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
             commentId => CreatedAtAction(
@@ -139,7 +146,7 @@ public class WorkItemsController(ISender sender) : ApiController
             request.SortOrder,
             request.SearchTerm);
 
-        var result = await sender.Send(query, cancellationToken);
+        var result = await _sender.Send(query, cancellationToken);
 
         return result.Match(Ok, Problem);
     }
@@ -160,7 +167,7 @@ public class WorkItemsController(ISender sender) : ApiController
     {
         var command = new AssignWorkItemCommand(workItemId, request.AssigneeId);
 
-        var result = await sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => NoContent(),
@@ -183,7 +190,7 @@ public class WorkItemsController(ISender sender) : ApiController
     {
         var command = new AddTagCommand(workItemId, request.Name);
 
-        var result = await sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => NoContent(),
@@ -205,7 +212,7 @@ public class WorkItemsController(ISender sender) : ApiController
     {
         var command = new RemoveTagCommand(workItemId, tagName);
 
-        var result = await sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => NoContent(),
@@ -226,7 +233,7 @@ public class WorkItemsController(ISender sender) : ApiController
     {
         var query = new SearchWorkItemsQuery(projectId, searchTerm);
 
-        var result = await sender.Send(query, cancellationToken);
+        var result = await _sender.Send(query, cancellationToken);
 
         return result.Match(Ok, Problem);
     }
@@ -244,7 +251,7 @@ public class WorkItemsController(ISender sender) : ApiController
     {
         var command = new DeleteWorkItemCommand(workItemId);
 
-        var result = await sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => NoContent(),

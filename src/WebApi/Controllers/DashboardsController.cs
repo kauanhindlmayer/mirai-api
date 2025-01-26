@@ -7,8 +7,15 @@ namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
 [Route("api/v{version:apiVersion}/teams/{teamId:guid}/dashboards")]
-public class DashboardsController(ISender sender) : ApiController
+public class DashboardsController : ApiController
 {
+    private readonly ISender _sender;
+
+    public DashboardsController(ISender sender)
+    {
+        _sender = sender;
+    }
+
     /// <summary>
     /// Retrieves the dashboard data for a given project.
     /// </summary>
@@ -29,7 +36,7 @@ public class DashboardsController(ISender sender) : ApiController
             startDate,
             endDate);
 
-        var result = await sender.Send(query, cancellationToken);
+        var result = await _sender.Send(query, cancellationToken);
 
         return result.Match(Ok, Problem);
     }

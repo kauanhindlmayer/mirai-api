@@ -14,8 +14,15 @@ namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
 [Route("api/v{version:apiVersion}/teams/{teamId:guid}/boards")]
-public class BoardsController(ISender sender) : ApiController
+public class BoardsController : ApiController
 {
+    private readonly ISender _sender;
+
+    public BoardsController(ISender sender)
+    {
+        _sender = sender;
+    }
+
     /// <summary>
     /// Get a board by its ID.
     /// </summary>
@@ -29,7 +36,7 @@ public class BoardsController(ISender sender) : ApiController
     {
         var query = new GetBoardQuery(boardId);
 
-        var result = await sender.Send(query, cancellationToken);
+        var result = await _sender.Send(query, cancellationToken);
 
         return result.Match(Ok, Problem);
     }
@@ -48,7 +55,7 @@ public class BoardsController(ISender sender) : ApiController
     {
         var query = new ListBoardsQuery(projectId);
 
-        var result = await sender.Send(query, cancellationToken);
+        var result = await _sender.Send(query, cancellationToken);
 
         return result.Match(Ok, Problem);
     }
@@ -66,7 +73,7 @@ public class BoardsController(ISender sender) : ApiController
     {
         var command = new DeleteBoardCommand(boardId);
 
-        var result = await sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => NoContent(),
@@ -96,7 +103,7 @@ public class BoardsController(ISender sender) : ApiController
             request.DefinitionOfDone,
             request.Position);
 
-        var result = await sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
             columnId => CreatedAtAction(
@@ -121,7 +128,7 @@ public class BoardsController(ISender sender) : ApiController
     {
         var command = new DeleteColumnCommand(boardId, columnId);
 
-        var result = await sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => NoContent(),
@@ -152,7 +159,7 @@ public class BoardsController(ISender sender) : ApiController
             request.Type,
             request.Title);
 
-        var result = await sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
             cardId => CreatedAtAction(
@@ -187,7 +194,7 @@ public class BoardsController(ISender sender) : ApiController
             request.TargetColumnId,
             request.TargetPosition);
 
-        var result = await sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => NoContent(),

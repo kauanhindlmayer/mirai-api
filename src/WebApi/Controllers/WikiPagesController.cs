@@ -17,8 +17,15 @@ namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
 [Route("api/v{version:apiVersion}/projects/{projectId:guid}/wiki-pages")]
-public class WikiPagesController(ISender sender) : ApiController
+public class WikiPagesController : ApiController
 {
+    private readonly ISender _sender;
+
+    public WikiPagesController(ISender sender)
+    {
+        _sender = sender;
+    }
+
     /// <summary>
     /// Creates a new wiki page. If a ParentWikiPageId is provided, the page
     /// will be created as a sub-page under the specified parent wiki page.
@@ -39,7 +46,7 @@ public class WikiPagesController(ISender sender) : ApiController
             request.Content,
             request.ParentWikiPageId);
 
-        var result = await sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
             wikiPageId => CreatedAtAction(
@@ -62,7 +69,7 @@ public class WikiPagesController(ISender sender) : ApiController
     {
         var query = new GetWikiPageQuery(wikiPageId);
 
-        var result = await sender.Send(query, cancellationToken);
+        var result = await _sender.Send(query, cancellationToken);
 
         return result.Match(Ok, Problem);
     }
@@ -84,7 +91,7 @@ public class WikiPagesController(ISender sender) : ApiController
             wikiPageId,
             request.PageViewsForDays);
 
-        var result = await sender.Send(query, cancellationToken);
+        var result = await _sender.Send(query, cancellationToken);
 
         return result.Match(Ok, Problem);
     }
@@ -101,7 +108,7 @@ public class WikiPagesController(ISender sender) : ApiController
     {
         var query = new ListWikiPagesQuery(projectId);
 
-        var result = await sender.Send(query, cancellationToken);
+        var result = await _sender.Send(query, cancellationToken);
 
         return result.Match(Ok, Problem);
     }
@@ -124,7 +131,7 @@ public class WikiPagesController(ISender sender) : ApiController
     {
         var command = new AddCommentCommand(wikiPageId, request.Content);
 
-        var result = await sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
             commentId => CreatedAtAction(
@@ -149,7 +156,7 @@ public class WikiPagesController(ISender sender) : ApiController
     {
         var command = new DeleteCommentCommand(wikiPageId, commentId);
 
-        var result = await sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => NoContent(),
@@ -169,7 +176,7 @@ public class WikiPagesController(ISender sender) : ApiController
     {
         var command = new DeleteWikiPageCommand(wikiPageId);
 
-        var result = await sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => NoContent(),
@@ -194,7 +201,7 @@ public class WikiPagesController(ISender sender) : ApiController
             request.Title,
             request.Content);
 
-        var result = await sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => Ok(wikiPageId),
@@ -223,7 +230,7 @@ public class WikiPagesController(ISender sender) : ApiController
             request.TargetParentId,
             request.TargetPosition);
 
-        var result = await sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => NoContent(),

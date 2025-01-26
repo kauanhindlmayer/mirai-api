@@ -10,8 +10,15 @@ namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
 [Route("api/v{version:apiVersion}/teams/{teamId:guid}/sprints")]
-public class SprintsController(ISender sender) : ApiController
+public class SprintsController : ApiController
 {
+    private readonly ISender _sender;
+
+    public SprintsController(ISender sender)
+    {
+        _sender = sender;
+    }
+
     /// <summary>
     /// Create a sprint in a team.
     /// </summary>
@@ -31,7 +38,7 @@ public class SprintsController(ISender sender) : ApiController
             request.StartDate,
             request.EndDate);
 
-        var result = await sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
             sprintId => Ok(sprintId),
@@ -50,7 +57,7 @@ public class SprintsController(ISender sender) : ApiController
     {
         var query = new ListSprintsQuery(teamId);
 
-        var result = await sender.Send(query, cancellationToken);
+        var result = await _sender.Send(query, cancellationToken);
 
         return result.Match(Ok, Problem);
     }
@@ -69,7 +76,7 @@ public class SprintsController(ISender sender) : ApiController
             sprintId,
             request.WorkItemId);
 
-        var result = await sender.Send(query, cancellationToken);
+        var result = await _sender.Send(query, cancellationToken);
 
         return result.Match(
             _ => NoContent(),

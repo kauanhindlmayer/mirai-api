@@ -11,8 +11,15 @@ namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
 [Route("api/v{version:apiVersion}/organizations/{organizationId:guid}/projects")]
-public class ProjectsController(ISender sender) : ApiController
+public class ProjectsController : ApiController
 {
+    private readonly ISender _sender;
+
+    public ProjectsController(ISender sender)
+    {
+        _sender = sender;
+    }
+
     /// <summary>
     /// Create a new project, along with a default team and board.
     /// </summary>
@@ -31,7 +38,7 @@ public class ProjectsController(ISender sender) : ApiController
             request.Description,
             organizationId);
 
-        var result = await sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
             projectId => CreatedAtAction(
@@ -54,7 +61,7 @@ public class ProjectsController(ISender sender) : ApiController
     {
         var query = new GetProjectQuery(projectId);
 
-        var result = await sender.Send(query, cancellationToken);
+        var result = await _sender.Send(query, cancellationToken);
 
         return result.Match(Ok, Problem);
     }
@@ -72,7 +79,7 @@ public class ProjectsController(ISender sender) : ApiController
     {
         var query = new ListProjectsQuery(organizationId);
 
-        var result = await sender.Send(query, cancellationToken);
+        var result = await _sender.Send(query, cancellationToken);
 
         return result.Match(Ok, Problem);
     }
@@ -99,7 +106,7 @@ public class ProjectsController(ISender sender) : ApiController
             request.Name,
             request.Description);
 
-        var result = await sender.Send(command, cancellationToken);
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => Ok(projectId),
