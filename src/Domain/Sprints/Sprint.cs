@@ -1,5 +1,6 @@
 using Domain.Common;
 using Domain.Teams;
+using Domain.WorkItems;
 
 namespace Domain.Sprints;
 
@@ -10,6 +11,7 @@ public sealed class Sprint : Entity
     public string Name { get; private set; } = null!;
     public DateTime StartDate { get; private set; }
     public DateTime EndDate { get; private set; }
+    public ICollection<WorkItem> WorkItems { get; private set; } = [];
 
     public Sprint(
         Guid teamId,

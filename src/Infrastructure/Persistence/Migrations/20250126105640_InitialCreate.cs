@@ -145,7 +145,7 @@ namespace Infrastructure.Persistence.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     TeamId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -310,6 +310,7 @@ namespace Infrastructure.Persistence.Migrations
                     AssignedTeamId = table.Column<Guid>(type: "uuid", nullable: true),
                     ParentWorkItemId = table.Column<Guid>(type: "uuid", nullable: true),
                     CompletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    SprintId = table.Column<Guid>(type: "uuid", nullable: true),
                     Classification_ValueArea = table.Column<string>(type: "text", nullable: false),
                     Planning_Priority = table.Column<int>(type: "integer", nullable: true),
                     Planning_StoryPoints = table.Column<int>(type: "integer", nullable: true),
@@ -325,6 +326,11 @@ namespace Infrastructure.Persistence.Migrations
                         principalTable: "Projects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_WorkItems_Sprint_SprintId",
+                        column: x => x.SprintId,
+                        principalTable: "Sprint",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_WorkItems_Teams_AssignedTeamId",
                         column: x => x.AssignedTeamId,
@@ -644,6 +650,11 @@ namespace Infrastructure.Persistence.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_WorkItems_SprintId",
+                table: "WorkItems",
+                column: "SprintId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_WorkItemTag_WorkItemsId",
                 table: "WorkItemTag",
                 column: "WorkItemsId");
@@ -660,9 +671,6 @@ namespace Infrastructure.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "RetrospectiveItems");
-
-            migrationBuilder.DropTable(
-                name: "Sprint");
 
             migrationBuilder.DropTable(
                 name: "WikiPageComments");
@@ -696,6 +704,9 @@ namespace Infrastructure.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Retrospectives");
+
+            migrationBuilder.DropTable(
+                name: "Sprint");
 
             migrationBuilder.DropTable(
                 name: "Users");

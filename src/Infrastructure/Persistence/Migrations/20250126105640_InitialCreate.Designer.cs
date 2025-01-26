@@ -14,7 +14,7 @@ using Pgvector;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250124000523_InitialCreate")]
+    [Migration("20250126105640_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -276,7 +276,6 @@ namespace Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Domain.Sprints.Sprint", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
@@ -287,7 +286,8 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("timestamp with time zone");
@@ -553,6 +553,9 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<Vector>("SearchVector")
                         .HasColumnType("vector");
 
+                    b.Property<Guid?>("SprintId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("text");
@@ -596,6 +599,8 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasIndex("AssigneeId");
 
                     b.HasIndex("ParentWorkItemId");
+
+                    b.HasIndex("SprintId");
 
                     b.HasIndex("ProjectId", "Code")
                         .IsUnique();
@@ -870,6 +875,11 @@ namespace Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Domain.Sprints.Sprint", "Sprint")
+                        .WithMany("WorkItems")
+                        .HasForeignKey("SprintId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.Navigation("AssignedTeam");
 
                     b.Navigation("Assignee");
@@ -877,6 +887,8 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("ParentWorkItem");
 
                     b.Navigation("Project");
+
+                    b.Navigation("Sprint");
                 });
 
             modelBuilder.Entity("Domain.WorkItems.WorkItemComment", b =>
@@ -962,6 +974,11 @@ namespace Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Domain.Retrospectives.RetrospectiveColumn", b =>
                 {
                     b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("Domain.Sprints.Sprint", b =>
+                {
+                    b.Navigation("WorkItems");
                 });
 
             modelBuilder.Entity("Domain.Teams.Team", b =>

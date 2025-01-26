@@ -82,5 +82,9 @@ internal sealed class WorkItemConfigurations : IEntityTypeConfiguration<WorkItem
             .UsingEntity(j => j.ToTable("WorkItemTag"));
 
         builder.Property(wi => wi.CompletedAt);
+
+        builder.HasOne(wi => wi.Sprint)
+            .WithMany(s => s.WorkItems)
+            .HasForeignKey(wi => wi.SprintId);
     }
 }

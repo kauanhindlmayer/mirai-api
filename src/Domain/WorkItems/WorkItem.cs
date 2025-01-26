@@ -1,5 +1,6 @@
 using Domain.Common;
 using Domain.Projects;
+using Domain.Sprints;
 using Domain.Tags;
 using Domain.Teams;
 using Domain.Users;
@@ -33,6 +34,8 @@ public sealed class WorkItem : AggregateRoot
     public ICollection<Tag> Tags { get; private set; } = [];
     public ICollection<WorkItemComment> Comments { get; private set; } = [];
     public DateTime? CompletedAt { get; private set; }
+    public Guid? SprintId { get; private set; }
+    public Sprint? Sprint { get; private set; }
 
     public WorkItem(
         Guid projectId,

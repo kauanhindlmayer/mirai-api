@@ -32,5 +32,10 @@ internal sealed class TeamConfigurations : IEntityTypeConfiguration<Team>
             .WithOne(b => b.Team)
             .HasForeignKey<Board>(b => b.TeamId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(t => t.Sprints)
+            .WithOne(s => s.Team)
+            .HasForeignKey(s => s.TeamId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

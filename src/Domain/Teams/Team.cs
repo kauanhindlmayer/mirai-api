@@ -67,4 +67,15 @@ public sealed class Team : AggregateRoot
         Retrospectives.Add(retrospective);
         return Result.Success;
     }
+
+    public ErrorOr<Success> AddSprint(Sprint sprint)
+    {
+        if (Sprints.Any(s => s.Name == sprint.Name))
+        {
+            return SprintErrors.AlreadyExists;
+        }
+
+        Sprints.Add(sprint);
+        return Result.Success;
+    }
 }
