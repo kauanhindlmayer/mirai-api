@@ -42,16 +42,18 @@ public sealed class WorkItem : AggregateRoot
         int code,
         string title,
         WorkItemType type,
-        Guid? parentWorkItemId = null,
-        Guid? assignedTeamId = null)
+        Guid? assignedTeamId = null,
+        Guid? sprintId = null,
+        Guid? parentWorkItemId = null)
     {
         ProjectId = projectId;
         Code = code;
         Title = title;
         Type = type;
         Status = WorkItemStatus.New;
-        ParentWorkItemId = parentWorkItemId;
         AssignedTeamId = assignedTeamId;
+        SprintId = sprintId;
+        ParentWorkItemId = parentWorkItemId;
     }
 
     public WorkItem()

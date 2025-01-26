@@ -34,15 +34,4 @@ internal sealed class TagsRepository : Repository<Tag>, ITagsRepository
 
         return query.ToListAsync(cancellationToken);
     }
-
-    public async Task<bool> IsTagLinkedToAnyWorkItemsAsync(
-        Guid projectId,
-        string name,
-        CancellationToken cancellationToken = default)
-    {
-        return await _dbContext.Tags
-            .AsNoTracking()
-            .Include(t => t.WorkItems)
-            .AnyAsync(t => t.ProjectId == projectId && t.Name == name && t.WorkItems.Count != 0, cancellationToken);
-    }
 }

@@ -39,13 +39,12 @@ internal sealed class ProjectsRepository : Repository<Project>, IProjectsReposit
             .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
     }
 
-    public Task<List<Project>> ListAsync(
-        Guid organizationId,
+    public Task<Project?> GetByIdWithTeamsAsync(
+        Guid id,
         CancellationToken cancellationToken = default)
     {
         return _dbContext.Projects
-            .AsNoTracking()
-            .Where(p => p.OrganizationId == organizationId)
-            .ToListAsync(cancellationToken);
+            .Include(p => p.Teams)
+            .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
     }
 }

@@ -9,8 +9,4 @@ public interface ITagsRepository : IRepository<Tag>
         Guid projectId,
         string? searchTerm,
         CancellationToken cancellationToken = default);
-    Task<bool> IsTagLinkedToAnyWorkItemsAsync(
-        Guid projectId,
-        string name,
-        CancellationToken cancellationToken = default);
 }

@@ -1,3 +1,4 @@
+using Application.Sprints.Commands.AddWorkItemToSprint;
 using Application.Sprints.Commands.CreateSprint;
 using Application.Sprints.Queries.ListSprints;
 using Asp.Versioning;
@@ -52,5 +53,26 @@ public class SprintsController(ISender sender) : ApiController
         var result = await sender.Send(query, cancellationToken);
 
         return result.Match(Ok, Problem);
+    }
+
+    [HttpPost("{sprintId:guid}/work-items")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> AddWorkItemToSprint(
+    Guid teamId,
+    Guid sprintId,
+    AddWorkItemToSprintRequest request,
+    CancellationToken cancellationToken)
+    {
+        var query = new AddWorkItemToSprintCommand(
+            teamId,
+            sprintId,
+            request.WorkItemId);
+
+        var result = await sender.Send(query, cancellationToken);
+
+        return result.Match(
+            _ => NoContent(),
+            Problem);
     }
 }

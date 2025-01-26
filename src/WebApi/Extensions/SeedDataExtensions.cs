@@ -2,6 +2,7 @@ using Bogus;
 using Domain.Boards;
 using Domain.Organizations;
 using Domain.Projects;
+using Domain.Sprints;
 using Domain.Teams;
 using Domain.Users;
 using Domain.WikiPages;
@@ -45,6 +46,14 @@ public static class SeedDataExtensions
             faker.Lorem.Sentence());
         context.Teams.Add(team);
 
+        var startDate = faker.Date.Recent();
+        var sprint = new Sprint(
+            team.Id,
+            "Sprint 1",
+            startDate,
+            startDate.AddDays(14));
+        context.Sprints.Add(sprint);
+
         var board = new Board(
             team.Id,
             team.Name);
@@ -52,7 +61,7 @@ public static class SeedDataExtensions
 
         var users = SeedUsers(faker, context);
         SeedWikiPages(faker, context, project, users);
-        SeedWorkItems(faker, context, project, team, board);
+        SeedWorkItems(faker, context, project, team, sprint, board);
 
         context.SaveChanges();
         logger.LogInformation("Data seeded");
@@ -129,6 +138,7 @@ public static class SeedDataExtensions
         ApplicationDbContext context,
         Project project,
         Team team,
+        Sprint sprint,
         Board board,
         int featureCount = 5,
         int storiesPerFeature = 3)
@@ -151,8 +161,8 @@ public static class SeedDataExtensions
                 workItemCode++,
                 faker.Lorem.Sentence(),
                 WorkItemType.Feature,
-                null,
-                team.Id);
+                team.Id,
+                sprint.Id);
 
             context.WorkItems.Add(feature);
 
@@ -170,8 +180,9 @@ public static class SeedDataExtensions
                     workItemCode++,
                     faker.Lorem.Sentence(),
                     WorkItemType.UserStory,
-                    feature.Id,
-                    team.Id);
+                    team.Id,
+                    sprint.Id,
+                    feature.Id);
 
                 context.WorkItems.Add(userStory);
 

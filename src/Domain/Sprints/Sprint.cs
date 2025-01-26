@@ -1,6 +1,7 @@
 using Domain.Common;
 using Domain.Teams;
 using Domain.WorkItems;
+using ErrorOr;
 
 namespace Domain.Sprints;
 
@@ -27,5 +28,16 @@ public sealed class Sprint : Entity
 
     private Sprint()
     {
+    }
+
+    public ErrorOr<Success> AddWorkItem(WorkItem workItem)
+    {
+        if (WorkItems.Any(wi => wi.Id == workItem.Id))
+        {
+            return SprintErrors.WorkItemAlreadyInSprint;
+        }
+
+        WorkItems.Add(workItem);
+        return Result.Success;
     }
 }

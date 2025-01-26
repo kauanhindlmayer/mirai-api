@@ -1,6 +1,7 @@
 using Application.Common.Interfaces.Persistence;
 using Application.Common.Interfaces.Services;
 using Domain.Projects.Events;
+using Domain.Sprints;
 using Domain.Teams;
 using Domain.WikiPages;
 using MediatR;
@@ -13,6 +14,8 @@ internal sealed class ProjectCreatedDomainEventHandler : INotificationHandler<Pr
     private readonly ITeamsRepository _teamsRepository;
     private readonly IWikiPagesRepository _wikiPagesRepository;
     private readonly IUserContext _userContext;
+    private readonly ISprintsRepository _sprintsRepository;
+    private readonly IDateTimeProvider _dateTimeProvider;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<ProjectCreatedDomainEventHandler> _logger;
 
@@ -20,12 +23,16 @@ internal sealed class ProjectCreatedDomainEventHandler : INotificationHandler<Pr
         ITeamsRepository teamsRepository,
         IWikiPagesRepository wikiPagesRepository,
         IUserContext userContext,
+        ISprintsRepository sprintsRepository,
+        IDateTimeProvider dateTimeProvider,
         IUnitOfWork unitOfWork,
         ILogger<ProjectCreatedDomainEventHandler> logger)
     {
         _teamsRepository = teamsRepository;
         _wikiPagesRepository = wikiPagesRepository;
         _userContext = userContext;
+        _sprintsRepository = sprintsRepository;
+        _dateTimeProvider = dateTimeProvider;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
@@ -45,8 +52,15 @@ internal sealed class ProjectCreatedDomainEventHandler : INotificationHandler<Pr
             _userContext.UserId);
         await _wikiPagesRepository.AddAsync(wikiPage, cancellationToken);
 
+        var sprint = new Sprint(
+            team.Id,
+            "Sprint 1",
+            _dateTimeProvider.UtcNow,
+            _dateTimeProvider.UtcNow.AddDays(14));
+        await _sprintsRepository.AddAsync(sprint, cancellationToken);
+
         _logger.LogInformation(
-            "Default team and wiki page created for project {ProjectName}.",
+            "Default team, wiki page, and sprint created for project {ProjectName}.",
             notification.Project.Name);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);

@@ -80,6 +80,7 @@ public static class DependencyInjection
         services.AddScoped<IUsersRepository, UsersRepository>();
         services.AddScoped<ITagsRepository, TagsRepository>();
         services.AddScoped<IBoardsRepository, BoardsRepository>();
+        services.AddScoped<ISprintsRepository, SprintsRepository>();
 
         services.AddScoped<IApplicationDbContext>(sp =>
             sp.GetRequiredService<ApplicationDbContext>());

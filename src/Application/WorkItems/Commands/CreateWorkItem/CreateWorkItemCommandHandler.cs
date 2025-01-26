@@ -1,6 +1,7 @@
 using Application.Common.Interfaces.Persistence;
 using Application.Common.Interfaces.Services;
 using Domain.Projects;
+using Domain.Teams;
 using Domain.WorkItems;
 using ErrorOr;
 using MediatR;
@@ -34,6 +35,15 @@ internal sealed class CreateWorkItemCommandHandler : IRequestHandler<CreateWorkI
         if (project is null)
         {
             return ProjectErrors.NotFound;
+        }
+
+        if (command.AssignedTeamId.HasValue)
+        {
+            var team = project.Teams.FirstOrDefault(t => t.Id == command.AssignedTeamId);
+            if (team is null)
+            {
+                return TeamErrors.NotFound;
+            }
         }
 
         var workItemCode = await _workItemsRepository.GetNextWorkItemCodeAsync(

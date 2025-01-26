@@ -11,4 +11,8 @@ public static class SprintErrors
     public static readonly Error AlreadyExists = Error.Validation(
         code: "Sprint.AlreadyExists",
         description: "Sprint already exists.");
+
+    public static readonly Error WorkItemAlreadyInSprint = Error.Validation(
+        code: "Sprint.WorkItemAlreadyInSprint",
+        description: "Work item already in sprint.");
 }

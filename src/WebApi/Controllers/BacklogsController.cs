@@ -25,6 +25,7 @@ public class BacklogsController(ISender sender) : ApiController
     {
         var query = new GetBacklogQuery(
             teamId,
+            request.SprintId,
             request.BacklogLevel);
 
         var result = await sender.Send(query, cancellationToken);
