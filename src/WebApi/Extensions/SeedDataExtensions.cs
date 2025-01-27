@@ -46,7 +46,7 @@ public static class SeedDataExtensions
             faker.Lorem.Sentence());
         context.Teams.Add(team);
 
-        var startDate = faker.Date.Recent();
+        var startDate = faker.Date.Recent().ToUniversalTime();
         var sprint = new Sprint(
             team.Id,
             "Sprint 1",

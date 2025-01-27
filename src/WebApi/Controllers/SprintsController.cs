@@ -23,7 +23,7 @@ public class SprintsController : ApiController
     /// Create a sprint in a team.
     /// </summary>
     /// <param name="teamId">The team ID.</param>
-    /// <param name="request">The sprint data.</param>
+    /// <param name="request">The details of the sprint to create.</param>
     [HttpPost]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -66,10 +66,10 @@ public class SprintsController : ApiController
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> AddWorkItemToSprint(
-    Guid teamId,
-    Guid sprintId,
-    AddWorkItemToSprintRequest request,
-    CancellationToken cancellationToken)
+        Guid teamId,
+        Guid sprintId,
+        AddWorkItemToSprintRequest request,
+        CancellationToken cancellationToken)
     {
         var query = new AddWorkItemToSprintCommand(
             teamId,

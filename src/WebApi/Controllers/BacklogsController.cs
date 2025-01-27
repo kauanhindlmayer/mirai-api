@@ -21,6 +21,7 @@ public class BacklogsController : ApiController
     /// Get the backlog for a team.
     /// </summary>
     /// <param name="teamId">The ID of the team to get the backlog for.</param>
+    /// <param name="request">The details of the backlog to get.</param>
     [HttpGet]
     [ProducesResponseType(typeof(IReadOnlyList<BacklogResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
