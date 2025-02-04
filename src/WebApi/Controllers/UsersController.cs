@@ -115,7 +115,7 @@ public class UsersController : ApiController
     /// <summary>
     /// Update the profile picture of the current user.
     /// </summary>
-    [HttpPut("profile/picture")]
+    [HttpPatch("profile/picture")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> UpdateProfilePicture(

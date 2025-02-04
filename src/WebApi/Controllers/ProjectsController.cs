@@ -43,7 +43,7 @@ public class ProjectsController : ApiController
         return result.Match(
             projectId => CreatedAtAction(
                 nameof(GetProject),
-                new { ProjectId = projectId },
+                new { projectId },
                 projectId),
             Problem);
     }

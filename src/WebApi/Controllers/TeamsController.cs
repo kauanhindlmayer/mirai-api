@@ -44,7 +44,7 @@ public class TeamsController : ApiController
         return result.Match(
             teamId => CreatedAtAction(
                 nameof(GetTeam),
-                new { ProjectId = projectId, TeamId = teamId },
+                new { projectId, teamId },
                 teamId),
             Problem);
     }

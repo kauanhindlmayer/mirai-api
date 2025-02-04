@@ -41,7 +41,7 @@ public class OrganizationsController : ApiController
         return result.Match(
             organizationId => CreatedAtAction(
                 nameof(GetOrganization),
-                new { OrganizationId = organizationId },
+                new { organizationId },
                 organizationId),
             Problem);
     }

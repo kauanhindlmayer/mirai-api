@@ -54,7 +54,7 @@ public class WorkItemsController : ApiController
         return result.Match(
             workItemId => CreatedAtAction(
                 nameof(GetWorkItem),
-                new { ProjectId = projectId, WorkItemId = workItemId },
+                new { projectId, workItemId },
                 workItemId),
             Problem);
     }
@@ -108,7 +108,7 @@ public class WorkItemsController : ApiController
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> AddComment(
+    public async Task<IActionResult> AddCommentToWorkItem(
         Guid projectId,
         Guid workItemId,
         AddCommentRequest request,
@@ -121,7 +121,7 @@ public class WorkItemsController : ApiController
         return result.Match(
             commentId => CreatedAtAction(
                 nameof(GetWorkItem),
-                new { ProjectId = projectId, WorkItemId = workItemId },
+                new { projectId, workItemId },
                 commentId),
             Problem);
     }

@@ -51,7 +51,7 @@ public class WikiPagesController : ApiController
         return result.Match(
             wikiPageId => CreatedAtAction(
                 nameof(GetWikiPage),
-                new { ProjectId = projectId, WikiPageId = wikiPageId },
+                new { projectId, wikiPageId },
                 wikiPageId),
             Problem);
     }
@@ -123,7 +123,7 @@ public class WikiPagesController : ApiController
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> AddComment(
+    public async Task<IActionResult> AddCommentToWikiPage(
         Guid projectId,
         Guid wikiPageId,
         AddCommentRequest request,
@@ -136,7 +136,7 @@ public class WikiPagesController : ApiController
         return result.Match(
             commentId => CreatedAtAction(
                 nameof(GetWikiPage),
-                new { ProjectId = projectId, WikiPageId = wikiPageId },
+                new { projectId, wikiPageId },
                 commentId),
             Problem);
     }

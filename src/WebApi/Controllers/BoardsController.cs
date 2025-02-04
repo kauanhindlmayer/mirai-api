@@ -108,7 +108,7 @@ public class BoardsController : ApiController
         return result.Match(
             columnId => CreatedAtAction(
                 nameof(GetBoard),
-                new { TeamId = teamId, BoardId = boardId },
+                new { teamId, boardId },
                 columnId),
             Problem);
     }
@@ -164,7 +164,7 @@ public class BoardsController : ApiController
         return result.Match(
             cardId => CreatedAtAction(
                 nameof(GetBoard),
-                new { TeamId = teamId, BoardId = boardId },
+                new { teamId, boardId },
                 cardId),
             Problem);
     }

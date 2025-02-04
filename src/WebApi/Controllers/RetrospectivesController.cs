@@ -51,7 +51,7 @@ public class RetrospectivesController : ApiController
         return result.Match(
             retrospectiveId => CreatedAtAction(
                 nameof(GetRetrospective),
-                new { TeamId = teamId, RetrospectiveId = retrospectiveId },
+                new { teamId, retrospectiveId },
                 retrospectiveId),
             Problem);
     }
@@ -96,7 +96,7 @@ public class RetrospectivesController : ApiController
         return result.Match(
             _ => CreatedAtAction(
                 nameof(GetRetrospective),
-                new { TeamId = teamId, RetrospectiveId = retrospectiveId },
+                new { teamId, retrospectiveId },
                 retrospectiveId),
             Problem);
     }
@@ -133,7 +133,7 @@ public class RetrospectivesController : ApiController
         await _hubContext.Clients.All.SendRetrospectiveItem(result.Value);
         return CreatedAtAction(
             nameof(GetRetrospective),
-            new { TeamId = teamId, RetrospectiveId = retrospectiveId },
+            new { teamId, retrospectiveId },
             result.Value.Id);
     }
 
