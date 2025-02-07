@@ -42,10 +42,10 @@
       "launchBrowser": false,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "publishAllPorts": true,
-      "httpPort": 5001,
+      "httpPort": 5001
     }
   }
 }

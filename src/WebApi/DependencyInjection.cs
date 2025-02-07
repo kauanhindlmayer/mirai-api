@@ -39,6 +39,7 @@ public static class DependencyInjection
             var xmlFilePath = GetXmlCommentsPath();
             ConfigureXmlComments(options, xmlFilePath);
             ConfigureSignalRSwagger(options, xmlFilePath);
+            ConfigureXmlComments(options, GetContractsXmlCommentsPath());
             ConfigureSecurity(options);
         });
     }
@@ -47,6 +48,11 @@ public static class DependencyInjection
     {
         var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
         return Path.Combine(AppContext.BaseDirectory, xmlFilename);
+    }
+
+    private static string GetContractsXmlCommentsPath()
+    {
+        return Path.Combine(AppContext.BaseDirectory, "Contracts.xml");
     }
 
     private static void ConfigureXmlComments(SwaggerGenOptions options, string xmlFilePath)

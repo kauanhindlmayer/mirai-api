@@ -22,9 +22,11 @@ public class OrganizationsController : ApiController
     }
 
     /// <summary>
-    /// Create a new organization.
+    /// Create a organization.
     /// </summary>
-    /// <param name="request">The request to create a new organization.</param>
+    /// <remarks>
+    /// Creates a new organization object.
+    /// </remarks>
     [HttpPost]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -47,9 +49,12 @@ public class OrganizationsController : ApiController
     }
 
     /// <summary>
-    /// Get an organization by its ID.
+    /// Retrieve an organization.
     /// </summary>
-    /// <param name="organizationId">The ID of the organization to get.</param>
+    /// <remarks>
+    /// Retrieves the organization with the specified unique identifier.
+    /// </remarks>
+    /// <param name="organizationId">The organization's unique identifier.</param>
     [HttpGet("{organizationId:guid}")]
     [ProducesResponseType(typeof(OrganizationResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -67,6 +72,10 @@ public class OrganizationsController : ApiController
     /// <summary>
     /// List all organizations.
     /// </summary>
+    /// <remarks>
+    /// Returns a list of your organizations. The organizations are returned
+    /// sorted by name in ascending order.
+    /// </remarks>
     [HttpGet]
     [ProducesResponseType(typeof(IReadOnlyList<OrganizationBriefResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> ListOrganizations(CancellationToken cancellationToken)
@@ -81,8 +90,11 @@ public class OrganizationsController : ApiController
     /// <summary>
     /// Update an organization.
     /// </summary>
-    /// <param name="organizationId">The ID of the organization to update.</param>
-    /// <param name="request">The request to update the organization.</param>
+    /// <remarks>
+    /// Updates the specified organization by setting the values of the
+    /// parameters passed. Any parameters not provided will be left unchanged.
+    /// </remarks>
+    /// <param name="organizationId">The organization's unique identifier.</param>
     [HttpPut("{organizationId:guid}")]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -107,7 +119,11 @@ public class OrganizationsController : ApiController
     /// <summary>
     /// Delete an organization.
     /// </summary>
-    /// <param name="organizationId">The ID of the organization to delete.</param>
+    /// <remarks>
+    /// Deletes the specified organization. Deleting is only possible if the
+    /// organization does not have any projects associated with it.
+    /// </remarks>
+    /// <param name="organizationId">The organization's unique identifier.</param>
     [HttpDelete("{organizationId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

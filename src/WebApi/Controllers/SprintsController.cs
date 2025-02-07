@@ -20,10 +20,12 @@ public class SprintsController : ApiController
     }
 
     /// <summary>
-    /// Create a sprint in a team.
+    /// Create a sprint.
     /// </summary>
-    /// <param name="teamId">The team ID.</param>
-    /// <param name="request">The details of the sprint to create.</param>
+    /// <remarks>
+    /// Creates a new sprint object.
+    /// </remarks>
+    /// <param name="teamId">The team's unique identifier.</param>
     [HttpPost]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -46,9 +48,13 @@ public class SprintsController : ApiController
     }
 
     /// <summary>
-    /// List sprints in a team.
+    /// Retrieve all sprints for a team.
     /// </summary>
-    /// <param name="teamId">The team ID.</param>
+    /// <remarks>
+    /// Returns a list of sprints. The sprints are returned sorted by their end
+    /// date in descending order, with the most recent sprint appearing first.
+    /// </remarks>
+    /// <param name="teamId">The team's unique identifier.</param>
     [HttpGet]
     [ProducesResponseType(typeof(IReadOnlyList<SprintResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> ListSprints(
@@ -62,6 +68,14 @@ public class SprintsController : ApiController
         return result.Match(Ok, Problem);
     }
 
+    /// <summary>
+    /// Add a work item to a sprint.
+    /// </summary>
+    /// <remarks>
+    /// Adds a work item to the specified sprint.
+    /// </remarks>
+    /// <param name="teamId">The team's unique identifier.</param>
+    /// <param name="sprintId">The sprint's unique identifier.</param>
     [HttpPost("{sprintId:guid}/work-items")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

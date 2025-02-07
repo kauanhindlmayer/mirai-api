@@ -27,11 +27,12 @@ public class WikiPagesController : ApiController
     }
 
     /// <summary>
-    /// Creates a new wiki page. If a ParentWikiPageId is provided, the page
-    /// will be created as a sub-page under the specified parent wiki page.
+    /// Create a wiki page.
     /// </summary>
-    /// <param name="projectId">The ID of the project to create the wiki page in.</param>
-    /// <param name="request">The details of the wiki page to create.</param>
+    /// <remarks>
+    /// Creates a root wiki page or a sub-page if a ParentWikiPageId is provided.
+    /// </remarks>
+    /// <param name="projectId">The project's unique identifier.</param>
     [HttpPost]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -57,9 +58,12 @@ public class WikiPagesController : ApiController
     }
 
     /// <summary>
-    /// Get a wiki page by its ID.
+    /// Retrieve a wiki page.
     /// </summary>
-    /// <param name="wikiPageId">The ID of the wiki page to get.</param>
+    /// <remarks>
+    /// Retrieves the wiki page with the specified unique identifier.
+    /// </remarks>
+    /// <param name="wikiPageId">The wiki page's unique identifier.</param>
     [HttpGet("{wikiPageId:guid}")]
     [ProducesResponseType(typeof(WikiPageResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -75,10 +79,12 @@ public class WikiPagesController : ApiController
     }
 
     /// <summary>
-    /// Get the stats for a wiki page by its ID.
+    /// Retrieve stats for a wiki page.
     /// </summary>
-    /// <param name="wikiPageId">The ID of the wiki page to get stats for.</param>
-    /// <param name="request">The details of the stats to get.</param>
+    /// <remarks>
+    /// Retrieves the stats for the wiki page with the specified unique identifier.
+    /// </remarks>
+    /// <param name="wikiPageId">The wiki page's unique identifier.</param>
     [HttpGet("{wikiPageId:guid}/stats")]
     [ProducesResponseType(typeof(WikiPageStatsResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -97,9 +103,12 @@ public class WikiPagesController : ApiController
     }
 
     /// <summary>
-    /// List all wiki pages in a project.
+    /// Retrieve all wiki pages for a project.
     /// </summary>
-    /// <param name="projectId">The ID of the project to list wiki pages for.</param>
+    /// <remarks>
+    /// Returns a list of wiki pages for the specified project.
+    /// </remarks>
+    /// <param name="projectId">The project's unique identifier.</param>
     [HttpGet]
     [ProducesResponseType(typeof(List<WikiPageBriefResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> ListWikiPages(
@@ -116,9 +125,11 @@ public class WikiPagesController : ApiController
     /// <summary>
     /// Add a comment to a wiki page.
     /// </summary>
-    /// <param name="projectId">The ID of the project to add a comment to.</param>
-    /// <param name="wikiPageId">The ID of the wiki page to add a comment to.</param>
-    /// <param name="request">The details of the comment to add.</param>
+    /// <remarks>
+    /// Adds a comment to the specified wiki page.
+    /// </remarks>
+    /// <param name="projectId">The project's unique identifier.</param>
+    /// <param name="wikiPageId">The wiki page's unique identifier.</param>
     [HttpPost("{wikiPageId:guid}/comments")]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -144,8 +155,11 @@ public class WikiPagesController : ApiController
     /// <summary>
     /// Delete a comment from a wiki page.
     /// </summary>
-    /// <param name="wikiPageId">The ID of the wiki page the comment belongs to.</param>
-    /// <param name="commentId">The ID of the comment to delete.</param>
+    /// <remarks>
+    /// Deletes the comment with the specified unique identifier from the wiki page.
+    /// </remarks>
+    /// <param name="wikiPageId">The wiki page's unique identifier.</param>
+    /// <param name="commentId">The comment's unique identifier.</param>
     [HttpDelete("{wikiPageId:guid}/comments/{commentId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -164,9 +178,13 @@ public class WikiPagesController : ApiController
     }
 
     /// <summary>
-    /// Delete a wiki page by its ID.
+    /// Delete a wiki page.
     /// </summary>
-    /// <param name="wikiPageId">The ID of the wiki page to delete.</param>
+    /// <remarks>
+    /// Deletes the wiki page with the specified unique identifier. Deleting is only
+    /// possible if the wiki page does not have any sub-pages associated with it.
+    /// </remarks>
+    /// <param name="wikiPageId">The wiki page's unique identifier.</param>
     [HttpDelete("{wikiPageId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -184,10 +202,13 @@ public class WikiPagesController : ApiController
     }
 
     /// <summary>
-    /// Update a wiki page by its ID.
+    /// Update a wiki page.
     /// </summary>
-    /// <param name="wikiPageId">The ID of the wiki page to update.</param>
-    /// <param name="request">The details of the wiki page to update.</param>
+    /// <remarks>
+    /// Updates the specified wiki page by settings the values of the parameters passed.
+    /// Any parameters not provided will be left unchanged.
+    /// </remarks>
+    /// <param name="wikiPageId">The wiki page's unique identifier.</param>
     [HttpPut("{wikiPageId:guid}")]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -209,11 +230,13 @@ public class WikiPagesController : ApiController
     }
 
     /// <summary>
-    /// Move a wiki page to a new parent wiki page.
+    /// Move a wiki page to a new position or parent.
     /// </summary>
-    /// <param name="projectId">The ID of the project the wiki page belongs to.</param>
-    /// <param name="wikiPageId">The ID of the wiki page to move.</param>
-    /// <param name="request">The details of the move operation.</param>
+    /// <remarks>
+    /// Moves the wiki page with the specified unique identifier to a new position or parent.
+    /// </remarks>
+    /// <param name="projectId">The project's unique identifier.</param>
+    /// <param name="wikiPageId">The wiki page's unique identifier.</param>
     [HttpPut("{wikiPageId:guid}/move")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

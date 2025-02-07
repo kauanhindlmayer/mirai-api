@@ -21,10 +21,13 @@ public class TagsController : ApiController
     }
 
     /// <summary>
-    /// Add a tag to a project that can be used to categorize work items.
+    /// Create a tag.
     /// </summary>
-    /// <param name="projectId">The project ID.</param>
-    /// <param name="request">The tag data.</param>
+    /// <remarks>
+    /// Creates a new tag for the specified project. This tag can be used to
+    /// categorize work items.
+    /// </remarks>
+    /// <param name="projectId">The project's unique identifier.</param>
     [HttpPost]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -47,10 +50,14 @@ public class TagsController : ApiController
     }
 
     /// <summary>
-    /// List all tags in a project.
+    /// Retrieve all tags for a project.
     /// </summary>
-    /// <param name="projectId">The project ID.</param>
-    /// <param name="searchTerm">The search term to filter tags by name.</param>
+    /// <remarks>
+    /// Returns a list of tags for the specified project. Tags can be used to
+    /// categorize work items.
+    /// </remarks>
+    /// <param name="projectId">The project's unique identifier.</param>
+    /// <param name="searchTerm">The search term to filter tags by (optional).</param>
     [HttpGet]
     [ProducesResponseType(typeof(IReadOnlyList<TagResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -67,11 +74,14 @@ public class TagsController : ApiController
     }
 
     /// <summary>
-    /// Update a tag in a project.
+    /// Update a tag.
     /// </summary>
-    /// <param name="projectId">The project ID.</param>
-    /// <param name="tagId">The tag ID.</param>
-    /// <param name="request">The new tag data.</param>
+    /// <remarks>
+    /// Updates the specified tag by settings the values of the parameters passed.
+    /// Any parameters not provided will be left unchanged.
+    /// </remarks>
+    /// <param name="projectId">The project's unique identifier.</param>
+    /// <param name="tagId">The tag's unique identifier.</param>
     [HttpPut("{tagId:guid}")]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -96,10 +106,13 @@ public class TagsController : ApiController
     }
 
     /// <summary>
-    /// Delete a tag from a project.
+    /// Delete a tag.
     /// </summary>
-    /// <param name="projectId">The project ID.</param>
-    /// <param name="tagId">The tag ID.</param>
+    /// <remarks>
+    /// Deletes the tag with the specified unique identifier.
+    /// </remarks>
+    /// <param name="projectId">The project's unique identifier.</param>
+    /// <param name="tagId">The tag's unique identifier.</param>
     [HttpDelete("{tagId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

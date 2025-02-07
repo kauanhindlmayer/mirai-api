@@ -1,5 +1,6 @@
 using Application.Dashboards.Queries.GetDashboard;
 using Asp.Versioning;
+using Contracts.Dashboards;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,24 +18,25 @@ public class DashboardsController : ApiController
     }
 
     /// <summary>
-    /// Retrieves the dashboard data for a given project.
+    /// Retrieve the dashboard data for a project.
     /// </summary>
-    /// <param name="teamId">The team identifier.</param>
-    /// <param name="startDate">The optional start date for filtering.</param>
-    /// <param name="endDate">The optional end date for filtering.</param>
+    /// <remarks>
+    /// Retrieves the dashboard data for the specified team. The dashboard data
+    /// can be filtered by start and end date.
+    /// </remarks>
+    /// <param name="teamId">The team's unique identifier.</param>
     [HttpGet]
     [ProducesResponseType(typeof(DashboardResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetDashboard(
         [FromRoute] Guid teamId,
-        [FromQuery] DateTime? startDate,
-        [FromQuery] DateTime? endDate,
+        [FromQuery] GetDashboardRequest request,
         CancellationToken cancellationToken)
     {
         var query = new GetDashboardQuery(
             teamId,
-            startDate,
-            endDate);
+            request.StartDate,
+            request.EndDate);
 
         var result = await _sender.Send(query, cancellationToken);
 

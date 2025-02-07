@@ -21,10 +21,14 @@ public class ProjectsController : ApiController
     }
 
     /// <summary>
-    /// Create a new project, along with a default team and board.
+    /// Create a project.
     /// </summary>
-    /// <param name="organizationId">The ID of the organization to create the project for.</param>
-    /// <param name="request">The project data.</param>
+    /// <remarks>
+    /// Creates a new project within an organization. When a project is created,
+    /// a default team, board, wiki page and an initial 14-day sprint are
+    /// automatically set up.
+    /// </remarks>
+    /// <param name="organizationId">The organization's unique identifier.</param>
     [HttpPost]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -49,9 +53,12 @@ public class ProjectsController : ApiController
     }
 
     /// <summary>
-    /// Get a project by ID.
+    /// Retrieve a project.
     /// </summary>
-    /// <param name="projectId">The project ID.</param>
+    /// <remarks>
+    /// Retrieves the project with the specified unique identifier.
+    /// </remarks>
+    /// <param name="projectId">The project's unique identifier.</param>
     [HttpGet("/api/v{version:apiVersion}/projects/{projectId:guid}")]
     [ProducesResponseType(typeof(ProjectResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -67,9 +74,12 @@ public class ProjectsController : ApiController
     }
 
     /// <summary>
-    /// List all projects in an organization.
+    /// Retrieve all projects for an organization.
     /// </summary>
-    /// <param name="organizationId">The organization ID.</param>
+    /// <remarks>
+    /// Returns a list of projects for the specified organization.
+    /// </remarks>
+    /// <param name="organizationId">The organization's unique identifier.</param>
     [HttpGet]
     [ProducesResponseType(typeof(IReadOnlyList<ProjectResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -87,9 +97,13 @@ public class ProjectsController : ApiController
     /// <summary>
     /// Update a project.
     /// </summary>
-    /// <param name="organizationId">The organization ID.</param>
-    /// <param name="projectId">The project ID.</param>
-    /// <param name="request">The project data.</param>
+    /// <remarks>
+    /// Updates the project with the specified unique identifier by setting the
+    /// values of the parameters passed. Any parameters not provided will be
+    /// left unchanged.
+    /// </remarks>
+    /// <param name="organizationId">The organization's unique identifier.</param>
+    /// <param name="projectId">The project's unique identifier.</param>
     [HttpPut("{projectId:guid}")]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

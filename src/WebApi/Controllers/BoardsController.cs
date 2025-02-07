@@ -24,17 +24,22 @@ public class BoardsController : ApiController
     }
 
     /// <summary>
-    /// Get a board by its ID.
+    /// Retrieve a board.
     /// </summary>
-    /// <param name="boardId">The ID of the board to get.</param>
+    /// <remarks>
+    /// Retrieves the board with the specified unique identifier.
+    /// </remarks>
+    /// <param name="teamId">The team's unique identifier.</param>
+    /// <param name="boardId">The board's unique identifier.</param>
     [HttpGet("{boardId:guid}")]
     [ProducesResponseType(typeof(BoardResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetBoard(
+        Guid teamId,
         Guid boardId,
         CancellationToken cancellationToken)
     {
-        var query = new GetBoardQuery(boardId);
+        var query = new GetBoardQuery(teamId, boardId);
 
         var result = await _sender.Send(query, cancellationToken);
 
@@ -42,10 +47,12 @@ public class BoardsController : ApiController
     }
 
     /// <summary>
-    /// List all boards.
+    /// Retrieve all boards for a project.
     /// </summary>
-    /// <returns>A list of all boards.</returns>
-    /// <param name="projectId">The ID of the project to list boards for.</param>
+    /// <remarks>
+    /// Returns a list of boards for the specified project.
+    /// </remarks>
+    /// <param name="projectId">The project's unique identifier.</param>
     [HttpGet("/api/v{version:apiVersion}/projects/{projectId:guid}/boards")]
     [ProducesResponseType(typeof(IReadOnlyList<BoardResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -61,9 +68,13 @@ public class BoardsController : ApiController
     }
 
     /// <summary>
-    /// Delete a board by its ID. This will also delete all columns and cards on the board.
+    /// Delete a board.
     /// </summary>
-    /// <param name="boardId">The ID of the board to delete.</param>
+    /// <remarks>
+    /// Deletes the board with the specified unique identifier. Deleting is only
+    /// possible if the board does not have any columns associated with it.
+    /// </remarks>
+    /// <param name="boardId">The board's unique identifier.</param>
     [HttpDelete("{boardId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -81,11 +92,13 @@ public class BoardsController : ApiController
     }
 
     /// <summary>
-    /// Create a new column on a board.
+    /// Create a column in the board.
     /// </summary>
-    /// <param name="teamId">The ID of the team to create a new column on a board.</param>
-    /// <param name="boardId">The ID of the board to create a new column on.</param>
-    /// <param name="request">The request to create a new column on a board.</param>
+    /// <remarks>
+    /// Creates a new column in the board.
+    /// </remarks>
+    /// <param name="teamId">The team's unique identifier.</param>
+    /// <param name="boardId">The board's unique identifier.</param>
     [HttpPost("{boardId:guid}/columns")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -114,9 +127,13 @@ public class BoardsController : ApiController
     }
 
     /// <summary>
-    /// Delete a column by its ID. The column must be empty of cards to be deleted.
+    /// Delete a column from the board.
     /// </summary>
-    /// <param name="boardId">The ID of the board to delete a column from.</param>
+    /// <remarks>
+    /// Deletes the column with the specified unique identifier. Deleting is
+    /// only possible if the column does not have any cards associated with it.
+    /// </remarks>
+    /// <param name="boardId">The board's unique identifier.</param>
     /// <param name="columnId">The ID of the column to delete.</param>
     [HttpDelete("{boardId:guid}/columns/{columnId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -136,12 +153,14 @@ public class BoardsController : ApiController
     }
 
     /// <summary>
-    /// Create a new card in a column on a board.
+    /// Create a card in a column.
     /// </summary>
-    /// <param name="teamId">The ID of the team to create a new card on a board.</param>
-    /// <param name="boardId">The ID of the board to create a new card on.</param>
-    /// <param name="columnId">The ID of the column to create a new card in.</param>
-    /// <param name="request">The request to create a new card in a column on a board.</param>
+    /// <remarks>
+    /// Creates a new card in the specified column.
+    /// </remarks>
+    /// <param name="teamId">The team's unique identifier.</param>
+    /// <param name="boardId">The board's unique identifier.</param>
+    /// <param name="columnId">The column's unique identifier.</param>
     [HttpPost("{boardId:guid}/columns/{columnId:guid}/cards")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -170,12 +189,14 @@ public class BoardsController : ApiController
     }
 
     /// <summary>
-    /// Move a card to a new column and position on a board.
+    /// Move a card to a new column and position.
     /// </summary>
-    /// <param name="boardId">The ID of the board to move a card on.</param>
-    /// <param name="columnId">The ID of the column to move a card in.</param>
-    /// <param name="cardId">The ID of the card to move.</param>
-    /// <param name="request">The request to move a card to a new position in a column.</param>
+    /// <remarks>
+    /// Moves a card to a new column and position in the board.
+    /// </remarks>
+    /// <param name="boardId">The board's unique identifier.</param>
+    /// <param name="columnId">The column's unique identifier.</param>
+    /// <param name="cardId">The card's unique identifier.</param>
     [HttpPost("{boardId:guid}/columns/{columnId:guid}/cards/{cardId:guid}/move")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

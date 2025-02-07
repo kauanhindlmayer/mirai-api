@@ -31,10 +31,12 @@ public class WorkItemsController : ApiController
     }
 
     /// <summary>
-    /// Create a new work item.
+    /// Create a work item.
     /// </summary>
-    /// <param name="projectId">The ID of the project to create the work item in.</param>
-    /// <param name="request">The details of the work item to create.</param>
+    /// <remarks>
+    /// Creates a new work item for the specified project.
+    /// </remarks>
+    /// <param name="projectId">The project's unique identifier.</param>
     [HttpPost]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -60,9 +62,12 @@ public class WorkItemsController : ApiController
     }
 
     /// <summary>
-    /// Get a work item by its ID.
+    /// Retrieve a work item.
     /// </summary>
-    /// <param name="workItemId">The ID of the work item to get.</param>
+    /// <remarks>
+    /// Retrieves the work item with the specified unique identifier.
+    /// </remarks>
+    /// <param name="workItemId">The work item's unique identifier.</param>
     [HttpGet("{workItemId:guid}")]
     [ProducesResponseType(typeof(WorkItemResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -78,9 +83,12 @@ public class WorkItemsController : ApiController
     }
 
     /// <summary>
-    /// Get the stats for work items in a project.
+    /// Retrieve statistics for work items in a project.
     /// </summary>
-    /// <param name="projectId">The ID of the project to create the work item in.</param>
+    /// <remarks>
+    /// Retrieves statistics for work items in the specified project.
+    /// </remarks>
+    /// <param name="projectId">The project's unique identifier.</param>
     [HttpGet("stats")]
     [ProducesResponseType(typeof(WorkItemResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -101,9 +109,11 @@ public class WorkItemsController : ApiController
     /// <summary>
     /// Add a comment to a work item.
     /// </summary>
-    /// <param name="projectId">The ID of the project the work item belongs to.</param>
-    /// <param name="workItemId">The ID of the work item to add a comment to.</param>
-    /// <param name="request">The details of the comment to add.</param>
+    /// <remarks>
+    /// Adds a comment to the work item with the specified unique identifier.
+    /// </remarks>
+    /// <param name="projectId">The project's unique identifier.</param>
+    /// <param name="workItemId">The work item's unique identifier.</param>
     [HttpPost("{workItemId:guid}/comments")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -127,8 +137,11 @@ public class WorkItemsController : ApiController
     }
 
     /// <summary>
-    /// List all work items belonging to a project. Supports pagination, sorting, and searching.
+    /// Retrieve all work items in a project.
     /// </summary>
+    /// <remarks>
+    /// Support for pagination, sorting, and searching.
+    /// </remarks>
     /// <param name="projectId">The ID of the project.</param>
     /// <param name="request">The details of the page.</param>
     [HttpGet]
@@ -154,8 +167,11 @@ public class WorkItemsController : ApiController
     /// <summary>
     /// Assign a work item to a user.
     /// </summary>
-    /// <param name="workItemId">The ID of the work item to assign.</param>
-    /// <param name="request">The details of the assignment.</param>
+    /// <remarks>
+    /// Assigns the work item with the specified unique identifier to the user
+    /// with the specified unique identifier.
+    /// </remarks>
+    /// <param name="workItemId">The work item's unique identifier.</param>
     [HttpPatch("{workItemId:guid}/assign")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -175,10 +191,12 @@ public class WorkItemsController : ApiController
     }
 
     /// <summary>
-    /// Add a tag to a work item. If the tag does not exist at project level, it will be created.
+    /// Add a tag to a work item.
     /// </summary>
-    /// <param name="workItemId">The ID of the work item to add a tag to.</param>
-    /// <param name="request">The details of the tag to add.</param>
+    /// <remarks>
+    /// If the tag does not exist at project level, it will be created.
+    /// </remarks>
+    /// <param name="workItemId">The work item's unique identifier.</param>
     [HttpPost("{workItemId:guid}/tags")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -200,8 +218,12 @@ public class WorkItemsController : ApiController
     /// <summary>
     /// Remove a tag from a work item.
     /// </summary>
-    /// <param name="workItemId>">The ID of the work item to remove a tag from.</param>
-    /// <param name="tagName">The name of the tag to remove.</param>
+    /// <remarks>
+    /// Removes the tag with the specified name from the work item with the
+    /// specified unique identifier.
+    /// </remarks>
+    /// <param name="workItemId>">The work item's unique identifier.</param>
+    /// <param name="tagName">The tag's name.</param>
     [HttpDelete("{workItemId:guid}/tags/{tagName}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -220,10 +242,14 @@ public class WorkItemsController : ApiController
     }
 
     /// <summary>
-    /// Search work items in a project by a search term using semantic search.
+    /// Search for work items in a project.
     /// </summary>
-    /// <param name="projectId">The ID of the project to search work items in.</param>
-    /// <param name="searchTerm">The search term to use.</param>
+    /// <remarks>
+    /// This search analyzes the meaning of the provided term to find relevant work items,
+    /// rather than relying solely on exact keyword matches.
+    /// </remarks>
+    /// <param name="projectId">The project's unique identifier.</param>
+    /// <param name="searchTerm">The search term used to find relevant work items.</param>
     [HttpGet("search")]
     [ProducesResponseType(typeof(IReadOnlyList<WorkItemBriefResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> SearchWorkItems(
@@ -241,7 +267,12 @@ public class WorkItemsController : ApiController
     /// <summary>
     /// Delete a work item.
     /// </summary>
-    /// <param name="workItemId">The ID of the work item to delete.</param>
+    /// <remarks>
+    /// Deletes the work item with the specified unique identifier.
+    /// Deleting is only possible if the work item does not have any related
+    /// work items associated with it.
+    /// </remarks>
+    /// <param name="workItemId">The work item's unique identifier.</param>
     [HttpDelete("{workItemId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

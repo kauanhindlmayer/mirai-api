@@ -21,6 +21,7 @@ internal sealed class ListOrganizationsQueryHandler
     {
         var organizations = await _context.Organizations
             .AsNoTracking()
+            .OrderBy(o => o.Name)
             .Select(o => new OrganizationBriefResponse
             {
                 Id = o.Id,

@@ -21,10 +21,12 @@ public class TeamsController : ApiController
     }
 
     /// <summary>
-    /// Create a new team.
+    /// Create a team.
     /// </summary>
-    /// <param name="projectId">The ID of the project to create the team in.</param>
-    /// <param name="request">The details of the team to create.</param>
+    /// <remarks>
+    /// Creates a new team for the specified project.
+    /// </remarks>
+    /// <param name="projectId">The project's unique identifier.</param>
     [HttpPost]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -50,9 +52,12 @@ public class TeamsController : ApiController
     }
 
     /// <summary>
-    /// Get a team by its ID.
+    /// Retrieve a team.
     /// </summary>
-    /// <param name="teamId">The ID of the team to get.</param>
+    /// <remarks>
+    /// Retrieves the team with the specified unique identifier.
+    /// </remarks>
+    /// <param name="teamId">The team's unique identifier.</param>
     [HttpGet("{teamId:guid}")]
     [ProducesResponseType(typeof(TeamResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -68,9 +73,12 @@ public class TeamsController : ApiController
     }
 
     /// <summary>
-    /// List all teams in a project.
+    /// Retrieve all teams for a project.
     /// </summary>
-    /// <param name="projectId">The ID of the project to list the teams for.</param>
+    /// <remarks>
+    /// Returns a list of teams for the specified project.
+    /// </remarks>
+    /// <param name="projectId">The project's unique identifier.</param>
     [HttpGet]
     [ProducesResponseType(typeof(IReadOnlyList<TeamBriefResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -88,8 +96,10 @@ public class TeamsController : ApiController
     /// <summary>
     /// Add a member to a team.
     /// </summary>
-    /// <param name="teamId">The ID of the team to add the member to.</param>
-    /// <param name="request">The details of the member to add.</param>
+    /// <remarks>
+    /// Adds a member to the specified team.
+    /// </remarks>
+    /// <param name="teamId">The team's unique identifier.</param>
     [HttpPost("{teamId:guid}/members")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

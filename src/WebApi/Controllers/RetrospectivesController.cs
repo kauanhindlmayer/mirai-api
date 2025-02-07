@@ -29,10 +29,13 @@ public class RetrospectivesController : ApiController
     }
 
     /// <summary>
-    /// Create a new retrospective session.
+    /// Create a retrospective session.
     /// </summary>
-    /// <param name="teamId">The team ID.</param>
-    /// <param name="request">The details of the retrospective session to create.</param>
+    /// <remarks>
+    /// Creates a new retrospective session for the specified team. When a retrospective
+    /// session is created, a default set of columns are automatically set up.
+    /// </remarks>
+    /// <param name="teamId">The team's unique identifier.</param>
     [HttpPost]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -57,9 +60,12 @@ public class RetrospectivesController : ApiController
     }
 
     /// <summary>
-    /// Get a retrospective session by ID.
+    /// Retrieve a retrospective session.
     /// </summary>
-    /// <param name="retrospectiveId">The retrospective session ID.</param>
+    /// <remarks>
+    /// Retrieves the retrospective session with the specified unique identifier.
+    /// </remarks>
+    /// <param name="retrospectiveId">The retrospective session's unique identifier.</param>
     [HttpGet("{retrospectiveId:guid}")]
     [ProducesResponseType(typeof(RetrospectiveResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -77,9 +83,11 @@ public class RetrospectivesController : ApiController
     /// <summary>
     /// Create a new column in a retrospective session.
     /// </summary>
-    /// <param name="teamId">The team ID.</param>
-    /// <param name="retrospectiveId">The ID of the retrospective session to create the column in.</param>
-    /// <param name="request">The details of the column to create.</param>
+    /// <remarks>
+    /// Creates a new column in the specified retrospective session.
+    /// </remarks>
+    /// <param name="teamId">The team's unique identifier.</param>
+    /// <param name="retrospectiveId">The retrospective session's unique identifier.</param>
     [HttpPost("{retrospectiveId:guid}/columns")]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -102,12 +110,14 @@ public class RetrospectivesController : ApiController
     }
 
     /// <summary>
-    /// Create a new item in a column in a retrospective session.
+    /// Create a new retrospective item.
     /// </summary>
-    /// <param name="teamId">The team ID.</param>
-    /// <param name="retrospectiveId">The ID of the retrospective session to create the item in.</param>
-    /// <param name="columnId">The ID of the column to create the item in.</param>
-    /// <param name="request">The details of the item to create.</param>
+    /// <remarks>
+    /// Creates a new item in the specified column of the retrospective session.
+    /// </remarks>
+    /// <param name="teamId">The team's unique identifier.</param>
+    /// <param name="retrospectiveId">The retrospective session's unique identifier.</param>
+    /// <param name="columnId">The column's unique identifier.</param>
     [HttpPost("{retrospectiveId:guid}/columns/{columnId:guid}/items")]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -138,11 +148,14 @@ public class RetrospectivesController : ApiController
     }
 
     /// <summary>
-    /// Delete an item from a column in a retrospective session.
+    /// Delete a retrospective item.
     /// </summary>
-    /// <param name="retrospectiveId">The ID of the retrospective session to delete the item from.</param>
-    /// <param name="columnId">The ID of the column to delete the item from.</param>
-    /// <param name="itemId">The ID of the item to delete.</param>
+    /// <remarks>
+    /// Deletes the item with the specified unique identifier from the retrospective session.
+    /// </remarks>
+    /// <param name="retrospectiveId">The retrospective session's unique identifier.</param>
+    /// <param name="columnId">The column's unique identifier.</param>
+    /// <param name="itemId">The item's unique identifier.</param>
     [HttpDelete("{retrospectiveId:guid}/columns/{columnId:guid}/items/{itemId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -162,9 +175,12 @@ public class RetrospectivesController : ApiController
     }
 
     /// <summary>
-    /// List all retrospective sessions in a team.
+    /// Retrieve all retrospective sessions for a team.
     /// </summary>
-    /// <param name="teamId">The team ID.</param>
+    /// <remarks>
+    /// Returns a list of retrospective sessions for the specified team.
+    /// </remarks>
+    /// <param name="teamId">The team's unique identifier.</param>
     [HttpGet]
     [ProducesResponseType(typeof(IReadOnlyList<RetrospectiveResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

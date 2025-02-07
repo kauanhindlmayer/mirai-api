@@ -1,5 +1,6 @@
 using Application;
 using Infrastructure;
+using Scalar.AspNetCore;
 using Serilog;
 using WebApi;
 using WebApi.Extensions;
@@ -22,18 +23,18 @@ var app = builder.Build();
 
     if (app.Environment.IsDevelopment())
     {
-        app.UseSwagger();
+        app.UseSwagger(options => options.RouteTemplate = "/openapi/{documentName}.json");
         app.UseSwaggerUI(options =>
         {
             var descriptions = app.DescribeApiVersions();
             foreach (var description in descriptions)
             {
-                var url = $"/swagger/{description.GroupName}/swagger.json";
+                var url = $"/openapi/{description.GroupName}.json";
                 var name = description.GroupName.ToUpperInvariant();
                 options.SwaggerEndpoint(url, name);
             }
         });
-
+        app.MapScalarApiReference();
         app.ApplyMigrations();
         app.SeedData();
     }

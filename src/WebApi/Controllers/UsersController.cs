@@ -25,9 +25,8 @@ public class UsersController : ApiController
     }
 
     /// <summary>
-    /// Register a new user.
+    /// Register a user.
     /// </summary>
-    /// <param name="request">The details of the user to register.</param>
     [AllowAnonymous]
     [HttpPost("register")]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
@@ -52,7 +51,6 @@ public class UsersController : ApiController
     /// <summary>
     /// Log in a user.
     /// </summary>
-    /// <param name="request">The details of the user to log in.</param>
     [AllowAnonymous]
     [HttpPost("login")]
     [ProducesResponseType(typeof(AccessTokenResponse), StatusCodes.Status200OK)]
@@ -91,9 +89,8 @@ public class UsersController : ApiController
     }
 
     /// <summary>
-    /// Update the profile personal details of the current user.
+    /// Update the profile of the current user.
     /// </summary>
-    /// <param name="request">The details of the user to update.</param>
     [HttpPut("profile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
