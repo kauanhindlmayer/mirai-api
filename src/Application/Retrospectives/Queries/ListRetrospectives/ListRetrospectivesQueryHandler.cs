@@ -1,6 +1,4 @@
 using Application.Common.Interfaces.Persistence;
-using Domain.Retrospectives;
-using Domain.Teams;
 using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

@@ -1,7 +1,7 @@
-using Application.Retrospectives.Commands.CreateColumn;
-using Application.Retrospectives.Commands.CreateItem;
 using Application.Retrospectives.Commands.CreateRetrospective;
-using Application.Retrospectives.Commands.DeleteItem;
+using Application.Retrospectives.Commands.CreateRetrospectiveColumn;
+using Application.Retrospectives.Commands.CreateRetrospectiveItem;
+using Application.Retrospectives.Commands.DeleteRetrospectiveItem;
 using Application.Retrospectives.Queries.GetRetrospective;
 using Application.Retrospectives.Queries.ListRetrospectives;
 using Asp.Versioning;
@@ -33,7 +33,8 @@ public class RetrospectivesController : ApiController
     /// </summary>
     /// <remarks>
     /// Creates a new retrospective session for the specified team. When a retrospective
-    /// session is created, a default set of columns are automatically set up.
+    /// session is created, a default set of columns are automatically set up based on the
+    /// selected template.
     /// </remarks>
     /// <param name="teamId">The team's unique identifier.</param>
     [HttpPost]
@@ -98,7 +99,9 @@ public class RetrospectivesController : ApiController
         CreateColumnRequest request,
         CancellationToken cancellationToken)
     {
-        var command = new CreateColumnCommand(request.Title, retrospectiveId);
+        var command = new CreateRetrospectiveColumnCommand(
+            request.Title,
+            retrospectiveId);
 
         var result = await _sender.Send(command, cancellationToken);
 
@@ -129,7 +132,7 @@ public class RetrospectivesController : ApiController
         CreateItemRequest request,
         CancellationToken cancellationToken)
     {
-        var command = new CreateItemCommand(
+        var command = new CreateRetrospectiveItemCommand(
             request.Description,
             retrospectiveId,
             columnId);
@@ -166,7 +169,10 @@ public class RetrospectivesController : ApiController
         Guid itemId,
         CancellationToken cancellationToken)
     {
-        var command = new DeleteItemCommand(retrospectiveId, columnId, itemId);
+        var command = new DeleteRetrospectiveItemCommand(
+            retrospectiveId,
+            columnId,
+            itemId);
 
         var result = await _sender.Send(command, cancellationToken);
 

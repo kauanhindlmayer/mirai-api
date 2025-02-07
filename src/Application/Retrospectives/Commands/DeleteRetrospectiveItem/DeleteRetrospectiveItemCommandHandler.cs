@@ -3,19 +3,21 @@ using Domain.Retrospectives;
 using ErrorOr;
 using MediatR;
 
-namespace Application.Retrospectives.Commands.CreateColumn;
+namespace Application.Retrospectives.Commands.DeleteRetrospectiveItem;
 
-internal sealed class CreateColumnCommandHandler : IRequestHandler<CreateColumnCommand, ErrorOr<Guid>>
+internal sealed class DeleteRetrospectiveItemCommandHandler
+    : IRequestHandler<DeleteRetrospectiveItemCommand, ErrorOr<Success>>
 {
     private readonly IRetrospectivesRepository _retrospectivesRepository;
 
-    public CreateColumnCommandHandler(IRetrospectivesRepository retrospectivesRepository)
+    public DeleteRetrospectiveItemCommandHandler(
+        IRetrospectivesRepository retrospectivesRepository)
     {
         _retrospectivesRepository = retrospectivesRepository;
     }
 
-    public async Task<ErrorOr<Guid>> Handle(
-        CreateColumnCommand command,
+    public async Task<ErrorOr<Success>> Handle(
+        DeleteRetrospectiveItemCommand command,
         CancellationToken cancellationToken)
     {
         var retrospective = await _retrospectivesRepository.GetByIdWithColumnsAsync(
@@ -27,9 +29,13 @@ internal sealed class CreateColumnCommandHandler : IRequestHandler<CreateColumnC
             return RetrospectiveErrors.NotFound;
         }
 
-        var column = new RetrospectiveColumn(command.Title, retrospective.Id);
+        var column = retrospective.Columns.FirstOrDefault(c => c.Id == command.ColumnId);
+        if (column is null)
+        {
+            return RetrospectiveErrors.ColumnNotFound;
+        }
 
-        var result = retrospective.AddColumn(column);
+        var result = column.RemoveItem(command.ItemId);
         if (result.IsError)
         {
             return result.Errors;
@@ -37,6 +43,6 @@ internal sealed class CreateColumnCommandHandler : IRequestHandler<CreateColumnC
 
         _retrospectivesRepository.Update(retrospective);
 
-        return retrospective.Id;
+        return Result.Success;
     }
 }

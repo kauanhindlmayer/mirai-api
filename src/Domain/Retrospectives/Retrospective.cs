@@ -16,8 +16,8 @@ public sealed class Retrospective : AggregateRoot
     public Retrospective(
         string title,
         string description,
-        Guid teamId,
-        RetrospectiveTemplate? template)
+        RetrospectiveTemplate? template,
+        Guid teamId)
     {
         Title = title;
         Description = description;

@@ -6,7 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Retrospectives.Queries.GetRetrospective;
 
-internal sealed class GetRetrospectiveQueryHandler : IRequestHandler<GetRetrospectiveQuery, ErrorOr<RetrospectiveResponse>>
+internal sealed class GetRetrospectiveQueryHandler
+    : IRequestHandler<GetRetrospectiveQuery, ErrorOr<RetrospectiveResponse>>
 {
     private readonly IApplicationDbContext _context;
 
