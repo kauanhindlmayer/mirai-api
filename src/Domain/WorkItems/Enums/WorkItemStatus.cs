@@ -1,8 +1,5 @@
-using System.Text.Json.Serialization;
-
 namespace Domain.WorkItems.Enums;
 
-[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum WorkItemStatus
 {
     New = 1,

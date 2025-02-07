@@ -1,4 +1,5 @@
 using Domain.Common;
+using Domain.Retrospectives.Enums;
 using Domain.Teams;
 using ErrorOr;
 
@@ -12,11 +13,16 @@ public sealed class Retrospective : AggregateRoot
     public Team Team { get; private set; } = null!;
     public ICollection<RetrospectiveColumn> Columns { get; set; } = [];
 
-    public Retrospective(string title, string description, Guid teamId)
+    public Retrospective(
+        string title,
+        string description,
+        Guid teamId,
+        RetrospectiveTemplate? template)
     {
         Title = title;
         Description = description;
         TeamId = teamId;
+        InitializeDefaultColumns(template ?? RetrospectiveTemplate.Classic);
     }
 
     private Retrospective()
@@ -33,5 +39,14 @@ public sealed class Retrospective : AggregateRoot
         column.UpdatePosition(Columns.Count);
         Columns.Add(column);
         return Result.Success;
+    }
+
+    private void InitializeDefaultColumns(RetrospectiveTemplate template)
+    {
+        var columnTitles = RetrospectiveColumnTemplates.Templates[template];
+        foreach (var title in columnTitles)
+        {
+            AddColumn(new RetrospectiveColumn(title, Id));
+        }
     }
 }

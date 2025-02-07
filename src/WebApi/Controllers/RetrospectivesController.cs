@@ -47,6 +47,7 @@ public class RetrospectivesController : ApiController
         var command = new CreateRetrospectiveCommand(
             request.Title,
             request.Description,
+            request.Template,
             teamId);
 
         var result = await _sender.Send(command, cancellationToken);

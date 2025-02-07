@@ -7,21 +7,21 @@ namespace WebApi.Hubs;
 public interface IRetrospectiveHub
 {
     /// <summary>
-    /// Sends a retrospective item to all connected clients.
+    /// Sends a retrospective item to all clients.
     /// </summary>
     /// <param name="retrospectiveItem">The retrospective item to send.</param>
     [SignalRMethod(name: "send-retrospective-item")]
     Task SendRetrospectiveItem(RetrospectiveItem retrospectiveItem);
 
     /// <summary>
-    /// Deletes a retrospective item.
+    /// Notifies clients to delete a retrospective item.
     /// </summary>
-    /// <param name="retrospectiveItemId">The ID of the retrospective item to delete.</param>
+    /// <param name="retrospectiveItemId">The unique identifier of the retrospective item.</param>
     [SignalRMethod(name: "delete-retrospective-item")]
     Task DeleteRetrospectiveItem(Guid retrospectiveItemId);
 
     /// <summary>
-    /// Updates the connected clients count for all connected clients.
+    /// Notifies clients of the current connection count.
     /// </summary>
     /// <param name="count">The number of connected clients.</param>
     [SignalRMethod(name: "update-connected-clients-count")]

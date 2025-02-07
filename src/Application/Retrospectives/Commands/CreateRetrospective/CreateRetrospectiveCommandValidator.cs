@@ -13,6 +13,10 @@ public sealed class CreateRetrospectiveCommandValidator : AbstractValidator<Crea
         RuleFor(x => x.Description)
             .NotEmpty();
 
+        RuleFor(x => x.Template)
+            .IsInEnum()
+            .When(x => x.Template.HasValue);
+
         RuleFor(x => x.TeamId)
             .NotEmpty();
     }
