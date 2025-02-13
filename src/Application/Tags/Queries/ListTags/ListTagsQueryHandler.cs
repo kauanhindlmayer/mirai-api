@@ -24,7 +24,7 @@ internal sealed class ListTagsQueryHandler : IRequestHandler<ListTagsQuery, Erro
 
         if (!string.IsNullOrWhiteSpace(query.SearchTerm))
         {
-            tagsQuery = tagsQuery.Where(t => t.Name.Contains(query.SearchTerm));
+            tagsQuery = tagsQuery.Where(t => t.Name.ToLower().Contains(query.SearchTerm.ToLower()));
         }
 
         var tags = await tagsQuery

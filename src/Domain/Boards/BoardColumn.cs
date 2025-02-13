@@ -53,6 +53,19 @@ public sealed class BoardColumn : Entity
         return card;
     }
 
+    public ErrorOr<BoardCard> RemoveCard(Guid cardId)
+    {
+        var card = Cards.FirstOrDefault(c => c.Id == cardId);
+        if (card is null)
+        {
+            return BoardErrors.CardNotFound;
+        }
+
+        Cards.Remove(card);
+        ReorderCards();
+        return card;
+    }
+
     public ErrorOr<Success> AddCardAtPosition(BoardCard card, int position)
     {
         if (position < 0 || position > Cards.Count)

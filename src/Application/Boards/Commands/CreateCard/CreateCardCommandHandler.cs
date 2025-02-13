@@ -45,13 +45,7 @@ internal sealed class CreateCardCommandHandler : IRequestHandler<CreateCardComma
 
         await _workItemsRepository.AddAsync(workItem, cancellationToken);
 
-        var column = board.Columns.SingleOrDefault(c => c.Id == command.ColumnId);
-        if (column is null)
-        {
-            return BoardErrors.ColumnNotFound;
-        }
-
-        var result = column.AddCard(workItem);
+        var result = board.CreateCard(workItem, command.ColumnId);
         if (result.IsError)
         {
             return result.Errors;

@@ -1,6 +1,7 @@
 using Domain.Boards.Enums;
 using Domain.Common;
 using Domain.Teams;
+using Domain.WorkItems;
 using ErrorOr;
 
 namespace Domain.Boards;
@@ -68,6 +69,50 @@ public sealed class Board : AggregateRoot
         Columns.Remove(column);
         ReorderColumns();
         return Result.Success;
+    }
+
+    public ErrorOr<Success> MoveCard(
+        Guid columnId,
+        Guid cardId,
+        Guid targetColumnId,
+        int targetPosition)
+    {
+        var sourceColumn = Columns.FirstOrDefault(c => c.Id == columnId);
+        if (sourceColumn is null)
+        {
+            return BoardErrors.ColumnNotFound;
+        }
+
+        var card = sourceColumn.RemoveCard(cardId);
+        if (card.IsError)
+        {
+            return card.Errors;
+        }
+
+        var targetColumn = Columns.FirstOrDefault(c => c.Id == targetColumnId);
+        if (targetColumn is null)
+        {
+            return BoardErrors.ColumnNotFound;
+        }
+
+        return targetColumn.AddCardAtPosition(card.Value, targetPosition);
+    }
+
+    public ErrorOr<BoardCard> CreateCard(WorkItem workItem, Guid columnId)
+    {
+        var column = Columns.FirstOrDefault(c => c.Id == columnId);
+        if (column is null)
+        {
+            return BoardErrors.ColumnNotFound;
+        }
+
+        var result = column.AddCard(workItem);
+        if (result.IsError)
+        {
+            return result.Errors;
+        }
+
+        return result.Value;
     }
 
     private void InitializeDefaultColumns(ProcessTemplate processTemplate)

@@ -20,6 +20,10 @@ public static class BoardErrors
         "Board.ColumnNotFound",
         "Column not found.");
 
+    public static readonly Error CardNotFound = Error.NotFound(
+        "Board.CardNotFound",
+        "Card not found.");
+
     public static Error ColumnHasCards(BoardColumn column) => Error.Validation(
         "Board.ColumnHasCards",
         $"You cannot delete column: {column.Name}. This column has {column.Cards.Count} items in it." +

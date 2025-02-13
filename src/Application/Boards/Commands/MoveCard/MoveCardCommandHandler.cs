@@ -27,22 +27,12 @@ internal sealed class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, 
             return BoardErrors.NotFound;
         }
 
-        var column = board.Columns.FirstOrDefault(c => c.Id == command.ColumnId);
-        if (column is null)
-        {
-            return BoardErrors.ColumnNotFound;
-        }
+        var result = board.MoveCard(
+            command.ColumnId,
+            command.CardId,
+            command.TargetColumnId,
+            command.TargetPosition);
 
-        var card = column.Cards.First(c => c.Id == command.CardId);
-        column.Cards.Remove(card);
-
-        var targetColumn = board.Columns.FirstOrDefault(c => c.Id == command.TargetColumnId);
-        if (targetColumn is null)
-        {
-            return BoardErrors.ColumnNotFound;
-        }
-
-        var result = targetColumn.AddCardAtPosition(card, command.TargetPosition);
         if (result.IsError)
         {
             return result.Errors;
