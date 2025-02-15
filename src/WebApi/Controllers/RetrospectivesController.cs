@@ -47,7 +47,7 @@ public class RetrospectivesController : ApiController
     {
         var command = new CreateRetrospectiveCommand(
             request.Title,
-            request.Description,
+            request.MaxVotesPerUser,
             request.Template,
             teamId);
 
@@ -133,7 +133,7 @@ public class RetrospectivesController : ApiController
         CancellationToken cancellationToken)
     {
         var command = new CreateRetrospectiveItemCommand(
-            request.Description,
+            request.Content,
             retrospectiveId,
             columnId);
 

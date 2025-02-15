@@ -10,9 +10,9 @@ public sealed record CreateRetrospectiveRequest
     public required string Title { get; init; }
 
     /// <summary>
-    /// The description of the retrospective.
+    /// The maximum number of votes per user.
     /// </summary>
-    public string Description { get; init; } = string.Empty;
+    public int? MaxVotesPerUser { get; init; }
 
     /// <summary>
     /// The retrospective template to use.

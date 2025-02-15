@@ -27,4 +27,8 @@ public static class RetrospectiveErrors
     public static readonly Error ItemAlreadyExists = Error.Validation(
         code: "Retrospective.ItemAlreadyExists",
         description: "An item with the same description already exists in this column.");
+
+    public static readonly Error MaxColumnsReached = Error.Validation(
+        code: "Retrospective.MaxColumnsReached",
+        description: "A retrospective can have a maximum of 5 columns.");
 }

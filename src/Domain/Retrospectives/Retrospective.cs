@@ -7,20 +7,22 @@ namespace Domain.Retrospectives;
 
 public sealed class Retrospective : AggregateRoot
 {
+    private const int DefaultVotesPerUserLimit = 5;
+    private const int MaxColumns = 5;
     public string Title { get; private set; } = null!;
-    public string Description { get; private set; } = null!;
+    public int MaxVotesPerUser { get; private set; }
     public Guid TeamId { get; private set; }
     public Team Team { get; private set; } = null!;
     public ICollection<RetrospectiveColumn> Columns { get; set; } = [];
 
     public Retrospective(
         string title,
-        string description,
+        int? maxVotesPerUser,
         RetrospectiveTemplate? template,
         Guid teamId)
     {
         Title = title;
-        Description = description;
+        MaxVotesPerUser = maxVotesPerUser.GetValueOrDefault(DefaultVotesPerUserLimit);
         TeamId = teamId;
         InitializeDefaultColumns(template ?? RetrospectiveTemplate.Classic);
     }
@@ -31,6 +33,11 @@ public sealed class Retrospective : AggregateRoot
 
     public ErrorOr<Success> AddColumn(RetrospectiveColumn column)
     {
+        if (Columns.Count >= MaxColumns)
+        {
+            return RetrospectiveErrors.MaxColumnsReached;
+        }
+
         if (Columns.Any(c => c.Title == column.Title))
         {
             return RetrospectiveErrors.ColumnAlreadyExists;

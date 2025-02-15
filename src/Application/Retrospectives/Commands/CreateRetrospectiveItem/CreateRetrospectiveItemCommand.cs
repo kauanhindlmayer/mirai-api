@@ -5,6 +5,6 @@ using MediatR;
 namespace Application.Retrospectives.Commands.CreateRetrospectiveItem;
 
 public sealed record CreateRetrospectiveItemCommand(
-    string Description,
+    string Content,
     Guid RetrospectiveId,
     Guid ColumnId) : IRequest<ErrorOr<RetrospectiveItem>>;

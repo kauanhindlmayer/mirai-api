@@ -23,7 +23,7 @@ public sealed class RetrospectiveColumn : Entity
 
     public ErrorOr<Success> AddItem(RetrospectiveItem item)
     {
-        if (Items.Any(i => i.Description == item.Description))
+        if (Items.Any(i => i.Content == item.Content))
         {
             return RetrospectiveErrors.ItemAlreadyExists;
         }

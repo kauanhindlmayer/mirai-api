@@ -10,8 +10,10 @@ public sealed class CreateRetrospectiveCommandValidator : AbstractValidator<Crea
             .MinimumLength(3)
             .MaximumLength(255);
 
-        RuleFor(x => x.Description)
-            .NotEmpty();
+        RuleFor(x => x.MaxVotesPerUser)
+            .GreaterThanOrEqualTo(3)
+            .LessThanOrEqualTo(12)
+            .When(x => x.MaxVotesPerUser.HasValue);
 
         RuleFor(x => x.Template)
             .IsInEnum()

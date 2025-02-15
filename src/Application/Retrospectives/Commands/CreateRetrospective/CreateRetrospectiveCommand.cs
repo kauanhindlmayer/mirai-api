@@ -6,6 +6,6 @@ namespace Application.Retrospectives.Commands.CreateRetrospective;
 
 public sealed record CreateRetrospectiveCommand(
     string Title,
-    string Description,
+    int? MaxVotesPerUser,
     RetrospectiveTemplate? Template,
     Guid TeamId) : IRequest<ErrorOr<Guid>>;

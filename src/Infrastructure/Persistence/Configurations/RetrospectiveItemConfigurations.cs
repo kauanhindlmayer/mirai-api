@@ -13,7 +13,7 @@ internal sealed class RetrospectiveItemConfigurations : IEntityTypeConfiguration
         builder.Property(ri => ri.Id)
             .ValueGeneratedNever();
 
-        builder.Property(ri => ri.Description)
+        builder.Property(ri => ri.Content)
             .IsRequired();
 
         builder.Property(ri => ri.Votes)

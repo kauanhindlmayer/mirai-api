@@ -6,7 +6,7 @@ public sealed class CreateRetrospectiveItemCommandValidator : AbstractValidator<
 {
     public CreateRetrospectiveItemCommandValidator()
     {
-        RuleFor(x => x.Description)
+        RuleFor(x => x.Content)
             .NotEmpty();
 
         RuleFor(x => x.ColumnId)

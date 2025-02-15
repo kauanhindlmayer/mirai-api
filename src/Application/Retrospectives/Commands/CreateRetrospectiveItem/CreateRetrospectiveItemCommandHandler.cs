@@ -40,7 +40,7 @@ internal sealed class CreateRetrospectiveItemCommandHandler
         }
 
         var retrospectiveItem = new RetrospectiveItem(
-            command.Description,
+            command.Content,
             command.ColumnId,
             _userContext.UserId);
 

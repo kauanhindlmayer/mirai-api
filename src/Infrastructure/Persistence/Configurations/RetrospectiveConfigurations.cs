@@ -17,8 +17,8 @@ internal sealed class RetrospectiveConfigurations : IEntityTypeConfiguration<Ret
             .HasMaxLength(255)
             .IsRequired();
 
-        builder.Property(r => r.Description)
-            .HasMaxLength(500);
+        builder.Property(r => r.MaxVotesPerUser)
+            .IsRequired();
 
         builder.Property(r => r.TeamId)
             .IsRequired();

@@ -27,7 +27,7 @@ internal sealed class GetRetrospectiveQueryHandler
             {
                 Id = r.Id,
                 Title = r.Title,
-                Description = r.Description,
+                MaxVotesPerUser = r.MaxVotesPerUser,
                 Columns = r.Columns.Select(c => new RetrospectiveColumnResponse
                 {
                     Id = c.Id,
@@ -36,7 +36,7 @@ internal sealed class GetRetrospectiveQueryHandler
                     Items = c.Items.Select(i => new RetrospectiveItemResponse
                     {
                         Id = i.Id,
-                        Description = i.Description,
+                        Description = i.Content,
                         Position = i.Position,
                         AuthorId = i.AuthorId,
                         Votes = i.Votes,

@@ -5,7 +5,7 @@ namespace Domain.Retrospectives;
 
 public sealed class RetrospectiveItem : Entity
 {
-    public string Description { get; private set; } = null!;
+    public string Content { get; private set; } = null!;
     public int Position { get; private set; }
     public int Votes { get; private set; }
     public Guid RetrospectiveColumnId { get; private set; }
@@ -14,11 +14,11 @@ public sealed class RetrospectiveItem : Entity
     public User Author { get; private set; } = null!;
 
     public RetrospectiveItem(
-        string description,
+        string content,
         Guid retrospectiveColumnId,
         Guid authorId)
     {
-        Description = description;
+        Content = content;
         RetrospectiveColumnId = retrospectiveColumnId;
         AuthorId = authorId;
         Votes = 0;
