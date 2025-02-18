@@ -19,8 +19,9 @@ public sealed class RetrospectiveColumnResponse
 public sealed class RetrospectiveItemResponse
 {
     public Guid Id { get; init; }
-    public string Description { get; init; } = string.Empty;
+    public string Content { get; init; } = string.Empty;
     public int Position { get; init; }
     public Guid AuthorId { get; init; }
     public int Votes { get; init; }
+    public DateTime CreatedAt { get; init; }
 }

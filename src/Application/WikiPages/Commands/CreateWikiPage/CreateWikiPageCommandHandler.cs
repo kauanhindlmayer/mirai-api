@@ -7,17 +7,21 @@ using MediatR;
 
 namespace Application.WikiPages.Commands.CreateWikiPage;
 
-internal sealed class CreateWikiPageCommandHandler : IRequestHandler<CreateWikiPageCommand, ErrorOr<Guid>>
+internal sealed class CreateWikiPageCommandHandler
+    : IRequestHandler<CreateWikiPageCommand, ErrorOr<Guid>>
 {
     private readonly IProjectsRepository _projectsRepository;
     private readonly IUserContext _userContext;
+    private readonly IHtmlSanitizerService _htmlSanitizerService;
 
     public CreateWikiPageCommandHandler(
         IProjectsRepository projectsRepository,
-        IUserContext userContext)
+        IUserContext userContext,
+        IHtmlSanitizerService htmlSanitizerService)
     {
         _projectsRepository = projectsRepository;
         _userContext = userContext;
+        _htmlSanitizerService = htmlSanitizerService;
     }
 
     public async Task<ErrorOr<Guid>> Handle(
@@ -44,10 +48,12 @@ internal sealed class CreateWikiPageCommandHandler : IRequestHandler<CreateWikiP
             }
         }
 
+        var sanitizedContent = _htmlSanitizerService.Sanitize(command.Content);
+
         var wikiPage = new WikiPage(
             command.ProjectId,
             command.Title,
-            command.Content,
+            sanitizedContent,
             _userContext.UserId,
             command.ParentWikiPageId);
 

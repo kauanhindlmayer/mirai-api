@@ -36,10 +36,11 @@ internal sealed class GetRetrospectiveQueryHandler
                     Items = c.Items.Select(i => new RetrospectiveItemResponse
                     {
                         Id = i.Id,
-                        Description = i.Content,
+                        Content = i.Content,
                         Position = i.Position,
                         AuthorId = i.AuthorId,
                         Votes = i.Votes,
+                        CreatedAt = i.CreatedAt,
                     }),
                 }),
             })

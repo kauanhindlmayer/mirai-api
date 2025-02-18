@@ -45,6 +45,7 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+        services.AddSingleton<IHtmlSanitizerService, HtmlSanitizerService>();
 
         var embeddingServiceOptions = configuration.GetSection(EmbeddingServiceOptions.SectionName);
         services.Configure<EmbeddingServiceOptions>(embeddingServiceOptions);
