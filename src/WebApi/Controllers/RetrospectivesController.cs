@@ -176,9 +176,13 @@ public class RetrospectivesController : ApiController
 
         var result = await _sender.Send(command, cancellationToken);
 
-        return result.Match(
-            _ => NoContent(),
-            Problem);
+        if (result.IsError)
+        {
+            return Problem(result.Errors);
+        }
+
+        await _hubContext.Clients.All.DeleteRetrospectiveItem(itemId);
+        return NoContent();
     }
 
     /// <summary>

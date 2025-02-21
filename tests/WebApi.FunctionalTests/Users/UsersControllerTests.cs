@@ -2,7 +2,6 @@ using System.Net;
 using System.Net.Http.Json;
 using Application.Users.Common;
 using Application.Users.Queries.GetCurrentUser;
-using Contracts.Users;
 using FluentAssertions;
 using WebApi.FunctionalTests.Common;
 
@@ -115,13 +114,10 @@ public class UserControllerTests : BaseFunctionalTest
     {
         // Arrange
         await SetAuthorizationHeaderAsync();
-        var registerUserRequest = UserRequestFactory.CreateRegisterUserRequest();
-        var registerUserResponse = await _httpClient.PostAsJsonAsync("api/v1/users/register", registerUserRequest);
-        var userId = await registerUserResponse.Content.ReadFromJsonAsync<Guid>();
         var request = UserRequestFactory.CreateUpdateUserProfileRequest();
 
         // Act
-        var response = await _httpClient.PutAsJsonAsync($"api/v1/users/{userId}/profile", request);
+        var response = await _httpClient.PutAsJsonAsync("api/v1/users/profile", request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);

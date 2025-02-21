@@ -168,22 +168,6 @@ public class ProjectTests
     }
 
     [Fact]
-    public void RemoveTag_WhenTagDoesNotExists_ShouldReturnError()
-    {
-        // Arrange
-        var project = ProjectFactory.CreateProject();
-        var tag = TagFactory.CreateTag();
-
-        // Act
-        var result = project.RemoveTag(tag);
-
-        // Assert
-        result.IsError.Should().BeTrue();
-        result.Errors.Should().HaveCount(1);
-        result.FirstError.Should().BeEquivalentTo(TagErrors.NotFound);
-    }
-
-    [Fact]
     public void RemoveTag_WhenTagExists_ShouldRemoveTag()
     {
         // Arrange

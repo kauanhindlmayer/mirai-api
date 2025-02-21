@@ -34,8 +34,8 @@ public class BoardTests
 
         // Assert
         result.IsError.Should().BeFalse();
-        board.Columns.Should().HaveCount(1);
-        board.Columns.First().Should().BeEquivalentTo(column);
+        board.Columns.Should().HaveCount(5);
+        board.Columns.Last().Should().BeEquivalentTo(column);
     }
 
     [Fact]
@@ -86,7 +86,7 @@ public class BoardTests
 
         // Assert
         result.IsError.Should().BeFalse();
-        board.Columns.Should().BeEmpty();
+        board.Columns.Should().HaveCount(4);
     }
 
     [Fact]
@@ -105,9 +105,9 @@ public class BoardTests
         board.RemoveColumn(column2.Id);
 
         // Assert
-        board.Columns.Should().HaveCount(2);
-        board.Columns.First().Position.Should().Be(0);
-        board.Columns.Last().Position.Should().Be(1);
+        board.Columns.Should().HaveCount(6);
+        board.Columns[^2].Position.Should().Be(4);
+        board.Columns[^1].Position.Should().Be(5);
     }
 
     [Fact]
@@ -126,8 +126,8 @@ public class BoardTests
         board.RemoveColumn(column1.Id);
 
         // Assert
-        board.Columns.Should().HaveCount(2);
-        board.Columns.First().Position.Should().Be(0);
-        board.Columns.Last().Position.Should().Be(1);
+        board.Columns.Should().HaveCount(6);
+        board.Columns[^2].Position.Should().Be(4);
+        board.Columns[^1].Position.Should().Be(5);
     }
 }

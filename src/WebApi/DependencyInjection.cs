@@ -19,7 +19,12 @@ public static class DependencyInjection
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
         services.AddProblemDetails();
-        services.AddSignalR();
+        services.AddSignalR(options => options.EnableDetailedErrors = true)
+            .AddJsonProtocol(options =>
+            {
+                options.PayloadSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+                options.PayloadSerializerOptions.MaxDepth = 64;
+            });
         services.AddCorsPolicy();
 
         return services;
@@ -104,7 +109,8 @@ public static class DependencyInjection
         services.AddCors(options => options.AddDefaultPolicy(builder =>
             builder.WithOrigins("http://localhost:5173")
                 .AllowAnyMethod()
-                .AllowAnyHeader()));
+                .AllowAnyHeader()
+                .AllowCredentials()));
     }
 
     private static void ConfigureHealthChecks(this WebApplication app)
