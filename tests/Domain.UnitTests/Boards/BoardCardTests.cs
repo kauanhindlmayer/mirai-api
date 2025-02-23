@@ -7,9 +7,11 @@ public class BoardCardTests
     [Fact]
     public void CreateBoardCard_ShouldSetProperties()
     {
-        // Act
+        // Arrange
         var column = BoardFactory.CreateBoardColumn();
         var workItem = WorkItemFactory.CreateWorkItem();
+
+        // Act
         var card = BoardFactory.CreateBoardCard(column.Id, workItem.Id);
 
         // Assert

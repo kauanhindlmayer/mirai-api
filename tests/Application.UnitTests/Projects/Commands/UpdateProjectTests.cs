@@ -26,7 +26,7 @@ public class UpdateProjectTests
     public async Task Handle_WhenOrganizationDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _mockOrganizationsRepository.GetByIdWithProjectsAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+        _mockOrganizationsRepository.GetByIdWithProjectsAsync(Command.OrganizationId, Arg.Any<CancellationToken>())
             .Returns(null as Organization);
 
         // Act
@@ -43,7 +43,7 @@ public class UpdateProjectTests
     {
         // Arrange
         var organization = new Organization("Test Organization", "Test Description");
-        _mockOrganizationsRepository.GetByIdWithProjectsAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+        _mockOrganizationsRepository.GetByIdWithProjectsAsync(Command.OrganizationId, Arg.Any<CancellationToken>())
             .Returns(organization);
 
         // Act
@@ -60,14 +60,15 @@ public class UpdateProjectTests
     {
         // Arrange
         var organization = new Organization("Test Organization", "Test Description");
-        var project = new Project("Test Project", "Test Description", organization.Id);
+        var project = new Project("Test Project", "Test Description", Command.OrganizationId);
         organization.AddProject(project);
-        _mockOrganizationsRepository.GetByIdWithProjectsAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+        _mockOrganizationsRepository.GetByIdWithProjectsAsync(Command.OrganizationId, Arg.Any<CancellationToken>())
             .Returns(organization);
-        var command = Command with { OrganizationId = organization.Id, ProjectId = project.Id };
 
         // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
+        var result = await _handler.Handle(
+            Command with { ProjectId = project.Id },
+            CancellationToken.None);
 
         // Assert
         result.Should().BeOfType<ErrorOr<Guid>>();

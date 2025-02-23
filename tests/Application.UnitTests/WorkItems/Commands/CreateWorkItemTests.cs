@@ -35,7 +35,7 @@ public class CreateWorkItemTests
     public async Task Handle_WhenProjectDoesNotExist_ReturnsProjectNotFoundError()
     {
         // Arrange
-        _projectsRepository.GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+        _projectsRepository.GetByIdAsync(Command.ProjectId, Arg.Any<CancellationToken>())
             .Returns(null as Project);
 
         // Act
@@ -51,14 +51,13 @@ public class CreateWorkItemTests
     {
         // Arrange
         var project = new Project("Project", "Description", Guid.NewGuid());
-        _projectsRepository.GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+        _projectsRepository.GetByIdAsync(Command.ProjectId, Arg.Any<CancellationToken>())
             .Returns(project);
-        _workItemsRepository.GetNextWorkItemCodeAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+        _workItemsRepository.GetNextWorkItemCodeAsync(Command.ProjectId, Arg.Any<CancellationToken>())
             .Returns(1);
-        var command = Command with { ProjectId = project.Id };
 
         // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
+        var result = await _handler.Handle(Command, CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeFalse();
@@ -70,8 +69,9 @@ public class CreateWorkItemTests
     {
         // Arrange
         var project = new Project("Project", "Description", Guid.NewGuid());
-        project.AddWorkItem(new WorkItem(project.Id, 1, "Title", WorkItemType.UserStory));
-        _projectsRepository.GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+        var workItem = new WorkItem(Command.ProjectId, 1, "Title", WorkItemType.UserStory);
+        project.AddWorkItem(workItem);
+        _projectsRepository.GetByIdAsync(Command.ProjectId, Arg.Any<CancellationToken>())
             .Returns(project);
 
         // Act
@@ -87,9 +87,9 @@ public class CreateWorkItemTests
     {
         // Arrange
         var project = new Project("Project", "Description", Guid.NewGuid());
-        _projectsRepository.GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+        _projectsRepository.GetByIdAsync(Command.ProjectId, Arg.Any<CancellationToken>())
             .Returns(project);
-        _workItemsRepository.GetNextWorkItemCodeAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+        _workItemsRepository.GetNextWorkItemCodeAsync(Command.ProjectId, Arg.Any<CancellationToken>())
             .Returns(1);
 
         // Act
