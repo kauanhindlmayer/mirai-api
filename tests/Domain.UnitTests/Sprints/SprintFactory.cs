@@ -4,6 +4,10 @@ namespace Domain.UnitTests.Sprints;
 
 public static class SprintFactory
 {
+    public const string Name = "Sprint 1";
+    public static readonly DateTime StartDate = DateTime.Now;
+    public static readonly DateTime EndDate = DateTime.Now.AddDays(14);
+
     public static Sprint CreateSprint(
         Guid? teamId = null,
         string? name = null,
@@ -12,8 +16,8 @@ public static class SprintFactory
     {
         return new(
             teamId ?? Guid.NewGuid(),
-            name ?? $"Sprint 1",
-            startDate ?? DateTime.Now,
-            endDate ?? DateTime.Now.AddDays(14));
+            name ?? Name,
+            startDate ?? StartDate,
+            endDate ?? EndDate);
     }
 }

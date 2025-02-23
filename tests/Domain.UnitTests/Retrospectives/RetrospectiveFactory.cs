@@ -17,4 +17,13 @@ public static class RetrospectiveFactory
             template,
             teamId ?? Guid.NewGuid());
     }
+
+    public static RetrospectiveColumn CreateColumn(
+        string title = "Column",
+        Guid? retrospectiveId = null)
+    {
+        return new(
+            title,
+            retrospectiveId ?? Guid.NewGuid());
+    }
 }
