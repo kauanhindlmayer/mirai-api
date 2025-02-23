@@ -1,13 +1,16 @@
 using Domain.Projects;
+using Domain.Projects.Events;
 using Domain.Tags;
+using Domain.UnitTests.Common;
 using Domain.UnitTests.Tags;
 using Domain.UnitTests.Teams;
 using Domain.UnitTests.WikiPages;
 using Domain.UnitTests.WorkItems;
+using Domain.WikiPages;
 
 namespace Domain.UnitTests.Projects;
 
-public class ProjectTests
+public class ProjectTests : BaseTest
 {
     [Fact]
     public void CreateProject_ShouldSetProperties()
@@ -22,17 +25,30 @@ public class ProjectTests
     }
 
     [Fact]
+    public void CreateProject_ShouldRaiseProjectCreatedDomainEvent()
+    {
+        // Act
+        var project = ProjectFactory.CreateProject();
+
+        // Assert
+        var domainEvent = AssertDomainEventWasPublished<ProjectCreatedDomainEvent>(project);
+        domainEvent.Project.Should().Be(project);
+    }
+
+    [Fact]
     public void Update_ShouldUpdateProperties()
     {
         // Arrange
         var project = ProjectFactory.CreateProject();
+        var name = "New Name";
+        var description = "New Description";
 
         // Act
-        project.Update("New Name", "New Description");
+        project.Update(name, description);
 
         // Assert
-        project.Name.Should().Be("New Name");
-        project.Description.Should().Be("New Description");
+        project.Name.Should().Be(name);
+        project.Description.Should().Be(description);
     }
 
     [Fact]
@@ -99,6 +115,96 @@ public class ProjectTests
         result.IsError.Should().BeFalse();
         project.WikiPages.Should().HaveCount(1);
         project.WikiPages.First().Should().BeEquivalentTo(wikiPage);
+    }
+
+    [Fact]
+    public void MoveWikiPage_WhenWikiPageDoesNotExists_ShouldReturnError()
+    {
+        // Arrange
+        var project = ProjectFactory.CreateProject();
+        var wikiPage = WikiPageFactory.CreateWikiPage();
+
+        // Act
+        var result = project.MoveWikiPage(wikiPage.Id, null, 0);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.Errors.Should().HaveCount(1);
+        result.FirstError.Should().BeEquivalentTo(WikiPageErrors.NotFound);
+    }
+
+    [Fact]
+    public void MoveWikiPage_WhenTargetParentDoesNotExists_ShouldReturnError()
+    {
+        // Arrange
+        var project = ProjectFactory.CreateProject();
+        var wikiPage = WikiPageFactory.CreateWikiPage();
+        project.AddWikiPage(wikiPage);
+
+        // Act
+        var result = project.MoveWikiPage(wikiPage.Id, Guid.NewGuid(), 0);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.Errors.Should().HaveCount(1);
+        result.FirstError.Should().BeEquivalentTo(WikiPageErrors.ParentWikiPageNotFound);
+    }
+
+    [Fact]
+    public void MoveWikiPage_WhenTargetParentExists_ShouldMoveWikiPage()
+    {
+        // Arrange
+        var project = ProjectFactory.CreateProject();
+        var wikiPage = WikiPageFactory.CreateWikiPage(project.Id);
+        project.AddWikiPage(wikiPage);
+        var targetParent = WikiPageFactory.CreateWikiPage(project.Id, "Wiki Page 2");
+        project.AddWikiPage(targetParent);
+
+        // Act
+        var result = project.MoveWikiPage(wikiPage.Id, targetParent.Id, 0);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        project.WikiPages.Should().HaveCount(1);
+        project.WikiPages.First().Should().BeEquivalentTo(targetParent);
+    }
+
+    [Fact]
+    public void MoveWikiPage_WhenWikiPageExists_ShouldMoveWikiPage()
+    {
+        // Arrange
+        var project = ProjectFactory.CreateProject();
+        var wikiPage = WikiPageFactory.CreateWikiPage(project.Id);
+        project.AddWikiPage(wikiPage);
+        var wikiPage2 = WikiPageFactory.CreateWikiPage(project.Id, "Wiki Page 2");
+        project.AddWikiPage(wikiPage2);
+
+        // Act
+        var result = project.MoveWikiPage(wikiPage2.Id, null, 0);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        project.WikiPages.Should().HaveCount(2);
+        project.WikiPages.First().Should().BeEquivalentTo(wikiPage2);
+        project.WikiPages.Last().Should().BeEquivalentTo(wikiPage);
+    }
+
+    [Fact]
+    public void ReorderWikiPages_ShouldUpdatePositions()
+    {
+        // Arrange
+        var project = ProjectFactory.CreateProject();
+        var wikiPage = WikiPageFactory.CreateWikiPage(project.Id);
+        project.AddWikiPage(wikiPage);
+        var wikiPage2 = WikiPageFactory.CreateWikiPage(project.Id, "Wiki Page 2");
+        project.AddWikiPage(wikiPage2);
+
+        // Act
+        project.ReorderWikiPages();
+
+        // Assert
+        project.WikiPages.First().Position.Should().Be(0);
+        project.WikiPages.Last().Position.Should().Be(1);
     }
 
     [Fact]

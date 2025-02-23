@@ -35,13 +35,15 @@ public class UsersTests : BaseTest
     {
         // Arrange
         var user = UserFactory.CreateUser();
+        var firstName = "Jane";
+        var lastName = "Smith";
 
         // Act
-        user.UpdateProfile(UserFactory.NewFirstName, UserFactory.NewLastName);
+        user.UpdateProfile(firstName, lastName);
 
         // Assert
-        user.FirstName.Should().Be(UserFactory.NewFirstName);
-        user.LastName.Should().Be(UserFactory.NewLastName);
-        user.FullName.Should().Be(UserFactory.NewFullName);
+        user.FirstName.Should().Be(firstName);
+        user.LastName.Should().Be(lastName);
+        user.FullName.Should().Be($"{firstName} {lastName}");
     }
 }

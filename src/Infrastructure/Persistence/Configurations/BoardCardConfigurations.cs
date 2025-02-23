@@ -29,6 +29,6 @@ internal sealed class BoardCardConfigurations : IEntityTypeConfiguration<BoardCa
         builder.HasOne(bc => bc.WorkItem)
             .WithMany()
             .HasForeignKey(bc => bc.WorkItemId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -4,8 +4,8 @@ namespace Domain.UnitTests.Projects;
 
 public static class ProjectFactory
 {
-    public const string Name = "Project Name";
-    public const string Description = "Project Description";
+    public const string Name = "Test Project";
+    public const string Description = "Test Description";
     public static readonly Guid OrganizationId = Guid.NewGuid();
 
     public static Project CreateProject(

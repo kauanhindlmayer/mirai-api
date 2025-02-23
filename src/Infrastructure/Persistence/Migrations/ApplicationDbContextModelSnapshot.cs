@@ -685,7 +685,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasOne("Domain.WorkItems.WorkItem", "WorkItem")
                         .WithMany()
                         .HasForeignKey("WorkItemId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("BoardColumn");

@@ -4,9 +4,11 @@ namespace Domain.UnitTests.Boards;
 
 public static class BoardFactory
 {
+    public const string Name = "Test Board";
+
     public static Board CreateBoard(
         Guid? projectId = null,
-        string name = "Board")
+        string name = Name)
     {
         return new(
             projectId ?? Guid.NewGuid(),
@@ -24,5 +26,16 @@ public static class BoardFactory
             name,
             wipLimit,
             definitionOfDone);
+    }
+
+    public static BoardCard CreateBoardCard(
+        Guid? columnId = null,
+        Guid? workItemId = null,
+        int position = 0)
+    {
+        return new(
+            columnId ?? Guid.NewGuid(),
+            workItemId ?? Guid.NewGuid(),
+            position);
     }
 }

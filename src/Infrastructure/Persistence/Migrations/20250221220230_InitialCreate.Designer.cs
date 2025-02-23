@@ -14,7 +14,7 @@ using Pgvector;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250214224654_InitialCreate")]
+    [Migration("20250221220230_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -688,7 +688,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasOne("Domain.WorkItems.WorkItem", "WorkItem")
                         .WithMany()
                         .HasForeignKey("WorkItemId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("BoardColumn");

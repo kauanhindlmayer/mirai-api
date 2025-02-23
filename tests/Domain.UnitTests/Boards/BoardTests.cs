@@ -6,6 +6,17 @@ namespace Domain.UnitTests.Boards;
 public class BoardTests
 {
     [Fact]
+    public void CreateBoard_ShouldSetProperties()
+    {
+        // Act
+        var board = BoardFactory.CreateBoard();
+
+        // Assert
+        board.Name.Should().Be(BoardFactory.Name);
+        board.Columns.Should().HaveCount(4);
+    }
+
+    [Fact]
     public void AddColumn_WhenColumnWithSameNameAlreadyExists_ShouldReturnError()
     {
         // Arrange
@@ -23,7 +34,7 @@ public class BoardTests
     }
 
     [Fact]
-    public void AddColumn_WhenColumnWithSameNameDoesNotExists_ShouldAddColumn()
+    public void AddColumn_WhenColumnDoesNotExists_ShouldAddColumn()
     {
         // Arrange
         var board = BoardFactory.CreateBoard();

@@ -73,6 +73,11 @@ public sealed class BoardColumn : Entity
             return BoardErrors.InvalidPosition;
         }
 
+        if (Cards.Any(c => c.WorkItemId == card.WorkItemId))
+        {
+            return BoardErrors.CardAlreadyExists;
+        }
+
         Cards.Insert(position, card);
         ReorderCards();
         return Result.Success;
