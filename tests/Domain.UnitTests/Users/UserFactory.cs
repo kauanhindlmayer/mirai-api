@@ -9,6 +9,7 @@ public static class UserFactory
     public const string FullName = "John Doe";
     public const string Email = "john.doe@email.com";
     public const string IdentityId = "identity_id";
+    public const string ImageUrl = "image_url";
 
     public static User CreateUser(
         string firstName = FirstName,

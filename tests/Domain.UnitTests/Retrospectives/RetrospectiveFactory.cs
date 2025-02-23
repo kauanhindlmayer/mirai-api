@@ -26,4 +26,15 @@ public static class RetrospectiveFactory
             title,
             retrospectiveId ?? Guid.NewGuid());
     }
+
+    public static RetrospectiveItem CreateItem(
+        string content = "Item",
+        Guid? columnId = null,
+        Guid? authorId = null)
+    {
+        return new(
+            content,
+            columnId ?? Guid.NewGuid(),
+            authorId ?? Guid.NewGuid());
+    }
 }

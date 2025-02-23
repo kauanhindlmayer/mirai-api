@@ -1,18 +1,19 @@
 {
   "cSpell.words": [
-    "Ardalis",
-    "ASPNETCORE",
-    "Authorizeable",
+    "ardalis",
+    "aspnetcore",
+    "authorizeable",
     "datalust",
-    "Ganss",
+    "ganss",
     "isready",
-    "Keycloak",
-    "Mediat",
-    "Npgsql",
-    "Serilog",
-    "Swashbuckle",
-    "Testcontainers",
+    "keycloak",
+    "mediat",
+    "npgsql",
+    "serilog",
+    "swashbuckle",
+    "testcontainers",
     "usersecrets",
-    "Xunit"
+    "xunit",
+    "pgvector"
   ]
 }

@@ -65,6 +65,11 @@ public sealed class WorkItem : AggregateRoot
         AssigneeId = assigneeId;
     }
 
+    public void Close()
+    {
+        Status = WorkItemStatus.Closed;
+    }
+
     public ErrorOr<Success> AddComment(WorkItemComment comment)
     {
         if (Status == WorkItemStatus.Closed)

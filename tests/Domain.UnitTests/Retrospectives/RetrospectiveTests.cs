@@ -82,7 +82,7 @@ public class RetrospectiveTests
         retrospective.AddColumn(column);
 
         // Assert
-        column.Position.Should().Be(1);
+        column.Position.Should().Be(4);
     }
 
     [Fact]

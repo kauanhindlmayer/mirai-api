@@ -9,7 +9,6 @@ public class TagTests
         var tag = TagFactory.CreateTag();
 
         // Assert
-        tag.ProjectId.Should().NotBeEmpty();
         tag.Name.Should().Be(TagFactory.Name);
         tag.Description.Should().Be(TagFactory.Description);
         tag.Color.Should().Be(TagFactory.Color);

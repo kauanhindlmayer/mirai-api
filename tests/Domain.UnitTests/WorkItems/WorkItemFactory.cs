@@ -5,10 +5,12 @@ namespace Domain.UnitTests.WorkItems;
 
 public static class WorkItemFactory
 {
+    public const string Title = "Title";
+
     public static WorkItem CreateWorkItem(
         Guid? projectId = null,
         WorkItemType? type = null,
-        string title = "Title")
+        string title = Title)
     {
         var workItemCode = 1;
 

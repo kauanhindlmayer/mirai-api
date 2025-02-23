@@ -31,6 +31,19 @@ public class UsersTests : BaseTest
     }
 
     [Fact]
+    public void SetImageUrl_ShouldSetImageUrl()
+    {
+        // Arrange
+        var user = UserFactory.CreateUser();
+
+        // Act
+        user.SetImageUrl(UserFactory.ImageUrl);
+
+        // Assert
+        user.ImageUrl.Should().Be(UserFactory.ImageUrl);
+    }
+
+    [Fact]
     public void UpdateProfile_ShouldUpdateProfile()
     {
         // Arrange
