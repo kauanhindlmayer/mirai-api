@@ -83,6 +83,11 @@ public sealed class Project : AggregateRoot
         }
         else
         {
+            if (targetPosition < 0 || targetPosition > WikiPages.Count)
+            {
+                return WikiPageErrors.InvalidPosition;
+            }
+
             wikiPage.RemoveParent();
             WikiPages.Insert(targetPosition, wikiPage);
         }

@@ -32,7 +32,7 @@ public class CreateWorkItemTests
     }
 
     [Fact]
-    public async Task Handle_WhenProjectDoesNotExist_ReturnsProjectNotFoundError()
+    public async Task Handle_WhenProjectDoesNotExist_ShouldReturnError()
     {
         // Arrange
         _projectsRepository.GetByIdAsync(Command.ProjectId, Arg.Any<CancellationToken>())
@@ -47,7 +47,7 @@ public class CreateWorkItemTests
     }
 
     [Fact]
-    public async Task Handle_WhenProjectExists_ReturnsWorkItem()
+    public async Task Handle_WhenProjectExists_ShouldReturnWorkItem()
     {
         // Arrange
         var project = new Project("Project", "Description", Guid.NewGuid());
@@ -65,7 +65,7 @@ public class CreateWorkItemTests
     }
 
     [Fact]
-    public async Task Handle_WhenWorkItemWithSameTitleAlreadyExists_ReturnsWorkItemWithSameTitleAlreadyExistsError()
+    public async Task Handle_WhenWorkItemWithSameTitleAlreadyExists_ShouldReturnError()
     {
         // Arrange
         var project = new Project("Project", "Description", Guid.NewGuid());
@@ -83,7 +83,7 @@ public class CreateWorkItemTests
     }
 
     [Fact]
-    public async Task Handle_WhenWorkItemIsAddedToProject_UpdatesProject()
+    public async Task Handle_WhenWorkItemIsAddedToProject_ShouldUpdateProject()
     {
         // Arrange
         var project = new Project("Project", "Description", Guid.NewGuid());

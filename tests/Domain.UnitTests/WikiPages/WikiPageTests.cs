@@ -90,16 +90,31 @@ public class WikiPageTests
     }
 
     [Fact]
-    public void InsertSubWikiPage_ShouldInsertSubWikiPage()
+    public void InsertSubWikiPage_WhenPositionIsInvalid_ShouldReturnError()
     {
         // Arrange
         var wikiPage = WikiPageFactory.CreateWikiPage();
         var subWikiPage = WikiPageFactory.CreateWikiPage();
 
         // Act
-        wikiPage.InsertSubWikiPage(0, subWikiPage);
+        var result = wikiPage.InsertSubWikiPage(-1, subWikiPage);
 
         // Assert
+        result.FirstError.Should().Be(WikiPageErrors.InvalidPosition);
+    }
+
+    [Fact]
+    public void InsertSubWikiPage_WhenPositionIsValid_ShouldInsertSubWikiPage()
+    {
+        // Arrange
+        var wikiPage = WikiPageFactory.CreateWikiPage();
+        var subWikiPage = WikiPageFactory.CreateWikiPage();
+
+        // Act
+        var result = wikiPage.InsertSubWikiPage(0, subWikiPage);
+
+        // Assert
+        result.IsError.Should().BeFalse();
         wikiPage.SubWikiPages.Should().Contain(subWikiPage);
     }
 

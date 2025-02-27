@@ -42,7 +42,7 @@ internal sealed class CreateWikiPageCommandHandler
             var parentWikiPage = project.WikiPages.FirstOrDefault(wikiPage =>
                 wikiPage.Id == command.ParentWikiPageId);
 
-            if (parentWikiPage is null || parentWikiPage.ProjectId != command.ProjectId)
+            if (parentWikiPage is null)
             {
                 return WikiPageErrors.ParentWikiPageNotFound;
             }

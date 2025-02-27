@@ -64,9 +64,15 @@ public sealed class WikiPage : AggregateRoot
         return Result.Success;
     }
 
-    public void InsertSubWikiPage(int position, WikiPage subWikiPage)
+    public ErrorOr<Success> InsertSubWikiPage(int position, WikiPage subWikiPage)
     {
+        if (position < 0 || position > SubWikiPages.Count)
+        {
+            return WikiPageErrors.InvalidPosition;
+        }
+
         SubWikiPages.Insert(position, subWikiPage);
+        return Result.Success;
     }
 
     public void RemoveParent()
