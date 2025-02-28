@@ -1,18 +1,14 @@
 using System.Net;
 using System.Net.Http.Json;
-using Application.Organizations.Queries.GetOrganization;
-using Application.Projects.Queries.GetProject;
-using Contracts.Organizations;
-using Contracts.Projects;
 using FluentAssertions;
 using WebApi.FunctionalTests.Common;
 using WebApi.FunctionalTests.Organizations;
 
 namespace WebApi.FunctionalTests.Projects;
 
-public class ProjectsControllerTests : BaseFunctionalTest
+public class CreateProjectTests : BaseFunctionalTest
 {
-    public ProjectsControllerTests(FunctionalTestWebAppFactory factory)
+    public CreateProjectTests(FunctionalTestWebAppFactory factory)
         : base(factory)
     {
     }
