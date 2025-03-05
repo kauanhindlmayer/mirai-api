@@ -1,19 +1,21 @@
 {
   "cSpell.words": [
+    "ankane",
     "ardalis",
     "aspnetcore",
     "authorizeable",
     "datalust",
     "ganss",
+    "healthcheck",
     "isready",
     "keycloak",
     "mediat",
     "npgsql",
+    "pgvector",
     "serilog",
     "swashbuckle",
     "testcontainers",
     "usersecrets",
-    "xunit",
-    "pgvector"
+    "xunit"
   ]
 }

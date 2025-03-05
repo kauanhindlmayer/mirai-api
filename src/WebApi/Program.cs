@@ -1,5 +1,9 @@
 using Application;
 using Infrastructure;
+using OpenTelemetry;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using Scalar.AspNetCore;
 using Serilog;
 using WebApi;
@@ -9,6 +13,17 @@ var builder = WebApplication.CreateBuilder(args);
 {
     builder.Host.UseSerilog((_, config) =>
         config.ReadFrom.Configuration(builder.Configuration));
+
+    builder.Services.AddOpenTelemetry()
+        .ConfigureResource(resource => resource.AddService("mirai-api"))
+        .WithTracing(tracing => tracing
+            .AddHttpClientInstrumentation()
+            .AddAspNetCoreInstrumentation())
+        .WithMetrics(metrics => metrics
+            .AddHttpClientInstrumentation()
+            .AddAspNetCoreInstrumentation()
+            .AddRuntimeInstrumentation())
+        .UseOtlpExporter();
 
     builder.Services
         .AddPresentation()

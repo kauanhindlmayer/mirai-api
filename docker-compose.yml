@@ -1,6 +1,5 @@
 services:
-  mirai-api:
-    container_name: mirai-api
+  mirai.api:
     build:
       context: .
       dockerfile: Dockerfile
@@ -8,14 +7,15 @@ services:
       - 5001:5001
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://mirai.aspire-dashboard:18889
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
     volumes:
       - ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
     depends_on:
-      mirai-db:
+      mirai.db:
         condition: service_healthy
 
-  mirai-db:
-    container_name: mirai-db
+  mirai.db:
     image: ankane/pgvector:latest
     ports:
       - 5432:5432
@@ -31,8 +31,7 @@ services:
       timeout: 5s
       retries: 5
 
-  mirai-idp:
-    container_name: mirai-idp
+  mirai.idp:
     image: quay.io/keycloak/keycloak:latest
     command: start-dev --import-realm
     environment:
@@ -44,24 +43,20 @@ services:
     ports:
       - 18080:8080
 
-  mirai-seq:
-    container_name: mirai-seq
-    image: datalust/seq:latest
+  mirai.aspire-dashboard:
+    image: mcr.microsoft.com/dotnet/aspire-dashboard:9.0
     environment:
-      - ACCEPT_EULA=Y
+      DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS: true
     ports:
-      - 5341:5341
-      - 8081:80
+      - 18888:18888
 
-  mirai-redis:
-    container_name: mirai-redis
+  mirai.redis:
     image: redis:latest
     restart: always
     ports:
       - 6379:6379
 
-  mirai-embedding-api:
-    container_name: mirai-embedding-api
+  mirai.embedding-api:
     build:
       context: ../mirai-embedding-api
       dockerfile: Dockerfile
