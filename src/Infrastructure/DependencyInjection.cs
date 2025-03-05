@@ -69,7 +69,8 @@ public static class DependencyInjection
     {
         var connectionString = configuration.GetConnectionString("Database");
         services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseNpgsql(connectionString, options => options.UseVector()));
+            options.UseNpgsql(connectionString, options => options.UseVector())
+                .UseSnakeCaseNamingConvention());
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IOrganizationsRepository, OrganizationsRepository>();

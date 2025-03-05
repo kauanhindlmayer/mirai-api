@@ -11,6 +11,7 @@
     <PackageVersion Include="AspNetCore.HealthChecks.Uris" Version="9.0.0" />
     <PackageVersion Include="Azure.Storage.Blobs" Version="12.23.0" />
     <PackageVersion Include="Bogus" Version="35.6.1" />
+    <PackageVersion Include="EFCore.NamingConventions" Version="9.0.0" />
     <PackageVersion Include="HtmlSanitizer" Version="9.0.876" />
     <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="9.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.0" />

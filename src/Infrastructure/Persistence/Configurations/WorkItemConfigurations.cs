@@ -1,5 +1,4 @@
 using Domain.WorkItems;
-using Domain.WorkItems.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -79,7 +78,7 @@ internal sealed class WorkItemConfigurations : IEntityTypeConfiguration<WorkItem
 
         builder.HasMany(wi => wi.Tags)
             .WithMany(t => t.WorkItems)
-            .UsingEntity(j => j.ToTable("WorkItemTag"));
+            .UsingEntity(j => j.ToTable("work_item_tags"));
 
         builder.Property(wi => wi.CompletedAt);
 
