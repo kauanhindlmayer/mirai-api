@@ -27,11 +27,14 @@ public class MoveCardTests
     [Fact]
     public async Task Handle_WhenBoardDoesNotExist_ShouldReturnError()
     {
+        // Arrange
         _boardsRepository.GetByIdWithCardsAsync(Command.BoardId, Arg.Any<CancellationToken>())
             .Returns(null as Board);
 
+        // Act
         var result = await _handler.Handle(Command, CancellationToken.None);
 
+        // Assert
         result.IsError.Should().BeTrue();
         result.FirstError.Should().Be(BoardErrors.NotFound);
     }
@@ -39,12 +42,15 @@ public class MoveCardTests
     [Fact]
     public async Task Handle_WhenColumnDoesNotExist_ShouldReturnError()
     {
+        // Arrange
         var board = new Board(Guid.NewGuid(), "Board");
         _boardsRepository.GetByIdWithCardsAsync(Command.BoardId, Arg.Any<CancellationToken>())
             .Returns(board);
 
+        // Act
         var result = await _handler.Handle(Command, CancellationToken.None);
 
+        // Assert
         result.IsError.Should().BeTrue();
         result.FirstError.Should().Be(BoardErrors.ColumnNotFound);
     }
@@ -52,6 +58,7 @@ public class MoveCardTests
     [Fact]
     public async Task Handle_WhenCardDoesNotExist_ShouldReturnError()
     {
+        // Arrange
         var board = new Board(Guid.NewGuid(), "Board");
         var column = new BoardColumn(board.Id, "Column");
         var targetColumn = new BoardColumn(board.Id, "TargetColumn");
@@ -60,10 +67,12 @@ public class MoveCardTests
         _boardsRepository.GetByIdWithCardsAsync(Command.BoardId, Arg.Any<CancellationToken>())
             .Returns(board);
 
+        // Act
         var result = await _handler.Handle(
             Command with { ColumnId = column.Id, TargetColumnId = targetColumn.Id },
             CancellationToken.None);
 
+        // Assert
         result.IsError.Should().BeTrue();
         result.FirstError.Should().Be(BoardErrors.CardNotFound);
     }
@@ -71,6 +80,7 @@ public class MoveCardTests
     [Fact]
     public async Task Handle_WhenTargetColumnDoesNotExist_ShouldReturnError()
     {
+        // Arrange
         var board = new Board(Guid.NewGuid(), "Board");
         var column = new BoardColumn(board.Id, "Column");
         var workItem = new WorkItem(Guid.NewGuid(), 1, "Title", WorkItemType.UserStory);
@@ -79,10 +89,12 @@ public class MoveCardTests
         _boardsRepository.GetByIdWithCardsAsync(Command.BoardId, Arg.Any<CancellationToken>())
             .Returns(board);
 
+        // Act
         var result = await _handler.Handle(
             Command with { ColumnId = column.Id, CardId = card.Value.Id },
             CancellationToken.None);
 
+        // Assert
         result.IsError.Should().BeTrue();
         result.FirstError.Should().Be(BoardErrors.ColumnNotFound);
     }
@@ -90,6 +102,7 @@ public class MoveCardTests
     [Fact]
     public async Task Handle_PositionIsInvalid_ShouldReturnError()
     {
+        // Arrange
         var board = new Board(Guid.NewGuid(), "Board");
         var column = new BoardColumn(board.Id, "Column");
         var workItem = new WorkItem(Guid.NewGuid(), 1, "Title", WorkItemType.UserStory);
@@ -99,7 +112,6 @@ public class MoveCardTests
         board.AddColumn(targetColumn);
         _boardsRepository.GetByIdWithCardsAsync(board.Id, Arg.Any<CancellationToken>())
             .Returns(board);
-
         var command = new MoveCardCommand(
             board.Id,
             column.Id,
@@ -107,8 +119,10 @@ public class MoveCardTests
             targetColumn.Id,
             -1);
 
+        // Act
         var result = await _handler.Handle(command, CancellationToken.None);
 
+        // Assert
         result.IsError.Should().BeTrue();
         result.FirstError.Should().Be(BoardErrors.InvalidPosition);
     }
@@ -116,6 +130,7 @@ public class MoveCardTests
     [Fact]
     public async Task Handle_CardAlreadyExistsInTargetColumn_ShouldReturnError()
     {
+        // Arrange
         var board = new Board(Guid.NewGuid(), "Board");
         var column = new BoardColumn(board.Id, "Column");
         var targetColumn = new BoardColumn(board.Id, "TargetColumn");
@@ -127,10 +142,12 @@ public class MoveCardTests
         _boardsRepository.GetByIdWithCardsAsync(Command.BoardId, Arg.Any<CancellationToken>())
             .Returns(board);
 
+        // Act
         var result = await _handler.Handle(
             Command with { ColumnId = column.Id, TargetColumnId = targetColumn.Id, CardId = card.Value.Id },
             CancellationToken.None);
 
+        // Assert
         result.IsError.Should().BeTrue();
         result.FirstError.Should().Be(BoardErrors.CardAlreadyExists);
     }
@@ -138,6 +155,7 @@ public class MoveCardTests
     [Fact]
     public async Task Handle_WhenCommandIsValid_ShouldMoveCard()
     {
+        // Arrange
         var board = new Board(Guid.NewGuid(), "Board");
         var column = new BoardColumn(board.Id, "Column");
         var targetColumn = new BoardColumn(board.Id, "TargetColumn");
@@ -145,17 +163,19 @@ public class MoveCardTests
         var card = column.AddCard(workItem);
         board.AddColumn(column);
         board.AddColumn(targetColumn);
-        _boardsRepository.GetByIdWithCardsAsync(Command.BoardId, Arg.Any<CancellationToken>())
+        _boardsRepository.GetByIdWithCardsAsync(board.Id, Arg.Any<CancellationToken>())
             .Returns(board);
-        var command = Command with
-        {
-            ColumnId = column.Id,
-            TargetColumnId = targetColumn.Id,
-            CardId = card.Value.Id,
-        };
+        var command = new MoveCardCommand(
+            board.Id,
+            column.Id,
+            card.Value.Id,
+            targetColumn.Id,
+            0);
 
+        // Act
         var result = await _handler.Handle(command, CancellationToken.None);
 
+        // Assert
         result.IsError.Should().BeFalse();
         result.Value.Should().BeOfType<Success>();
         column.Cards.Should().BeEmpty();

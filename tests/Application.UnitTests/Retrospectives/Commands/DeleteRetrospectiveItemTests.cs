@@ -23,11 +23,14 @@ public class DeleteRetrospectiveItemTests
     [Fact]
     public async Task Handle_WhenRetrospectiveDoesNotExist_ShouldReturnError()
     {
+        // Arrange
         _retrospectivesRepository.GetByIdWithColumnsAsync(Command.RetrospectiveId, Arg.Any<CancellationToken>())
             .Returns(null as Retrospective);
 
+        // Act
         var result = await _handler.Handle(Command, CancellationToken.None);
 
+        // Assert
         result.IsError.Should().BeTrue();
         result.FirstError.Should().Be(RetrospectiveErrors.NotFound);
     }
@@ -35,16 +38,15 @@ public class DeleteRetrospectiveItemTests
     [Fact]
     public async Task Handle_WhenColumnDoesNotExist_ShouldReturnError()
     {
-        var retrospective = new Retrospective(
-            "Test Retrospective",
-            5,
-            null,
-            Guid.NewGuid());
+        // Arrange
+        var retrospective = new Retrospective("Test Retrospective", 5, null, Guid.NewGuid());
         _retrospectivesRepository.GetByIdWithColumnsAsync(Command.RetrospectiveId, Arg.Any<CancellationToken>())
             .Returns(retrospective);
 
+        // Act
         var result = await _handler.Handle(Command, CancellationToken.None);
 
+        // Assert
         result.IsError.Should().BeTrue();
         result.FirstError.Should().Be(RetrospectiveErrors.ColumnNotFound);
     }
@@ -52,20 +54,19 @@ public class DeleteRetrospectiveItemTests
     [Fact]
     public async Task Handle_WhenItemDoesNotExist_ShouldReturnError()
     {
-        var retrospective = new Retrospective(
-            "Test Retrospective",
-            5,
-            null,
-            Guid.NewGuid());
+        // Arrange
+        var retrospective = new Retrospective("Test Retrospective", 5, null, Guid.NewGuid());
         var column = new RetrospectiveColumn("Test Column", Command.RetrospectiveId);
         retrospective.AddColumn(column);
         _retrospectivesRepository.GetByIdWithColumnsAsync(Command.RetrospectiveId, Arg.Any<CancellationToken>())
             .Returns(retrospective);
 
+        // Act
         var result = await _handler.Handle(
             Command with { ColumnId = column.Id },
             CancellationToken.None);
 
+        // Assert
         result.IsError.Should().BeTrue();
         result.FirstError.Should().Be(RetrospectiveErrors.ItemNotFound);
     }
@@ -73,11 +74,8 @@ public class DeleteRetrospectiveItemTests
     [Fact]
     public async Task Handle_WhenCommandIsValid_ShouldDeleteItem()
     {
-        var retrospective = new Retrospective(
-            "Test Retrospective",
-            5,
-            null,
-            Guid.NewGuid());
+        // Arrange
+        var retrospective = new Retrospective("Test Retrospective", 5, null, Guid.NewGuid());
         var column = new RetrospectiveColumn("Test Column", Command.RetrospectiveId);
         var item = new RetrospectiveItem("Test content", column.Id, Command.ItemId);
         column.AddItem(item);
@@ -85,10 +83,12 @@ public class DeleteRetrospectiveItemTests
         _retrospectivesRepository.GetByIdWithColumnsAsync(Command.RetrospectiveId, Arg.Any<CancellationToken>())
             .Returns(retrospective);
 
+        // Act
         var result = await _handler.Handle(
             Command with { ColumnId = column.Id, ItemId = item.Id },
             CancellationToken.None);
 
+        // Assert
         result.IsError.Should().BeFalse();
         column.Items.Should().NotContain(i => i.Id == Command.ItemId);
         _retrospectivesRepository.Received().Update(retrospective);

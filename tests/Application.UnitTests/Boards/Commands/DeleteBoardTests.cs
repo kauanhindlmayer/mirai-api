@@ -20,11 +20,14 @@ public class DeleteBoardTests
     [Fact]
     public async Task Handle_WhenBoardDoesNotExist_ShouldReturnError()
     {
+        // Arrange
         _boardsRepository.GetByIdAsync(Guid.NewGuid(), Arg.Any<CancellationToken>())
             .Returns(null as Board);
 
+        // Act
         var result = await _handler.Handle(Command, CancellationToken.None);
 
+        // Assert
         result.IsError.Should().BeTrue();
         result.FirstError.Should().Be(BoardErrors.NotFound);
     }
@@ -32,12 +35,15 @@ public class DeleteBoardTests
     [Fact]
     public async Task Handle_WhenBoardExists_ShouldDeleteBoard()
     {
+        // Arrange
         var board = new Board(Guid.NewGuid(), "Board");
         _boardsRepository.GetByIdAsync(Command.BoardId, Arg.Any<CancellationToken>())
             .Returns(board);
 
+        // Act
         var result = await _handler.Handle(Command, CancellationToken.None);
 
+        // Assert
         result.IsError.Should().BeFalse();
         _boardsRepository.Received().Remove(board);
     }

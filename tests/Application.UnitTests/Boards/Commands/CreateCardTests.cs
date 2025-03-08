@@ -30,11 +30,14 @@ public class CreateCardTests
     [Fact]
     public async Task Handle_WhenBoardDoesNotExist_ShouldReturnError()
     {
+        // Arrange
         _boardsRepository.GetByIdWithCardsAsync(Command.BoardId, Arg.Any<CancellationToken>())
             .Returns(null as Board);
 
+        // Act
         var result = await _handler.Handle(Command, CancellationToken.None);
 
+        // Assert
         result.IsError.Should().BeTrue();
         result.FirstError.Should().Be(BoardErrors.NotFound);
     }
@@ -42,6 +45,7 @@ public class CreateCardTests
     [Fact]
     public async Task Handle_WhenColumnDoesNotExist_ShouldReturnError()
     {
+        // Arrange
         var team = new Team(Guid.NewGuid(), "Team", "Description");
         var board = new Board(team, "Board");
         _boardsRepository.GetByIdWithCardsAsync(Command.BoardId, Arg.Any<CancellationToken>())
@@ -49,8 +53,10 @@ public class CreateCardTests
         _workItemsRepository.GetNextWorkItemCodeAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
             .Returns(1);
 
+        // Act
         var result = await _handler.Handle(Command, CancellationToken.None);
 
+        // Assert
         result.IsError.Should().BeTrue();
         result.FirstError.Should().Be(BoardErrors.ColumnNotFound);
     }
@@ -58,6 +64,7 @@ public class CreateCardTests
     [Fact]
     public async Task Handle_ColumnExists_ShouldCreateCard()
     {
+        // Arrange
         var team = new Team(Guid.NewGuid(), "Team", "Description");
         var board = new Board(team, "Board");
         var column = new BoardColumn(board.Id, "Column");
@@ -67,10 +74,12 @@ public class CreateCardTests
         _workItemsRepository.GetNextWorkItemCodeAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
             .Returns(1);
 
+        // Act
         var result = await _handler.Handle(
             Command with { ColumnId = column.Id },
             CancellationToken.None);
 
+        // Assert
         result.IsError.Should().BeFalse();
         result.Value.Should().NotBeEmpty();
         _boardsRepository.Received().Update(board);

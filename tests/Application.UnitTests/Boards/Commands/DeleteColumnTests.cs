@@ -24,11 +24,14 @@ public class DeleteColumnTests
     [Fact]
     public async Task Handle_WhenBoardDoesNotExist_ShouldReturnError()
     {
+        // Arrange
         _boardsRepository.GetByIdWithColumnsAsync(Command.BoardId, Arg.Any<CancellationToken>())
             .Returns(null as Board);
 
+        // Act
         var result = await _handler.Handle(Command, CancellationToken.None);
 
+        // Assert
         result.IsError.Should().BeTrue();
         result.FirstError.Should().Be(BoardErrors.NotFound);
     }
@@ -36,12 +39,15 @@ public class DeleteColumnTests
     [Fact]
     public async Task Handle_WhenColumnDoesNotExist_ShouldReturnError()
     {
+        // Arrange
         var board = new Board(Guid.NewGuid(), "Board");
         _boardsRepository.GetByIdWithColumnsAsync(Command.BoardId, Arg.Any<CancellationToken>())
             .Returns(board);
 
+        // Act
         var result = await _handler.Handle(Command, CancellationToken.None);
 
+        // Assert
         result.IsError.Should().BeTrue();
         result.FirstError.Should().Be(BoardErrors.ColumnNotFound);
     }
@@ -49,6 +55,7 @@ public class DeleteColumnTests
     [Fact]
     public async Task Handle_WhenColumnHasCards_ShouldReturnError()
     {
+        // Arrange
         var board = new Board(Guid.NewGuid(), "Board");
         var column = new BoardColumn(board.Id, "Column");
         var workItem = new WorkItem(Guid.NewGuid(), 1, "Title", WorkItemType.UserStory);
@@ -57,10 +64,12 @@ public class DeleteColumnTests
         _boardsRepository.GetByIdWithColumnsAsync(Command.BoardId, Arg.Any<CancellationToken>())
             .Returns(board);
 
+        // Act
         var result = await _handler.Handle(
             Command with { ColumnId = column.Id },
             CancellationToken.None);
 
+        // Assert
         result.IsError.Should().BeTrue();
         result.FirstError.Should().Be(BoardErrors.ColumnHasCards(column));
     }
@@ -68,16 +77,19 @@ public class DeleteColumnTests
     [Fact]
     public async Task Handle_WhenColumnExists_ShouldRemoveColumn()
     {
+        // Arrange
         var board = new Board(Guid.NewGuid(), "Board");
         var column = new BoardColumn(board.Id, "Column");
         board.AddColumn(column);
         _boardsRepository.GetByIdWithColumnsAsync(Command.BoardId, Arg.Any<CancellationToken>())
             .Returns(board);
 
+        // Act
         var result = await _handler.Handle(
             Command with { ColumnId = column.Id },
             CancellationToken.None);
 
+        // Assert
         result.IsError.Should().BeFalse();
         board.Columns.Should().NotContain(column);
         _boardsRepository.Received().Update(board);
