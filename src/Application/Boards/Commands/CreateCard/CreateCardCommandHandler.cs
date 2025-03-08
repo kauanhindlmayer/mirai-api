@@ -45,7 +45,12 @@ internal sealed class CreateCardCommandHandler : IRequestHandler<CreateCardComma
 
         await _workItemsRepository.AddAsync(workItem, cancellationToken);
 
-        var result = board.CreateCard(workItem, command.ColumnId);
+        var card = new BoardCard(
+            command.ColumnId,
+            workItem.Id,
+            0);
+
+        var result = board.AddCard(card);
         if (result.IsError)
         {
             return result.Errors;

@@ -59,7 +59,8 @@ public class DeleteColumnTests
         var board = new Board(Guid.NewGuid(), "Board");
         var column = new BoardColumn(board.Id, "Column");
         var workItem = new WorkItem(Guid.NewGuid(), 1, "Title", WorkItemType.UserStory);
-        column.AddCard(workItem);
+        var card = new BoardCard(column.Id, workItem.Id, 0);
+        column.AddCard(card);
         board.AddColumn(column);
         _boardsRepository.GetByIdWithColumnsAsync(Command.BoardId, Arg.Any<CancellationToken>())
             .Returns(board);

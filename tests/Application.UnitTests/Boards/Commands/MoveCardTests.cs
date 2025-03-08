@@ -84,14 +84,15 @@ public class MoveCardTests
         var board = new Board(Guid.NewGuid(), "Board");
         var column = new BoardColumn(board.Id, "Column");
         var workItem = new WorkItem(Guid.NewGuid(), 1, "Title", WorkItemType.UserStory);
-        var card = column.AddCard(workItem);
+        var card = new BoardCard(column.Id, workItem.Id, 0);
+        column.AddCard(card);
         board.AddColumn(column);
         _boardsRepository.GetByIdWithCardsAsync(Command.BoardId, Arg.Any<CancellationToken>())
             .Returns(board);
 
         // Act
         var result = await _handler.Handle(
-            Command with { ColumnId = column.Id, CardId = card.Value.Id },
+            Command with { ColumnId = column.Id, CardId = card.Id },
             CancellationToken.None);
 
         // Assert
@@ -100,24 +101,25 @@ public class MoveCardTests
     }
 
     [Fact]
-    public async Task Handle_PositionIsInvalid_ShouldReturnError()
+    public async Task Handle_WhenTargetPositionIsInvalid_ShouldReturnError()
     {
         // Arrange
         var board = new Board(Guid.NewGuid(), "Board");
         var column = new BoardColumn(board.Id, "Column");
-        var workItem = new WorkItem(Guid.NewGuid(), 1, "Title", WorkItemType.UserStory);
-        var card = column.AddCard(workItem);
         var targetColumn = new BoardColumn(board.Id, "TargetColumn");
         board.AddColumn(column);
         board.AddColumn(targetColumn);
+        var workItem = new WorkItem(Guid.NewGuid(), 1, "Title", WorkItemType.UserStory);
+        var card = new BoardCard(column.Id, workItem.Id, 0);
+        column.AddCard(card);
         _boardsRepository.GetByIdWithCardsAsync(board.Id, Arg.Any<CancellationToken>())
             .Returns(board);
         var command = new MoveCardCommand(
             board.Id,
             column.Id,
-            card.Value.Id,
+            card.Id,
             targetColumn.Id,
-            -1);
+            TargetPosition: -1);
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -134,18 +136,23 @@ public class MoveCardTests
         var board = new Board(Guid.NewGuid(), "Board");
         var column = new BoardColumn(board.Id, "Column");
         var targetColumn = new BoardColumn(board.Id, "TargetColumn");
-        var workItem = new WorkItem(Guid.NewGuid(), 1, "Title", WorkItemType.UserStory);
-        var card = column.AddCard(workItem);
-        targetColumn.AddCard(workItem);
         board.AddColumn(column);
         board.AddColumn(targetColumn);
-        _boardsRepository.GetByIdWithCardsAsync(Command.BoardId, Arg.Any<CancellationToken>())
+        var workItem = new WorkItem(Guid.NewGuid(), 1, "Title", WorkItemType.UserStory);
+        var card = new BoardCard(column.Id, workItem.Id, 0);
+        column.AddCard(card);
+        targetColumn.AddCard(card);
+        _boardsRepository.GetByIdWithCardsAsync(board.Id, Arg.Any<CancellationToken>())
             .Returns(board);
+        var command = new MoveCardCommand(
+            board.Id,
+            column.Id,
+            card.Id,
+            targetColumn.Id,
+            0);
 
         // Act
-        var result = await _handler.Handle(
-            Command with { ColumnId = column.Id, TargetColumnId = targetColumn.Id, CardId = card.Value.Id },
-            CancellationToken.None);
+        var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -160,7 +167,8 @@ public class MoveCardTests
         var column = new BoardColumn(board.Id, "Column");
         var targetColumn = new BoardColumn(board.Id, "TargetColumn");
         var workItem = new WorkItem(Guid.NewGuid(), 1, "Title", WorkItemType.UserStory);
-        var card = column.AddCard(workItem);
+        var card = new BoardCard(column.Id, workItem.Id, 0);
+        column.AddCard(card);
         board.AddColumn(column);
         board.AddColumn(targetColumn);
         _boardsRepository.GetByIdWithCardsAsync(board.Id, Arg.Any<CancellationToken>())
@@ -168,7 +176,7 @@ public class MoveCardTests
         var command = new MoveCardCommand(
             board.Id,
             column.Id,
-            card.Value.Id,
+            card.Id,
             targetColumn.Id,
             0);
 

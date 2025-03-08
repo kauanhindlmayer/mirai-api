@@ -11,10 +11,11 @@ public class BoardColumnTests
         // Arrange
         var column = BoardFactory.CreateBoardColumn();
         var workItem = WorkItemFactory.CreateWorkItem();
-        column.AddCard(workItem);
+        var card = BoardFactory.CreateBoardCard(column.Id, workItem.Id);
+        column.AddCard(card);
 
         // Act
-        var result = column.AddCard(workItem);
+        var result = column.AddCard(card);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -28,9 +29,10 @@ public class BoardColumnTests
         // Arrange
         var column = BoardFactory.CreateBoardColumn();
         var workItem = WorkItemFactory.CreateWorkItem();
+        var card = BoardFactory.CreateBoardCard(column.Id, workItem.Id);
 
         // Act
-        var result = column.AddCard(workItem);
+        var result = column.AddCard(card);
 
         // Assert
         result.IsError.Should().BeFalse();
@@ -45,8 +47,10 @@ public class BoardColumnTests
         var column = BoardFactory.CreateBoardColumn();
         var workItem1 = WorkItemFactory.CreateWorkItem();
         var workItem2 = WorkItemFactory.CreateWorkItem();
-        column.AddCard(workItem1);
-        column.AddCard(workItem2);
+        var card1 = new BoardCard(column.Id, workItem1.Id, 0);
+        var card2 = new BoardCard(column.Id, workItem2.Id, 0);
+        column.AddCard(card1);
+        column.AddCard(card2);
 
         // Act
         column.ReorderCards();
@@ -91,10 +95,11 @@ public class BoardColumnTests
         // Arrange
         var column = BoardFactory.CreateBoardColumn();
         var workItem = WorkItemFactory.CreateWorkItem();
-        var card = column.AddCard(workItem);
+        var card = BoardFactory.CreateBoardCard(column.Id, workItem.Id);
+        column.AddCard(card);
 
         // Act
-        var result = column.RemoveCard(card.Value.Id);
+        var result = column.RemoveCard(card.Id);
 
         // Assert
         result.IsError.Should().BeFalse();
@@ -107,7 +112,7 @@ public class BoardColumnTests
         // Arrange
         var column = BoardFactory.CreateBoardColumn();
         var workItem = WorkItemFactory.CreateWorkItem();
-        var card = new BoardCard(column.Id, workItem.Id, 0);
+        var card = BoardFactory.CreateBoardCard(column.Id, workItem.Id);
 
         // Act
         var result = column.AddCardAtPosition(card, 2);
@@ -124,10 +129,11 @@ public class BoardColumnTests
         // Arrange
         var column = BoardFactory.CreateBoardColumn();
         var workItem = WorkItemFactory.CreateWorkItem();
-        var card = column.AddCard(workItem);
+        var card = BoardFactory.CreateBoardCard(column.Id, workItem.Id);
+        column.AddCard(card);
 
         // Act
-        var result = column.AddCardAtPosition(card.Value, 0);
+        var result = column.AddCardAtPosition(card, 0);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -158,9 +164,10 @@ public class BoardColumnTests
         // Arrange
         var column = BoardFactory.CreateBoardColumn();
         var workItem1 = WorkItemFactory.CreateWorkItem();
-        column.AddCard(workItem1);
+        var card1 = BoardFactory.CreateBoardCard(column.Id, workItem1.Id);
+        column.AddCard(card1);
         var workItem2 = WorkItemFactory.CreateWorkItem();
-        var card2 = new BoardCard(column.Id, workItem2.Id, 0);
+        var card2 = BoardFactory.CreateBoardCard(column.Id, workItem2.Id);
 
         // Act
         column.AddCardAtPosition(card2, 0);
@@ -176,12 +183,13 @@ public class BoardColumnTests
         // Arrange
         var column = BoardFactory.CreateBoardColumn();
         var workItem1 = WorkItemFactory.CreateWorkItem();
-        column.AddCard(workItem1);
+        var card1 = BoardFactory.CreateBoardCard(column.Id, workItem1.Id);
+        column.AddCard(card1);
         var workItem2 = WorkItemFactory.CreateWorkItem();
-        var card = new BoardCard(column.Id, workItem2.Id, 0);
+        var card2 = BoardFactory.CreateBoardCard(column.Id, workItem2.Id);
 
         // Act
-        column.AddCardAtPosition(card, 0);
+        column.AddCardAtPosition(card2, 0);
 
         // Assert
         column.Cards.First().Position.Should().Be(0);

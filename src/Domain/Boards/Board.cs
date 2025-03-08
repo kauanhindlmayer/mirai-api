@@ -106,15 +106,15 @@ public sealed class Board : AggregateRoot
         return targetColumn.AddCardAtPosition(card.Value, targetPosition);
     }
 
-    public ErrorOr<BoardCard> CreateCard(WorkItem workItem, Guid columnId)
+    public ErrorOr<BoardCard> AddCard(BoardCard card)
     {
-        var column = Columns.FirstOrDefault(c => c.Id == columnId);
+        var column = Columns.FirstOrDefault(c => c.Id == card.BoardColumnId);
         if (column is null)
         {
             return BoardErrors.ColumnNotFound;
         }
 
-        var result = column.AddCard(workItem);
+        var result = column.AddCard(card);
         if (result.IsError)
         {
             return result.Errors;

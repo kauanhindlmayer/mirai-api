@@ -72,7 +72,8 @@ public class BoardTests
         var board = BoardFactory.CreateBoard();
         var column = BoardFactory.CreateBoardColumn();
         var workItem = WorkItemFactory.CreateWorkItem();
-        column.AddCard(workItem);
+        var card = BoardFactory.CreateBoardCard(column.Id, workItem.Id);
+        column.AddCard(card);
         board.AddColumn(column);
 
         // Act

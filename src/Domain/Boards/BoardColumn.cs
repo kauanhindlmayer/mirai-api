@@ -40,15 +40,14 @@ public sealed class BoardColumn : Entity
         Position = position;
     }
 
-    public ErrorOr<BoardCard> AddCard(WorkItem workItem)
+    public ErrorOr<BoardCard> AddCard(BoardCard card)
     {
-        if (Cards.Any(c => c.WorkItemId == workItem.Id))
+        if (Cards.Any(c => c.WorkItemId == card.WorkItemId))
         {
             return BoardErrors.CardAlreadyExists;
         }
 
-        var position = Cards.Count;
-        var card = new BoardCard(Id, workItem.Id, position);
+        card.UpdatePosition(Cards.Count);
         Cards.Add(card);
         return card;
     }
