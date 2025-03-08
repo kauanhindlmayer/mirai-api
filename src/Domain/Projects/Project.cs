@@ -28,7 +28,7 @@ public sealed class Project : AggregateRoot
         AddDomainEvent(new ProjectCreatedDomainEvent(this));
     }
 
-    public Project()
+    private Project()
     {
     }
 

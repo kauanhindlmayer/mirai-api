@@ -20,7 +20,7 @@ public sealed class Organization : AggregateRoot
         AddDomainEvent(new OrganizationCreatedDomainEvent(this));
     }
 
-    public Organization()
+    private Organization()
     {
     }
 

@@ -32,7 +32,7 @@ public sealed class WikiPage : AggregateRoot
         ParentWikiPageId = parentWikiPageId;
     }
 
-    public WikiPage()
+    private WikiPage()
     {
     }
 

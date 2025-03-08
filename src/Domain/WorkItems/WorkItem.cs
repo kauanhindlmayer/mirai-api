@@ -56,7 +56,7 @@ public sealed class WorkItem : AggregateRoot
         ParentWorkItemId = parentWorkItemId;
     }
 
-    public WorkItem()
+    private WorkItem()
     {
     }
 

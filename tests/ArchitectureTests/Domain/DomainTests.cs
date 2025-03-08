@@ -34,12 +34,14 @@ public class DomainTests : BaseTest
         result.IsSuccessful.Should().BeTrue();
     }
 
-    [Fact(Skip = "Bogus library needs the public parameterless constructor")]
+    [Fact]
     public void Entities_ShouldHave_PrivateParameterlessConstructor()
     {
         IEnumerable<Type> entityTypes = Types.InAssembly(DomainAssembly)
             .That()
             .Inherit(typeof(Entity))
+            .And()
+            .AreNotAbstract()
             .GetTypes();
 
         var failingTypes = new List<Type>();
