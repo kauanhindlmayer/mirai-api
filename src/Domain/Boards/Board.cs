@@ -20,6 +20,14 @@ public sealed class Board : AggregateRoot
         InitializeDefaultColumns(ProcessTemplate.Agile);
     }
 
+    public Board(Team team, string name)
+    {
+        Team = team;
+        TeamId = team.Id;
+        Name = name;
+        InitializeDefaultColumns(ProcessTemplate.Agile);
+    }
+
     private Board()
     {
     }

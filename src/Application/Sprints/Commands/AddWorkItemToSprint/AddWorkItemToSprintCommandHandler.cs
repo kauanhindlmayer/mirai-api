@@ -48,6 +48,8 @@ internal sealed class AddWorkItemToSprintCommandHandler
             return result.Errors;
         }
 
+        _sprintsRepository.Update(sprint);
+
         return Result.Success;
     }
 }

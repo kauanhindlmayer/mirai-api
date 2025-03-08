@@ -25,7 +25,7 @@ public class CreateTeamTests
     public async Task Handle_WhenProjectDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _projectsRepository.GetByIdWithWikiPagesAsync(Command.ProjectId, Arg.Any<CancellationToken>())
+        _projectsRepository.GetByIdAsync(Command.ProjectId, Arg.Any<CancellationToken>())
             .Returns(null as Project);
 
         // Act
@@ -42,7 +42,7 @@ public class CreateTeamTests
         // Arrange
         var project = new Project("Name", "Description", Guid.NewGuid());
         project.AddTeam(new Team(project.Id, Command.Name, Command.Description));
-        _projectsRepository.GetByIdWithWikiPagesAsync(Command.ProjectId, Arg.Any<CancellationToken>())
+        _projectsRepository.GetByIdAsync(Command.ProjectId, Arg.Any<CancellationToken>())
             .Returns(project);
 
         // Act
@@ -58,7 +58,7 @@ public class CreateTeamTests
     {
         // Arrange
         var project = new Project("Name", "Description", Guid.NewGuid());
-        _projectsRepository.GetByIdWithWikiPagesAsync(Command.ProjectId, Arg.Any<CancellationToken>())
+        _projectsRepository.GetByIdAsync(Command.ProjectId, Arg.Any<CancellationToken>())
             .Returns(project);
 
         // Act
