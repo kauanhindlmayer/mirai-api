@@ -6,7 +6,6 @@ namespace Infrastructure.Services;
 
 internal sealed class BlobService : IBlobService
 {
-    // TODO: Replace with configuration
     private const string ContainerName = "files";
     private readonly BlobServiceClient _blobServiceClient;
 

@@ -27,5 +27,8 @@ internal sealed class TagConfigurations : IEntityTypeConfiguration<Tag>
             .WithMany(p => p.Tags)
             .HasForeignKey(t => t.ProjectId)
             .OnDelete(DeleteBehavior.NoAction);
+
+        builder.HasIndex(t => new { t.ProjectId, t.Name })
+            .IsUnique();
     }
 }

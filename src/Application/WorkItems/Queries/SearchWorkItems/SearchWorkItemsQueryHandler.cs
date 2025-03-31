@@ -39,16 +39,7 @@ internal sealed class SearchWorkItemsQueryHandler
             .AsNoTracking()
             .Where(wi => wi.ProjectId == query.ProjectId && wi.SearchVector != null)
             .OrderBy(wi => wi.SearchVector!.CosineDistance(searchTermVector))
-            .Select(wi => new WorkItemBriefResponse
-            {
-                Id = wi.Id,
-                Code = wi.Code,
-                Title = wi.Title,
-                Status = wi.Status.ToString(),
-                Type = wi.Type.ToString(),
-                CreatedAt = wi.CreatedAt,
-                UpdatedAt = wi.UpdatedAt,
-            })
+            .Select(WorkItemQueries.ProjectToBriefDto())
             .Take(10)
             .ToListAsync(cancellationToken);
 

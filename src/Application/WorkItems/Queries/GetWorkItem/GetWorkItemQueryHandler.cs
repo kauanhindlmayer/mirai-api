@@ -1,4 +1,5 @@
 using Application.Common.Interfaces.Persistence;
+using Application.WorkItems.Queries.Common;
 using Domain.WorkItems;
 using ErrorOr;
 using MediatR;
@@ -22,26 +23,7 @@ internal sealed class GetWorkItemQueryHandler : IRequestHandler<GetWorkItemQuery
         var workItem = await _context.WorkItems
             .AsNoTracking()
             .Where(wi => wi.Id == query.WorkItemId)
-            .Select(wi => new WorkItemResponse
-            {
-                Id = wi.Id,
-                ProjectId = wi.ProjectId,
-                Code = wi.Code,
-                Title = wi.Title,
-                Description = wi.Description,
-                AcceptanceCriteria = wi.AcceptanceCriteria,
-                Status = wi.Status.ToString(),
-                Type = wi.Type.ToString(),
-                Comments = wi.Comments.Select(c => new CommentResponse
-                {
-                    Id = c.Id,
-                    Content = c.Content,
-                    CreatedAt = c.CreatedAt,
-                }),
-                Tags = wi.Tags.Select(t => t.Name),
-                CreatedAt = wi.CreatedAt,
-                UpdatedAt = wi.UpdatedAt,
-            })
+            .Select(WorkItemQueries.ProjectToDto())
             .FirstOrDefaultAsync(cancellationToken);
 
         if (workItem is null)

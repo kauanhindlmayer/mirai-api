@@ -28,6 +28,9 @@ internal sealed class UserConfigurations : IEntityTypeConfiguration<User>
         builder.Property(u => u.IdentityId)
             .IsRequired();
 
+        builder.Property(u => u.ImageUrl)
+            .HasMaxLength(512);
+
         builder.HasIndex(u => u.IdentityId)
             .IsUnique();
 

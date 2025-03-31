@@ -24,10 +24,11 @@ internal sealed class ListWorkItemsQueryHandler
         CancellationToken cancellationToken)
     {
         var workItemsQuery = _context.WorkItems.Where(wi => wi.ProjectId == query.ProjectId);
+        query.SearchTerm ??= query.SearchTerm?.Trim().ToLower();
 
         if (!string.IsNullOrWhiteSpace(query.SearchTerm))
         {
-            workItemsQuery = workItemsQuery.Where(wi => wi.Title.ToLower().Contains(query.SearchTerm.ToLower()));
+            workItemsQuery = workItemsQuery.Where(wi => wi.Title.ToLower().Contains(query.SearchTerm));
         }
 
         var isDescending = query.SortOrder?.ToLower() == "desc";
@@ -37,22 +38,7 @@ internal sealed class ListWorkItemsQueryHandler
             : workItemsQuery.OrderBy(sortProperty);
 
         var workItems = await workItemsQuery
-            .Select(wi => new WorkItemBriefResponse
-            {
-                Id = wi.Id,
-                Code = wi.Code,
-                Title = wi.Title,
-                Status = wi.Status.ToString(),
-                Type = wi.Type.ToString(),
-                Tags = wi.Tags.Select(t => new TagBriefResponse
-                {
-                    Id = t.Id,
-                    Name = t.Name,
-                    Color = t.Color,
-                }),
-                CreatedAt = wi.CreatedAt,
-                UpdatedAt = wi.UpdatedAt,
-            })
+            .Select(WorkItemQueries.ProjectToBriefDto())
             .PaginatedListAsync(query.PageNumber, query.PageSize, cancellationToken);
 
         return workItems;

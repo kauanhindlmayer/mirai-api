@@ -11,4 +11,7 @@ public sealed record ListWorkItemsQuery(
     int PageSize,
     string? SortField,
     string? SortOrder,
-    string? SearchTerm) : IRequest<ErrorOr<PaginatedList<WorkItemBriefResponse>>>;
+    string? SearchTerm) : IRequest<ErrorOr<PaginatedList<WorkItemBriefResponse>>>
+{
+    public string? SearchTerm { get; set; } = SearchTerm;
+}
