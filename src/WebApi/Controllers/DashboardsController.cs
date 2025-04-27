@@ -8,7 +8,7 @@ namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
 [Route("api/v{version:apiVersion}/teams/{teamId:guid}/dashboards")]
-public class DashboardsController : ApiController
+public sealed class DashboardsController : ApiController
 {
     private readonly ISender _sender;
 

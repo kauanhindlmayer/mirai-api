@@ -11,7 +11,7 @@ namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
 [Route("api/v{version:apiVersion}/projects/{projectId:guid}/tags")]
-public class TagsController : ApiController
+public sealed class TagsController : ApiController
 {
     private readonly ISender _sender;
 

@@ -415,8 +415,9 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasKey("Id")
                         .HasName("pk_tags");
 
-                    b.HasIndex("ProjectId")
-                        .HasDatabaseName("ix_tags_project_id");
+                    b.HasIndex("ProjectId", "Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_tags_project_id_name");
 
                     b.ToTable("tags", (string)null);
                 });
@@ -489,7 +490,8 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.Property<string>("ImageUrl")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)")
                         .HasColumnName("image_url");
 
                     b.Property<string>("LastName")

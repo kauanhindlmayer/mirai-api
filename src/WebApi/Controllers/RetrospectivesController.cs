@@ -15,7 +15,7 @@ namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
 [Route("api/v{version:apiVersion}/teams/{teamId:guid}/retrospectives")]
-public class RetrospectivesController : ApiController
+public sealed class RetrospectivesController : ApiController
 {
     private readonly ISender _sender;
     private readonly IHubContext<RetrospectiveHub, IRetrospectiveHub> _hubContext;

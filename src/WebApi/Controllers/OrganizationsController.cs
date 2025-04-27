@@ -12,7 +12,7 @@ namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
 [Route("api/v{version:apiVersion}/organizations")]
-public class OrganizationsController : ApiController
+public sealed class OrganizationsController : ApiController
 {
     private readonly ISender _sender;
 

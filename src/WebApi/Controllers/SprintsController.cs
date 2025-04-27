@@ -10,7 +10,7 @@ namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
 [Route("api/v{version:apiVersion}/teams/{teamId:guid}/sprints")]
-public class SprintsController : ApiController
+public sealed class SprintsController : ApiController
 {
     private readonly ISender _sender;
 

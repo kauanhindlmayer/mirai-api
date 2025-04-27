@@ -15,7 +15,7 @@ namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
 [Route("api/v{version:apiVersion}/users")]
-public class UsersController : ApiController
+public sealed class UsersController : ApiController
 {
     private readonly ISender _sender;
 

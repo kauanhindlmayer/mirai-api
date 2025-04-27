@@ -171,7 +171,7 @@ namespace Infrastructure.Persistence.Migrations
                     last_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     email = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     identity_id = table.Column<string>(type: "text", nullable: false),
-                    image_url = table.Column<string>(type: "text", nullable: false),
+                    image_url = table.Column<string>(type: "character varying(512)", maxLength: 512, nullable: false),
                     team_id = table.Column<Guid>(type: "uuid", nullable: true),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
@@ -563,9 +563,10 @@ namespace Infrastructure.Persistence.Migrations
                 column: "team_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_tags_project_id",
+                name: "ix_tags_project_id_name",
                 table: "tags",
-                column: "project_id");
+                columns: new[] { "project_id", "name" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ix_teams_project_id",

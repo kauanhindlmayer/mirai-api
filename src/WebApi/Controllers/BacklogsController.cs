@@ -8,7 +8,7 @@ namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
 [Route("api/v{version:apiVersion}/teams/{teamId:guid}/backlogs")]
-public class BacklogsController : ApiController
+public sealed class BacklogsController : ApiController
 {
     private readonly ISender _sender;
 

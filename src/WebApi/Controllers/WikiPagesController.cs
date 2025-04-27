@@ -17,7 +17,7 @@ namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
 [Route("api/v{version:apiVersion}/projects/{projectId:guid}/wiki-pages")]
-public class WikiPagesController : ApiController
+public sealed class WikiPagesController : ApiController
 {
     private readonly ISender _sender;
 

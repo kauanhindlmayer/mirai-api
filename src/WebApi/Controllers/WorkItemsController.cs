@@ -21,7 +21,7 @@ namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
 [Route("api/v{version:apiVersion}/projects/{projectId:guid}/work-items")]
-public class WorkItemsController : ApiController
+public sealed class WorkItemsController : ApiController
 {
     private readonly ISender _sender;
 

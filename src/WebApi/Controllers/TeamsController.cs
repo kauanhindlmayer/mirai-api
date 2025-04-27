@@ -11,7 +11,7 @@ namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
 [Route("api/v{version:apiVersion}/projects/{projectId:guid}/teams")]
-public class TeamsController : ApiController
+public sealed class TeamsController : ApiController
 {
     private readonly ISender _sender;
 
