@@ -20,17 +20,17 @@ public class ListOrganizationsTests : BaseFunctionalTest
         await SetAuthorizationHeaderAsync();
         var createOrganizationRequest1 = OrganizationRequestFactory.CreateCreateOrganizationRequest(name: "Organization 1");
         var createOrganizationRequest2 = OrganizationRequestFactory.CreateCreateOrganizationRequest(name: "Organization 2");
-        var createOrganizationResponse1 = await _httpClient.PostAsJsonAsync("api/v1/organizations", createOrganizationRequest1);
-        var createOrganizationResponse2 = await _httpClient.PostAsJsonAsync("api/v1/organizations", createOrganizationRequest2);
-        var organizationId1 = await createOrganizationResponse1.Content.ReadFromJsonAsync<Guid>();
-        var organizationId2 = await createOrganizationResponse2.Content.ReadFromJsonAsync<Guid>();
+        var createOrganizationResponse1 = await _httpClient.PostAsJsonAsync("api/v1/organizations", createOrganizationRequest1, cancellationToken: TestContext.Current.CancellationToken);
+        var createOrganizationResponse2 = await _httpClient.PostAsJsonAsync("api/v1/organizations", createOrganizationRequest2, cancellationToken: TestContext.Current.CancellationToken);
+        var organizationId1 = await createOrganizationResponse1.Content.ReadFromJsonAsync<Guid>(cancellationToken: TestContext.Current.CancellationToken);
+        var organizationId2 = await createOrganizationResponse2.Content.ReadFromJsonAsync<Guid>(cancellationToken: TestContext.Current.CancellationToken);
 
         // Act
-        var listOrganizationsResponse = await _httpClient.GetAsync("api/v1/organizations");
+        var listOrganizationsResponse = await _httpClient.GetAsync("api/v1/organizations", TestContext.Current.CancellationToken);
 
         // Assert
         listOrganizationsResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-        var fetchedOrganizations = await listOrganizationsResponse.Content.ReadFromJsonAsync<List<OrganizationResponse>>();
+        var fetchedOrganizations = await listOrganizationsResponse.Content.ReadFromJsonAsync<List<OrganizationResponse>>(cancellationToken: TestContext.Current.CancellationToken);
         fetchedOrganizations.Should().NotBeEmpty();
         fetchedOrganizations.Should().ContainSingle(organization => organization.Id == organizationId1);
         fetchedOrganizations.Should().ContainSingle(organization => organization.Id == organizationId2);
@@ -42,11 +42,11 @@ public class ListOrganizationsTests : BaseFunctionalTest
         // Arrange
         await SetAuthorizationHeaderAsync();
         var createOrganizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest();
-        var createOrganizationResponse = await _httpClient.PostAsJsonAsync("api/v1/organizations", createOrganizationRequest);
-        var organizationId = await createOrganizationResponse.Content.ReadFromJsonAsync<Guid>();
+        var createOrganizationResponse = await _httpClient.PostAsJsonAsync("api/v1/organizations", createOrganizationRequest, cancellationToken: TestContext.Current.CancellationToken);
+        var organizationId = await createOrganizationResponse.Content.ReadFromJsonAsync<Guid>(cancellationToken: TestContext.Current.CancellationToken);
 
         // Act
-        var deleteOrganizationResponse = await _httpClient.DeleteAsync($"api/v1/organizations/{organizationId}");
+        var deleteOrganizationResponse = await _httpClient.DeleteAsync($"api/v1/organizations/{organizationId}", TestContext.Current.CancellationToken);
 
         // Assert
         deleteOrganizationResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
@@ -60,7 +60,7 @@ public class ListOrganizationsTests : BaseFunctionalTest
         var organizationId = Guid.NewGuid();
 
         // Act
-        var deleteOrganizationResponse = await _httpClient.DeleteAsync($"api/v1/organizations/{organizationId}");
+        var deleteOrganizationResponse = await _httpClient.DeleteAsync($"api/v1/organizations/{organizationId}", TestContext.Current.CancellationToken);
 
         // Assert
         deleteOrganizationResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);

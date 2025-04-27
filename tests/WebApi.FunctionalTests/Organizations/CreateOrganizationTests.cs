@@ -20,13 +20,11 @@ public class CreateOrganizationTests : BaseFunctionalTest
         var createOrganizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest();
 
         // Act
-        var createOrganizationResponse = await _httpClient.PostAsJsonAsync(
-            "api/v1/organizations",
-            createOrganizationRequest);
+        var createOrganizationResponse = await _httpClient.PostAsJsonAsync("api/v1/organizations", createOrganizationRequest, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         createOrganizationResponse.StatusCode.Should().Be(HttpStatusCode.Created);
-        var organizationId = await createOrganizationResponse.Content.ReadFromJsonAsync<Guid>();
+        var organizationId = await createOrganizationResponse.Content.ReadFromJsonAsync<Guid>(cancellationToken: TestContext.Current.CancellationToken);
         organizationId.Should().NotBeEmpty();
         createOrganizationResponse.Headers.Location.Should().NotBeNull();
         createOrganizationResponse.Headers.Location.AbsolutePath.Should()
@@ -41,9 +39,7 @@ public class CreateOrganizationTests : BaseFunctionalTest
         var createOrganizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest(name: string.Empty);
 
         // Act
-        var createOrganizationResponse = await _httpClient.PostAsJsonAsync(
-            "api/v1/organizations",
-            createOrganizationRequest);
+        var createOrganizationResponse = await _httpClient.PostAsJsonAsync("api/v1/organizations", createOrganizationRequest, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         createOrganizationResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -57,9 +53,7 @@ public class CreateOrganizationTests : BaseFunctionalTest
         var createOrganizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest(name: new string('a', 256));
 
         // Act
-        var createOrganizationResponse = await _httpClient.PostAsJsonAsync(
-            "api/v1/organizations",
-            createOrganizationRequest);
+        var createOrganizationResponse = await _httpClient.PostAsJsonAsync("api/v1/organizations", createOrganizationRequest, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         createOrganizationResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -73,9 +67,7 @@ public class CreateOrganizationTests : BaseFunctionalTest
         var createOrganizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest(description: new string('a', 501));
 
         // Act
-        var createOrganizationResponse = await _httpClient.PostAsJsonAsync(
-            "api/v1/organizations",
-            createOrganizationRequest);
+        var createOrganizationResponse = await _httpClient.PostAsJsonAsync("api/v1/organizations", createOrganizationRequest, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         createOrganizationResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);

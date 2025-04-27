@@ -22,10 +22,10 @@ public class RegisterUserTests : BaseIntegrationTest
     public async Task Handle_WhenUserExists_ReturnsAlreadyExistsError()
     {
         // Arrange
-        await _sender.Send(Command);
+        await _sender.Send(Command, TestContext.Current.CancellationToken);
 
         // Act
-        var result = await _sender.Send(Command);
+        var result = await _sender.Send(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -40,7 +40,7 @@ public class RegisterUserTests : BaseIntegrationTest
         var command = Command with { Email = "john.doe2@gmail.com" };
 
         // Act
-        var result = await _sender.Send(command);
+        var result = await _sender.Send(command, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeFalse();

@@ -3,6 +3,7 @@ using ArchitectureTests.Infrastructure;
 using Domain.Common;
 using FluentAssertions;
 using NetArchTest.Rules;
+using TestResult = NetArchTest.Rules.TestResult;
 
 namespace ArchitectureTests.Domain;
 

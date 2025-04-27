@@ -28,11 +28,11 @@ public class AddCommentTests
     public async Task Handle_WhenWikiPageDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _wikiPagesRepository.GetByIdAsync(Command.WikiPageId, Arg.Any<CancellationToken>())
+        _wikiPagesRepository.GetByIdAsync(Command.WikiPageId, TestContext.Current.CancellationToken)
             .Returns(null as WikiPage);
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -48,12 +48,12 @@ public class AddCommentTests
             "Title",
             "Content",
             Guid.NewGuid());
-        _wikiPagesRepository.GetByIdAsync(Command.WikiPageId, Arg.Any<CancellationToken>())
+        _wikiPagesRepository.GetByIdAsync(Command.WikiPageId, TestContext.Current.CancellationToken)
             .Returns(wikiPage);
         _userContext.UserId.Returns(Guid.NewGuid());
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeFalse();

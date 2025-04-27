@@ -25,11 +25,11 @@ public class CreateProjectTests
     public async Task Handle_WhenOrganizationDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _mockOrganizationsRepository.GetByIdWithProjectsAsync(Command.OrganizationId, Arg.Any<CancellationToken>())
+        _mockOrganizationsRepository.GetByIdWithProjectsAsync(Command.OrganizationId, TestContext.Current.CancellationToken)
             .Returns(null as Organization);
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().BeOfType<ErrorOr<Guid>>();
@@ -41,11 +41,11 @@ public class CreateProjectTests
     {
         // Arrange
         var organization = new Organization("Test Organization", "Test Description");
-        _mockOrganizationsRepository.GetByIdWithProjectsAsync(Command.OrganizationId, Arg.Any<CancellationToken>())
+        _mockOrganizationsRepository.GetByIdWithProjectsAsync(Command.OrganizationId, TestContext.Current.CancellationToken)
             .Returns(organization);
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().BeOfType<ErrorOr<Guid>>();
@@ -59,11 +59,11 @@ public class CreateProjectTests
         var organization = new Organization("Test Organization", "Test Description");
         var project = new Project("Test Project", "Test Description", organization.Id);
         organization.AddProject(project);
-        _mockOrganizationsRepository.GetByIdWithProjectsAsync(Command.OrganizationId, Arg.Any<CancellationToken>())
+        _mockOrganizationsRepository.GetByIdWithProjectsAsync(Command.OrganizationId, TestContext.Current.CancellationToken)
             .Returns(organization);
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().BeOfType<ErrorOr<Guid>>();

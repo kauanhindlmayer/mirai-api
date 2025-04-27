@@ -18,11 +18,11 @@ public class DeleteOrganizationTests : BaseFunctionalTest
         // Arrange
         await SetAuthorizationHeaderAsync();
         var createOrganizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest();
-        var createOrganizationResponse = await _httpClient.PostAsJsonAsync("api/v1/organizations", createOrganizationRequest);
-        var organizationId = await createOrganizationResponse.Content.ReadFromJsonAsync<Guid>();
+        var createOrganizationResponse = await _httpClient.PostAsJsonAsync("api/v1/organizations", createOrganizationRequest, cancellationToken: TestContext.Current.CancellationToken);
+        var organizationId = await createOrganizationResponse.Content.ReadFromJsonAsync<Guid>(cancellationToken: TestContext.Current.CancellationToken);
 
         // Act
-        var deleteOrganizationResponse = await _httpClient.DeleteAsync($"api/v1/organizations/{organizationId}");
+        var deleteOrganizationResponse = await _httpClient.DeleteAsync($"api/v1/organizations/{organizationId}", TestContext.Current.CancellationToken);
 
         // Assert
         deleteOrganizationResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
@@ -36,7 +36,7 @@ public class DeleteOrganizationTests : BaseFunctionalTest
         var organizationId = Guid.NewGuid();
 
         // Act
-        var deleteOrganizationResponse = await _httpClient.DeleteAsync($"api/v1/organizations/{organizationId}");
+        var deleteOrganizationResponse = await _httpClient.DeleteAsync($"api/v1/organizations/{organizationId}", TestContext.Current.CancellationToken);
 
         // Assert
         deleteOrganizationResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);

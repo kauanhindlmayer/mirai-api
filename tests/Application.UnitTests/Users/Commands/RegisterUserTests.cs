@@ -30,11 +30,11 @@ public class RegisterUserTests
     public async Task Handle_WhenUserExists_ReturnsAlreadyExistsError()
     {
         // Arrange
-        _mockUsersRepository.ExistsByEmailAsync(Command.Email, Arg.Any<CancellationToken>())
+        _mockUsersRepository.ExistsByEmailAsync(Command.Email, TestContext.Current.CancellationToken)
             .Returns(true);
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -45,16 +45,16 @@ public class RegisterUserTests
     public async Task Handle_WhenUserDoesNotExist_ReturnsUserId()
     {
         // Arrange
-        _mockUsersRepository.ExistsByEmailAsync(Command.Email, Arg.Any<CancellationToken>())
+        _mockUsersRepository.ExistsByEmailAsync(Command.Email, TestContext.Current.CancellationToken)
             .Returns(false);
         _mockAuthenticationService.RegisterAsync(
             Arg.Any<User>(),
             Arg.Any<string>(),
-            Arg.Any<CancellationToken>())
+            TestContext.Current.CancellationToken)
             .Returns(Guid.NewGuid().ToString());
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeFalse();

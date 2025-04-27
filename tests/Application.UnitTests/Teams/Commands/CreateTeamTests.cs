@@ -25,11 +25,11 @@ public class CreateTeamTests
     public async Task Handle_WhenProjectDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _projectsRepository.GetByIdAsync(Command.ProjectId, Arg.Any<CancellationToken>())
+        _projectsRepository.GetByIdAsync(Command.ProjectId, TestContext.Current.CancellationToken)
             .Returns(null as Project);
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -42,11 +42,11 @@ public class CreateTeamTests
         // Arrange
         var project = new Project("Name", "Description", Guid.NewGuid());
         project.AddTeam(new Team(project.Id, Command.Name, Command.Description));
-        _projectsRepository.GetByIdAsync(Command.ProjectId, Arg.Any<CancellationToken>())
+        _projectsRepository.GetByIdAsync(Command.ProjectId, TestContext.Current.CancellationToken)
             .Returns(project);
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -58,11 +58,11 @@ public class CreateTeamTests
     {
         // Arrange
         var project = new Project("Name", "Description", Guid.NewGuid());
-        _projectsRepository.GetByIdAsync(Command.ProjectId, Arg.Any<CancellationToken>())
+        _projectsRepository.GetByIdAsync(Command.ProjectId, TestContext.Current.CancellationToken)
             .Returns(project);
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeFalse();

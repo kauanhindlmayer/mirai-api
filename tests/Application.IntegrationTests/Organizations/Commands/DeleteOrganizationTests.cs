@@ -21,7 +21,7 @@ public class DeleteOrganizationTests : BaseIntegrationTest
         var command = new DeleteOrganizationCommand(Guid.NewGuid());
 
         // Act
-        var result = await _sender.Send(command);
+        var result = await _sender.Send(command, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -34,12 +34,12 @@ public class DeleteOrganizationTests : BaseIntegrationTest
     {
         // Arrange
         var createCommand = new CreateOrganizationCommand("Test Organization", "Test Description");
-        var createOrganizationResult = await _sender.Send(createCommand);
+        var createOrganizationResult = await _sender.Send(createCommand, TestContext.Current.CancellationToken);
         var organizationId = createOrganizationResult.Value;
 
         // Act
         var deleteCommand = new DeleteOrganizationCommand(organizationId);
-        var result = await _sender.Send(deleteCommand);
+        var result = await _sender.Send(deleteCommand, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeFalse();

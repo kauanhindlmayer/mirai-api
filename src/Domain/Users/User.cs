@@ -10,6 +10,10 @@ public sealed class User : Entity
     public string LastName { get; private set; } = null!;
     public string FullName => $"{FirstName} {LastName}";
     public string Email { get; private set; } = null!;
+
+    /// <summary>
+    /// The unique identifier for the user in the identity provider.
+    /// </summary>
     public string IdentityId { get; private set; } = string.Empty;
     public string ImageUrl { get; private set; } = string.Empty;
     public ICollection<WorkItem> WorkItems { get; private set; } = [];

@@ -31,11 +31,11 @@ public class CreateCardTests
     public async Task Handle_WhenBoardDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _boardsRepository.GetByIdWithCardsAsync(Command.BoardId, Arg.Any<CancellationToken>())
+        _boardsRepository.GetByIdWithCardsAsync(Command.BoardId, TestContext.Current.CancellationToken)
             .Returns(null as Board);
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -48,13 +48,13 @@ public class CreateCardTests
         // Arrange
         var team = new Team(Guid.NewGuid(), "Team", "Description");
         var board = new Board(team, "Board");
-        _boardsRepository.GetByIdWithCardsAsync(Command.BoardId, Arg.Any<CancellationToken>())
+        _boardsRepository.GetByIdWithCardsAsync(Command.BoardId, TestContext.Current.CancellationToken)
             .Returns(board);
-        _workItemsRepository.GetNextWorkItemCodeAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+        _workItemsRepository.GetNextWorkItemCodeAsync(Arg.Any<Guid>(), TestContext.Current.CancellationToken)
             .Returns(1);
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -69,15 +69,15 @@ public class CreateCardTests
         var board = new Board(team, "Board");
         var column = new BoardColumn(board.Id, "Column");
         board.AddColumn(column);
-        _boardsRepository.GetByIdWithCardsAsync(Command.BoardId, Arg.Any<CancellationToken>())
+        _boardsRepository.GetByIdWithCardsAsync(Command.BoardId, TestContext.Current.CancellationToken)
             .Returns(board);
-        _workItemsRepository.GetNextWorkItemCodeAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+        _workItemsRepository.GetNextWorkItemCodeAsync(Arg.Any<Guid>(), TestContext.Current.CancellationToken)
             .Returns(1);
 
         // Act
         var result = await _handler.Handle(
             Command with { ColumnId = column.Id },
-            CancellationToken.None);
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeFalse();

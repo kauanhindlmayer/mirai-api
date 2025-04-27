@@ -29,11 +29,11 @@ public class AddCommentTests
     public async Task Handle_WhenWorkItemDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _workItemsRepository.GetByIdWithCommentsAsync(Command.WorkItemId, Arg.Any<CancellationToken>())
+        _workItemsRepository.GetByIdWithCommentsAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
             .Returns(null as WorkItem);
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().BeOfType<ErrorOr<Guid>>();
@@ -45,12 +45,12 @@ public class AddCommentTests
     {
         // Arrange
         var workItem = new WorkItem(Guid.NewGuid(), 1, "Title", WorkItemType.UserStory);
-        _workItemsRepository.GetByIdWithCommentsAsync(Command.WorkItemId, Arg.Any<CancellationToken>())
+        _workItemsRepository.GetByIdWithCommentsAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
             .Returns(workItem);
         _userContext.UserId.Returns(Guid.NewGuid());
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().BeOfType<ErrorOr<Guid>>();

@@ -25,12 +25,12 @@ public class DeleteOrganizationTests
     {
         // Arrange
         var organization = new Organization(Command.Name, Command.Description);
-        _mockOrganizationsRepository.GetByIdAsync(organization.Id, Arg.Any<CancellationToken>())
+        _mockOrganizationsRepository.GetByIdAsync(organization.Id, TestContext.Current.CancellationToken)
             .Returns(organization);
         var command = new DeleteOrganizationCommand(organization.Id);
 
         // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
+        var result = await _handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeFalse();
@@ -40,12 +40,12 @@ public class DeleteOrganizationTests
     public async Task Handle_WhenOrganizationDoesNotExist_ShouldReturnNotFound()
     {
         // Arrange
-        _mockOrganizationsRepository.GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
+        _mockOrganizationsRepository.GetByIdAsync(Arg.Any<Guid>(), TestContext.Current.CancellationToken)
             .Returns(null as Organization);
         var command = new DeleteOrganizationCommand(Guid.NewGuid());
 
         // Act
-        var result = await _handler.Handle(command, CancellationToken.None);
+        var result = await _handler.Handle(command, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();

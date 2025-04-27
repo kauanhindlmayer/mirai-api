@@ -21,7 +21,7 @@ public class LoginUserTests : BaseIntegrationTest
         var command = new LoginUserQuery("test@test.com", "password");
 
         // Act
-        var result = await _sender.Send(command);
+        var result = await _sender.Send(command, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -38,11 +38,11 @@ public class LoginUserTests : BaseIntegrationTest
             "vXJu9zCgjOV2dW3",
             "John",
             "Doe");
-        await _sender.Send(registerCommand);
+        await _sender.Send(registerCommand, TestContext.Current.CancellationToken);
         var command = new LoginUserQuery("john.doe@email.com", "vXJu9zCgjOV2dW3");
 
         // Act
-        var result = await _sender.Send(command);
+        var result = await _sender.Send(command, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeFalse();
@@ -57,11 +57,11 @@ public class LoginUserTests : BaseIntegrationTest
             "password",
             "John",
             "Doe");
-        await _sender.Send(registerCommand);
+        await _sender.Send(registerCommand, TestContext.Current.CancellationToken);
         var command = new LoginUserQuery("test2@test.com", "wrong_password");
 
         // Act
-        var result = await _sender.Send(command);
+        var result = await _sender.Send(command, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();

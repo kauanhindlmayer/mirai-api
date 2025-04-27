@@ -23,11 +23,11 @@ public class DeleteCommentTests
     public async Task Handle_WhenWikiPageDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _wikiPagesRepository.GetByIdWithCommentsAsync(Command.WikiPageId, Arg.Any<CancellationToken>())
+        _wikiPagesRepository.GetByIdWithCommentsAsync(Command.WikiPageId, TestContext.Current.CancellationToken)
             .Returns(null as WikiPage);
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -43,11 +43,11 @@ public class DeleteCommentTests
             "Title",
             "Content",
             Guid.NewGuid());
-        _wikiPagesRepository.GetByIdWithCommentsAsync(Command.WikiPageId, Arg.Any<CancellationToken>())
+        _wikiPagesRepository.GetByIdWithCommentsAsync(Command.WikiPageId, TestContext.Current.CancellationToken)
             .Returns(wikiPage);
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -68,13 +68,13 @@ public class DeleteCommentTests
             Guid.NewGuid(),
             "Content");
         wikiPage.AddComment(comment);
-        _wikiPagesRepository.GetByIdWithCommentsAsync(Command.WikiPageId, Arg.Any<CancellationToken>())
+        _wikiPagesRepository.GetByIdWithCommentsAsync(Command.WikiPageId, TestContext.Current.CancellationToken)
             .Returns(wikiPage);
 
         // Act
         var result = await _handler.Handle(
             Command with { CommentId = comment.Id },
-            CancellationToken.None);
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeFalse();

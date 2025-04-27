@@ -23,11 +23,11 @@ public class CreateRetrospectiveColumnTests
     public async Task Handle_WhenRetrospectiveDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _retrospectivesRepository.GetByIdWithColumnsAsync(Command.RetrospectiveId, Arg.Any<CancellationToken>())
+        _retrospectivesRepository.GetByIdWithColumnsAsync(Command.RetrospectiveId, TestContext.Current.CancellationToken)
             .Returns(null as Retrospective);
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().BeOfType<ErrorOr<Guid>>();
@@ -42,11 +42,11 @@ public class CreateRetrospectiveColumnTests
         var retrospective = new Retrospective("Test Retrospective", 5, null, Guid.NewGuid());
         var column = new RetrospectiveColumn("Test Column", retrospective.Id);
         retrospective.AddColumn(column);
-        _retrospectivesRepository.GetByIdWithColumnsAsync(Command.RetrospectiveId, Arg.Any<CancellationToken>())
+        _retrospectivesRepository.GetByIdWithColumnsAsync(Command.RetrospectiveId, TestContext.Current.CancellationToken)
             .Returns(retrospective);
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().BeOfType<ErrorOr<Guid>>();
@@ -61,11 +61,11 @@ public class CreateRetrospectiveColumnTests
         var retrospective = new Retrospective("Test Retrospective", 5, null, Guid.NewGuid());
         retrospective.AddColumn(new RetrospectiveColumn("Column 4", retrospective.Id));
         retrospective.AddColumn(new RetrospectiveColumn("Column 5", retrospective.Id));
-        _retrospectivesRepository.GetByIdWithColumnsAsync(Command.RetrospectiveId, Arg.Any<CancellationToken>())
+        _retrospectivesRepository.GetByIdWithColumnsAsync(Command.RetrospectiveId, TestContext.Current.CancellationToken)
             .Returns(retrospective);
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().BeOfType<ErrorOr<Guid>>();
@@ -78,11 +78,11 @@ public class CreateRetrospectiveColumnTests
     {
         // Arrange
         var retrospective = new Retrospective("Test Retrospective", 5, null, Guid.NewGuid());
-        _retrospectivesRepository.GetByIdWithColumnsAsync(Command.RetrospectiveId, Arg.Any<CancellationToken>())
+        _retrospectivesRepository.GetByIdWithColumnsAsync(Command.RetrospectiveId, TestContext.Current.CancellationToken)
             .Returns(retrospective);
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().BeOfType<ErrorOr<Guid>>();

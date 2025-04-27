@@ -27,11 +27,11 @@ public class CreateRetrospectiveTests
     public async Task Handle_WhenTeamDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _teamsRepository.GetByIdAsync(Command.TeamId, Arg.Any<CancellationToken>())
+        _teamsRepository.GetByIdAsync(Command.TeamId, TestContext.Current.CancellationToken)
             .Returns(null as Team);
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().BeOfType<ErrorOr<Guid>>();
@@ -46,11 +46,11 @@ public class CreateRetrospectiveTests
         var team = new Team(Guid.NewGuid(), "Test Team", "Test Description");
         var retrospective = new Retrospective("Test Retrospective", 5, null, Guid.NewGuid());
         team.AddRetrospective(retrospective);
-        _teamsRepository.GetByIdAsync(Command.TeamId, Arg.Any<CancellationToken>())
+        _teamsRepository.GetByIdAsync(Command.TeamId, TestContext.Current.CancellationToken)
             .Returns(team);
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().BeOfType<ErrorOr<Guid>>();
@@ -63,11 +63,11 @@ public class CreateRetrospectiveTests
     {
         // Arrange
         var team = new Team(Guid.NewGuid(), "Test Team", "Test Description");
-        _teamsRepository.GetByIdAsync(Command.TeamId, Arg.Any<CancellationToken>())
+        _teamsRepository.GetByIdAsync(Command.TeamId, TestContext.Current.CancellationToken)
             .Returns(team);
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().BeOfType<ErrorOr<Guid>>();

@@ -27,12 +27,15 @@ public class ValidationBehaviorTests
         var createOrganizationCommand = new CreateOrganizationCommand("Organization", "Description");
         var organization = new Organization("Organization", "Description");
         _mockValidator
-            .ValidateAsync(createOrganizationCommand, Arg.Any<CancellationToken>())
+            .ValidateAsync(createOrganizationCommand, TestContext.Current.CancellationToken)
             .Returns(new ValidationResult());
         _mockNextBehavior.Invoke().Returns(organization.Id);
 
         // Act
-        var result = await _validationBehavior.Handle(createOrganizationCommand, _mockNextBehavior, default);
+        var result = await _validationBehavior.Handle(
+            createOrganizationCommand,
+            _mockNextBehavior,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeFalse();
@@ -49,11 +52,14 @@ public class ValidationBehaviorTests
             errorMessage: "The organization name is required.")];
 
         _mockValidator
-            .ValidateAsync(createOrganizationCommand, Arg.Any<CancellationToken>())
+            .ValidateAsync(createOrganizationCommand, TestContext.Current.CancellationToken)
             .Returns(new ValidationResult(validationFailures));
 
         // Act
-        var result = await _validationBehavior.Handle(createOrganizationCommand, _mockNextBehavior, default);
+        var result = await _validationBehavior.Handle(
+            createOrganizationCommand,
+            _mockNextBehavior,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -75,7 +81,7 @@ public class ValidationBehaviorTests
         var result = await validationBehavior.Handle(
             createOrganizationCommand,
             _mockNextBehavior,
-            default);
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeFalse();

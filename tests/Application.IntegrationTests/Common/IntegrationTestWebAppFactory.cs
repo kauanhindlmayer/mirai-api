@@ -26,7 +26,7 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
         .WithCommand("--import-realm")
         .Build();
 
-    public async Task InitializeAsync()
+    public async ValueTask InitializeAsync()
     {
         await _dbContainer.StartAsync();
         await _redisContainer.StartAsync();

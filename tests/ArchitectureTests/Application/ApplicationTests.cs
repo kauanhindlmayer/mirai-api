@@ -3,6 +3,7 @@ using FluentAssertions;
 using FluentValidation;
 using MediatR;
 using NetArchTest.Rules;
+using TestResult = NetArchTest.Rules.TestResult;
 
 namespace ArchitectureTests.Application;
 

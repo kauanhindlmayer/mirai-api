@@ -28,11 +28,11 @@ public class MoveWikiPageTests
         // Arrange
         _projectsRepository.GetByIdWithWikiPagesAsync(
             Command.ProjectId,
-            Arg.Any<CancellationToken>())
+            TestContext.Current.CancellationToken)
             .Returns(null as Project);
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.FirstError.Should().Be(ProjectErrors.NotFound);
@@ -45,11 +45,11 @@ public class MoveWikiPageTests
         var project = new Project("Project", "Description", Guid.NewGuid());
         _projectsRepository.GetByIdWithWikiPagesAsync(
             Command.ProjectId,
-            Arg.Any<CancellationToken>())
+            TestContext.Current.CancellationToken)
             .Returns(project);
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.FirstError.Should().Be(WikiPageErrors.NotFound);
@@ -64,11 +64,11 @@ public class MoveWikiPageTests
         project.AddWikiPage(wikiPage);
         _projectsRepository.GetByIdWithWikiPagesAsync(
             Command.ProjectId,
-            Arg.Any<CancellationToken>())
+            TestContext.Current.CancellationToken)
             .Returns(project);
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.FirstError.Should().Be(WikiPageErrors.NotFound);
@@ -85,13 +85,13 @@ public class MoveWikiPageTests
         project.AddWikiPage(wikiPage2);
         _projectsRepository.GetByIdWithWikiPagesAsync(
             Command.ProjectId,
-            Arg.Any<CancellationToken>())
+            TestContext.Current.CancellationToken)
             .Returns(project);
 
         // Act
         var result = await _handler.Handle(
             Command with { WikiPageId = wikiPage2.Id },
-            CancellationToken.None);
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeFalse();
@@ -111,13 +111,13 @@ public class MoveWikiPageTests
         project.AddWikiPage(wikiPage);
         _projectsRepository.GetByIdWithWikiPagesAsync(
             Command.ProjectId,
-            Arg.Any<CancellationToken>())
+            TestContext.Current.CancellationToken)
             .Returns(project);
 
         // Act
         var result = await _handler.Handle(
             Command with { WikiPageId = wikiPage.Id, TargetParentId = parentWikiPage.Id },
-            CancellationToken.None);
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeFalse();
@@ -137,13 +137,13 @@ public class MoveWikiPageTests
         project.AddWikiPage(wikiPage);
         _projectsRepository.GetByIdWithWikiPagesAsync(
             Command.ProjectId,
-            Arg.Any<CancellationToken>())
+            TestContext.Current.CancellationToken)
             .Returns(project);
 
         // Act
         var result = await _handler.Handle(
             Command with { WikiPageId = wikiPage.Id, TargetPosition = -1 },
-            CancellationToken.None);
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.FirstError.Should().Be(WikiPageErrors.InvalidPosition);

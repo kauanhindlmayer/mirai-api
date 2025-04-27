@@ -35,11 +35,11 @@ public class CreateWorkItemTests
     public async Task Handle_WhenProjectDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _projectsRepository.GetByIdAsync(Command.ProjectId, Arg.Any<CancellationToken>())
+        _projectsRepository.GetByIdAsync(Command.ProjectId, TestContext.Current.CancellationToken)
             .Returns(null as Project);
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -51,13 +51,13 @@ public class CreateWorkItemTests
     {
         // Arrange
         var project = new Project("Project", "Description", Guid.NewGuid());
-        _projectsRepository.GetByIdAsync(Command.ProjectId, Arg.Any<CancellationToken>())
+        _projectsRepository.GetByIdAsync(Command.ProjectId, TestContext.Current.CancellationToken)
             .Returns(project);
-        _workItemsRepository.GetNextWorkItemCodeAsync(Command.ProjectId, Arg.Any<CancellationToken>())
+        _workItemsRepository.GetNextWorkItemCodeAsync(Command.ProjectId, TestContext.Current.CancellationToken)
             .Returns(1);
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeFalse();
@@ -71,11 +71,11 @@ public class CreateWorkItemTests
         var project = new Project("Project", "Description", Guid.NewGuid());
         var workItem = new WorkItem(Command.ProjectId, 1, "Title", WorkItemType.UserStory);
         project.AddWorkItem(workItem);
-        _projectsRepository.GetByIdAsync(Command.ProjectId, Arg.Any<CancellationToken>())
+        _projectsRepository.GetByIdAsync(Command.ProjectId, TestContext.Current.CancellationToken)
             .Returns(project);
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -87,13 +87,13 @@ public class CreateWorkItemTests
     {
         // Arrange
         var project = new Project("Project", "Description", Guid.NewGuid());
-        _projectsRepository.GetByIdAsync(Command.ProjectId, Arg.Any<CancellationToken>())
+        _projectsRepository.GetByIdAsync(Command.ProjectId, TestContext.Current.CancellationToken)
             .Returns(project);
-        _workItemsRepository.GetNextWorkItemCodeAsync(Command.ProjectId, Arg.Any<CancellationToken>())
+        _workItemsRepository.GetNextWorkItemCodeAsync(Command.ProjectId, TestContext.Current.CancellationToken)
             .Returns(1);
 
         // Act
-        await _handler.Handle(Command, CancellationToken.None);
+        await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         _projectsRepository.Received().Update(project);

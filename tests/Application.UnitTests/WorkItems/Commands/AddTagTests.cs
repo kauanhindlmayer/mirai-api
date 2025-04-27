@@ -29,11 +29,11 @@ public class AddTagTests
     public async Task Handle_WhenWorkItemDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _workItemsRepository.GetByIdWithTagsAsync(Command.WorkItemId, Arg.Any<CancellationToken>())
+        _workItemsRepository.GetByIdWithTagsAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
             .Returns(null as WorkItem);
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().BeOfType<ErrorOr<Success>>();
@@ -45,18 +45,18 @@ public class AddTagTests
     {
         // Arrange
         var workItem = new WorkItem(Guid.NewGuid(), 1, "Title", WorkItemType.UserStory);
-        _workItemsRepository.GetByIdWithTagsAsync(Command.WorkItemId, Arg.Any<CancellationToken>())
+        _workItemsRepository.GetByIdWithTagsAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
             .Returns(workItem);
-        _tagsRepository.GetByNameAsync(Command.TagName, Arg.Any<CancellationToken>())
+        _tagsRepository.GetByNameAsync(Command.TagName, TestContext.Current.CancellationToken)
             .Returns(null as Tag);
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().BeOfType<ErrorOr<Success>>();
         result.IsError.Should().BeFalse();
-        await _tagsRepository.Received(1).GetByNameAsync(Command.TagName, Arg.Any<CancellationToken>());
+        await _tagsRepository.Received(1).GetByNameAsync(Command.TagName, TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -65,18 +65,18 @@ public class AddTagTests
         // Arrange
         var workItem = new WorkItem(Guid.NewGuid(), 1, "Title", WorkItemType.UserStory);
         var tag = new Tag(Command.TagName, string.Empty, string.Empty);
-        _workItemsRepository.GetByIdWithTagsAsync(Command.WorkItemId, Arg.Any<CancellationToken>())
+        _workItemsRepository.GetByIdWithTagsAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
             .Returns(workItem);
-        _tagsRepository.GetByNameAsync(Command.TagName, Arg.Any<CancellationToken>())
+        _tagsRepository.GetByNameAsync(Command.TagName, TestContext.Current.CancellationToken)
             .Returns(tag);
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().BeOfType<ErrorOr<Success>>();
         result.IsError.Should().BeFalse();
-        await _tagsRepository.Received(1).GetByNameAsync(Command.TagName, Arg.Any<CancellationToken>());
+        await _tagsRepository.Received(1).GetByNameAsync(Command.TagName, TestContext.Current.CancellationToken);
         workItem.Tags.Should().Contain(tag);
     }
 }

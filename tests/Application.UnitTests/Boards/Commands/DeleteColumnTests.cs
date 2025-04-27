@@ -25,11 +25,11 @@ public class DeleteColumnTests
     public async Task Handle_WhenBoardDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _boardsRepository.GetByIdWithColumnsAsync(Command.BoardId, Arg.Any<CancellationToken>())
+        _boardsRepository.GetByIdWithColumnsAsync(Command.BoardId, TestContext.Current.CancellationToken)
             .Returns(null as Board);
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -41,11 +41,11 @@ public class DeleteColumnTests
     {
         // Arrange
         var board = new Board(Guid.NewGuid(), "Board");
-        _boardsRepository.GetByIdWithColumnsAsync(Command.BoardId, Arg.Any<CancellationToken>())
+        _boardsRepository.GetByIdWithColumnsAsync(Command.BoardId, TestContext.Current.CancellationToken)
             .Returns(board);
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -62,13 +62,13 @@ public class DeleteColumnTests
         var card = new BoardCard(column.Id, workItem.Id, 0);
         column.AddCard(card);
         board.AddColumn(column);
-        _boardsRepository.GetByIdWithColumnsAsync(Command.BoardId, Arg.Any<CancellationToken>())
+        _boardsRepository.GetByIdWithColumnsAsync(Command.BoardId, TestContext.Current.CancellationToken)
             .Returns(board);
 
         // Act
         var result = await _handler.Handle(
             Command with { ColumnId = column.Id },
-            CancellationToken.None);
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -82,13 +82,13 @@ public class DeleteColumnTests
         var board = new Board(Guid.NewGuid(), "Board");
         var column = new BoardColumn(board.Id, "Column");
         board.AddColumn(column);
-        _boardsRepository.GetByIdWithColumnsAsync(Command.BoardId, Arg.Any<CancellationToken>())
+        _boardsRepository.GetByIdWithColumnsAsync(Command.BoardId, TestContext.Current.CancellationToken)
             .Returns(board);
 
         // Act
         var result = await _handler.Handle(
             Command with { ColumnId = column.Id },
-            CancellationToken.None);
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeFalse();

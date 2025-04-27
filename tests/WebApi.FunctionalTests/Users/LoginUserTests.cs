@@ -20,11 +20,11 @@ public class LoginUserTests : BaseFunctionalTest
         var request = UserRequestFactory.CreateLoginUserRequest();
 
         // Act
-        var response = await _httpClient.PostAsJsonAsync("api/v1/users/login", request);
+        var response = await _httpClient.PostAsJsonAsync("api/v1/users/login", request, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var accessToken = await response.Content.ReadFromJsonAsync<AccessTokenResponse>();
+        var accessToken = await response.Content.ReadFromJsonAsync<AccessTokenResponse>(cancellationToken: TestContext.Current.CancellationToken);
         accessToken.Should().NotBeNull();
         accessToken.AccessToken.Should().NotBeEmpty();
     }
@@ -36,7 +36,7 @@ public class LoginUserTests : BaseFunctionalTest
         var request = UserRequestFactory.CreateLoginUserRequest("invalid-email");
 
         // Act
-        var response = await _httpClient.PostAsJsonAsync("api/v1/users/login", request);
+        var response = await _httpClient.PostAsJsonAsync("api/v1/users/login", request, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);

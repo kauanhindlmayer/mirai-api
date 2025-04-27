@@ -30,11 +30,11 @@ public class AddWorkItemToSprintTests
     public async Task Handle_WhenSprintDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _sprintsRepository.GetByIdAsync(Command.SprintId, Arg.Any<CancellationToken>())
+        _sprintsRepository.GetByIdAsync(Command.SprintId, TestContext.Current.CancellationToken)
             .Returns(null as Sprint);
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -45,14 +45,14 @@ public class AddWorkItemToSprintTests
     public async Task Handle_WhenWorkItemDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _sprintsRepository.GetByIdAsync(Command.SprintId, Arg.Any<CancellationToken>())
+        _sprintsRepository.GetByIdAsync(Command.SprintId, TestContext.Current.CancellationToken)
             .Returns(new Sprint(Guid.NewGuid(), "Name", DateTime.Now, DateTime.Now.AddDays(14)));
 
-        _workItemsRepository.GetByIdAsync(Command.WorkItemId, Arg.Any<CancellationToken>())
+        _workItemsRepository.GetByIdAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
             .Returns(null as WorkItem);
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -67,14 +67,14 @@ public class AddWorkItemToSprintTests
         var workItem = new WorkItem(Guid.NewGuid(), 1, "Name", WorkItemType.UserStory);
         sprint.AddWorkItem(workItem);
 
-        _sprintsRepository.GetByIdAsync(Command.SprintId, Arg.Any<CancellationToken>())
+        _sprintsRepository.GetByIdAsync(Command.SprintId, TestContext.Current.CancellationToken)
             .Returns(sprint);
 
-        _workItemsRepository.GetByIdAsync(Command.WorkItemId, Arg.Any<CancellationToken>())
+        _workItemsRepository.GetByIdAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
             .Returns(workItem);
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -88,14 +88,14 @@ public class AddWorkItemToSprintTests
         var sprint = new Sprint(Guid.NewGuid(), "Name", DateTime.Now, DateTime.Now.AddDays(14));
         var workItem = new WorkItem(Guid.NewGuid(), 1, "Name", WorkItemType.UserStory);
 
-        _sprintsRepository.GetByIdAsync(Command.SprintId, Arg.Any<CancellationToken>())
+        _sprintsRepository.GetByIdAsync(Command.SprintId, TestContext.Current.CancellationToken)
             .Returns(sprint);
 
-        _workItemsRepository.GetByIdAsync(Command.WorkItemId, Arg.Any<CancellationToken>())
+        _workItemsRepository.GetByIdAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
             .Returns(workItem);
 
         // Act
-        var result = await _handler.Handle(Command, CancellationToken.None);
+        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeFalse();

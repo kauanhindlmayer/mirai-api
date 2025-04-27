@@ -28,7 +28,7 @@ public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyn
         .WithCommand("--import-realm")
         .Build();
 
-    public async Task InitializeAsync()
+    public async ValueTask InitializeAsync()
     {
         await _dbContainer.StartAsync();
         await _redisContainer.StartAsync();
