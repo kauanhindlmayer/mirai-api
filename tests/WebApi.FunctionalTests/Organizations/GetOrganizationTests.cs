@@ -19,15 +19,22 @@ public class GetOrganizationTests : BaseFunctionalTest
         // Arrange
         await SetAuthorizationHeaderAsync();
         var createOrganizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest();
-        var createOrganizationResponse = await _httpClient.PostAsJsonAsync("api/v1/organizations", createOrganizationRequest, cancellationToken: TestContext.Current.CancellationToken);
-        var organizationId = await createOrganizationResponse.Content.ReadFromJsonAsync<Guid>(cancellationToken: TestContext.Current.CancellationToken);
+        var createOrganizationResponse = await _httpClient.PostAsJsonAsync(
+            "api/v1/organizations",
+            createOrganizationRequest,
+            cancellationToken: TestContext.Current.CancellationToken);
+        var organizationId = await createOrganizationResponse.Content.ReadFromJsonAsync<Guid>(
+            cancellationToken: TestContext.Current.CancellationToken);
 
         // Act
-        var getOrganizationResponse = await _httpClient.GetAsync($"api/v1/organizations/{organizationId}", TestContext.Current.CancellationToken);
+        var getOrganizationResponse = await _httpClient.GetAsync(
+            $"api/v1/organizations/{organizationId}",
+            TestContext.Current.CancellationToken);
 
         // Assert
         getOrganizationResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-        var fetchedOrganization = await getOrganizationResponse.Content.ReadFromJsonAsync<OrganizationResponse>(cancellationToken: TestContext.Current.CancellationToken);
+        var fetchedOrganization = await getOrganizationResponse.Content.ReadFromJsonAsync<OrganizationResponse>(
+            cancellationToken: TestContext.Current.CancellationToken);
         fetchedOrganization.Should().NotBeNull();
         fetchedOrganization.Id.Should().NotBeEmpty();
         fetchedOrganization.Name.Should().Be(createOrganizationRequest.Name);
@@ -42,7 +49,9 @@ public class GetOrganizationTests : BaseFunctionalTest
         var organizationId = Guid.NewGuid();
 
         // Act
-        var getOrganizationResponse = await _httpClient.GetAsync($"api/v1/organizations/{organizationId}", TestContext.Current.CancellationToken);
+        var getOrganizationResponse = await _httpClient.GetAsync(
+            $"api/v1/organizations/{organizationId}",
+            TestContext.Current.CancellationToken);
 
         // Assert
         getOrganizationResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);

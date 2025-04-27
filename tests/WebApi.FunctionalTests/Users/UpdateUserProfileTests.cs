@@ -20,7 +20,10 @@ public class UpdateUserProfileTests : BaseFunctionalTest
         var request = UserRequestFactory.CreateUpdateUserProfileRequest();
 
         // Act
-        var response = await _httpClient.PutAsJsonAsync("api/v1/users/profile", request, cancellationToken: TestContext.Current.CancellationToken);
+        var response = await _httpClient.PutAsJsonAsync(
+            "api/v1/users/profile",
+            request,
+            cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);

@@ -28,7 +28,10 @@ public class RegisterUserTests : BaseFunctionalTest
             lastName);
 
         // Act
-        var response = await _httpClient.PostAsJsonAsync("api/v1/users/register", request, cancellationToken: TestContext.Current.CancellationToken);
+        var response = await _httpClient.PostAsJsonAsync(
+            "api/v1/users/register",
+            request,
+            cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -41,11 +44,15 @@ public class RegisterUserTests : BaseFunctionalTest
         var request = UserRequestFactory.CreateRegisterUserRequest(email: "johndoe@email.com");
 
         // Act
-        var response = await _httpClient.PostAsJsonAsync("api/v1/users/register", request, cancellationToken: TestContext.Current.CancellationToken);
+        var response = await _httpClient.PostAsJsonAsync(
+            "api/v1/users/register",
+            request,
+            cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var userId = await response.Content.ReadFromJsonAsync<Guid>(cancellationToken: TestContext.Current.CancellationToken);
+        var userId = await response.Content.ReadFromJsonAsync<Guid>(
+            cancellationToken: TestContext.Current.CancellationToken);
         userId.Should().NotBeEmpty();
     }
 }

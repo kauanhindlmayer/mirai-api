@@ -1,6 +1,5 @@
 using Application.IntegrationTests.Common;
 using Application.Organizations.Commands.CreateOrganization;
-using Application.Organizations.Queries.GetOrganization;
 using Domain.Organizations;
 using FluentAssertions;
 

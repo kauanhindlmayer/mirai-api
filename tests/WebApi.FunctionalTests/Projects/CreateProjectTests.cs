@@ -19,16 +19,24 @@ public class CreateProjectTests : BaseFunctionalTest
         // Arrange
         await SetAuthorizationHeaderAsync();
         var createOrganizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest();
-        var createOrganizationResponse = await _httpClient.PostAsJsonAsync("api/v1/organizations", createOrganizationRequest, cancellationToken: TestContext.Current.CancellationToken);
-        var organizationId = await createOrganizationResponse.Content.ReadFromJsonAsync<Guid>(cancellationToken: TestContext.Current.CancellationToken);
+        var createOrganizationResponse = await _httpClient.PostAsJsonAsync(
+            "api/v1/organizations",
+            createOrganizationRequest,
+            cancellationToken: TestContext.Current.CancellationToken);
+        var organizationId = await createOrganizationResponse.Content.ReadFromJsonAsync<Guid>(
+            cancellationToken: TestContext.Current.CancellationToken);
         var createProjectRequest = ProjectRequestFactory.CreateCreateProjectRequest();
 
         // Act
-        var createProjectResponse = await _httpClient.PostAsJsonAsync($"api/v1/organizations/{organizationId}/projects", createProjectRequest, cancellationToken: TestContext.Current.CancellationToken);
+        var createProjectResponse = await _httpClient.PostAsJsonAsync(
+            $"api/v1/organizations/{organizationId}/projects",
+            createProjectRequest,
+            cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         createProjectResponse.StatusCode.Should().Be(HttpStatusCode.Created);
-        var projectId = await createProjectResponse.Content.ReadFromJsonAsync<Guid>(cancellationToken: TestContext.Current.CancellationToken);
+        var projectId = await createProjectResponse.Content.ReadFromJsonAsync<Guid>(
+            cancellationToken: TestContext.Current.CancellationToken);
         projectId.Should().NotBeEmpty();
         createProjectResponse.Headers.Location.Should().NotBeNull();
         createProjectResponse.Headers.Location!.AbsolutePath.Should().Be($"/api/v1/projects/{projectId}");
