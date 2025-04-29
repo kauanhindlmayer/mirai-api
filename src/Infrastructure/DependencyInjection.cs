@@ -7,13 +7,14 @@ using Infrastructure.Authorization;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Repositories;
 using Infrastructure.Services;
+using Infrastructure.Settings;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using AuthenticationOptions = Infrastructure.Authentication.AuthenticationOptions;
+using AuthenticationOptions = Infrastructure.Settings.AuthenticationOptions;
 using AuthenticationService = Infrastructure.Authentication.AuthenticationService;
 using IAuthenticationService = Application.Common.Interfaces.Services.IAuthenticationService;
 

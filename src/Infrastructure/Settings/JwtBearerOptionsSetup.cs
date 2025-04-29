@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 
-namespace Infrastructure.Authentication;
+namespace Infrastructure.Settings;
 
 internal sealed class JwtBearerOptionsSetup : IConfigureNamedOptions<JwtBearerOptions>
 {

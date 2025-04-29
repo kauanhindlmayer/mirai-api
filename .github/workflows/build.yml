@@ -7,32 +7,29 @@ on:
       - main
 
 env:
-  DOTNET_VERSION: "9.x"
+  DOTNET_VERSION: "9.0.x"
+  SOLUTION_PATH: "./Mirai.sln"
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: Mirai
-
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Restore
-        run: dotnet restore Mirai.sln
+        run: dotnet restore ${{ env.SOLUTION_PATH }}
 
       - name: Build
-        run: dotnet build Mirai.sln --configuration Release --no-restore
+        run: dotnet build ${{ env.SOLUTION_PATH }} --configuration Release --no-restore
 
       - name: Test
-        run: dotnet test Mirai.sln --configuration Release --no-restore --no-build
+        run: dotnet test ${{ env.SOLUTION_PATH }} --configuration Release --no-restore --no-build
 
       - name: Publish
-        run: dotnet publish Mirai.sln --configuration Release --no-restore --no-build
+        run: dotnet publish ${{ env.SOLUTION_PATH }} --configuration Release --no-restore --no-build

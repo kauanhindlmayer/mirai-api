@@ -39,30 +39,40 @@ internal sealed class ProjectCreatedDomainEventHandler : INotificationHandler<Pr
 
     public async Task Handle(ProjectCreatedDomainEvent notification, CancellationToken cancellationToken)
     {
-        var team = new Team(
+        try
+        {
+            var team = new Team(
             notification.Project.Id,
             notification.Project.Name,
             "The default project team.");
-        await _teamsRepository.AddAsync(team, cancellationToken);
+            await _teamsRepository.AddAsync(team, cancellationToken);
 
-        var wikiPage = new WikiPage(
-            notification.Project.Id,
-            "Home",
-            "Welcome to the project wiki!",
-            _userContext.UserId);
-        await _wikiPagesRepository.AddAsync(wikiPage, cancellationToken);
+            var wikiPage = new WikiPage(
+                notification.Project.Id,
+                "Home",
+                "Welcome to the project wiki!",
+                _userContext.UserId);
+            await _wikiPagesRepository.AddAsync(wikiPage, cancellationToken);
 
-        var sprint = new Sprint(
-            team.Id,
-            "Sprint 1",
-            _dateTimeProvider.UtcNow,
-            _dateTimeProvider.UtcNow.AddDays(14));
-        await _sprintsRepository.AddAsync(sprint, cancellationToken);
+            var sprint = new Sprint(
+                team.Id,
+                "Sprint 1",
+                _dateTimeProvider.UtcNow,
+                _dateTimeProvider.UtcNow.AddDays(14));
+            await _sprintsRepository.AddAsync(sprint, cancellationToken);
 
-        _logger.LogInformation(
-            "Default team, wiki page, and sprint created for project {ProjectName}.",
-            notification.Project.Name);
+            _logger.LogInformation(
+                "Default team, wiki page, and sprint created for project {ProjectName}.",
+                notification.Project.Name);
 
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(
+                ex,
+                "An error occurred while creating default team, wiki page, and sprint for project {ProjectName}.",
+                notification.Project.Name);
+        }
     }
 }

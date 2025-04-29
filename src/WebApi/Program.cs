@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
         config.ReadFrom.Configuration(builder.Configuration));
 
     builder.Services
-        .AddPresentation()
+        .AddPresentation(builder.Configuration)
         .AddApplication()
         .AddInfrastructure(builder.Configuration);
 }
@@ -35,13 +35,16 @@ var app = builder.Build();
             }
         });
         app.MapScalarApiReference();
-        app.ApplyMigrations();
-        app.SeedData();
+        await app.ApplyMigrationsAsync();
+        await app.SeedDataAsync();
     }
 
     app.UseSerilogRequestLogging();
     app.UseHttpsRedirection();
+
+    app.UseAuthentication();
     app.UseAuthorization();
+
     app.MapControllers();
 
     app.Run();

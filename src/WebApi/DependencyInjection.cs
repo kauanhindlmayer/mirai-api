@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Text.Json.Serialization;
 using HealthChecks.UI.Client;
+using Infrastructure.Settings;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -12,27 +13,26 @@ namespace WebApi;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddPresentation(this IServiceCollection services)
+    public static IServiceCollection AddPresentation(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
         services.AddControllers().AddJsonOptions(options =>
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
         services.AddProblemDetails();
-        services.AddSignalR(options => options.EnableDetailedErrors = true)
+        services.AddSignalR()
             .AddJsonProtocol(options =>
-            {
-                options.PayloadSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-                options.PayloadSerializerOptions.MaxDepth = 64;
-            });
-        services.AddCorsPolicy();
+                options.PayloadSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
+        services.AddCorsPolicy(configuration);
 
         return services;
     }
 
     public static void UsePresentation(this WebApplication app)
     {
-        app.UseCors();
+        app.UseCors(CorsOptions.PolicyName);
         app.MapHub<RetrospectiveHub>("/hubs/retrospective");
         app.UseMiddleware<RequestContextLoggingMiddleware>();
         app.ConfigureHealthChecks();
@@ -104,13 +104,15 @@ public static class DependencyInjection
         });
     }
 
-    private static void AddCorsPolicy(this IServiceCollection services)
+    private static void AddCorsPolicy(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
-        services.AddCors(options => options.AddDefaultPolicy(builder =>
-            builder.WithOrigins("http://localhost:5173")
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .AllowCredentials()));
+        var corsOptions = configuration.GetSection(CorsOptions.SectionName).Get<CorsOptions>()!;
+        services.AddCors(options => options.AddPolicy(CorsOptions.PolicyName, policy => policy
+            .WithOrigins(corsOptions.AllowedOrigins)
+            .AllowAnyMethod()
+            .AllowAnyHeader()));
     }
 
     private static void ConfigureHealthChecks(this WebApplication app)

@@ -9,65 +9,92 @@ using Domain.WikiPages;
 using Domain.WorkItems;
 using Domain.WorkItems.Enums;
 using Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebApi.Extensions;
 
-public static class SeedDataExtensions
+public static class DatabaseExtensions
 {
-    public static void SeedData(this IApplicationBuilder app)
+    public static async Task ApplyMigrationsAsync(this WebApplication app)
     {
-        using var scope = app.ApplicationServices.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        using var scope = app.Services.CreateScope();
+        await using var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        try
+        {
+            await dbContext.Database.MigrateAsync();
+            app.Logger.LogInformation("Database migrations applied successfully");
+        }
+        catch (Exception exception)
+        {
+            app.Logger.LogError(exception, "An error occurred while applying database migrations");
+            throw;
+        }
+    }
 
-        logger.LogInformation("Seeding data...");
+    public static async Task SeedDataAsync(this WebApplication app)
+    {
+        using var scope = app.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+        app.Logger.LogInformation("Starting database seeding...");
 
         if (context.Organizations.Any())
         {
+            app.Logger.LogInformation("Database already seeded. Skipping seeding process.");
             return;
         }
 
         var faker = new Faker();
 
+        app.Logger.LogInformation("Seeding organization...");
         var organization = new Organization(
             faker.Company.CompanyName(),
             faker.Company.CatchPhrase());
-        context.Organizations.Add(organization);
+        await context.Organizations.AddAsync(organization);
 
+        app.Logger.LogInformation("Seeding project...");
         var project = new Project(
             faker.Commerce.ProductName(),
             faker.Commerce.ProductDescription(),
             organization.Id);
-        context.Projects.Add(project);
+        await context.Projects.AddAsync(project);
 
+        app.Logger.LogInformation("Seeding team...");
         var team = new Team(
             project.Id,
             project.Name,
             faker.Lorem.Sentence());
-        context.Teams.Add(team);
+        await context.Teams.AddAsync(team);
 
+        app.Logger.LogInformation("Seeding sprint...");
         var startDate = faker.Date.Recent().ToUniversalTime();
         var sprint = new Sprint(
             team.Id,
             "Sprint 1",
             startDate,
             startDate.AddDays(14));
-        context.Sprints.Add(sprint);
+        await context.Sprints.AddAsync(sprint);
 
+        app.Logger.LogInformation("Seeding board...");
         var board = new Board(
             team.Id,
             team.Name);
-        context.Boards.Add(board);
+        await context.Boards.AddAsync(board);
 
-        var users = SeedUsers(faker, context);
-        SeedWikiPages(faker, context, project, users);
-        SeedWorkItems(faker, context, project, team, sprint, board);
+        app.Logger.LogInformation("Seeding users...");
+        var users = await SeedUsers(faker, context);
+
+        app.Logger.LogInformation("Seeding wiki pages...");
+        await SeedWikiPages(faker, context, project, users);
+
+        app.Logger.LogInformation("Seeding work items...");
+        await SeedWorkItems(faker, context, project, team, sprint, board);
 
         context.SaveChanges();
-        logger.LogInformation("Data seeded");
+        app.Logger.LogInformation("Database seeding completed successfully");
     }
 
-    private static List<User> SeedUsers(
+    private static async Task<List<User>> SeedUsers(
         Faker faker,
         ApplicationDbContext context,
         int count = 5)
@@ -84,11 +111,11 @@ public static class SeedDataExtensions
             users.Add(user);
         }
 
-        context.AddRange(users);
+        await context.AddRangeAsync(users);
         return users;
     }
 
-    private static void SeedWikiPages(
+    private static async Task SeedWikiPages(
         Faker faker,
         ApplicationDbContext context,
         Project project,
@@ -97,11 +124,10 @@ public static class SeedDataExtensions
         int maxSubPagesPerWiki = 2)
     {
         var wikiPages = new List<WikiPage>();
-        var random = new Random();
 
         for (int i = 0; i < count; i++)
         {
-            var randomUser = users[random.Next(users.Count)];
+            var randomUser = faker.PickRandom(users);
 
             var wikiPage = new WikiPage(
                 project.Id,
@@ -109,17 +135,17 @@ public static class SeedDataExtensions
                 faker.Lorem.Paragraph(),
                 randomUser.Id);
 
-            context.WikiPages.Add(wikiPage);
+            await context.WikiPages.AddAsync(wikiPage);
             wikiPages.Add(wikiPage);
         }
 
         foreach (var mainPage in wikiPages)
         {
-            int subPagesCount = random.Next(0, maxSubPagesPerWiki + 1);
+            int subPagesCount = faker.Random.Int(0, maxSubPagesPerWiki);
 
             for (int j = 0; j < subPagesCount; j++)
             {
-                var randomUser = users[random.Next(users.Count)];
+                var randomUser = faker.PickRandom(users);
 
                 var subWikiPage = new WikiPage(
                     project.Id,
@@ -128,12 +154,12 @@ public static class SeedDataExtensions
                     randomUser.Id,
                     mainPage.Id);
 
-                context.WikiPages.Add(subWikiPage);
+                await context.WikiPages.AddAsync(subWikiPage);
             }
         }
     }
 
-    private static void SeedWorkItems(
+    private static async Task SeedWorkItems(
         Faker faker,
         ApplicationDbContext context,
         Project project,
@@ -164,14 +190,14 @@ public static class SeedDataExtensions
                 team.Id,
                 sprint.Id);
 
-            context.WorkItems.Add(feature);
+            await context.WorkItems.AddAsync(feature);
 
             var featureColumnId = columns[i % columnCount].Id;
             var featureCard = new BoardCard(
                 featureColumnId,
                 feature.Id,
                 columnPositions[featureColumnId]++);
-            context.BoardCards.Add(featureCard);
+            await context.BoardCards.AddAsync(featureCard);
 
             for (int j = 0; j < storiesPerFeature; j++)
             {
@@ -184,14 +210,14 @@ public static class SeedDataExtensions
                     sprint.Id,
                     feature.Id);
 
-                context.WorkItems.Add(userStory);
+                await context.WorkItems.AddAsync(userStory);
 
                 var userStoryColumnId = columns[((i * storiesPerFeature) + j) % columnCount].Id;
                 var userStoryCard = new BoardCard(
                     userStoryColumnId,
                     userStory.Id,
                     columnPositions[userStoryColumnId]++);
-                context.BoardCards.Add(userStoryCard);
+                await context.BoardCards.AddAsync(userStoryCard);
             }
         }
     }
