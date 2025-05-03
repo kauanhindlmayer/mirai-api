@@ -32,15 +32,14 @@ public sealed class RetrospectivesController : ApiController
     /// Create a retrospective session.
     /// </summary>
     /// <remarks>
-    /// Creates a new retrospective session for the specified team. When a retrospective
-    /// session is created, a default set of columns are automatically set up based on the
-    /// selected template.
+    /// When a retrospective is created, default columns are initialized based
+    /// on the chosen template.
     /// </remarks>
     /// <param name="teamId">The team's unique identifier.</param>
     [HttpPost]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CreateRetrospective(
+    public async Task<ActionResult<Guid>> CreateRetrospective(
         Guid teamId,
         CreateRetrospectiveRequest request,
         CancellationToken cancellationToken)
@@ -64,14 +63,11 @@ public sealed class RetrospectivesController : ApiController
     /// <summary>
     /// Retrieve a retrospective session.
     /// </summary>
-    /// <remarks>
-    /// Retrieves the retrospective session with the specified unique identifier.
-    /// </remarks>
     /// <param name="retrospectiveId">The retrospective session's unique identifier.</param>
     [HttpGet("{retrospectiveId:guid}")]
     [ProducesResponseType(typeof(RetrospectiveResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetRetrospective(
+    public async Task<ActionResult<RetrospectiveResponse>> GetRetrospective(
         Guid retrospectiveId,
         CancellationToken cancellationToken)
     {
@@ -85,15 +81,12 @@ public sealed class RetrospectivesController : ApiController
     /// <summary>
     /// Create a new column in a retrospective session.
     /// </summary>
-    /// <remarks>
-    /// Creates a new column in the specified retrospective session.
-    /// </remarks>
     /// <param name="teamId">The team's unique identifier.</param>
     /// <param name="retrospectiveId">The retrospective session's unique identifier.</param>
     [HttpPost("{retrospectiveId:guid}/columns")]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> CreateColumn(
+    public async Task<ActionResult<Guid>> CreateColumn(
         Guid teamId,
         Guid retrospectiveId,
         CreateColumnRequest request,
@@ -116,16 +109,13 @@ public sealed class RetrospectivesController : ApiController
     /// <summary>
     /// Create a new retrospective item.
     /// </summary>
-    /// <remarks>
-    /// Creates a new item in the specified column of the retrospective session.
-    /// </remarks>
     /// <param name="teamId">The team's unique identifier.</param>
     /// <param name="retrospectiveId">The retrospective session's unique identifier.</param>
     /// <param name="columnId">The column's unique identifier.</param>
     [HttpPost("{retrospectiveId:guid}/columns/{columnId:guid}/items")]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> CreateItem(
+    public async Task<ActionResult<Guid>> CreateItem(
         Guid teamId,
         Guid retrospectiveId,
         Guid columnId,
@@ -154,16 +144,13 @@ public sealed class RetrospectivesController : ApiController
     /// <summary>
     /// Delete a retrospective item.
     /// </summary>
-    /// <remarks>
-    /// Deletes the item with the specified unique identifier from the retrospective session.
-    /// </remarks>
     /// <param name="retrospectiveId">The retrospective session's unique identifier.</param>
     /// <param name="columnId">The column's unique identifier.</param>
     /// <param name="itemId">The item's unique identifier.</param>
     [HttpDelete("{retrospectiveId:guid}/columns/{columnId:guid}/items/{itemId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteItem(
+    public async Task<ActionResult> DeleteItem(
         Guid retrospectiveId,
         Guid columnId,
         Guid itemId,
@@ -188,14 +175,11 @@ public sealed class RetrospectivesController : ApiController
     /// <summary>
     /// Retrieve all retrospective sessions for a team.
     /// </summary>
-    /// <remarks>
-    /// Returns a list of retrospective sessions for the specified team.
-    /// </remarks>
     /// <param name="teamId">The team's unique identifier.</param>
     [HttpGet]
     [ProducesResponseType(typeof(IReadOnlyList<RetrospectiveResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> ListRetrospectives(
+    public async Task<ActionResult<IReadOnlyList<RetrospectiveResponse>>> ListRetrospectives(
         Guid teamId,
         CancellationToken cancellationToken)
     {

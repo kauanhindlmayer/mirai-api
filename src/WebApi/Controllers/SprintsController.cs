@@ -20,16 +20,14 @@ public sealed class SprintsController : ApiController
     }
 
     /// <summary>
-    /// Create a sprint.
+    /// Creates a new sprint for the specified team.
     /// </summary>
-    /// <remarks>
-    /// Creates a new sprint object.
-    /// </remarks>
     /// <param name="teamId">The team's unique identifier.</param>
     [HttpPost]
-    [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> CreateSprint(
+    public async Task<ActionResult<Guid>> CreateSprint(
         Guid teamId,
         CreateSprintRequest request,
         CancellationToken cancellationToken)
@@ -43,21 +41,23 @@ public sealed class SprintsController : ApiController
         var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
-            sprintId => Ok(sprintId),
+            sprintId => CreatedAtAction(
+                nameof(ListSprints),  // TODO: Update to GetSprint when implemented
+                new { teamId },
+                sprintId),
             Problem);
     }
 
     /// <summary>
-    /// Retrieve all sprints for a team.
+    /// Retrieves all sprints for the specified team.
     /// </summary>
     /// <remarks>
-    /// Returns a list of sprints. The sprints are returned sorted by their end
-    /// date in descending order, with the most recent sprint appearing first.
+    /// Sprints are returned sorted by end date in descending order.
     /// </remarks>
     /// <param name="teamId">The team's unique identifier.</param>
     [HttpGet]
     [ProducesResponseType(typeof(IReadOnlyList<SprintResponse>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> ListSprints(
+    public async Task<ActionResult<IReadOnlyList<SprintResponse>>> ListSprints(
         Guid teamId,
         CancellationToken cancellationToken)
     {
@@ -69,28 +69,25 @@ public sealed class SprintsController : ApiController
     }
 
     /// <summary>
-    /// Add a work item to a sprint.
-    /// </summary>
-    /// <remarks>
     /// Adds a work item to the specified sprint.
-    /// </remarks>
+    /// </summary>
     /// <param name="teamId">The team's unique identifier.</param>
     /// <param name="sprintId">The sprint's unique identifier.</param>
     [HttpPost("{sprintId:guid}/work-items")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> AddWorkItemToSprint(
+    public async Task<ActionResult> AddWorkItemToSprint(
         Guid teamId,
         Guid sprintId,
         AddWorkItemToSprintRequest request,
         CancellationToken cancellationToken)
     {
-        var query = new AddWorkItemToSprintCommand(
+        var command = new AddWorkItemToSprintCommand(
             teamId,
             sprintId,
             request.WorkItemId);
 
-        var result = await _sender.Send(query, cancellationToken);
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
             _ => NoContent(),

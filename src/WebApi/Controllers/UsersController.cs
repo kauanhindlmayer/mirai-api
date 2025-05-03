@@ -30,8 +30,9 @@ public sealed class UsersController : ApiController
     [AllowAnonymous]
     [HttpPost("register")]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> RegisterUser(
+    public async Task<ActionResult<Guid>> RegisterUser(
         RegisterUserRequest request,
         CancellationToken cancellationToken)
     {
@@ -55,7 +56,7 @@ public sealed class UsersController : ApiController
     [HttpPost("login")]
     [ProducesResponseType(typeof(AccessTokenResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> LoginUser(
+    public async Task<ActionResult<AccessTokenResponse>> LoginUser(
         LoginUserRequest request,
         CancellationToken cancellationToken)
     {
@@ -74,11 +75,11 @@ public sealed class UsersController : ApiController
     }
 
     /// <summary>
-    /// Get the current user.
+    /// Get the current user details.
     /// </summary>
     [HttpGet("me")]
     [ProducesResponseType(typeof(UserResponse), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetCurrentUser(
+    public async Task<ActionResult<UserResponse>> GetCurrentUser(
         CancellationToken cancellationToken)
     {
         var query = new GetCurrentUserQuery();
@@ -94,7 +95,7 @@ public sealed class UsersController : ApiController
     [HttpPut("profile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> UpdateUserProfile(
+    public async Task<ActionResult> UpdateUserProfile(
         UpdateUserProfileRequest request,
         CancellationToken cancellationToken)
     {
@@ -115,7 +116,7 @@ public sealed class UsersController : ApiController
     [HttpPatch("profile/picture")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> UpdateProfilePicture(
+    public async Task<ActionResult> UpdateProfilePicture(
         IFormFile file,
         CancellationToken cancellationToken)
     {

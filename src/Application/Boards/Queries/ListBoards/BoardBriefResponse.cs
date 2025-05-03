@@ -4,5 +4,5 @@ public sealed class BoardBriefResponse
 {
     public Guid Id { get; init; }
     public Guid TeamId { get; init; }
-    public string Name { get; init; } = null!;
+    public required string Name { get; init; }
 }

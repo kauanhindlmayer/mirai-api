@@ -30,13 +30,14 @@ public sealed class WikiPagesController : ApiController
     /// Create a wiki page.
     /// </summary>
     /// <remarks>
-    /// Creates a root wiki page or a sub-page if a ParentWikiPageId is provided.
+    /// Creates a root wiki page or a sub-page under an existing wiki page.
+    /// If a parent wiki page is not specified, the new wiki page will be created as a root page.
     /// </remarks>
     /// <param name="projectId">The project's unique identifier.</param>
     [HttpPost]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CreateWikiPage(
+    public async Task<ActionResult<Guid>> CreateWikiPage(
         Guid projectId,
         CreateWikiPageRequest request,
         CancellationToken cancellationToken)
@@ -60,14 +61,11 @@ public sealed class WikiPagesController : ApiController
     /// <summary>
     /// Retrieve a wiki page.
     /// </summary>
-    /// <remarks>
-    /// Retrieves the wiki page with the specified unique identifier.
-    /// </remarks>
     /// <param name="wikiPageId">The wiki page's unique identifier.</param>
     [HttpGet("{wikiPageId:guid}")]
     [ProducesResponseType(typeof(WikiPageResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetWikiPage(
+    public async Task<ActionResult<WikiPageResponse>> GetWikiPage(
         Guid wikiPageId,
         CancellationToken cancellationToken)
     {
@@ -81,14 +79,11 @@ public sealed class WikiPagesController : ApiController
     /// <summary>
     /// Retrieve stats for a wiki page.
     /// </summary>
-    /// <remarks>
-    /// Retrieves the stats for the wiki page with the specified unique identifier.
-    /// </remarks>
     /// <param name="wikiPageId">The wiki page's unique identifier.</param>
     [HttpGet("{wikiPageId:guid}/stats")]
     [ProducesResponseType(typeof(WikiPageStatsResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetWikiPageStats(
+    public async Task<ActionResult<WikiPageStatsResponse>> GetWikiPageStats(
         Guid wikiPageId,
         [FromQuery] GetWikiPageStatsRequest request,
         CancellationToken cancellationToken)
@@ -105,13 +100,10 @@ public sealed class WikiPagesController : ApiController
     /// <summary>
     /// Retrieve all wiki pages for a project.
     /// </summary>
-    /// <remarks>
-    /// Returns a list of wiki pages for the specified project.
-    /// </remarks>
     /// <param name="projectId">The project's unique identifier.</param>
     [HttpGet]
     [ProducesResponseType(typeof(List<WikiPageBriefResponse>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> ListWikiPages(
+    public async Task<ActionResult<List<WikiPageBriefResponse>>> ListWikiPages(
         Guid projectId,
         CancellationToken cancellationToken)
     {
@@ -125,16 +117,13 @@ public sealed class WikiPagesController : ApiController
     /// <summary>
     /// Add a comment to a wiki page.
     /// </summary>
-    /// <remarks>
-    /// Adds a comment to the specified wiki page.
-    /// </remarks>
     /// <param name="projectId">The project's unique identifier.</param>
     /// <param name="wikiPageId">The wiki page's unique identifier.</param>
     [HttpPost("{wikiPageId:guid}/comments")]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> AddCommentToWikiPage(
+    public async Task<ActionResult<Guid>> AddCommentToWikiPage(
         Guid projectId,
         Guid wikiPageId,
         AddCommentRequest request,
@@ -155,15 +144,12 @@ public sealed class WikiPagesController : ApiController
     /// <summary>
     /// Delete a comment from a wiki page.
     /// </summary>
-    /// <remarks>
-    /// Deletes the comment with the specified unique identifier from the wiki page.
-    /// </remarks>
     /// <param name="wikiPageId">The wiki page's unique identifier.</param>
     /// <param name="commentId">The comment's unique identifier.</param>
     [HttpDelete("{wikiPageId:guid}/comments/{commentId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteComment(
+    public async Task<ActionResult> DeleteComment(
         Guid wikiPageId,
         Guid commentId,
         CancellationToken cancellationToken)
@@ -180,15 +166,11 @@ public sealed class WikiPagesController : ApiController
     /// <summary>
     /// Delete a wiki page.
     /// </summary>
-    /// <remarks>
-    /// Deletes the wiki page with the specified unique identifier. Deleting is only
-    /// possible if the wiki page does not have any sub-pages associated with it.
-    /// </remarks>
     /// <param name="wikiPageId">The wiki page's unique identifier.</param>
     [HttpDelete("{wikiPageId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteWikiPage(
+    public async Task<ActionResult> DeleteWikiPage(
         Guid wikiPageId,
         CancellationToken cancellationToken)
     {
@@ -204,15 +186,11 @@ public sealed class WikiPagesController : ApiController
     /// <summary>
     /// Update a wiki page.
     /// </summary>
-    /// <remarks>
-    /// Updates the specified wiki page by settings the values of the parameters passed.
-    /// Any parameters not provided will be left unchanged.
-    /// </remarks>
     /// <param name="wikiPageId">The wiki page's unique identifier.</param>
     [HttpPut("{wikiPageId:guid}")]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateWikiPage(
+    public async Task<ActionResult> UpdateWikiPage(
         Guid wikiPageId,
         UpdateWikiPageRequest request,
         CancellationToken cancellationToken)
@@ -232,16 +210,13 @@ public sealed class WikiPagesController : ApiController
     /// <summary>
     /// Move a wiki page to a new position or parent.
     /// </summary>
-    /// <remarks>
-    /// Moves the wiki page with the specified unique identifier to a new position or parent.
-    /// </remarks>
     /// <param name="projectId">The project's unique identifier.</param>
     /// <param name="wikiPageId">The wiki page's unique identifier.</param>
     [HttpPut("{wikiPageId:guid}/move")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> MoveWikiPage(
+    public async Task<ActionResult> MoveWikiPage(
         Guid projectId,
         Guid wikiPageId,
         MoveWikiPageRequest request,

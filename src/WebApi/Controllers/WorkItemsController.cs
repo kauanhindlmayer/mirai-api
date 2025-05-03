@@ -33,14 +33,11 @@ public sealed class WorkItemsController : ApiController
     /// <summary>
     /// Create a work item.
     /// </summary>
-    /// <remarks>
-    /// Creates a new work item for the specified project.
-    /// </remarks>
     /// <param name="projectId">The project's unique identifier.</param>
     [HttpPost]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CreateWorkItem(
+    public async Task<ActionResult<Guid>> CreateWorkItem(
         Guid projectId,
         CreateWorkItemRequest request,
         CancellationToken cancellationToken)
@@ -64,14 +61,11 @@ public sealed class WorkItemsController : ApiController
     /// <summary>
     /// Retrieve a work item.
     /// </summary>
-    /// <remarks>
-    /// Retrieves the work item with the specified unique identifier.
-    /// </remarks>
     /// <param name="workItemId">The work item's unique identifier.</param>
     [HttpGet("{workItemId:guid}")]
     [ProducesResponseType(typeof(WorkItemResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetWorkItem(
+    public async Task<ActionResult<WorkItemResponse>> GetWorkItem(
         Guid workItemId,
         CancellationToken cancellationToken)
     {
@@ -85,14 +79,11 @@ public sealed class WorkItemsController : ApiController
     /// <summary>
     /// Retrieve statistics for work items in a project.
     /// </summary>
-    /// <remarks>
-    /// Retrieves statistics for work items in the specified project.
-    /// </remarks>
     /// <param name="projectId">The project's unique identifier.</param>
     [HttpGet("stats")]
-    [ProducesResponseType(typeof(WorkItemResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(WorkItemsStatsResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetWorkItemsStats(
+    public async Task<ActionResult<WorkItemsStatsResponse>> GetWorkItemsStats(
         Guid projectId,
         [FromQuery] GetWorkItemsStatsRequest request,
         CancellationToken cancellationToken)
@@ -109,16 +100,13 @@ public sealed class WorkItemsController : ApiController
     /// <summary>
     /// Add a comment to a work item.
     /// </summary>
-    /// <remarks>
-    /// Adds a comment to the work item with the specified unique identifier.
-    /// </remarks>
     /// <param name="projectId">The project's unique identifier.</param>
     /// <param name="workItemId">The work item's unique identifier.</param>
     [HttpPost("{workItemId:guid}/comments")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> AddCommentToWorkItem(
+    public async Task<ActionResult<Guid>> AddCommentToWorkItem(
         Guid projectId,
         Guid workItemId,
         AddCommentRequest request,
@@ -146,7 +134,7 @@ public sealed class WorkItemsController : ApiController
     /// <param name="request">The details of the page.</param>
     [HttpGet]
     [ProducesResponseType(typeof(PaginatedList<WorkItemBriefResponse>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> ListWorkItems(
+    public async Task<ActionResult<PaginatedList<WorkItemBriefResponse>>> ListWorkItems(
         Guid projectId,
         [FromQuery] PageRequest request,
         CancellationToken cancellationToken)
@@ -167,16 +155,12 @@ public sealed class WorkItemsController : ApiController
     /// <summary>
     /// Assign a work item to a user.
     /// </summary>
-    /// <remarks>
-    /// Assigns the work item with the specified unique identifier to the user
-    /// with the specified unique identifier.
-    /// </remarks>
     /// <param name="workItemId">The work item's unique identifier.</param>
     [HttpPatch("{workItemId:guid}/assign")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> AssignWorkItem(
+    public async Task<ActionResult> AssignWorkItem(
         Guid workItemId,
         AssignWorkItemRequest request,
         CancellationToken cancellationToken)
@@ -201,7 +185,7 @@ public sealed class WorkItemsController : ApiController
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> AddTagToWorkItem(
+    public async Task<ActionResult> AddTagToWorkItem(
         Guid workItemId,
         AddTagToWorkItemRequest request,
         CancellationToken cancellationToken)
@@ -218,16 +202,12 @@ public sealed class WorkItemsController : ApiController
     /// <summary>
     /// Remove a tag from a work item.
     /// </summary>
-    /// <remarks>
-    /// Removes the tag with the specified name from the work item with the
-    /// specified unique identifier.
-    /// </remarks>
     /// <param name="workItemId>">The work item's unique identifier.</param>
     /// <param name="tagName">The tag's name.</param>
     [HttpDelete("{workItemId:guid}/tags/{tagName}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> RemoveTagFromWorkItem(
+    public async Task<ActionResult> RemoveTagFromWorkItem(
         Guid workItemId,
         string tagName,
         CancellationToken cancellationToken)
@@ -252,7 +232,7 @@ public sealed class WorkItemsController : ApiController
     /// <param name="searchTerm">The search term used to find relevant work items.</param>
     [HttpGet("search")]
     [ProducesResponseType(typeof(IReadOnlyList<WorkItemBriefResponse>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> SearchWorkItems(
+    public async Task<ActionResult<IReadOnlyList<WorkItemBriefResponse>>> SearchWorkItems(
         Guid projectId,
         string searchTerm,
         CancellationToken cancellationToken)
@@ -267,16 +247,11 @@ public sealed class WorkItemsController : ApiController
     /// <summary>
     /// Delete a work item.
     /// </summary>
-    /// <remarks>
-    /// Deletes the work item with the specified unique identifier.
-    /// Deleting is only possible if the work item does not have any related
-    /// work items associated with it.
-    /// </remarks>
     /// <param name="workItemId">The work item's unique identifier.</param>
     [HttpDelete("{workItemId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteWorkItem(
+    public async Task<ActionResult> DeleteWorkItem(
         Guid workItemId,
         CancellationToken cancellationToken)
     {

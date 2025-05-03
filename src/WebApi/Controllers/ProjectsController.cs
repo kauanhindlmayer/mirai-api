@@ -24,15 +24,14 @@ public sealed class ProjectsController : ApiController
     /// Create a project.
     /// </summary>
     /// <remarks>
-    /// Creates a new project within an organization. When a project is created,
-    /// a default team, board, wiki page and an initial 14-day sprint are
-    /// automatically set up.
+    /// When a project is created, a default team, board, wiki page, and an
+    /// initial 14-day sprint are automatically set up.
     /// </remarks>
     /// <param name="organizationId">The organization's unique identifier.</param>
     [HttpPost]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CreateProject(
+    public async Task<ActionResult<Guid>> CreateProject(
         Guid organizationId,
         CreateProjectRequest request,
         CancellationToken cancellationToken)
@@ -55,14 +54,11 @@ public sealed class ProjectsController : ApiController
     /// <summary>
     /// Retrieve a project.
     /// </summary>
-    /// <remarks>
-    /// Retrieves the project with the specified unique identifier.
-    /// </remarks>
     /// <param name="projectId">The project's unique identifier.</param>
     [HttpGet("/api/v{version:apiVersion}/projects/{projectId:guid}")]
     [ProducesResponseType(typeof(ProjectResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetProject(
+    public async Task<ActionResult<ProjectResponse>> GetProject(
         Guid projectId,
         CancellationToken cancellationToken)
     {
@@ -76,14 +72,10 @@ public sealed class ProjectsController : ApiController
     /// <summary>
     /// Retrieve all projects for an organization.
     /// </summary>
-    /// <remarks>
-    /// Returns a list of projects for the specified organization.
-    /// </remarks>
     /// <param name="organizationId">The organization's unique identifier.</param>
     [HttpGet]
     [ProducesResponseType(typeof(IReadOnlyList<ProjectResponse>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> ListProjects(
+    public async Task<ActionResult<IReadOnlyList<ProjectResponse>>> ListProjects(
         Guid organizationId,
         CancellationToken cancellationToken)
     {
@@ -97,18 +89,13 @@ public sealed class ProjectsController : ApiController
     /// <summary>
     /// Update a project.
     /// </summary>
-    /// <remarks>
-    /// Updates the project with the specified unique identifier by setting the
-    /// values of the parameters passed. Any parameters not provided will be
-    /// left unchanged.
-    /// </remarks>
     /// <param name="organizationId">The organization's unique identifier.</param>
     /// <param name="projectId">The project's unique identifier.</param>
     [HttpPut("{projectId:guid}")]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateProject(
+    public async Task<ActionResult<Guid>> UpdateProject(
         Guid organizationId,
         Guid projectId,
         UpdateProjectRequest request,

@@ -20,15 +20,11 @@ public sealed class BacklogsController : ApiController
     /// <summary>
     /// Retrieve the backlog for a team.
     /// </summary>
-    /// <remarks>
-    /// Retrieves the backlog for the specified team. The backlog can be filtered
-    /// by sprint and backlog level.
-    /// </remarks>
     /// <param name="teamId">The team's unique identifier.</param>
     [HttpGet]
     [ProducesResponseType(typeof(IReadOnlyList<BacklogResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetBacklog(
+    public async Task<ActionResult<IReadOnlyList<BacklogResponse>>> GetBacklog(
         Guid teamId,
         [FromQuery] GetBacklogRequest request,
         CancellationToken cancellationToken)

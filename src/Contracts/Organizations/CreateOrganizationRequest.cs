@@ -5,7 +5,7 @@ public sealed record CreateOrganizationRequest
     /// <summary>
     /// The name of the organization.
     /// </summary>
-    public string Name { get; init; } = string.Empty;
+    public required string Name { get; init; }
 
     /// <summary>
     /// The description of the organization.

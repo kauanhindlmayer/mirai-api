@@ -18,17 +18,13 @@ public sealed class DashboardsController : ApiController
     }
 
     /// <summary>
-    /// Retrieve the dashboard data for a project.
+    /// Retrieve the dashboard data for a team.
     /// </summary>
-    /// <remarks>
-    /// Retrieves the dashboard data for the specified team. The dashboard data
-    /// can be filtered by start and end date.
-    /// </remarks>
     /// <param name="teamId">The team's unique identifier.</param>
     [HttpGet]
     [ProducesResponseType(typeof(DashboardResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetDashboard(
+    public async Task<ActionResult<DashboardResponse>> GetDashboard(
         [FromRoute] Guid teamId,
         [FromQuery] GetDashboardRequest request,
         CancellationToken cancellationToken)

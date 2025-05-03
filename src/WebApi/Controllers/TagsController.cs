@@ -24,14 +24,14 @@ public sealed class TagsController : ApiController
     /// Create a tag.
     /// </summary>
     /// <remarks>
-    /// Creates a new tag for the specified project. This tag can be used to
-    /// categorize work items.
+    /// Tags are used to categorize work items. They can be used to filter and
+    /// search for work items in the project.
     /// </remarks>
     /// <param name="projectId">The project's unique identifier.</param>
     [HttpPost]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> CreateTag(
+    public async Task<ActionResult<Guid>> CreateTag(
         Guid projectId,
         CreateTagRequest request,
         CancellationToken cancellationToken)
@@ -52,16 +52,12 @@ public sealed class TagsController : ApiController
     /// <summary>
     /// Retrieve all tags for a project.
     /// </summary>
-    /// <remarks>
-    /// Returns a list of tags for the specified project. Tags can be used to
-    /// categorize work items.
-    /// </remarks>
     /// <param name="projectId">The project's unique identifier.</param>
     /// <param name="searchTerm">The search term to filter tags by (optional).</param>
     [HttpGet]
     [ProducesResponseType(typeof(IReadOnlyList<TagResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> ListTags(
+    public async Task<ActionResult<IReadOnlyList<TagResponse>>> ListTags(
         Guid projectId,
         string? searchTerm = null,
         CancellationToken cancellationToken = default)
@@ -76,16 +72,12 @@ public sealed class TagsController : ApiController
     /// <summary>
     /// Update a tag.
     /// </summary>
-    /// <remarks>
-    /// Updates the specified tag by settings the values of the parameters passed.
-    /// Any parameters not provided will be left unchanged.
-    /// </remarks>
     /// <param name="projectId">The project's unique identifier.</param>
     /// <param name="tagId">The tag's unique identifier.</param>
     [HttpPut("{tagId:guid}")]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateTag(
+    public async Task<ActionResult<Guid>> UpdateTag(
         Guid projectId,
         Guid tagId,
         UpdateTagRequest request,
@@ -108,15 +100,12 @@ public sealed class TagsController : ApiController
     /// <summary>
     /// Delete a tag.
     /// </summary>
-    /// <remarks>
-    /// Deletes the tag with the specified unique identifier.
-    /// </remarks>
     /// <param name="projectId">The project's unique identifier.</param>
     /// <param name="tagId">The tag's unique identifier.</param>
     [HttpDelete("{tagId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteTag(
+    public async Task<ActionResult> DeleteTag(
         Guid projectId,
         Guid tagId,
         CancellationToken cancellationToken)
