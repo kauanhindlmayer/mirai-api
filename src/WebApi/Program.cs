@@ -6,48 +6,40 @@ using WebApi;
 using WebApi.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
-{
-    builder.Host.UseSerilog((_, config) =>
-        config.ReadFrom.Configuration(builder.Configuration));
 
-    builder.Services
-        .AddPresentation(builder.Configuration)
-        .AddApplication()
-        .AddInfrastructure(builder.Configuration);
-}
+builder.Host.UseSerilog((_, config) =>
+    config.ReadFrom.Configuration(builder.Configuration));
+
+builder.Services
+    .AddPresentation()
+    .AddApplication()
+    .AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
+
+app.UseExceptionHandler();
+app.UsePresentation();
+app.UseInfrastructure();
+
+if (app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler();
-    app.UsePresentation();
+    app.UseSwagger(options =>
+        options.RouteTemplate = "/openapi/{documentName}.json");
+    app.UseSwaggerUI();
+    app.MapScalarApiReference();
 
-    if (app.Environment.IsDevelopment())
-    {
-        app.UseSwagger(options => options.RouteTemplate = "/openapi/{documentName}.json");
-        app.UseSwaggerUI(options =>
-        {
-            var descriptions = app.DescribeApiVersions();
-            foreach (var description in descriptions)
-            {
-                var url = $"/openapi/{description.GroupName}.json";
-                var name = description.GroupName.ToUpperInvariant();
-                options.SwaggerEndpoint(url, name);
-            }
-        });
-        app.MapScalarApiReference();
-        await app.ApplyMigrationsAsync();
-        await app.SeedDataAsync();
-    }
-
-    app.UseSerilogRequestLogging();
-    app.UseHttpsRedirection();
-
-    app.UseAuthentication();
-    app.UseAuthorization();
-
-    app.MapControllers();
-
-    app.Run();
+    await app.ApplyMigrationsAsync();
+    await app.SeedDataAsync();
 }
+
+app.UseSerilogRequestLogging();
+app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
+
+await app.RunAsync();
 
 public partial class Program;

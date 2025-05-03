@@ -17,10 +17,11 @@ public static class DatabaseExtensions
 {
     public static async Task ApplyMigrationsAsync(this WebApplication app)
     {
-        using var scope = app.Services.CreateScope();
-        await using var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         try
         {
+            using var scope = app.Services.CreateScope();
+            await using var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
             await dbContext.Database.MigrateAsync();
             app.Logger.LogInformation("Database migrations applied successfully");
         }
@@ -33,65 +34,63 @@ public static class DatabaseExtensions
 
     public static async Task SeedDataAsync(this WebApplication app)
     {
-        using var scope = app.Services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-        app.Logger.LogInformation("Starting database seeding...");
-
-        if (context.Organizations.Any())
+        try
         {
-            app.Logger.LogInformation("Database already seeded. Skipping seeding process.");
-            return;
+            using var scope = app.Services.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            app.Logger.LogInformation("Starting database seeding...");
+
+            if (context.Organizations.Any())
+            {
+                app.Logger.LogInformation("Database already seeded. Skipping seeding process.");
+                return;
+            }
+
+            var faker = new Faker();
+
+            var organization = new Organization(
+                faker.Company.CompanyName(),
+                faker.Company.CatchPhrase());
+            await context.Organizations.AddAsync(organization);
+
+            var project = new Project(
+                faker.Commerce.ProductName(),
+                faker.Commerce.ProductDescription(),
+                organization.Id);
+            await context.Projects.AddAsync(project);
+
+            var team = new Team(
+                project.Id,
+                project.Name,
+                faker.Lorem.Sentence());
+            await context.Teams.AddAsync(team);
+
+            var startDate = faker.Date.Recent().ToUniversalTime();
+            var sprint = new Sprint(
+                team.Id,
+                "Sprint 1",
+                startDate,
+                startDate.AddDays(14));
+            await context.Sprints.AddAsync(sprint);
+
+            var board = new Board(
+                team.Id,
+                team.Name);
+            await context.Boards.AddAsync(board);
+
+            var users = await SeedUsers(faker, context);
+            await SeedWikiPages(faker, context, project, users);
+            await SeedWorkItems(faker, context, project, team, sprint, board);
+
+            context.SaveChanges();
+            app.Logger.LogInformation("Database seeding completed successfully");
         }
-
-        var faker = new Faker();
-
-        app.Logger.LogInformation("Seeding organization...");
-        var organization = new Organization(
-            faker.Company.CompanyName(),
-            faker.Company.CatchPhrase());
-        await context.Organizations.AddAsync(organization);
-
-        app.Logger.LogInformation("Seeding project...");
-        var project = new Project(
-            faker.Commerce.ProductName(),
-            faker.Commerce.ProductDescription(),
-            organization.Id);
-        await context.Projects.AddAsync(project);
-
-        app.Logger.LogInformation("Seeding team...");
-        var team = new Team(
-            project.Id,
-            project.Name,
-            faker.Lorem.Sentence());
-        await context.Teams.AddAsync(team);
-
-        app.Logger.LogInformation("Seeding sprint...");
-        var startDate = faker.Date.Recent().ToUniversalTime();
-        var sprint = new Sprint(
-            team.Id,
-            "Sprint 1",
-            startDate,
-            startDate.AddDays(14));
-        await context.Sprints.AddAsync(sprint);
-
-        app.Logger.LogInformation("Seeding board...");
-        var board = new Board(
-            team.Id,
-            team.Name);
-        await context.Boards.AddAsync(board);
-
-        app.Logger.LogInformation("Seeding users...");
-        var users = await SeedUsers(faker, context);
-
-        app.Logger.LogInformation("Seeding wiki pages...");
-        await SeedWikiPages(faker, context, project, users);
-
-        app.Logger.LogInformation("Seeding work items...");
-        await SeedWorkItems(faker, context, project, team, sprint, board);
-
-        context.SaveChanges();
-        app.Logger.LogInformation("Database seeding completed successfully");
+        catch (Exception exception)
+        {
+            app.Logger.LogError(exception, "An error occurred while seeding the database");
+            throw;
+        }
     }
 
     private static async Task<List<User>> SeedUsers(

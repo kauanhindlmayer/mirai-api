@@ -36,6 +36,7 @@ public static class DependencyInjection
             .AddPersistence(configuration)
             .AddHealthChecks(configuration)
             .AddApiVersioning()
+            .AddCorsPolicy(configuration)
             .AddCaching(configuration);
 
         return services;
@@ -162,6 +163,20 @@ public static class DependencyInjection
             options.GroupNameFormat = "'v'V";
             options.SubstituteApiVersionInUrl = true;
         });
+
+        return services;
+    }
+
+    private static IServiceCollection AddCorsPolicy(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        var corsOptions = configuration.GetSection(CorsOptions.SectionName).Get<CorsOptions>()!;
+
+        services.AddCors(options => options.AddPolicy(CorsOptions.PolicyName, policy => policy
+            .WithOrigins(corsOptions.AllowedOrigins)
+            .AllowAnyMethod()
+            .AllowAnyHeader()));
 
         return services;
     }
