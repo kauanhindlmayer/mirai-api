@@ -1,19 +1,12 @@
 namespace Contracts.Tags;
 
-public sealed record UpdateTagRequest
-{
-    /// <summary>
-    /// The name of the tag.
-    /// </summary>
-    public required string Name { get; init; }
-
-    /// <summary>
-    /// The description of the tag.
-    /// </summary>
-    public required string Description { get; init; }
-
-    /// <summary>
-    /// The color of the tag in hexadecimal format.
-    /// </summary>
-    public required string Color { get; init; }
-}
+/// <summary>
+/// Data transfer object for updating a tag.
+/// </summary>
+/// <param name="Name">The name of the tag.</param>
+/// <param name="Description">The description of the tag.</param>
+/// <param name="Color">The color of the tag in hexadecimal format.</param>
+public sealed record UpdateTagRequest(
+    string Name,
+    string Description,
+    string Color);

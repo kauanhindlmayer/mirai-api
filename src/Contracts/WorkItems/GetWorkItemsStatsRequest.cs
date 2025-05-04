@@ -1,9 +1,7 @@
 namespace Contracts.WorkItems;
 
-public sealed record GetWorkItemsStatsRequest
-{
-    /// <summary>
-    /// The period in days to get the work items stats for.
-    /// </summary>
-    public int PeriodInDays { get; init; }
-}
+/// <summary>
+/// /// Data transfer object for getting work items stats.
+/// </summary>
+/// <param name="PeriodInDays">The period in days to get the work items stats for.</param>
+public sealed record GetWorkItemsStatsRequest(int PeriodInDays);

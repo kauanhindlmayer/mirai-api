@@ -2,15 +2,11 @@ using Domain.WorkItems.Enums;
 
 namespace Contracts.Boards;
 
-public sealed record CreateCardRequest
-{
-    /// <summary>
-    /// The type of the card.
-    /// </summary>
-    public WorkItemType Type { get; init; }
-
-    /// <summary>
-    /// The title of the card.
-    /// </summary>
-    public required string Title { get; init; }
-}
+/// <summary>
+/// Data transfer object for creating a card in a column.
+/// </summary>
+/// <param name="Type">The type of the card.</param>
+/// <param name="Title">The title of the card.</param>
+public sealed record CreateCardRequest(
+    WorkItemType Type,
+    string Title);

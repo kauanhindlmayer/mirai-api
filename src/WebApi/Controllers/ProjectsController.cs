@@ -28,6 +28,7 @@ public sealed class ProjectsController : ApiController
     /// initial 14-day sprint are automatically set up.
     /// </remarks>
     /// <param name="organizationId">The organization's unique identifier.</param>
+    /// <returns>The unique identifier of the created project.</returns>
     [HttpPost]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -91,6 +92,7 @@ public sealed class ProjectsController : ApiController
     /// </summary>
     /// <param name="organizationId">The organization's unique identifier.</param>
     /// <param name="projectId">The project's unique identifier.</param>
+    /// <returns>The unique identifier of the updated project.</returns>
     [HttpPut("{projectId:guid}")]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

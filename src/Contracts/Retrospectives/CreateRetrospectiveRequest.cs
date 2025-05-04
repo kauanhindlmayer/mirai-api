@@ -2,20 +2,13 @@ using Domain.Retrospectives.Enums;
 
 namespace Contracts.Retrospectives;
 
-public sealed record CreateRetrospectiveRequest
-{
-    /// <summary>
-    /// The title of the retrospective.
-    /// </summary>
-    public required string Title { get; init; }
-
-    /// <summary>
-    /// The maximum number of votes per user.
-    /// </summary>
-    public int? MaxVotesPerUser { get; init; }
-
-    /// <summary>
-    /// The retrospective template to use.
-    /// </summary>
-    public RetrospectiveTemplate? Template { get; init; }
-}
+/// <summary>
+/// Data transfer object for creating a retrospective board.
+/// </summary>
+/// <param name="Title">The title of the retrospective.</param>
+/// <param name="MaxVotesPerUser">The maximum number of votes per user.</param>
+/// <param name="Template">The retrospective template to use.</param>
+public sealed record CreateRetrospectiveRequest(
+    string Title,
+    int? MaxVotesPerUser,
+    RetrospectiveTemplate? Template);

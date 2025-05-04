@@ -89,8 +89,9 @@ public sealed class BoardsController : ApiController
     /// </summary>
     /// <param name="teamId">The team's unique identifier.</param>
     /// <param name="boardId">The board's unique identifier.</param>
+    /// <returns>The unique identifier of the created column.</returns>
     [HttpPost("{boardId:guid}/columns")]
-    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> CreateColumn(
@@ -147,8 +148,9 @@ public sealed class BoardsController : ApiController
     /// <param name="teamId">The team's unique identifier.</param>
     /// <param name="boardId">The board's unique identifier.</param>
     /// <param name="columnId">The column's unique identifier.</param>
+    /// <returns>The unique identifier of the created card.</returns>
     [HttpPost("{boardId:guid}/columns/{columnId:guid}/cards")]
-    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> CreateCard(

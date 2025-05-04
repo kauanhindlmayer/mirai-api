@@ -34,6 +34,7 @@ public sealed class WorkItemsController : ApiController
     /// Create a work item.
     /// </summary>
     /// <param name="projectId">The project's unique identifier.</param>
+    /// <returns>The unique identifier of the created work item.</returns>
     [HttpPost]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -102,6 +103,7 @@ public sealed class WorkItemsController : ApiController
     /// </summary>
     /// <param name="projectId">The project's unique identifier.</param>
     /// <param name="workItemId">The work item's unique identifier.</param>
+    /// <returns>The unique identifier of the created comment.</returns>
     [HttpPost("{workItemId:guid}/comments")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

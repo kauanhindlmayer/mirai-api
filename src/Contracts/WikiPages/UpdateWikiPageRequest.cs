@@ -1,14 +1,8 @@
 namespace Contracts.WikiPages;
 
-public sealed record UpdateWikiPageRequest
-{
-    /// <summary>
-    /// The title of the wiki page.
-    /// </summary>
-    public required string Title { get; init; }
-
-    /// <summary>
-    /// The content of the wiki page.
-    /// </summary>
-    public required string Content { get; init; }
-}
+/// <summary>
+/// Data transfer object for updating a wiki page.
+/// </summary>
+/// <param name="Title">The title of the wiki page.</param>
+/// <param name="Content">The content of the wiki page.</param>
+public sealed record UpdateWikiPageRequest(string Title, string Content);

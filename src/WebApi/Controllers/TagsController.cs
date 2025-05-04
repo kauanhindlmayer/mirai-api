@@ -28,6 +28,7 @@ public sealed class TagsController : ApiController
     /// search for work items in the project.
     /// </remarks>
     /// <param name="projectId">The project's unique identifier.</param>
+    /// <returns>The unique identifier of the created tag.</returns>
     [HttpPost]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -74,6 +75,7 @@ public sealed class TagsController : ApiController
     /// </summary>
     /// <param name="projectId">The project's unique identifier.</param>
     /// <param name="tagId">The tag's unique identifier.</param>
+    /// <returns>The unique identifier of the updated tag.</returns>
     [HttpPut("{tagId:guid}")]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

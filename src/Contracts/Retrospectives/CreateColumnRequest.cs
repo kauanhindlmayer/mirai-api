@@ -1,9 +1,7 @@
 namespace Contracts.Retrospectives;
 
-public sealed record CreateColumnRequest
-{
-    /// <summary>
-    /// The title of the column.
-    /// </summary>
-    public string Title { get; init; } = string.Empty;
-}
+/// <summary>
+/// Data transfer object for creating a column in a retrospective board.
+/// </summary>
+/// <param name="Title">The title of the column.</param>
+public sealed record CreateColumnRequest(string Title);

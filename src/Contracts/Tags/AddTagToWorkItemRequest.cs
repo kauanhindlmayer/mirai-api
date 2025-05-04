@@ -1,9 +1,7 @@
 namespace Contracts.Tags;
 
-public sealed record AddTagToWorkItemRequest
-{
-    /// <summary>
-    /// The name of the tag.
-    /// </summary>
-    public required string Name { get; init; }
-}
+/// <summary>
+/// Data transfer object for adding a tag to a work item.
+/// </summary>
+/// <param name="Name">The name of the tag.</param>
+public sealed record AddTagToWorkItemRequest(string Name);

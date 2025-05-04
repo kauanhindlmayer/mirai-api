@@ -1,5 +1,13 @@
 namespace Contracts.Common;
 
+/// <summary>
+/// Data transfer object for paginated requests.
+/// </summary>
+/// <param name="PageNumber">The page number to retrieve.</param>
+/// <param name="PageSize">The number of items per page.</param>
+/// <param name="SortField">The field to sort the results by.</param>
+/// <param name="SortOrder">The order to sort the results in (ascending or descending).</param>
+/// <param name="SearchTerm">The term to search for in the results.</param>
 public sealed record PageRequest(
     int PageNumber = 1,
     int PageSize = 10,

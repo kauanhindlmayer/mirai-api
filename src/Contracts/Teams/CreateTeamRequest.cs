@@ -1,14 +1,10 @@
 namespace Contracts.Teams;
 
-public sealed record CreateTeamRequest
-{
-    /// <summary>
-    /// The name of the team.
-    /// </summary>
-    public required string Name { get; init; }
-
-    /// <summary>
-    /// The description of the team.
-    /// </summary>
-    public required string Description { get; init; }
-}
+/// <summary>
+/// Data transfer object for creating a team.
+/// </summary>
+/// <param name="Name">The name of the team.</param>
+/// <param name="Description">The description of the team.</param>
+public sealed record CreateTeamRequest(
+    string Name,
+    string Description);

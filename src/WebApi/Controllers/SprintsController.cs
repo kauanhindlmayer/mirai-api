@@ -23,6 +23,8 @@ public sealed class SprintsController : ApiController
     /// Creates a new sprint for the specified team.
     /// </summary>
     /// <param name="teamId">The team's unique identifier.</param>
+    /// <param name="request">The request containing sprint details.</param>
+    /// <returns>The unique identifier of the created sprint.</returns>
     [HttpPost]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

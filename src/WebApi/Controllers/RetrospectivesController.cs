@@ -36,6 +36,7 @@ public sealed class RetrospectivesController : ApiController
     /// on the chosen template.
     /// </remarks>
     /// <param name="teamId">The team's unique identifier.</param>
+    /// <returns>The unique identifier of the created retrospective.</returns>
     [HttpPost]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -83,6 +84,7 @@ public sealed class RetrospectivesController : ApiController
     /// </summary>
     /// <param name="teamId">The team's unique identifier.</param>
     /// <param name="retrospectiveId">The retrospective session's unique identifier.</param>
+    /// <returns>The unique identifier of retrospective session.</returns>
     [HttpPost("{retrospectiveId:guid}/columns")]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -112,6 +114,7 @@ public sealed class RetrospectivesController : ApiController
     /// <param name="teamId">The team's unique identifier.</param>
     /// <param name="retrospectiveId">The retrospective session's unique identifier.</param>
     /// <param name="columnId">The column's unique identifier.</param>
+    /// <returns>The unique identifier of the created item.</returns>
     [HttpPost("{retrospectiveId:guid}/columns/{columnId:guid}/items")]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

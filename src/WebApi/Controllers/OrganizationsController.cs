@@ -24,6 +24,7 @@ public sealed class OrganizationsController : ApiController
     /// <summary>
     /// Create an organization.
     /// </summary>
+    /// <returns>The unique identifier of the created organization.</returns>
     [HttpPost]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -82,6 +83,7 @@ public sealed class OrganizationsController : ApiController
     /// Update an organization.
     /// </summary>
     /// <param name="organizationId">The organization's unique identifier.</param>
+    /// <returns>The unique identifier of the updated organization.</returns>
     [HttpPut("{organizationId:guid}")]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

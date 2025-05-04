@@ -34,6 +34,7 @@ public sealed class WikiPagesController : ApiController
     /// If a parent wiki page is not specified, the new wiki page will be created as a root page.
     /// </remarks>
     /// <param name="projectId">The project's unique identifier.</param>
+    /// <returns>The unique identifier of the created wiki page.</returns>
     [HttpPost]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -119,6 +120,7 @@ public sealed class WikiPagesController : ApiController
     /// </summary>
     /// <param name="projectId">The project's unique identifier.</param>
     /// <param name="wikiPageId">The wiki page's unique identifier.</param>
+    /// <returns>The unique identifier of the created comment.</returns>
     [HttpPost("{wikiPageId:guid}/comments")]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -187,6 +189,7 @@ public sealed class WikiPagesController : ApiController
     /// Update a wiki page.
     /// </summary>
     /// <param name="wikiPageId">The wiki page's unique identifier.</param>
+    /// <returns>The unique identifier of the updated wiki page.</returns>
     [HttpPut("{wikiPageId:guid}")]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

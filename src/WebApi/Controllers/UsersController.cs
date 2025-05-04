@@ -27,6 +27,7 @@ public sealed class UsersController : ApiController
     /// <summary>
     /// Register a user.
     /// </summary>
+    /// <returns>The unique identifier of the registered user.</returns>
     [AllowAnonymous]
     [HttpPost("register")]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]

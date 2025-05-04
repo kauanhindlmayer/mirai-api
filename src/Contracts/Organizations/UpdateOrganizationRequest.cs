@@ -1,14 +1,10 @@
 namespace Contracts.Organizations;
 
-public sealed record UpdateOrganizationRequest
-{
-    /// <summary>
-    /// The name of the organization.
-    /// </summary>
-    public string Name { get; init; } = string.Empty;
-
-    /// <summary>
-    /// The description of the organization.
-    /// </summary>
-    public string Description { get; init; } = string.Empty;
-}
+/// <summary>
+/// Data transfer object for updating an organization.
+/// </summary>
+/// <param name="Name">The name of the organization.</param>
+/// <param name="Description">The description of the organization.</param>
+public sealed record UpdateOrganizationRequest(
+    string Name,
+    string Description);

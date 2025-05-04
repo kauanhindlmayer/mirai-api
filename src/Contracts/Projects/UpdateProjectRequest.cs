@@ -1,14 +1,10 @@
 namespace Contracts.Projects;
 
-public sealed record UpdateProjectRequest
-{
-    /// <summary>
-    /// The name of the project.
-    /// </summary>
-    public string Name { get; init; } = string.Empty;
-
-    /// <summary>
-    /// The description of the project.
-    /// </summary>
-    public string Description { get; init; } = string.Empty;
-}
+/// <summary>
+/// Data transfer object for updating a project.
+/// </summary>
+/// <param name="Name">The name of the project.</param>
+/// <param name="Description">The description of the project.</param>
+public sealed record UpdateProjectRequest(
+    string Name,
+    string Description);
