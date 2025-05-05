@@ -60,10 +60,10 @@ services:
     ports:
       - 6379:6379
 
-  mirai-embedding-api:
-    container_name: mirai-embedding-api
+  mirai-language-api:
+    container_name: mirai-language-api
     build:
-      context: ../mirai-embedding-api
+      context: ../mirai-language-api
       dockerfile: Dockerfile
     environment:
       - ENVIRONMENT=development

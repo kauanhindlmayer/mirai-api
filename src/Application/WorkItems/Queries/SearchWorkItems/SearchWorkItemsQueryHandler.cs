@@ -12,14 +12,14 @@ namespace Application.WorkItems.Queries.SearchWorkItems;
 internal sealed class SearchWorkItemsQueryHandler
     : IRequestHandler<SearchWorkItemsQuery, ErrorOr<IReadOnlyList<WorkItemBriefResponse>>>
 {
-    private readonly IEmbeddingService _embeddingService;
+    private readonly ILanguageService _languageService;
     private readonly IApplicationDbContext _context;
 
     public SearchWorkItemsQueryHandler(
-        IEmbeddingService embeddingService,
+        ILanguageService languageService,
         IApplicationDbContext context)
     {
-        _embeddingService = embeddingService;
+        _languageService = languageService;
         _context = context;
     }
 
@@ -27,7 +27,7 @@ internal sealed class SearchWorkItemsQueryHandler
         SearchWorkItemsQuery query,
         CancellationToken cancellationToken)
     {
-        var result = await _embeddingService.GenerateEmbeddingAsync(query.SearchTerm);
+        var result = await _languageService.GenerateEmbeddingVectorAsync(query.SearchTerm);
         if (result.IsError)
         {
             return result.Errors;

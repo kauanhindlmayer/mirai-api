@@ -49,12 +49,12 @@ public static class DependencyInjection
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
         services.AddSingleton<IHtmlSanitizerService, HtmlSanitizerService>();
 
-        var embeddingServiceOptions = configuration.GetSection(EmbeddingServiceOptions.SectionName);
-        services.Configure<EmbeddingServiceOptions>(embeddingServiceOptions);
+        var languageServiceOptions = configuration.GetSection(LanguageServiceOptions.SectionName);
+        services.Configure<LanguageServiceOptions>(languageServiceOptions);
 
-        services.AddHttpClient<IEmbeddingService, EmbeddingService>((serviceProvider, httpClient) =>
+        services.AddHttpClient<ILanguageService, LanguageService>((serviceProvider, httpClient) =>
         {
-            var options = serviceProvider.GetRequiredService<IOptions<EmbeddingServiceOptions>>().Value;
+            var options = serviceProvider.GetRequiredService<IOptions<LanguageServiceOptions>>().Value;
             httpClient.BaseAddress = new Uri(options.BaseUrl);
             httpClient.DefaultRequestHeaders.Add(ApiKeyHeaderName, options.ApiKey);
         });
@@ -138,13 +138,13 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         var keycloakServiceUri = new Uri(configuration["Keycloak:BaseUrl"]!);
-        var embeddingServiceUri = new Uri($"{configuration["EmbeddingService:BaseUrl"]!}/health");
+        var languageServiceUri = new Uri($"{configuration["LanguageService:BaseUrl"]!}/health");
 
         services.AddHealthChecks()
             .AddNpgSql(configuration.GetConnectionString("Database")!)
             .AddRedis(configuration.GetConnectionString("Redis")!)
             .AddUrlGroup(keycloakServiceUri, HttpMethod.Get, "keycloak")
-            .AddUrlGroup(embeddingServiceUri, HttpMethod.Get, "embedding");
+            .AddUrlGroup(languageServiceUri, HttpMethod.Get, "language-service");
 
         return services;
     }
