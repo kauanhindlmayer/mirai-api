@@ -5,11 +5,12 @@ using Asp.Versioning;
 using Contracts.Sprints;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Constants;
 
 namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
-[Route("api/v{version:apiVersion}/teams/{teamId:guid}/sprints")]
+[Route("api/teams/{teamId:guid}/sprints")]
 public sealed class SprintsController : ApiController
 {
     private readonly ISender _sender;

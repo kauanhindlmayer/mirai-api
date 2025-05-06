@@ -1,3 +1,5 @@
+using System.Net.Mime;
+using Application.Common;
 using Application.Organizations.Commands.CreateOrganization;
 using Application.Organizations.Commands.DeleteOrganization;
 using Application.Organizations.Commands.UpdateOrganization;
@@ -5,20 +7,31 @@ using Application.Organizations.Queries.GetOrganization;
 using Application.Organizations.Queries.ListOrganizations;
 using Asp.Versioning;
 using Contracts.Organizations;
+using Infrastructure.Services;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Constants;
 
 namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
-[Route("api/v{version:apiVersion}/organizations")]
+[Route("api/organizations")]
+[Produces(
+    MediaTypeNames.Application.Json,
+    CustomMediaTypeNames.Application.JsonV1,
+    CustomMediaTypeNames.Application.HateoasJson,
+    CustomMediaTypeNames.Application.HateoasJsonV1)]
 public sealed class OrganizationsController : ApiController
 {
     private readonly ISender _sender;
+    private readonly LinkService _linkService;
 
-    public OrganizationsController(ISender sender)
+    public OrganizationsController(
+        ISender sender,
+        LinkService linkService)
     {
         _sender = sender;
+        _linkService = linkService;
     }
 
     /// <summary>
@@ -55,13 +68,24 @@ public sealed class OrganizationsController : ApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<OrganizationResponse>> GetOrganization(
         Guid organizationId,
+        [FromHeader] AcceptHeaderRequest acceptHeader,
         CancellationToken cancellationToken)
     {
         var query = new GetOrganizationQuery(organizationId);
 
         var result = await _sender.Send(query, cancellationToken);
 
-        return result.Match(Ok, Problem);
+        return result.Match(
+            organization =>
+            {
+                if (acceptHeader.IncludeLinks)
+                {
+                    organization.Links = CreateLinksForOrganization(organization.Id);
+                }
+
+                return Ok(organization);
+            },
+            Problem);
     }
 
     /// <summary>
@@ -123,5 +147,19 @@ public sealed class OrganizationsController : ApiController
         return result.Match(
             _ => NoContent(),
             Problem);
+    }
+
+    private List<LinkResponse> CreateLinksForOrganization(Guid id)
+    {
+        var routeValues = new { organizationId = id };
+
+        List<LinkResponse> links =
+        [
+            _linkService.Create(nameof(GetOrganization), "self", HttpMethods.Get, routeValues),
+        _linkService.Create(nameof(UpdateOrganization), "update", HttpMethods.Put, routeValues),
+        _linkService.Create(nameof(DeleteOrganization), "delete", HttpMethods.Delete, routeValues)
+        ];
+
+        return links;
     }
 }

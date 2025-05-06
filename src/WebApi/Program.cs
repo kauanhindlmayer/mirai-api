@@ -23,10 +23,11 @@ app.UseInfrastructure();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger(options =>
-        options.RouteTemplate = "/openapi/{documentName}.json");
+    app.UseSwagger();
     app.UseSwaggerUI();
-    app.MapScalarApiReference();
+
+    app.MapScalarApiReference(options =>
+        options.WithOpenApiRoutePattern("/swagger/1.0/swagger.json"));
 
     await app.ApplyMigrationsAsync();
     await app.SeedDataAsync();

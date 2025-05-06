@@ -10,11 +10,12 @@ using Domain.Users;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Constants;
 
 namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
-[Route("api/v{version:apiVersion}/users")]
+[Route("api/users")]
 public sealed class UsersController : ApiController
 {
     private readonly ISender _sender;

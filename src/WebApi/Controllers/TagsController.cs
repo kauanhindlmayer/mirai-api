@@ -6,11 +6,12 @@ using Asp.Versioning;
 using Contracts.Tags;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Constants;
 
 namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
-[Route("api/v{version:apiVersion}/projects/{projectId:guid}/tags")]
+[Route("api/projects/{projectId:guid}/tags")]
 public sealed class TagsController : ApiController
 {
     private readonly ISender _sender;

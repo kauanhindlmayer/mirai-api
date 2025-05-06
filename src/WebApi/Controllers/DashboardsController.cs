@@ -3,11 +3,12 @@ using Asp.Versioning;
 using Contracts.Dashboards;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Constants;
 
 namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
-[Route("api/v{version:apiVersion}/teams/{teamId:guid}/dashboards")]
+[Route("api/teams/{teamId:guid}/dashboards")]
 public sealed class DashboardsController : ApiController
 {
     private readonly ISender _sender;

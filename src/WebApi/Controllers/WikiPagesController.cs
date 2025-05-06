@@ -12,11 +12,12 @@ using Contracts.Common;
 using Contracts.WikiPages;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Constants;
 
 namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
-[Route("api/v{version:apiVersion}/projects/{projectId:guid}/wiki-pages")]
+[Route("api/projects/{projectId:guid}/wiki-pages")]
 public sealed class WikiPagesController : ApiController
 {
     private readonly ISender _sender;

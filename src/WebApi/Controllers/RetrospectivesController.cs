@@ -9,12 +9,13 @@ using Contracts.Retrospectives;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using WebApi.Constants;
 using WebApi.Hubs;
 
 namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
-[Route("api/v{version:apiVersion}/teams/{teamId:guid}/retrospectives")]
+[Route("api/teams/{teamId:guid}/retrospectives")]
 public sealed class RetrospectivesController : ApiController
 {
     private readonly ISender _sender;

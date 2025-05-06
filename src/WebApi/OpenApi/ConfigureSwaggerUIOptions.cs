@@ -17,7 +17,9 @@ public sealed class ConfigureSwaggerUIOptions : IConfigureNamedOptions<SwaggerUI
     {
         foreach (ApiVersionDescription description in _provider.ApiVersionDescriptions)
         {
-            options.SwaggerEndpoint($"/openapi/{description.GroupName}.json", description.GroupName);
+            options.SwaggerEndpoint(
+                $"/swagger/{description.GroupName}/swagger.json",
+                description.GroupName);
         }
     }
 

@@ -6,11 +6,12 @@ using Asp.Versioning;
 using Contracts.Projects;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Constants;
 
 namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
-[Route("api/v{version:apiVersion}/organizations/{organizationId:guid}/projects")]
+[Route("api/organizations/{organizationId:guid}/projects")]
 public sealed class ProjectsController : ApiController
 {
     private readonly ISender _sender;
@@ -56,7 +57,7 @@ public sealed class ProjectsController : ApiController
     /// Retrieve a project.
     /// </summary>
     /// <param name="projectId">The project's unique identifier.</param>
-    [HttpGet("/api/v{version:apiVersion}/projects/{projectId:guid}")]
+    [HttpGet("/api/projects/{projectId:guid}")]
     [ProducesResponseType(typeof(ProjectResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ProjectResponse>> GetProject(

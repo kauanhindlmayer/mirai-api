@@ -26,6 +26,9 @@ internal sealed class ConfigureSwaggerGenOptions : IConfigureNamedOptions<Swagge
         ConfigureXmlComments(options, GetContractsXmlCommentsPath());
         ConfigureSignalRSwagger(options, GetXmlCommentsPath());
         ConfigureSecurity(options);
+
+        options.CustomSchemaIds(type => type.FullName?.Replace("+", "."));
+        options.DescribeAllParametersInCamelCase();
     }
 
     public void Configure(string? name, SwaggerGenOptions options)

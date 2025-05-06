@@ -3,11 +3,12 @@ using Asp.Versioning;
 using Contracts.Backlogs;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Constants;
 
 namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
-[Route("api/v{version:apiVersion}/teams/{teamId:guid}/backlogs")]
+[Route("api/teams/{teamId:guid}/backlogs")]
 public sealed class BacklogsController : ApiController
 {
     private readonly ISender _sender;

@@ -9,11 +9,12 @@ using Asp.Versioning;
 using Contracts.Boards;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Constants;
 
 namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
-[Route("api/v{version:apiVersion}/teams/{teamId:guid}/boards")]
+[Route("api/teams/{teamId:guid}/boards")]
 public sealed class BoardsController : ApiController
 {
     private readonly ISender _sender;
@@ -47,7 +48,7 @@ public sealed class BoardsController : ApiController
     /// Retrieve all boards for a project.
     /// </summary>
     /// <param name="projectId">The project's unique identifier.</param>
-    [HttpGet("/api/v{version:apiVersion}/projects/{projectId:guid}/boards")]
+    [HttpGet("/api/projects/{projectId:guid}/boards")]
     [ProducesResponseType(typeof(IReadOnlyList<BoardResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IReadOnlyList<BoardResponse>>> ListBoards(

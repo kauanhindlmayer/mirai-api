@@ -16,11 +16,12 @@ using Contracts.Tags;
 using Contracts.WorkItems;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Constants;
 
 namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
-[Route("api/v{version:apiVersion}/projects/{projectId:guid}/work-items")]
+[Route("api/projects/{projectId:guid}/work-items")]
 public sealed class WorkItemsController : ApiController
 {
     private readonly ISender _sender;

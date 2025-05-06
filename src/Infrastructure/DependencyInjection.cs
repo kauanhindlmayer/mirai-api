@@ -10,6 +10,7 @@ using Infrastructure.Services;
 using Infrastructure.Settings;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -48,6 +49,7 @@ public static class DependencyInjection
     {
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
         services.AddSingleton<IHtmlSanitizerService, HtmlSanitizerService>();
+        services.AddTransient<LinkService>();
 
         var languageServiceOptions = configuration.GetSection(LanguageServiceOptions.SectionName);
         services.Configure<LanguageServiceOptions>(languageServiceOptions);
@@ -153,16 +155,18 @@ public static class DependencyInjection
     {
         services.AddApiVersioning(options =>
         {
-            options.DefaultApiVersion = new ApiVersion(1);
+            options.DefaultApiVersion = new ApiVersion(1.0);
+            options.AssumeDefaultVersionWhenUnspecified = true;
             options.ReportApiVersions = true;
-            options.ApiVersionReader = new UrlSegmentApiVersionReader();
+            options.ApiVersionSelector = new DefaultApiVersionSelector(options);
+            options.ApiVersionReader = ApiVersionReader.Combine(
+                new MediaTypeApiVersionReader(),
+                new MediaTypeApiVersionReaderBuilder()
+                    .Template("application/vnd.mirai.hateoas.{version}+json")
+                    .Build());
         })
         .AddMvc()
-        .AddApiExplorer(options =>
-        {
-            options.GroupNameFormat = "'v'V";
-            options.SubstituteApiVersionInUrl = true;
-        });
+        .AddApiExplorer();
 
         return services;
     }

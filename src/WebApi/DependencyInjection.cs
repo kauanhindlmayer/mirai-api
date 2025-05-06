@@ -1,4 +1,7 @@
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using WebApi.Constants;
 using WebApi.Hubs;
 using WebApi.Middlewares;
 using WebApi.OpenApi;
@@ -9,14 +12,19 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddPresentation(this IServiceCollection services)
     {
-        services.AddControllers()
+        services.AddControllers(options => options.ReturnHttpNotAcceptable = true)
             .AddJsonOptions(options =>
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+
+        services.ConfigureCustomMediaTypes();
+
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
         services.ConfigureOptions<ConfigureSwaggerGenOptions>();
         services.ConfigureOptions<ConfigureSwaggerUIOptions>();
+
         services.AddProblemDetails();
+
         services.AddSignalR()
             .AddJsonProtocol(options =>
                 options.PayloadSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
@@ -28,5 +36,21 @@ public static class DependencyInjection
     {
         app.MapHub<RetrospectiveHub>("/hubs/retrospective");
         app.UseMiddleware<RequestContextLoggingMiddleware>();
+    }
+
+    private static void ConfigureCustomMediaTypes(this IServiceCollection services)
+    {
+        services.Configure<MvcOptions>(options =>
+        {
+            var formatter = options.OutputFormatters
+                .OfType<SystemTextJsonOutputFormatter>()
+                .FirstOrDefault()!;
+
+            formatter.SupportedMediaTypes.Add(CustomMediaTypeNames.Application.JsonV1);
+            formatter.SupportedMediaTypes.Add(CustomMediaTypeNames.Application.JsonV2);
+            formatter.SupportedMediaTypes.Add(CustomMediaTypeNames.Application.HateoasJson);
+            formatter.SupportedMediaTypes.Add(CustomMediaTypeNames.Application.HateoasJsonV1);
+            formatter.SupportedMediaTypes.Add(CustomMediaTypeNames.Application.HateoasJsonV2);
+        });
     }
 }

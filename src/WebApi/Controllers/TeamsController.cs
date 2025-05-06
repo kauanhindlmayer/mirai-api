@@ -6,11 +6,12 @@ using Asp.Versioning;
 using Contracts.Teams;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Constants;
 
 namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
-[Route("api/v{version:apiVersion}/projects/{projectId:guid}/teams")]
+[Route("api/projects/{projectId:guid}/teams")]
 public sealed class TeamsController : ApiController
 {
     private readonly ISender _sender;
