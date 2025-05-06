@@ -6,8 +6,8 @@ namespace Domain.Tags;
 
 public sealed class Tag : Entity
 {
-    public string Name { get; private set; } = null!;
-    public string Description { get; private set; } = string.Empty;
+    public string Name { get; private set; } = string.Empty;
+    public string? Description { get; private set; }
 
     /// <summary>
     /// Gets the color of the tag in hexadecimal format.

@@ -8,8 +8,8 @@ namespace Domain.Organizations;
 
 public sealed class Organization : AggregateRoot
 {
-    public string Name { get; private set; } = null!;
-    public string Description { get; private set; } = string.Empty;
+    public string Name { get; private set; } = string.Empty;
+    public string? Description { get; private set; }
     public ICollection<Project> Projects { get; private set; } = [];
     public ICollection<User> Members { get; private set; } = [];
 

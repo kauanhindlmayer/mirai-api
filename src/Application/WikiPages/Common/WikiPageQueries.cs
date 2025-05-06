@@ -36,17 +36,4 @@ internal static class WikiPageQueries
             UpdatedAt = wp.UpdatedAt,
         };
     }
-
-    public static Expression<Func<WikiPage, WikiPageBriefResponse>> ProjectToBriefDto()
-    {
-        return wp => new WikiPageBriefResponse
-        {
-            Id = wp.Id,
-            Title = wp.Title,
-            Position = wp.Position,
-            SubPages = wp.SubWikiPages
-                .AsQueryable()
-                .Select(ProjectToBriefDto()),
-        };
-    }
 }

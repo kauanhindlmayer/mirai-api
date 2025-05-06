@@ -14,8 +14,8 @@ namespace Domain.WorkItems;
 public sealed class WorkItem : AggregateRoot
 {
     public int Code { get; private set; }
-    public string Title { get; private set; } = null!;
-    public string Description { get; private set; } = string.Empty;
+    public string Title { get; private set; } = string.Empty;
+    public string? Description { get; private set; }
     public string AcceptanceCriteria { get; private set; } = string.Empty;
     public WorkItemType Type { get; private set; }
     public WorkItemStatus Status { get; private set; }

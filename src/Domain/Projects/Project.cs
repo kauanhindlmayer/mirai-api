@@ -12,7 +12,7 @@ namespace Domain.Projects;
 public sealed class Project : AggregateRoot
 {
     public string Name { get; private set; } = null!;
-    public string Description { get; private set; } = string.Empty;
+    public string? Description { get; private set; }
     public Guid OrganizationId { get; private set; }
     public Organization Organization { get; private set; } = null!;
     public ICollection<WorkItem> WorkItems { get; private set; } = [];

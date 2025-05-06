@@ -15,8 +15,8 @@ public sealed class Team : AggregateRoot
 {
     public Guid ProjectId { get; private set; }
     public Project Project { get; private set; } = null!;
-    public string Name { get; private set; } = null!;
-    public string Description { get; private set; } = string.Empty;
+    public string Name { get; private set; } = string.Empty;
+    public string? Description { get; private set; }
     public Board Board { get; private set; } = null!;
     public ICollection<User> Members { get; private set; } = [];
     public ICollection<Retrospective> Retrospectives { get; private set; } = [];

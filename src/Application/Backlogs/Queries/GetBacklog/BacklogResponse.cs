@@ -4,11 +4,11 @@ public sealed class BacklogResponse
 {
     public Guid Id { get; init; }
     public int Code { get; init; }
-    public string Type { get; init; } = string.Empty;
-    public string Title { get; init; } = string.Empty;
-    public string Status { get; init; } = string.Empty;
+    public required string Type { get; init; }
+    public required string Title { get; init; }
+    public required string Status { get; init; }
     public int? StoryPoints { get; init; }
-    public string ValueArea { get; init; } = string.Empty;
+    public required string ValueArea { get; init; }
     public IEnumerable<string> Tags { get; init; } = [];
     public IEnumerable<BacklogResponse> Children { get; init; } = [];
 }

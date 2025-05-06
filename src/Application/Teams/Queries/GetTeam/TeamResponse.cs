@@ -4,7 +4,7 @@ public sealed class TeamResponse
 {
     public Guid Id { get; init; }
     public Guid ProjectId { get; init; }
-    public string Name { get; init; } = string.Empty;
+    public required string Name { get; init; }
     public IEnumerable<MemberResponse> Members { get; init; } = [];
     public DateTime CreatedAt { get; init; }
     public DateTime? UpdatedAt { get; init; }
@@ -13,5 +13,5 @@ public sealed class TeamResponse
 public sealed class MemberResponse
 {
     public Guid Id { get; init; }
-    public string Name { get; init; } = string.Empty;
+    public required string Name { get; init; }
 }

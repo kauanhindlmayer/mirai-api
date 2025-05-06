@@ -18,8 +18,7 @@ internal sealed class OrganizationConfigurations : IEntityTypeConfiguration<Orga
             .IsRequired();
 
         builder.Property(o => o.Description)
-            .HasMaxLength(500)
-            .IsRequired();
+            .HasMaxLength(500);
 
         builder.HasMany(o => o.Projects)
             .WithOne()

@@ -1,5 +1,4 @@
 using Application.Common.Interfaces.Persistence;
-using Application.WikiPages.Common;
 using Domain.WikiPages;
 using ErrorOr;
 using MediatR;
@@ -28,9 +27,20 @@ internal sealed class ListWikiPagesQueryHandler
                 wp.ProjectId == query.ProjectId &&
                 !wp.ParentWikiPageId.HasValue)
             .OrderBy(wp => wp.Position)
-            .Select(WikiPageQueries.ProjectToBriefDto())
+            .Select(wp => ToDto(wp))
             .ToListAsync(cancellationToken);
 
         return rootPages;
+    }
+
+    private static WikiPageBriefResponse ToDto(WikiPage wikiPage)
+    {
+        return new WikiPageBriefResponse
+        {
+            Id = wikiPage.Id,
+            Title = wikiPage.Title,
+            Position = wikiPage.Position,
+            SubPages = wikiPage.SubWikiPages.Select(ToDto),
+        };
     }
 }
