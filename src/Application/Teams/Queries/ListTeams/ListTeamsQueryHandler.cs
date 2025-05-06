@@ -1,4 +1,5 @@
 using Application.Common.Interfaces.Persistence;
+using Application.Teams.Queries.Common;
 using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -22,12 +23,7 @@ internal sealed class ListTeamsQueryHandler
         var teams = await _context.Teams
             .AsNoTracking()
             .Where(t => t.ProjectId == query.ProjectId)
-            .Select(t => new TeamBriefResponse
-            {
-                Id = t.Id,
-                Name = t.Name,
-                BoardId = t.Board.Id,
-            })
+            .Select(TeamQueries.ProjectToBriefDto())
             .ToListAsync(cancellationToken);
 
         return teams;

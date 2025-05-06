@@ -156,8 +156,8 @@ public sealed class OrganizationsController : ApiController
         List<LinkResponse> links =
         [
             _linkService.Create(nameof(GetOrganization), "self", HttpMethods.Get, routeValues),
-        _linkService.Create(nameof(UpdateOrganization), "update", HttpMethods.Put, routeValues),
-        _linkService.Create(nameof(DeleteOrganization), "delete", HttpMethods.Delete, routeValues)
+            _linkService.Create(nameof(UpdateOrganization), "update", HttpMethods.Put, routeValues),
+            _linkService.Create(nameof(DeleteOrganization), "delete", HttpMethods.Delete, routeValues)
         ];
 
         return links;

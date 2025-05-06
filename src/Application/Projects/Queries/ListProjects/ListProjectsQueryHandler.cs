@@ -1,4 +1,5 @@
 using Application.Common.Interfaces.Persistence;
+using Application.Projects.Queries.Common;
 using Application.Projects.Queries.GetProject;
 using ErrorOr;
 using MediatR;
@@ -6,7 +7,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Projects.Queries.ListProjects;
 
-internal sealed class ListProjectsQueryHandler : IRequestHandler<ListProjectsQuery, ErrorOr<IReadOnlyList<ProjectResponse>>>
+internal sealed class ListProjectsQueryHandler
+    : IRequestHandler<ListProjectsQuery, ErrorOr<IReadOnlyList<ProjectResponse>>>
 {
     private readonly IApplicationDbContext _context;
 
@@ -22,15 +24,7 @@ internal sealed class ListProjectsQueryHandler : IRequestHandler<ListProjectsQue
         var projects = await _context.Projects
             .AsNoTracking()
             .Where(p => p.OrganizationId == query.OrganizationId)
-            .Select(p => new ProjectResponse
-            {
-                Id = p.Id,
-                Name = p.Name,
-                Description = p.Description,
-                OrganizationId = p.OrganizationId,
-                CreatedAt = p.CreatedAt,
-                UpdatedAt = p.UpdatedAt,
-            })
+            .Select(ProjectQueries.ProjectToDto())
             .ToListAsync(cancellationToken);
 
         return projects;

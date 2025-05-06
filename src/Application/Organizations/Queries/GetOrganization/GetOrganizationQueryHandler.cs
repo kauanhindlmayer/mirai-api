@@ -1,4 +1,5 @@
 using Application.Common.Interfaces.Persistence;
+using Application.Organizations.Queries.Common;
 using Domain.Organizations;
 using ErrorOr;
 using MediatR;
@@ -23,14 +24,7 @@ internal sealed class GetOrganizationQueryHandler
         var organization = await _context.Organizations
             .AsNoTracking()
             .Where(o => o.Id == query.OrganizationId)
-            .Select(o => new OrganizationResponse
-            {
-                Id = o.Id,
-                Name = o.Name,
-                Description = o.Description,
-                UpdatedAt = o.UpdatedAt,
-                CreatedAt = o.CreatedAt,
-            })
+            .Select(OrganizationQueries.ProjectToDto())
             .FirstOrDefaultAsync(cancellationToken);
 
         if (organization is null)

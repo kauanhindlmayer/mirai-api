@@ -1,4 +1,5 @@
 using Application.Common.Interfaces.Persistence;
+using Application.Retrospectives.Queries.Common;
 using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -22,11 +23,7 @@ internal sealed class ListRetrospectivesQueryHandler
         var retrospectives = await _context.Retrospectives
             .AsNoTracking()
             .Where(r => r.TeamId == query.TeamId)
-            .Select(r => new RetrospectiveBriefResponse
-            {
-                Id = r.Id,
-                Title = r.Title,
-            })
+            .Select(RetrospectiveQueries.ProjectToBriefDto())
             .ToListAsync(cancellationToken);
 
         return retrospectives;

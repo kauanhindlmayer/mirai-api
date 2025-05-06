@@ -1,3 +1,4 @@
+using Application.Boards.Queries.Common;
 using Application.Common.Interfaces.Persistence;
 using ErrorOr;
 using MediatR;
@@ -13,13 +14,9 @@ internal sealed class ListBoardsQueryHandler(IApplicationDbContext dbContext)
         CancellationToken cancellationToken)
     {
         var boards = await dbContext.Boards
+            .AsNoTracking()
             .Where(b => b.Team.ProjectId == query.ProjectId)
-            .Select(b => new BoardBriefResponse
-            {
-                Id = b.Id,
-                TeamId = b.TeamId,
-                Name = b.Name,
-            })
+            .Select(BoardQueries.ProjectToBriefDto())
             .ToListAsync(cancellationToken);
 
         return boards;

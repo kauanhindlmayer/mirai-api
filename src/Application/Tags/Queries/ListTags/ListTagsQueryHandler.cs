@@ -1,4 +1,5 @@
 using Application.Common.Interfaces.Persistence;
+using Application.Tags.Common;
 using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -28,14 +29,7 @@ internal sealed class ListTagsQueryHandler : IRequestHandler<ListTagsQuery, Erro
         }
 
         var tags = await tagsQuery
-            .Select(t => new TagResponse
-            {
-                Id = t.Id,
-                Name = t.Name,
-                Description = t.Description,
-                Color = t.Color,
-                WorkItemsCount = t.WorkItems.Count,
-            })
+            .Select(TagQueries.ProjectToDto())
             .ToListAsync(cancellationToken);
 
         return tags;

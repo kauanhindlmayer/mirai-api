@@ -1,4 +1,5 @@
 using Application.Common.Interfaces.Persistence;
+using Application.Teams.Queries.Common;
 using Domain.Teams;
 using ErrorOr;
 using MediatR;
@@ -22,19 +23,7 @@ internal sealed class GetTeamQueryHandler : IRequestHandler<GetTeamQuery, ErrorO
         var team = await _context.Teams
             .AsNoTracking()
             .Where(t => t.Id == query.TeamId)
-            .Select(t => new TeamResponse
-            {
-                Id = t.Id,
-                ProjectId = t.ProjectId,
-                Name = t.Name,
-                Members = t.Members.Select(m => new MemberResponse
-                {
-                    Id = m.Id,
-                    Name = m.FullName,
-                }),
-                CreatedAt = t.CreatedAt,
-                UpdatedAt = t.UpdatedAt,
-            })
+            .Select(TeamQueries.ProjectToDto())
             .FirstOrDefaultAsync(cancellationToken);
 
         if (team is null)

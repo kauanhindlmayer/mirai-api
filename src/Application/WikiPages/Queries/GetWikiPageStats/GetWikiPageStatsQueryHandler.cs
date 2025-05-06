@@ -4,7 +4,8 @@ using MediatR;
 
 namespace Application.WikiPages.Queries.GetWikiPageStats;
 
-internal sealed class GetWikiPageStatsQueryHandler : IRequestHandler<GetWikiPageStatsQuery, ErrorOr<WikiPageStatsResponse>>
+internal sealed class GetWikiPageStatsQueryHandler
+    : IRequestHandler<GetWikiPageStatsQuery, ErrorOr<WikiPageStatsResponse>>
 {
     private readonly IWikiPagesRepository _wikiPagesRepository;
 

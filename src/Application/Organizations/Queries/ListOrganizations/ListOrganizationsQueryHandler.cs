@@ -1,4 +1,5 @@
 using Application.Common.Interfaces.Persistence;
+using Application.Organizations.Queries.Common;
 using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -22,11 +23,7 @@ internal sealed class ListOrganizationsQueryHandler
         var organizations = await _context.Organizations
             .AsNoTracking()
             .OrderBy(o => o.Name)
-            .Select(o => new OrganizationBriefResponse
-            {
-                Id = o.Id,
-                Name = o.Name,
-            })
+            .Select(OrganizationQueries.ProjectToBriefDto())
             .ToListAsync(cancellationToken);
 
         return organizations;

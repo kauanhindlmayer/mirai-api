@@ -1,4 +1,5 @@
 using Application.Common.Interfaces.Persistence;
+using Application.Retrospectives.Queries.Common;
 using Domain.Retrospectives;
 using ErrorOr;
 using MediatR;
@@ -23,27 +24,7 @@ internal sealed class GetRetrospectiveQueryHandler
         var retrospective = await _context.Retrospectives
             .AsNoTracking()
             .Where(r => r.Id == query.RetrospectiveId)
-            .Select(r => new RetrospectiveResponse
-            {
-                Id = r.Id,
-                Title = r.Title,
-                MaxVotesPerUser = r.MaxVotesPerUser,
-                Columns = r.Columns.Select(c => new RetrospectiveColumnResponse
-                {
-                    Id = c.Id,
-                    Title = c.Title,
-                    Position = c.Position,
-                    Items = c.Items.Select(i => new RetrospectiveItemResponse
-                    {
-                        Id = i.Id,
-                        Content = i.Content,
-                        Position = i.Position,
-                        AuthorId = i.AuthorId,
-                        Votes = i.Votes,
-                        CreatedAt = i.CreatedAt,
-                    }),
-                }),
-            })
+            .Select(RetrospectiveQueries.ProjectToDto())
             .FirstOrDefaultAsync(cancellationToken);
 
         if (retrospective is null)
