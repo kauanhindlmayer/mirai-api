@@ -94,13 +94,27 @@ public sealed class OrganizationsController : ApiController
     [HttpGet]
     [ProducesResponseType(typeof(IReadOnlyList<OrganizationBriefResponse>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IReadOnlyList<OrganizationBriefResponse>>> ListOrganizations(
+        [FromHeader] AcceptHeaderRequest acceptHeader,
         CancellationToken cancellationToken)
     {
         var query = new ListOrganizationsQuery();
 
         var result = await _sender.Send(query, cancellationToken);
 
-        return result.Match(Ok, Problem);
+        return result.Match(
+            organizations =>
+            {
+                if (acceptHeader.IncludeLinks)
+                {
+                    foreach (var organization in organizations)
+                    {
+                        organization.Links = CreateLinksForOrganization(organization.Id);
+                    }
+                }
+
+                return Ok(organizations);
+            },
+            Problem);
     }
 
     /// <summary>
