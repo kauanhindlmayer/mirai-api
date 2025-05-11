@@ -6,6 +6,7 @@ using WebApi.FunctionalTests.Users;
 
 namespace WebApi.FunctionalTests.Common;
 
+[Collection(nameof(FunctionalTestCollection))]
 public abstract class BaseFunctionalTest : IClassFixture<FunctionalTestWebAppFactory>
 {
     protected readonly HttpClient _httpClient;
@@ -26,7 +27,7 @@ public abstract class BaseFunctionalTest : IClassFixture<FunctionalTestWebAppFac
     private async Task<string> GetAccessToken()
     {
         var loginResponse = await _httpClient.PostAsJsonAsync(
-            "api/v1/users/login",
+            "api/users/login",
             UserRequestFactory.CreateLoginUserRequest());
 
         var accessTokenResponse = await loginResponse.Content.ReadFromJsonAsync<AccessTokenResponse>();

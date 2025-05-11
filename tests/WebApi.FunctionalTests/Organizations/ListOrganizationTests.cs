@@ -21,11 +21,11 @@ public class ListOrganizationsTests : BaseFunctionalTest
         var createOrganizationRequest1 = OrganizationRequestFactory.CreateCreateOrganizationRequest(name: "Organization 1");
         var createOrganizationRequest2 = OrganizationRequestFactory.CreateCreateOrganizationRequest(name: "Organization 2");
         var createOrganizationResponse1 = await _httpClient.PostAsJsonAsync(
-            "api/v1/organizations",
+            Routes.Organizations.Create,
             createOrganizationRequest1,
             cancellationToken: TestContext.Current.CancellationToken);
         var createOrganizationResponse2 = await _httpClient.PostAsJsonAsync(
-            "api/v1/organizations",
+            Routes.Organizations.Create,
             createOrganizationRequest2,
             cancellationToken: TestContext.Current.CancellationToken);
         var organizationId1 = await createOrganizationResponse1.Content.ReadFromJsonAsync<Guid>(
@@ -35,7 +35,7 @@ public class ListOrganizationsTests : BaseFunctionalTest
 
         // Act
         var listOrganizationsResponse = await _httpClient.GetAsync(
-            "api/v1/organizations",
+            Routes.Organizations.List,
             TestContext.Current.CancellationToken);
 
         // Assert
@@ -45,43 +45,5 @@ public class ListOrganizationsTests : BaseFunctionalTest
         fetchedOrganizations.Should().NotBeEmpty();
         fetchedOrganizations.Should().ContainSingle(organization => organization.Id == organizationId1);
         fetchedOrganizations.Should().ContainSingle(organization => organization.Id == organizationId2);
-    }
-
-    [Fact]
-    public async Task DeleteOrganization_WhenOrganizationExists_ShouldDeleteOrganization()
-    {
-        // Arrange
-        await SetAuthorizationHeaderAsync();
-        var createOrganizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest();
-        var createOrganizationResponse = await _httpClient.PostAsJsonAsync(
-            "api/v1/organizations",
-            createOrganizationRequest,
-            cancellationToken: TestContext.Current.CancellationToken);
-        var organizationId = await createOrganizationResponse.Content.ReadFromJsonAsync<Guid>(
-            cancellationToken: TestContext.Current.CancellationToken);
-
-        // Act
-        var deleteOrganizationResponse = await _httpClient.DeleteAsync(
-            $"api/v1/organizations/{organizationId}",
-            TestContext.Current.CancellationToken);
-
-        // Assert
-        deleteOrganizationResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
-    }
-
-    [Fact]
-    public async Task DeleteOrganization_WhenOrganizationDoesNotExist_ShouldReturnNotFound()
-    {
-        // Arrange
-        await SetAuthorizationHeaderAsync();
-        var organizationId = Guid.NewGuid();
-
-        // Act
-        var deleteOrganizationResponse = await _httpClient.DeleteAsync(
-            $"api/v1/organizations/{organizationId}",
-            TestContext.Current.CancellationToken);
-
-        // Assert
-        deleteOrganizationResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 }

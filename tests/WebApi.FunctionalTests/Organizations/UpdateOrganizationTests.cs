@@ -17,9 +17,9 @@ public class UpdateOrganizationTests : BaseFunctionalTest
     {
         // Arrange
         await SetAuthorizationHeaderAsync();
-        var createOrganizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest();
+        var createOrganizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest(name: "Organization 3");
         var createOrganizationResponse = await _httpClient.PostAsJsonAsync(
-            "api/v1/organizations",
+            Routes.Organizations.Create,
             createOrganizationRequest,
             cancellationToken: TestContext.Current.CancellationToken);
         var organizationId = await createOrganizationResponse.Content.ReadFromJsonAsync<Guid>(
@@ -28,7 +28,7 @@ public class UpdateOrganizationTests : BaseFunctionalTest
 
         // Act
         var updateOrganizationResponse = await _httpClient.PutAsJsonAsync(
-            $"api/v1/organizations/{organizationId}",
+            Routes.Organizations.Update(organizationId),
             updateOrganizationRequest,
             cancellationToken: TestContext.Current.CancellationToken);
 
@@ -46,7 +46,7 @@ public class UpdateOrganizationTests : BaseFunctionalTest
 
         // Act
         var updateOrganizationResponse = await _httpClient.PutAsJsonAsync(
-            $"api/v1/organizations/{organizationId}",
+            Routes.Organizations.Update(organizationId),
             updateOrganizationRequest,
             cancellationToken: TestContext.Current.CancellationToken);
 
@@ -59,9 +59,9 @@ public class UpdateOrganizationTests : BaseFunctionalTest
     {
         // Arrange
         await SetAuthorizationHeaderAsync();
-        var createOrganizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest(name: "Organization 2");
+        var createOrganizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest(name: "Organization 4");
         var createOrganizationResponse = await _httpClient.PostAsJsonAsync(
-            "api/v1/organizations",
+            Routes.Organizations.Create,
             createOrganizationRequest,
             cancellationToken: TestContext.Current.CancellationToken);
         var organizationId = await createOrganizationResponse.Content.ReadFromJsonAsync<Guid>(
@@ -70,7 +70,7 @@ public class UpdateOrganizationTests : BaseFunctionalTest
 
         // Act
         var updateOrganizationResponse = await _httpClient.PutAsJsonAsync(
-            $"api/v1/organizations/{organizationId}",
+            Routes.Organizations.Update(organizationId),
             updateOrganizationRequest,
             cancellationToken: TestContext.Current.CancellationToken);
 
@@ -85,7 +85,7 @@ public class UpdateOrganizationTests : BaseFunctionalTest
         await SetAuthorizationHeaderAsync();
         var createOrganizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest();
         var createOrganizationResponse = await _httpClient.PostAsJsonAsync(
-            "api/v1/organizations",
+            Routes.Organizations.Create,
             createOrganizationRequest,
             cancellationToken: TestContext.Current.CancellationToken);
         var organizationId = await createOrganizationResponse.Content.ReadFromJsonAsync<Guid>(
@@ -94,7 +94,7 @@ public class UpdateOrganizationTests : BaseFunctionalTest
 
         // Act
         var updateOrganizationResponse = await _httpClient.PutAsJsonAsync(
-            $"api/v1/organizations/{organizationId}",
+            Routes.Organizations.Update(organizationId),
             updateOrganizationRequest,
             cancellationToken: TestContext.Current.CancellationToken);
 

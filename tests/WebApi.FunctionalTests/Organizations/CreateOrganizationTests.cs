@@ -21,7 +21,7 @@ public class CreateOrganizationTests : BaseFunctionalTest
 
         // Act
         var createOrganizationResponse = await _httpClient.PostAsJsonAsync(
-            "api/v1/organizations",
+            Routes.Organizations.Create,
             createOrganizationRequest,
             cancellationToken: TestContext.Current.CancellationToken);
 
@@ -32,7 +32,7 @@ public class CreateOrganizationTests : BaseFunctionalTest
         organizationId.Should().NotBeEmpty();
         createOrganizationResponse.Headers.Location.Should().NotBeNull();
         createOrganizationResponse.Headers.Location.AbsolutePath.Should()
-            .Be($"/api/v1/organizations/{organizationId}");
+            .Be(Routes.Organizations.Get(organizationId));
     }
 
     [Fact]
@@ -44,7 +44,7 @@ public class CreateOrganizationTests : BaseFunctionalTest
 
         // Act
         var createOrganizationResponse = await _httpClient.PostAsJsonAsync(
-            "api/v1/organizations",
+            Routes.Organizations.Create,
             createOrganizationRequest,
             cancellationToken: TestContext.Current.CancellationToken);
 
@@ -61,7 +61,7 @@ public class CreateOrganizationTests : BaseFunctionalTest
 
         // Act
         var createOrganizationResponse = await _httpClient.PostAsJsonAsync(
-            "api/v1/organizations",
+            Routes.Organizations.Create,
             createOrganizationRequest,
             cancellationToken: TestContext.Current.CancellationToken);
 
@@ -78,7 +78,7 @@ public class CreateOrganizationTests : BaseFunctionalTest
 
         // Act
         var createOrganizationResponse = await _httpClient.PostAsJsonAsync(
-            "api/v1/organizations",
+            Routes.Organizations.Create,
             createOrganizationRequest,
             cancellationToken: TestContext.Current.CancellationToken);
 

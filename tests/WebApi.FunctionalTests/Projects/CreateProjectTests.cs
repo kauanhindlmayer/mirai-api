@@ -20,7 +20,7 @@ public class CreateProjectTests : BaseFunctionalTest
         await SetAuthorizationHeaderAsync();
         var createOrganizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest();
         var createOrganizationResponse = await _httpClient.PostAsJsonAsync(
-            "api/v1/organizations",
+            "api/organizations",
             createOrganizationRequest,
             cancellationToken: TestContext.Current.CancellationToken);
         var organizationId = await createOrganizationResponse.Content.ReadFromJsonAsync<Guid>(
@@ -29,7 +29,7 @@ public class CreateProjectTests : BaseFunctionalTest
 
         // Act
         var createProjectResponse = await _httpClient.PostAsJsonAsync(
-            $"api/v1/organizations/{organizationId}/projects",
+            $"api/organizations/{organizationId}/projects",
             createProjectRequest,
             cancellationToken: TestContext.Current.CancellationToken);
 
@@ -39,6 +39,6 @@ public class CreateProjectTests : BaseFunctionalTest
             cancellationToken: TestContext.Current.CancellationToken);
         projectId.Should().NotBeEmpty();
         createProjectResponse.Headers.Location.Should().NotBeNull();
-        createProjectResponse.Headers.Location!.AbsolutePath.Should().Be($"/api/v1/projects/{projectId}");
+        createProjectResponse.Headers.Location!.AbsolutePath.Should().Be($"/api/projects/{projectId}");
     }
 }

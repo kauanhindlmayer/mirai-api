@@ -19,7 +19,7 @@ public class DeleteOrganizationTests : BaseFunctionalTest
         await SetAuthorizationHeaderAsync();
         var createOrganizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest();
         var createOrganizationResponse = await _httpClient.PostAsJsonAsync(
-            "api/v1/organizations",
+            Routes.Organizations.Create,
             createOrganizationRequest,
             cancellationToken: TestContext.Current.CancellationToken);
         var organizationId = await createOrganizationResponse.Content.ReadFromJsonAsync<Guid>(
@@ -27,7 +27,7 @@ public class DeleteOrganizationTests : BaseFunctionalTest
 
         // Act
         var deleteOrganizationResponse = await _httpClient.DeleteAsync(
-            $"api/v1/organizations/{organizationId}",
+            Routes.Organizations.Delete(organizationId),
             TestContext.Current.CancellationToken);
 
         // Assert
@@ -43,7 +43,7 @@ public class DeleteOrganizationTests : BaseFunctionalTest
 
         // Act
         var deleteOrganizationResponse = await _httpClient.DeleteAsync(
-            $"api/v1/organizations/{organizationId}",
+            Routes.Organizations.Delete(organizationId),
             TestContext.Current.CancellationToken);
 
         // Assert

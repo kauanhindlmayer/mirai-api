@@ -29,7 +29,7 @@ public class RegisterUserTests : BaseFunctionalTest
 
         // Act
         var response = await _httpClient.PostAsJsonAsync(
-            "api/v1/users/register",
+            "api/users/register",
             request,
             cancellationToken: TestContext.Current.CancellationToken);
 
@@ -45,7 +45,7 @@ public class RegisterUserTests : BaseFunctionalTest
 
         // Act
         var response = await _httpClient.PostAsJsonAsync(
-            "api/v1/users/register",
+            "api/users/register",
             request,
             cancellationToken: TestContext.Current.CancellationToken);
 

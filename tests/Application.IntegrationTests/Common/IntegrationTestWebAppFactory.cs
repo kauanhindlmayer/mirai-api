@@ -42,26 +42,13 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        Environment.SetEnvironmentVariable(
-            "ConnectionStrings:Database",
-            _dbContainer.GetConnectionString());
-
-        Environment.SetEnvironmentVariable(
-            "ConnectionStrings:Redis",
-            _redisContainer.GetConnectionString());
+        builder.UseSetting("ConnectionStrings:Database", _dbContainer.GetConnectionString());
+        builder.UseSetting("ConnectionStrings:Redis", _redisContainer.GetConnectionString());
 
         var keycloakAddress = _keycloakContainer.GetBaseAddress();
-
-        var keycloakAdminUrl = $"{keycloakAddress}admin/realms/mirai/";
-        Environment.SetEnvironmentVariable("Keycloak:AdminUrl", keycloakAdminUrl);
-
-        var keycloakTokenUrl = $"{keycloakAddress}realms/mirai/protocol/openid-connect/token";
-        Environment.SetEnvironmentVariable("Keycloak:TokenUrl", keycloakTokenUrl);
-
-        var validIssuer = $"{keycloakAddress}realms/mirai/";
-        Environment.SetEnvironmentVariable("Authentication:ValidIssuer", validIssuer);
-
-        var metadataAddress = $"{keycloakAddress}realms/mirai/.well-known/openid-configuration";
-        Environment.SetEnvironmentVariable("Authentication:MetadataAddress", metadataAddress);
+        builder.UseSetting("Keycloak:AdminUrl", $"{keycloakAddress}admin/realms/mirai/");
+        builder.UseSetting("Keycloak:TokenUrl", $"{keycloakAddress}realms/mirai/protocol/openid-connect/token");
+        builder.UseSetting("Authentication:ValidIssuer", $"{keycloakAddress}realms/mirai/");
+        builder.UseSetting("Authentication:MetadataAddress", $"{keycloakAddress}realms/mirai/.well-known/openid-configuration");
     }
 }

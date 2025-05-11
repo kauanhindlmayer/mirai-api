@@ -24,13 +24,7 @@ public static class UserRequestFactory
         string firstName = FirstName,
         string lastName = LastName)
     {
-        return new RegisterUserRequest
-        {
-            Email = email,
-            Password = password,
-            FirstName = firstName,
-            LastName = lastName,
-        };
+        return new RegisterUserRequest(email, password, firstName, lastName);
     }
 
     internal static object CreateUpdateUserProfileRequest(

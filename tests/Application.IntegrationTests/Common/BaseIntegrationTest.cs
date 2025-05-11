@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.IntegrationTests.Common;
 
+[Collection(nameof(IntegrationTestCollection))]
 public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppFactory>
 {
     protected readonly ISender _sender;

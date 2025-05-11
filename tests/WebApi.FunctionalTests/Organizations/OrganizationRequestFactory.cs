@@ -8,21 +8,13 @@ public static class OrganizationRequestFactory
         string name = "Organization Name",
         string description = "Organization Description")
     {
-        return new CreateOrganizationRequest
-        {
-            Name = name,
-            Description = description,
-        };
+        return new CreateOrganizationRequest(name, description);
     }
 
     public static UpdateOrganizationRequest CreateUpdateOrganizationRequest(
         string name = "Updated Organization Name",
         string description = "Updated Organization Description")
     {
-        return new UpdateOrganizationRequest
-        {
-            Name = name,
-            Description = description,
-        };
+        return new UpdateOrganizationRequest(name, description);
     }
 }

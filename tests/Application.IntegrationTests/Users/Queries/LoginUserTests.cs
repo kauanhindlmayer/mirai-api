@@ -34,12 +34,12 @@ public class LoginUserTests : BaseIntegrationTest
     {
         // Arrange
         var registerCommand = new RegisterUserCommand(
-            "john.doe@email.com",
+            "john.doe3@email.com",
             "vXJu9zCgjOV2dW3",
             "John",
             "Doe");
         await _sender.Send(registerCommand, TestContext.Current.CancellationToken);
-        var command = new LoginUserQuery("john.doe@email.com", "vXJu9zCgjOV2dW3");
+        var command = new LoginUserQuery("john.doe3@email.com", "vXJu9zCgjOV2dW3");
 
         // Act
         var result = await _sender.Send(command, TestContext.Current.CancellationToken);
@@ -53,12 +53,12 @@ public class LoginUserTests : BaseIntegrationTest
     public async Task Handle_WhenUserExistsAndPasswordDoesNotMatch_ReturnsAuthenticationFailedError()
     {
         var registerCommand = new RegisterUserCommand(
-            "test2@test.com",
-            "password",
+            "john.doe4@email.com",
+            "vXJu9zCgjOV2dW3",
             "John",
             "Doe");
         await _sender.Send(registerCommand, TestContext.Current.CancellationToken);
-        var command = new LoginUserQuery("test2@test.com", "wrong_password");
+        var command = new LoginUserQuery("john.doe4@email.com", "wrong_password");
 
         // Act
         var result = await _sender.Send(command, TestContext.Current.CancellationToken);

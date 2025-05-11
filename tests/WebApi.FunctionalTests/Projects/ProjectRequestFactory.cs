@@ -8,10 +8,6 @@ public static class ProjectRequestFactory
         string name = "Project Name",
         string description = "Project Description")
     {
-        return new CreateProjectRequest
-        {
-            Name = name,
-            Description = description,
-        };
+        return new CreateProjectRequest(name, description);
     }
 }
