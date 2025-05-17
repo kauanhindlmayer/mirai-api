@@ -119,12 +119,10 @@ public sealed class UsersController : ApiController
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> UpdateProfilePicture(
-        IFormFile file,
+        [FromForm] UpdateProfilePictureRequest request,
         CancellationToken cancellationToken)
     {
-        var command = new UpdateUserProfilePictureCommand(
-            file.OpenReadStream(),
-            file.ContentType);
+        var command = new UpdateUserProfilePictureCommand(request.File);
 
         var result = await _sender.Send(command, cancellationToken);
 

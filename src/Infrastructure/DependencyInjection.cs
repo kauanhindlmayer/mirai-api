@@ -10,11 +10,11 @@ using Infrastructure.Services;
 using Infrastructure.Settings;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Quartz;
 using AuthenticationOptions = Infrastructure.Settings.AuthenticationOptions;
 using AuthenticationService = Infrastructure.Authentication.AuthenticationService;
 using IAuthenticationService = Application.Common.Interfaces.Services.IAuthenticationService;
@@ -38,7 +38,8 @@ public static class DependencyInjection
             .AddHealthChecks(configuration)
             .AddApiVersioning()
             .AddCorsPolicy(configuration)
-            .AddCaching(configuration);
+            .AddCaching(configuration)
+            .AddBackgroundJobs();
 
         return services;
     }
@@ -50,6 +51,7 @@ public static class DependencyInjection
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
         services.AddSingleton<IHtmlSanitizerService, HtmlSanitizerService>();
         services.AddTransient<LinkService>();
+        services.AddTransient<IBackgroundJobScheduler, BackgroundJobScheduler>();
 
         var languageServiceOptions = configuration.GetSection(LanguageServiceOptions.SectionName);
         services.Configure<LanguageServiceOptions>(languageServiceOptions);
@@ -185,12 +187,21 @@ public static class DependencyInjection
         return services;
     }
 
-    private static void AddCaching(
+    private static IServiceCollection AddCaching(
         this IServiceCollection services,
         IConfiguration configuration)
     {
         var connectionString = configuration.GetConnectionString("Redis");
         services.AddStackExchangeRedisCache(options => options.Configuration = connectionString);
         services.AddSingleton<ICacheService, CacheService>();
+        return services;
+    }
+
+    private static IServiceCollection AddBackgroundJobs(this IServiceCollection services)
+    {
+        services.AddQuartz();
+        services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
+
+        return services;
     }
 }

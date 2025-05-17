@@ -17,11 +17,19 @@ public sealed class Tag : Entity
     public Project Project { get; private set; } = null!;
     public ICollection<WorkItem> WorkItems { get; private set; } = [];
 
-    public Tag(string name, string description, string color)
+    public Tag(string name, string? description, string color)
     {
         Name = name;
         Description = description;
         Color = color;
+    }
+
+    public Tag(string name, string? description, string color, Guid projectId)
+    {
+        Name = name;
+        Description = description;
+        Color = color;
+        ProjectId = projectId;
     }
 
     private Tag()

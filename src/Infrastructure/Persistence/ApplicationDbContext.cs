@@ -51,6 +51,8 @@ public sealed class ApplicationDbContext(
 
     public DbSet<Tag> Tags { get; init; } = null!;
 
+    public DbSet<TagImportJob> TagImportJobs { get; init; } = null!;
+
     public DbSet<Sprint> Sprints { get; init; } = null!;
 
     public async override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

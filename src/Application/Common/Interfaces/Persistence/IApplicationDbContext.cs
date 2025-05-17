@@ -19,9 +19,11 @@ public interface IApplicationDbContext
     DbSet<Project> Projects { get; }
     DbSet<Retrospective> Retrospectives { get; }
     DbSet<Tag> Tags { get; }
+    DbSet<TagImportJob> TagImportJobs { get; }
     DbSet<Team> Teams { get; }
     DbSet<User> Users { get; }
     DbSet<WikiPage> WikiPages { get; }
     DbSet<WorkItem> WorkItems { get; }
     DbSet<Sprint> Sprints { get; }
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
