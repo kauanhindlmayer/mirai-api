@@ -4,6 +4,7 @@ using Asp.Versioning;
 using Azure.Storage.Blobs;
 using Infrastructure.Authentication;
 using Infrastructure.Authorization;
+using Infrastructure.Jobs;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Repositories;
 using Infrastructure.Services;
@@ -199,7 +200,20 @@ public static class DependencyInjection
 
     private static IServiceCollection AddBackgroundJobs(this IServiceCollection services)
     {
-        services.AddQuartz();
+        services.AddQuartz(config =>
+        {
+            // Runs every day at 3 AM UTC
+            config.AddJob<CleanupTagImportJobsJob>(job => job.WithIdentity("cleanup-tag-import-jobs"));
+
+            config.AddTrigger(trigger =>
+                trigger
+                    .ForJob("cleanup-tag-import-jobs")
+                    .WithIdentity("cleanup-tag-import-jobs-trigger")
+                    .WithCronSchedule(
+                        "0 0 3 * * ?",
+                        cron => cron.InTimeZone(TimeZoneInfo.Utc)));
+        });
+
         services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
 
         return services;
