@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace Application.Tags.Commands.CreateTagImportJob;
+namespace Application.TagImportJobs.Commands.CreateTagImportJob;
 
 public sealed partial class CreateTagImportJobCommandValidator : AbstractValidator<CreateTagImportJobCommand>
 {

@@ -2,7 +2,7 @@ using ErrorOr;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 
-namespace Application.Tags.Commands.CreateTagImportJob;
+namespace Application.TagImportJobs.Commands.CreateTagImportJob;
 
 public sealed record CreateTagImportJobCommand(
     Guid ProjectId,

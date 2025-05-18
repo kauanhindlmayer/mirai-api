@@ -1,5 +1,4 @@
 using Application.Tags.Commands.CreateTag;
-using Application.Tags.Commands.CreateTagImportJob;
 using Application.Tags.Commands.DeleteTag;
 using Application.Tags.Commands.UpdateTag;
 using Application.Tags.Queries.ListTags;
@@ -120,28 +119,6 @@ public sealed class TagsController : ApiController
 
         return result.Match(
             _ => NoContent(),
-            Problem);
-    }
-
-    /// <summary>
-    /// Create a import job for tags.
-    /// </summary>
-    /// <param name="projectId">The project's unique identifier.</param>
-    [HttpPost("import")]
-    [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<Guid>> CreateTagImportJob(
-        Guid projectId,
-        [FromForm] CreateTagImportJobRequest request,
-        CancellationToken cancellationToken)
-    {
-        var command = new CreateTagImportJobCommand(projectId, request.File);
-
-        var result = await _sender.Send(command, cancellationToken);
-
-        return result.Match(
-            importJobId => Ok(importJobId),
             Problem);
     }
 }

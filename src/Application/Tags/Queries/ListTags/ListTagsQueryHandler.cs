@@ -1,5 +1,5 @@
 using Application.Common.Interfaces.Persistence;
-using Application.Tags.Common;
+using Application.Tags.Queries.Common;
 using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

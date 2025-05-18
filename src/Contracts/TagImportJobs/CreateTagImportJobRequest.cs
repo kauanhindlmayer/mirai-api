@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Http;
 
-namespace Contracts.Tags;
+namespace Contracts.TagImportJobs;
 
 /// <summary>
 /// Data transfer object for creating a tag import job.

@@ -4,7 +4,7 @@ using Domain.Tags;
 using ErrorOr;
 using MediatR;
 
-namespace Application.Tags.Commands.CreateTagImportJob;
+namespace Application.TagImportJobs.Commands.CreateTagImportJob;
 
 internal sealed class CreateTagImportJobCommandHandler : IRequestHandler<CreateTagImportJobCommand, ErrorOr<Guid>>
 {

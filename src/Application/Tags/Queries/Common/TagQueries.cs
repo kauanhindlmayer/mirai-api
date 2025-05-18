@@ -1,9 +1,8 @@
 using System.Linq.Expressions;
 using Application.Tags.Queries.ListTags;
 using Domain.Tags;
-using Domain.Teams;
 
-namespace Application.Tags.Common;
+namespace Application.Tags.Queries.Common;
 
 internal static class TagQueries
 {
