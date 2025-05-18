@@ -4,6 +4,7 @@ using Application.Tags.Commands.CreateTag;
 using Application.Tags.Commands.DeleteTag;
 using Application.Tags.Commands.MergeTags;
 using Application.Tags.Commands.UpdateTag;
+using Application.Tags.Queries.ExportTags;
 using Application.Tags.Queries.ListTags;
 using Asp.Versioning;
 using Contracts.Tags;
@@ -160,6 +161,27 @@ public sealed class TagsController : ApiController
 
         return result.Match(
             _ => NoContent(),
+            Problem);
+    }
+
+    /// <summary>
+    /// Export all tags for a project as a CSV file.
+    /// </summary>
+    /// <param name="projectId">The project's unique identifier.</param>
+    [HttpGet("export")]
+    [Produces("text/csv")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> ExportTags(
+        Guid projectId,
+        CancellationToken cancellationToken)
+    {
+        var query = new ExportTagsQuery(projectId);
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(
+            csv => File(csv, "text/csv", "tags.csv"),
             Problem);
     }
 }

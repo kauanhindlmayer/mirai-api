@@ -31,4 +31,8 @@ public static class TagErrors
     public static readonly Error SourceAndTargetTagsMustBelongToSameProject = Error.Validation(
         code: "Tag.SourceAndTargetTagsMustBelongToSameProject",
         description: "Source and target tags must belong to the same project.");
+
+    public static readonly Error NoTagsFound = Error.NotFound(
+        code: "Tag.NoTagsFound",
+        description: "No tags found for the given project.");
 }
