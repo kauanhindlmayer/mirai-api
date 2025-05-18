@@ -1,4 +1,4 @@
-namespace Application.TagImportJobs.Queries.GetTagImportJobStatus;
+namespace Application.TagImportJobs.Queries.GetTagImportJob;
 
 public sealed class TagImportJobResponse
 {

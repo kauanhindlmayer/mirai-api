@@ -5,20 +5,20 @@ using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.TagImportJobs.Queries.GetTagImportJobStatus;
+namespace Application.TagImportJobs.Queries.GetTagImportJob;
 
-internal sealed class GetTagImportJobStatusQueryHandler
-    : IRequestHandler<GetTagImportJobStatusQuery, ErrorOr<TagImportJobResponse>>
+internal sealed class GetTagImportJobQueryHandler
+    : IRequestHandler<GetTagImportJobQuery, ErrorOr<TagImportJobResponse>>
 {
     private readonly IApplicationDbContext _context;
 
-    public GetTagImportJobStatusQueryHandler(IApplicationDbContext context)
+    public GetTagImportJobQueryHandler(IApplicationDbContext context)
     {
         _context = context;
     }
 
     public async Task<ErrorOr<TagImportJobResponse>> Handle(
-        GetTagImportJobStatusQuery query,
+        GetTagImportJobQuery query,
         CancellationToken cancellationToken)
     {
         var importJob = await _context.TagImportJobs

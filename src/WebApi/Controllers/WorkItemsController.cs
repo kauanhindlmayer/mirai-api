@@ -144,7 +144,7 @@ public sealed class WorkItemsController : ApiController
     {
         var query = new ListWorkItemsQuery(
             projectId,
-            request.PageNumber,
+            request.Page,
             request.PageSize,
             request.SortField,
             request.SortOrder,

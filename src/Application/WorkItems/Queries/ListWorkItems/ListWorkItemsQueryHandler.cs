@@ -39,7 +39,7 @@ internal sealed class ListWorkItemsQueryHandler
 
         var workItems = await workItemsQuery
             .Select(WorkItemQueries.ProjectToBriefDto())
-            .PaginatedListAsync(query.PageNumber, query.PageSize, cancellationToken);
+            .PaginatedListAsync(query.Page, query.PageSize, cancellationToken);
 
         return workItems;
     }

@@ -1,5 +1,5 @@
 using System.Linq.Expressions;
-using Application.TagImportJobs.Queries.GetTagImportJobStatus;
+using Application.TagImportJobs.Queries.GetTagImportJob;
 using Domain.Tags;
 
 namespace Application.TagImportJobs.Queries.Common;
