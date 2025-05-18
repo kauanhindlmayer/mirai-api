@@ -1,4 +1,5 @@
 using System.Net.Mime;
+using Application.Common;
 using Application.Tags.Commands.CreateTag;
 using Application.Tags.Commands.DeleteTag;
 using Application.Tags.Commands.MergeTags;
@@ -58,16 +59,23 @@ public sealed class TagsController : ApiController
     /// Retrieve all tags for a project.
     /// </summary>
     /// <param name="projectId">The project's unique identifier.</param>
+    /// <param name="page">The page number for pagination (default is 1).</param>
+    /// <param name="pageSize">The number of tags per page (default is 10).</param>
     /// <param name="searchTerm">The search term to filter tags by (optional).</param>
     [HttpGet]
-    [ProducesResponseType(typeof(IReadOnlyList<TagResponse>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<IReadOnlyList<TagResponse>>> ListTags(
+    [ProducesResponseType(typeof(PaginatedList<TagResponse>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<PaginatedList<TagResponse>>> ListTags(
         Guid projectId,
+        int page = 1,
+        int pageSize = 10,
         string? searchTerm = null,
         CancellationToken cancellationToken = default)
     {
-        var query = new ListTagsQuery(projectId, searchTerm);
+        var query = new ListTagsQuery(
+            projectId,
+            page,
+            pageSize,
+            searchTerm);
 
         var result = await _sender.Send(query, cancellationToken);
 
