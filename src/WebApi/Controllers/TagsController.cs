@@ -1,6 +1,7 @@
 using System.Net.Mime;
 using Application.Tags.Commands.CreateTag;
 using Application.Tags.Commands.DeleteTag;
+using Application.Tags.Commands.MergeTags;
 using Application.Tags.Commands.UpdateTag;
 using Application.Tags.Queries.ListTags;
 using Asp.Versioning;
@@ -116,6 +117,36 @@ public sealed class TagsController : ApiController
         CancellationToken cancellationToken)
     {
         var command = new DeleteTagCommand(projectId, tagId);
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        return result.Match(
+            _ => NoContent(),
+            Problem);
+    }
+
+    /// <summary>
+    /// Merge multiple tags into a target tag within a project.
+    /// </summary>
+    /// <remarks>
+    /// This operation transfers all work item associations from the source tags
+    /// to the target tag, and then deletes the source tags. Useful for cleaning up
+    /// duplicate or obsolete tags. The target tag must belong to the same project,
+    /// and cannot be included as a source.
+    /// </remarks>
+    /// <param name="projectId">The project's unique identifier.</param>
+    [HttpPost("merge")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> MergeTags(
+        Guid projectId,
+        MergeTagsRequest request,
+        CancellationToken cancellationToken)
+    {
+        var command = new MergeTagsCommand(
+            projectId,
+            request.TargetTagId,
+            request.SourceTagIds);
 
         var result = await _sender.Send(command, cancellationToken);
 

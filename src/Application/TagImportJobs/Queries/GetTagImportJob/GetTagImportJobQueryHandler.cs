@@ -1,6 +1,6 @@
 using Application.Common.Interfaces.Persistence;
 using Application.TagImportJobs.Queries.Common;
-using Domain.Tags;
+using Domain.TagImportJobs;
 using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

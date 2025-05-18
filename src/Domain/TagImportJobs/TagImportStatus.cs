@@ -1,4 +1,4 @@
-namespace Domain.Tags;
+namespace Domain.TagImportJobs;
 
 public enum TagImportStatus
 {

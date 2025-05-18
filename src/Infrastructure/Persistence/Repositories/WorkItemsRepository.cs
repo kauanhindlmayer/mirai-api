@@ -40,4 +40,14 @@ internal sealed class WorkItemsRepository : Repository<WorkItem>, IWorkItemsRepo
 
         return workItemCount + 1;
     }
+
+    public Task<List<WorkItem>> ListByTagIdAsync(
+        Guid tagId,
+        CancellationToken cancellationToken = default)
+    {
+        return _dbContext.WorkItems
+            .AsNoTracking()
+            .Where(wi => wi.Tags.Any(t => t.Id == tagId))
+            .ToListAsync(cancellationToken);
+    }
 }

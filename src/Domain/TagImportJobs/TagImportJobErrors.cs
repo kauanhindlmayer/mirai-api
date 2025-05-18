@@ -1,6 +1,6 @@
 using ErrorOr;
 
-namespace Domain.Tags;
+namespace Domain.TagImportJobs;
 
 public static class TagImportJobErrors
 {

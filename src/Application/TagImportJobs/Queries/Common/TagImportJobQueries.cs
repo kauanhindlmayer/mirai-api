@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
 using Application.TagImportJobs.Queries.GetTagImportJob;
-using Domain.Tags;
+using Domain.TagImportJobs;
 
 namespace Application.TagImportJobs.Queries.Common;
 

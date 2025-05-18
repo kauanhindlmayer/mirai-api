@@ -1,5 +1,5 @@
 using Application.Common.Interfaces.Persistence;
-using Domain.Tags;
+using Domain.TagImportJobs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Quartz;
