@@ -1,3 +1,4 @@
+using System.Net.Mime;
 using Application.Sprints.Commands.AddWorkItemToSprint;
 using Application.Sprints.Commands.CreateSprint;
 using Application.Sprints.Queries.ListSprints;
@@ -11,6 +12,7 @@ namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
 [Route("api/teams/{teamId:guid}/sprints")]
+[Produces(MediaTypeNames.Application.Json, CustomMediaTypeNames.Application.JsonV1)]
 public sealed class SprintsController : ApiController
 {
     private readonly ISender _sender;

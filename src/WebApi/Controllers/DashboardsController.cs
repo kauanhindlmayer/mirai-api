@@ -1,3 +1,4 @@
+using System.Net.Mime;
 using Application.Dashboards.Queries.GetDashboard;
 using Asp.Versioning;
 using Contracts.Dashboards;
@@ -9,6 +10,7 @@ namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
 [Route("api/teams/{teamId:guid}/dashboards")]
+[Produces(MediaTypeNames.Application.Json, CustomMediaTypeNames.Application.JsonV1)]
 public sealed class DashboardsController : ApiController
 {
     private readonly ISender _sender;

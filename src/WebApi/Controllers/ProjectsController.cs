@@ -1,3 +1,4 @@
+using System.Net.Mime;
 using Application.Projects.Commands.CreateProject;
 using Application.Projects.Commands.UpdateProject;
 using Application.Projects.Queries.GetProject;
@@ -12,6 +13,7 @@ namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
 [Route("api/organizations/{organizationId:guid}/projects")]
+[Produces(MediaTypeNames.Application.Json, CustomMediaTypeNames.Application.JsonV1)]
 public sealed class ProjectsController : ApiController
 {
     private readonly ISender _sender;

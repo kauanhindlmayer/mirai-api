@@ -1,3 +1,4 @@
+using System.Net.Mime;
 using Application.Retrospectives.Commands.CreateRetrospective;
 using Application.Retrospectives.Commands.CreateRetrospectiveColumn;
 using Application.Retrospectives.Commands.CreateRetrospectiveItem;
@@ -16,6 +17,7 @@ namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
 [Route("api/teams/{teamId:guid}/retrospectives")]
+[Produces(MediaTypeNames.Application.Json, CustomMediaTypeNames.Application.JsonV1)]
 public sealed class RetrospectivesController : ApiController
 {
     private readonly ISender _sender;

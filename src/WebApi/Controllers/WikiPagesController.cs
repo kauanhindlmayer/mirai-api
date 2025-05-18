@@ -1,3 +1,4 @@
+using System.Net.Mime;
 using Application.WikiPages.Commands.AddComment;
 using Application.WikiPages.Commands.CreateWikiPage;
 using Application.WikiPages.Commands.DeleteComment;
@@ -18,6 +19,7 @@ namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
 [Route("api/projects/{projectId:guid}/wiki-pages")]
+[Produces(MediaTypeNames.Application.Json, CustomMediaTypeNames.Application.JsonV1)]
 public sealed class WikiPagesController : ApiController
 {
     private readonly ISender _sender;

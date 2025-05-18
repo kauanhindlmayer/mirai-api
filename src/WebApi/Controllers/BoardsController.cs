@@ -1,3 +1,4 @@
+using System.Net.Mime;
 using Application.Boards.Commands.CreateCard;
 using Application.Boards.Commands.CreateColumn;
 using Application.Boards.Commands.DeleteBoard;
@@ -15,6 +16,7 @@ namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
 [Route("api/teams/{teamId:guid}/boards")]
+[Produces(MediaTypeNames.Application.Json, CustomMediaTypeNames.Application.JsonV1)]
 public sealed class BoardsController : ApiController
 {
     private readonly ISender _sender;

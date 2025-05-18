@@ -1,3 +1,5 @@
+using System.Net.Mime;
+using Application.Common;
 using Application.Users.Commands.RegisterUser;
 using Application.Users.Commands.UpdateUserProfile;
 using Application.Users.Commands.UpdateUserProfilePicture;
@@ -7,6 +9,7 @@ using Application.Users.Queries.LoginUser;
 using Asp.Versioning;
 using Contracts.Users;
 using Domain.Users;
+using Infrastructure.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,13 +19,22 @@ namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
 [Route("api/users")]
+[Produces(
+    MediaTypeNames.Application.Json,
+    CustomMediaTypeNames.Application.JsonV1,
+    CustomMediaTypeNames.Application.HateoasJson,
+    CustomMediaTypeNames.Application.HateoasJsonV1)]
 public sealed class UsersController : ApiController
 {
     private readonly ISender _sender;
+    private readonly LinkService _linkService;
 
-    public UsersController(ISender sender)
+    public UsersController(
+        ISender sender,
+        LinkService linkService)
     {
         _sender = sender;
+        _linkService = linkService;
     }
 
     /// <summary>
@@ -82,13 +94,24 @@ public sealed class UsersController : ApiController
     [HttpGet("me")]
     [ProducesResponseType(typeof(UserResponse), StatusCodes.Status200OK)]
     public async Task<ActionResult<UserResponse>> GetCurrentUser(
+        [FromHeader] AcceptHeaderRequest acceptHeader,
         CancellationToken cancellationToken)
     {
         var query = new GetCurrentUserQuery();
 
         var result = await _sender.Send(query, cancellationToken);
 
-        return result.Match(Ok, Problem);
+        return result.Match(
+            user =>
+            {
+                if (acceptHeader.IncludeLinks)
+                {
+                    user.Links = CreateLinksForUser();
+                }
+
+                return Ok(user);
+            },
+            Problem);
     }
 
     /// <summary>
@@ -129,5 +152,17 @@ public sealed class UsersController : ApiController
         return result.Match(
             _ => Ok(),
             Problem);
+    }
+
+    private List<LinkResponse> CreateLinksForUser()
+    {
+        List<LinkResponse> links =
+        [
+            _linkService.Create(nameof(GetCurrentUser), "self", HttpMethods.Get),
+            _linkService.Create(nameof(UpdateUserProfile), "update-profile", HttpMethods.Put),
+            _linkService.Create(nameof(UpdateProfilePicture), "update-profile-picture", HttpMethods.Patch),
+        ];
+
+        return links;
     }
 }

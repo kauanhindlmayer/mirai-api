@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Common;
 
-public sealed class PaginatedList<T>
+public sealed class PaginatedList<T> : LinksResponse
 {
     public IReadOnlyList<T> Items { get; } = [];
     public int Page { get; }

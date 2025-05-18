@@ -1,3 +1,4 @@
+using System.Net.Mime;
 using Application.Teams.Commands.AddMember;
 using Application.Teams.Commands.CreateTeam;
 using Application.Teams.Queries.GetTeam;
@@ -12,6 +13,7 @@ namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
 [Route("api/projects/{projectId:guid}/teams")]
+[Produces(MediaTypeNames.Application.Json, CustomMediaTypeNames.Application.JsonV1)]
 public sealed class TeamsController : ApiController
 {
     private readonly ISender _sender;

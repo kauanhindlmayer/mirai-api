@@ -1,3 +1,4 @@
+using System.Net.Mime;
 using Application.Common;
 using Application.WorkItems.Commands.AddComment;
 using Application.WorkItems.Commands.AddTag;
@@ -22,6 +23,7 @@ namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
 [Route("api/projects/{projectId:guid}/work-items")]
+[Produces(MediaTypeNames.Application.Json, CustomMediaTypeNames.Application.JsonV1)]
 public sealed class WorkItemsController : ApiController
 {
     private readonly ISender _sender;

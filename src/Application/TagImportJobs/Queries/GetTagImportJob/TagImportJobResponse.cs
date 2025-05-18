@@ -1,6 +1,8 @@
+using Application.Common;
+
 namespace Application.TagImportJobs.Queries.GetTagImportJob;
 
-public sealed class TagImportJobResponse
+public sealed class TagImportJobResponse : LinksResponse
 {
     public Guid Id { get; init; }
     public required string Status { get; init; }

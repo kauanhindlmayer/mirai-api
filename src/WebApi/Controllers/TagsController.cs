@@ -1,3 +1,4 @@
+using System.Net.Mime;
 using Application.Tags.Commands.CreateTag;
 using Application.Tags.Commands.DeleteTag;
 using Application.Tags.Commands.UpdateTag;
@@ -12,6 +13,7 @@ namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
 [Route("api/projects/{projectId:guid}/tags")]
+[Produces(MediaTypeNames.Application.Json, CustomMediaTypeNames.Application.JsonV1)]
 public sealed class TagsController : ApiController
 {
     private readonly ISender _sender;

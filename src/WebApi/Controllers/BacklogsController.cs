@@ -1,3 +1,4 @@
+using System.Net.Mime;
 using Application.Backlogs.Queries.GetBacklog;
 using Asp.Versioning;
 using Contracts.Backlogs;
@@ -9,6 +10,7 @@ namespace WebApi.Controllers;
 
 [ApiVersion(ApiVersions.V1)]
 [Route("api/teams/{teamId:guid}/backlogs")]
+[Produces(MediaTypeNames.Application.Json, CustomMediaTypeNames.Application.JsonV1)]
 public sealed class BacklogsController : ApiController
 {
     private readonly ISender _sender;
