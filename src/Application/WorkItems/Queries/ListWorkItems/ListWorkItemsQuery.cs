@@ -1,5 +1,6 @@
 using Application.Common;
 using Application.WorkItems.Queries.Common;
+using Domain.WorkItems.Enums;
 using ErrorOr;
 using MediatR;
 
@@ -9,9 +10,10 @@ public sealed record ListWorkItemsQuery(
     Guid ProjectId,
     int Page,
     int PageSize,
-    string? SortField,
-    string? SortOrder,
-    string? SearchTerm) : IRequest<ErrorOr<PaginatedList<WorkItemBriefResponse>>>
+    string? Sort,
+    string? SearchTerm,
+    WorkItemType? Type,
+    WorkItemStatus? Status) : IRequest<ErrorOr<PaginatedList<WorkItemBriefResponse>>>
 {
     public string? SearchTerm { get; set; } = SearchTerm;
 }

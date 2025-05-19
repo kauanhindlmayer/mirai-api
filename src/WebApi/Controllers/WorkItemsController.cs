@@ -130,27 +130,24 @@ public sealed class WorkItemsController : ApiController
     }
 
     /// <summary>
-    /// Retrieve all work items in a project.
+    /// Retrieves a paginated list of work items for the specified project.
     /// </summary>
-    /// <remarks>
-    /// Support for pagination, sorting, and searching.
-    /// </remarks>
-    /// <param name="projectId">The ID of the project.</param>
-    /// <param name="request">The details of the page.</param>
+    /// <param name="projectId">The project's unique identifier.</param>
     [HttpGet]
     [ProducesResponseType(typeof(PaginatedList<WorkItemBriefResponse>), StatusCodes.Status200OK)]
     public async Task<ActionResult<PaginatedList<WorkItemBriefResponse>>> ListWorkItems(
         Guid projectId,
-        [FromQuery] PageRequest request,
+        [FromQuery] WorkItemsQueryParameters parameters,
         CancellationToken cancellationToken)
     {
         var query = new ListWorkItemsQuery(
             projectId,
-            request.Page,
-            request.PageSize,
-            request.SortField,
-            request.SortOrder,
-            request.SearchTerm);
+            parameters.Page,
+            parameters.PageSize,
+            parameters.Sort,
+            parameters.SearchTerm,
+            parameters.Type,
+            parameters.Status);
 
         var result = await _sender.Send(query, cancellationToken);
 

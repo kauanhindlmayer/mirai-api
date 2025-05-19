@@ -1,4 +1,8 @@
 using Application.Common.Behaviors;
+using Application.Common.Mappings;
+using Application.Common.Sorting;
+using Application.WorkItems.Queries.Common;
+using Domain.WorkItems;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,6 +21,10 @@ public static class DependencyInjection
             options.AddOpenBehavior(typeof(UnitOfWorkBehavior<,>));
         });
         services.AddValidatorsFromAssemblyContaining(typeof(DependencyInjection));
+
+        services.AddTransient<SortMappingProvider>();
+        services.AddSingleton<ISortMappingDefinition, SortMappingDefinition<WorkItemBriefResponse, WorkItem>>(_ =>
+            WorkItemMappings.SortMapping);
 
         return services;
     }
