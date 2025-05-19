@@ -8,5 +8,5 @@ namespace Contracts.Sprints;
 /// <param name="EndDate">The end date of the sprint.</param>
 public sealed record CreateSprintRequest(
     string Name,
-    DateTime StartDate,
-    DateTime EndDate);
+    DateOnly StartDate,
+    DateOnly EndDate);

@@ -29,11 +29,11 @@ internal static class WikiPageQueries
                     ImageUrl = comment.Author.ImageUrl,
                 },
                 Content = comment.Content,
-                CreatedAt = comment.CreatedAt,
-                UpdatedAt = comment.UpdatedAt,
+                CreatedAtUtc = comment.CreatedAtUtc,
+                UpdatedAtUtc = comment.UpdatedAtUtc,
             }),
-            CreatedAt = wp.CreatedAt,
-            UpdatedAt = wp.UpdatedAt,
+            CreatedAtUtc = wp.CreatedAtUtc,
+            UpdatedAtUtc = wp.UpdatedAtUtc,
         };
     }
 }

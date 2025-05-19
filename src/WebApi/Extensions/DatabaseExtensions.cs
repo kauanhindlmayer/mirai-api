@@ -70,8 +70,8 @@ public static class DatabaseExtensions
             var sprint = new Sprint(
                 team.Id,
                 "Sprint 1",
-                startDate,
-                startDate.AddDays(14));
+                DateOnly.FromDateTime(startDate),
+                DateOnly.FromDateTime(startDate.AddDays(14)));
             await context.Sprints.AddAsync(sprint);
 
             var board = new Board(

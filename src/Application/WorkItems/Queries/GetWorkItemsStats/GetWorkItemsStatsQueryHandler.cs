@@ -23,12 +23,12 @@ internal sealed class GetWorkItemsStatsQueryHandler
 
         var workItemsCreated = await _context.WorkItems
             .AsNoTracking()
-            .Where(wi => wi.ProjectId == query.ProjectId && wi.CreatedAt >= startDate)
+            .Where(wi => wi.ProjectId == query.ProjectId && wi.CreatedAtUtc >= startDate)
             .CountAsync(cancellationToken);
 
         var workItemsCompleted = await _context.WorkItems
             .AsNoTracking()
-            .Where(wi => wi.ProjectId == query.ProjectId && wi.CompletedAt >= startDate)
+            .Where(wi => wi.ProjectId == query.ProjectId && wi.CompletedAtUtc >= startDate)
             .CountAsync(cancellationToken);
 
         return new WorkItemsStatsResponse

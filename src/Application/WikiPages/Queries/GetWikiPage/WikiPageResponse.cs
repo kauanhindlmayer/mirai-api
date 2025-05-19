@@ -8,8 +8,8 @@ public sealed class WikiPageResponse
     public required string Content { get; init; }
     public AuthorResponse Author { get; init; } = null!;
     public IEnumerable<WikiPageCommentResponse> Comments { get; init; } = [];
-    public DateTime CreatedAt { get; init; }
-    public DateTime? UpdatedAt { get; init; }
+    public DateTime CreatedAtUtc { get; init; }
+    public DateTime? UpdatedAtUtc { get; init; }
 }
 
 public sealed class WikiPageCommentResponse
@@ -17,8 +17,8 @@ public sealed class WikiPageCommentResponse
     public Guid Id { get; init; }
     public AuthorResponse Author { get; init; } = null!;
     public required string Content { get; init; }
-    public DateTime CreatedAt { get; init; }
-    public DateTime? UpdatedAt { get; init; }
+    public DateTime CreatedAtUtc { get; init; }
+    public DateTime? UpdatedAtUtc { get; init; }
 }
 
 public sealed class AuthorResponse

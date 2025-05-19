@@ -10,8 +10,8 @@ public class CreateSprintTests
     private static readonly CreateSprintCommand Command = new(
         Guid.NewGuid(),
         "Name",
-        DateTime.UtcNow,
-        DateTime.UtcNow.AddDays(14));
+        DateOnly.FromDateTime(DateTime.UtcNow),
+        DateOnly.FromDateTime(DateTime.UtcNow.AddDays(14)));
 
     private readonly CreateSprintCommandHandler _handler;
     private readonly ITeamsRepository _teamsRepository;
@@ -42,7 +42,11 @@ public class CreateSprintTests
     {
         // Arrange
         var team = new Team(Guid.NewGuid(), "Team", string.Empty);
-        var sprint = new Sprint(team.Id, "Sprint 1", DateTime.UtcNow, DateTime.UtcNow.AddDays(14));
+        var sprint = new Sprint(
+            team.Id,
+            "Sprint 1",
+            DateOnly.FromDateTime(DateTime.UtcNow),
+            DateOnly.FromDateTime(DateTime.UtcNow.AddDays(14)));
         team.AddSprint(sprint);
         _teamsRepository.GetByIdAsync(Command.TeamId, TestContext.Current.CancellationToken)
             .Returns(team);

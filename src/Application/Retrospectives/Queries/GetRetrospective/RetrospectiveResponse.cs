@@ -23,5 +23,5 @@ public sealed class RetrospectiveItemResponse
     public int Position { get; init; }
     public Guid AuthorId { get; init; }
     public int Votes { get; init; }
-    public DateTime CreatedAt { get; init; }
+    public DateTime CreatedAtUtc { get; init; }
 }

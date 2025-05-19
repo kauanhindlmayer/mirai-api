@@ -14,8 +14,8 @@ internal static class OrganizationQueries
             Id = o.Id,
             Name = o.Name,
             Description = o.Description,
-            UpdatedAt = o.UpdatedAt,
-            CreatedAt = o.CreatedAt,
+            UpdatedAtUtc = o.UpdatedAtUtc,
+            CreatedAtUtc = o.CreatedAtUtc,
         };
     }
 

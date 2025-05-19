@@ -26,7 +26,7 @@ internal static class RetrospectiveQueries
                     Position = i.Position,
                     AuthorId = i.AuthorId,
                     Votes = i.Votes,
-                    CreatedAt = i.CreatedAt,
+                    CreatedAtUtc = i.CreatedAtUtc,
                 }),
             }),
         };

@@ -80,7 +80,7 @@ internal sealed class WorkItemConfigurations : IEntityTypeConfiguration<WorkItem
             .WithMany(t => t.WorkItems)
             .UsingEntity(j => j.ToTable("work_item_tags"));
 
-        builder.Property(wi => wi.CompletedAt);
+        builder.Property(wi => wi.CompletedAtUtc);
 
         builder.HasOne(wi => wi.Sprint)
             .WithMany(s => s.WorkItems)
