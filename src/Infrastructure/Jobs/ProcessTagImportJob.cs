@@ -100,6 +100,7 @@ public sealed class ProcessTagImportJob : IJob
         {
             _logger.LogError(ex, "Failed to process tag import job with ID {ImportJobId}.", importJobId);
             importJob.FailProcessing(ex.Message);
+            await _context.SaveChangesAsync();
             return;
         }
     }
