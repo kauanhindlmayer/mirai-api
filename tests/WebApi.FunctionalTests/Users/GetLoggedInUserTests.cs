@@ -21,7 +21,7 @@ public class GetLoggedInUserTests : BaseFunctionalTest
 
         // Act
         var response = await _httpClient.GetAsync(
-            "api/users/me",
+            Routes.Users.GetLoggedInUser,
             TestContext.Current.CancellationToken);
 
         // Assert
@@ -40,7 +40,7 @@ public class GetLoggedInUserTests : BaseFunctionalTest
     {
         // Act
         var response = await _httpClient.GetAsync(
-            "api/users/me",
+            Routes.Users.GetLoggedInUser,
             TestContext.Current.CancellationToken);
 
         // Assert

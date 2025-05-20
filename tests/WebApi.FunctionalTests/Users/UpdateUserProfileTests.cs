@@ -21,7 +21,7 @@ public class UpdateUserProfileTests : BaseFunctionalTest
 
         // Act
         var response = await _httpClient.PutAsJsonAsync(
-            "api/users/profile",
+            Routes.Users.UpdateProfile,
             request,
             cancellationToken: TestContext.Current.CancellationToken);
 
