@@ -8,6 +8,7 @@ public sealed record ListTagsQuery(
     Guid ProjectId,
     int Page,
     int PageSize,
+    string? Sort,
     string? SearchTerm) : IRequest<ErrorOr<PaginatedList<TagResponse>>>
 {
     public string? SearchTerm { get; set; } = SearchTerm;

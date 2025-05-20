@@ -7,6 +7,7 @@ using Application.Tags.Commands.UpdateTag;
 using Application.Tags.Queries.ExportTags;
 using Application.Tags.Queries.ListTags;
 using Asp.Versioning;
+using Contracts.Common;
 using Contracts.Tags;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -57,26 +58,22 @@ public sealed class TagsController : ApiController
     }
 
     /// <summary>
-    /// Retrieve all tags for a project.
+    /// Retrieve a paginated list of tags for a project.
     /// </summary>
     /// <param name="projectId">The project's unique identifier.</param>
-    /// <param name="page">The page number for pagination (default is 1).</param>
-    /// <param name="pageSize">The number of tags per page (default is 10).</param>
-    /// <param name="searchTerm">The search term to filter tags by (optional).</param>
     [HttpGet]
     [ProducesResponseType(typeof(PaginatedList<TagResponse>), StatusCodes.Status200OK)]
     public async Task<ActionResult<PaginatedList<TagResponse>>> ListTags(
         Guid projectId,
-        int page = 1,
-        int pageSize = 10,
-        string? searchTerm = null,
+        [FromQuery] PageRequest request,
         CancellationToken cancellationToken = default)
     {
         var query = new ListTagsQuery(
             projectId,
-            page,
-            pageSize,
-            searchTerm);
+            request.Page,
+            request.PageSize,
+            request.Sort,
+            request.SearchTerm);
 
         var result = await _sender.Send(query, cancellationToken);
 
