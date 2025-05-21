@@ -1,4 +1,4 @@
-namespace Infrastructure.Services.Language;
+namespace Infrastructure.Services.Nlp;
 
 /// <summary>
 /// Response containing the summarized version of the input text.

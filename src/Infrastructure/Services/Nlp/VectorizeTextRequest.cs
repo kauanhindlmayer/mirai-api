@@ -1,4 +1,4 @@
-namespace Infrastructure.Services.Language;
+namespace Infrastructure.Services.Nlp;
 
 /// <summary>
 /// Request to generate a vector representation (embedding) for a given text.

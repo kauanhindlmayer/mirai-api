@@ -12,16 +12,16 @@ internal sealed class CreateWorkItemCommandHandler : IRequestHandler<CreateWorkI
 {
     private readonly IProjectsRepository _projectsRepository;
     private readonly IWorkItemsRepository _workItemsRepository;
-    private readonly ILanguageService _languageService;
+    private readonly INlpService _nlpService;
 
     public CreateWorkItemCommandHandler(
         IProjectsRepository projectsRepository,
         IWorkItemsRepository workItemsRepository,
-        ILanguageService languageService)
+        INlpService nlpService)
     {
         _projectsRepository = projectsRepository;
         _workItemsRepository = workItemsRepository;
-        _languageService = languageService;
+        _nlpService = nlpService;
     }
 
     public async Task<ErrorOr<Guid>> Handle(
@@ -57,7 +57,7 @@ internal sealed class CreateWorkItemCommandHandler : IRequestHandler<CreateWorkI
             command.Type,
             command.AssignedTeamId);
 
-        var embeddingResponse = await _languageService.GenerateEmbeddingVectorAsync(
+        var embeddingResponse = await _nlpService.GenerateEmbeddingVectorAsync(
             $"{workItem.Title} {workItem.Description}");
         if (embeddingResponse.IsError)
         {

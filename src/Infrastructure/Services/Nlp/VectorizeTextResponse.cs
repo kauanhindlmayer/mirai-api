@@ -1,4 +1,4 @@
-namespace Infrastructure.Services.Language;
+namespace Infrastructure.Services.Nlp;
 
 /// <summary>
 /// Response containing the vector representation of the input text.

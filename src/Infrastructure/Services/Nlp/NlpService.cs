@@ -3,16 +3,16 @@ using Application.Common.Interfaces.Services;
 using ErrorOr;
 using Microsoft.Extensions.Logging;
 
-namespace Infrastructure.Services.Language;
+namespace Infrastructure.Services.Nlp;
 
-internal sealed class LanguageService : ILanguageService
+internal sealed class NlpService : INlpService
 {
     private readonly HttpClient _httpClient;
-    private readonly ILogger<LanguageService> _logger;
+    private readonly ILogger<NlpService> _logger;
 
-    public LanguageService(
+    public NlpService(
         HttpClient httpClient,
-        ILogger<LanguageService> logger)
+        ILogger<NlpService> logger)
     {
         _httpClient = httpClient;
         _logger = logger;
@@ -31,7 +31,7 @@ internal sealed class LanguageService : ILanguageService
         {
             _logger.LogError(ex, "An unexpected error occurred while generating an embedding.");
             return Error.Failure(
-                code: "LanguageService.EmbeddingException",
+                code: "NlpService.EmbeddingException",
                 description: "Unexpected error occurred during embedding generation.");
         }
     }
@@ -49,7 +49,7 @@ internal sealed class LanguageService : ILanguageService
         {
             _logger.LogError(ex, "An unexpected error occurred while summarizing text.");
             return Error.Failure(
-                code: "LanguageService.SummarizationException",
+                code: "NlpService.SummarizationException",
                 description: "Unexpected error occurred during summarization.");
         }
     }

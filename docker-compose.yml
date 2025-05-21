@@ -60,10 +60,10 @@ services:
     ports:
       - 6379:6379
 
-  mirai-language-api:
-    container_name: mirai-language-api
+  mirai-nlp-api:
+    container_name: mirai-nlp-api
     build:
-      context: ../mirai-language-api
+      context: ../mirai-nlp-api
       dockerfile: Dockerfile
     environment:
       - ENVIRONMENT=development

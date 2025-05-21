@@ -18,17 +18,17 @@ public class CreateWorkItemTests
     private readonly CreateWorkItemCommandHandler _handler;
     private readonly IProjectsRepository _projectsRepository;
     private readonly IWorkItemsRepository _workItemsRepository;
-    private readonly ILanguageService _languageService;
+    private readonly INlpService _nlpService;
 
     public CreateWorkItemTests()
     {
         _projectsRepository = Substitute.For<IProjectsRepository>();
         _workItemsRepository = Substitute.For<IWorkItemsRepository>();
-        _languageService = Substitute.For<ILanguageService>();
+        _nlpService = Substitute.For<INlpService>();
         _handler = new CreateWorkItemCommandHandler(
             _projectsRepository,
             _workItemsRepository,
-            _languageService);
+            _nlpService);
     }
 
     [Fact]

@@ -1,4 +1,4 @@
-namespace Infrastructure.Services.Language;
+namespace Infrastructure.Services.Nlp;
 
 /// <summary>
 /// Request to summarize a given text.
