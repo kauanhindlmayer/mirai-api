@@ -3,7 +3,6 @@ WORKDIR /src
 COPY ["src/WebApi/WebApi.csproj", "WebApi/"]
 COPY ["src/Application/Application.csproj", "Application/"]
 COPY ["src/Domain/Domain.csproj", "Domain/"]
-COPY ["src/Contracts/Contracts.csproj", "Contracts/"]
 COPY ["src/Infrastructure/Infrastructure.csproj", "Infrastructure/"]
 COPY ["Directory.Packages.props", "./"]
 COPY ["Directory.Build.props", "./"]

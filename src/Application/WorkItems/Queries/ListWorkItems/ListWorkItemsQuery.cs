@@ -13,7 +13,8 @@ public sealed record ListWorkItemsQuery(
     string? Sort,
     string? SearchTerm,
     WorkItemType? Type,
-    WorkItemStatus? Status) : IRequest<ErrorOr<PaginatedList<WorkItemBriefResponse>>>
+    WorkItemStatus? Status,
+    Guid? AssigneeId) : IRequest<ErrorOr<PaginatedList<WorkItemBriefResponse>>>
 {
     public string? SearchTerm { get; set; } = SearchTerm;
 }

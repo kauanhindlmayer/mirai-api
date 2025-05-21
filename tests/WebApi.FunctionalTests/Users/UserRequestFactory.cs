@@ -1,4 +1,4 @@
-using Contracts.Users;
+using WebApi.Controllers.Users;
 
 namespace WebApi.FunctionalTests.Users;
 

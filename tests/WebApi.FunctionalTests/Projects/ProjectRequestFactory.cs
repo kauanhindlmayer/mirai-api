@@ -1,4 +1,4 @@
-using Contracts.Projects;
+using WebApi.Controllers.Projects;
 
 namespace WebApi.FunctionalTests.Projects;
 
