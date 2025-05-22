@@ -1,8 +1,9 @@
-using System.Linq.Expressions;
 using Application.Common;
 using Application.Common.Interfaces.Persistence;
 using Application.Common.Mappings;
+using Application.Common.Sorting;
 using Application.WorkItems.Queries.Common;
+using Domain.Common;
 using Domain.WorkItems;
 using ErrorOr;
 using MediatR;
@@ -13,46 +14,39 @@ internal sealed class ListWorkItemsQueryHandler
     : IRequestHandler<ListWorkItemsQuery, ErrorOr<PaginatedList<WorkItemBriefResponse>>>
 {
     private readonly IApplicationDbContext _context;
+    private readonly SortMappingProvider _sortMappingProvider;
 
-    public ListWorkItemsQueryHandler(IApplicationDbContext context)
+    public ListWorkItemsQueryHandler(
+        IApplicationDbContext context,
+        SortMappingProvider sortMappingProvider)
     {
         _context = context;
+        _sortMappingProvider = sortMappingProvider;
     }
 
     public async Task<ErrorOr<PaginatedList<WorkItemBriefResponse>>> Handle(
         ListWorkItemsQuery query,
         CancellationToken cancellationToken)
     {
+        if (!_sortMappingProvider.ValidateMappings<WorkItemBriefResponse, WorkItem>(query.Sort))
+        {
+            return Errors.InvalidSort(query.Sort);
+        }
+
         var workItemsQuery = _context.WorkItems.Where(wi => wi.ProjectId == query.ProjectId);
         query.SearchTerm ??= query.SearchTerm?.Trim().ToLower();
 
-        if (!string.IsNullOrWhiteSpace(query.SearchTerm))
-        {
-            workItemsQuery = workItemsQuery.Where(wi => wi.Title.ToLower().Contains(query.SearchTerm));
-        }
-
-        var isDescending = query.SortOrder?.ToLower() == "desc";
-        var sortProperty = GetSortProperty(query.SortField);
-        workItemsQuery = isDescending
-            ? workItemsQuery.OrderByDescending(sortProperty)
-            : workItemsQuery.OrderBy(sortProperty);
+        var sortMappings = _sortMappingProvider.GetMappings<WorkItemBriefResponse, WorkItem>();
 
         var workItems = await workItemsQuery
+            .Where(wi => query.SearchTerm == null || wi.Title.ToLower().Contains(query.SearchTerm))
+            .Where(wi => query.Type == null || wi.Type == query.Type)
+            .Where(wi => query.Status == null || wi.Status == query.Status)
+            .Where(wi => query.AssigneeId == null || wi.AssigneeId == query.AssigneeId)
+            .ApplySorting(query.Sort, sortMappings)
             .Select(WorkItemQueries.ProjectToBriefDto())
-            .PaginatedListAsync(query.PageNumber, query.PageSize, cancellationToken);
+            .PaginatedListAsync(query.Page, query.PageSize, cancellationToken);
 
         return workItems;
-    }
-
-    private static Expression<Func<WorkItem, object>> GetSortProperty(string? sortField)
-    {
-        return sortField?.ToLower() switch
-        {
-            "title" => wi => wi.Title,
-            "status" => wi => wi.Status,
-            "type" => wi => wi.Type,
-            "activityDate" => wi => wi.UpdatedAt ?? wi.CreatedAt,
-            _ => wi => wi.Code,
-        };
     }
 }

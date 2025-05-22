@@ -23,7 +23,14 @@ public static class DependencyInjection
         services.ConfigureOptions<ConfigureSwaggerGenOptions>();
         services.ConfigureOptions<ConfigureSwaggerUIOptions>();
 
-        services.AddProblemDetails();
+        services.AddProblemDetails(options =>
+        {
+            options.CustomizeProblemDetails = context =>
+            {
+                context.ProblemDetails.Extensions.TryAdd("requestId", context.HttpContext.TraceIdentifier);
+            };
+        });
+        services.AddExceptionHandler<GlobalExceptionHandler>();
 
         services.AddSignalR()
             .AddJsonProtocol(options =>

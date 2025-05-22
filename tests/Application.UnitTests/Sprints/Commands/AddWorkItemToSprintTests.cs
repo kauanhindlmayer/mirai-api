@@ -45,8 +45,13 @@ public class AddWorkItemToSprintTests
     public async Task Handle_WhenWorkItemDoesNotExist_ShouldReturnError()
     {
         // Arrange
+        var sprint = new Sprint(
+            Guid.NewGuid(),
+            "Name",
+            DateOnly.FromDateTime(DateTime.Now),
+            DateOnly.FromDateTime(DateTime.Now.AddDays(14)));
         _sprintsRepository.GetByIdAsync(Command.SprintId, TestContext.Current.CancellationToken)
-            .Returns(new Sprint(Guid.NewGuid(), "Name", DateTime.Now, DateTime.Now.AddDays(14)));
+            .Returns(sprint);
 
         _workItemsRepository.GetByIdAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
             .Returns(null as WorkItem);
@@ -63,7 +68,11 @@ public class AddWorkItemToSprintTests
     public async Task Handle_WhenWorkItemAlreadyInSprint_ShouldReturnError()
     {
         // Arrange
-        var sprint = new Sprint(Guid.NewGuid(), "Name", DateTime.Now, DateTime.Now.AddDays(14));
+        var sprint = new Sprint(
+            Guid.NewGuid(),
+            "Name",
+            DateOnly.FromDateTime(DateTime.Now),
+            DateOnly.FromDateTime(DateTime.Now.AddDays(14)));
         var workItem = new WorkItem(Guid.NewGuid(), 1, "Name", WorkItemType.UserStory);
         sprint.AddWorkItem(workItem);
 
@@ -85,7 +94,11 @@ public class AddWorkItemToSprintTests
     public async Task Handle_WhenWorkItemNotInSprint_ShouldAddWorkItemToSprint()
     {
         // Arrange
-        var sprint = new Sprint(Guid.NewGuid(), "Name", DateTime.Now, DateTime.Now.AddDays(14));
+        var sprint = new Sprint(
+            Guid.NewGuid(),
+            "Name",
+            DateOnly.FromDateTime(DateTime.Now),
+            DateOnly.FromDateTime(DateTime.Now.AddDays(14)));
         var workItem = new WorkItem(Guid.NewGuid(), 1, "Name", WorkItemType.UserStory);
 
         _sprintsRepository.GetByIdAsync(Command.SprintId, TestContext.Current.CancellationToken)

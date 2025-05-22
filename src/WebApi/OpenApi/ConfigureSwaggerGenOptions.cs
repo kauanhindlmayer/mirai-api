@@ -23,7 +23,6 @@ internal sealed class ConfigureSwaggerGenOptions : IConfigureNamedOptions<Swagge
         }
 
         ConfigureXmlComments(options, GetXmlCommentsPath());
-        ConfigureXmlComments(options, GetContractsXmlCommentsPath());
         ConfigureSignalRSwagger(options, GetXmlCommentsPath());
         ConfigureSecurity(options);
 
@@ -58,11 +57,6 @@ internal sealed class ConfigureSwaggerGenOptions : IConfigureNamedOptions<Swagge
     {
         var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
         return Path.Combine(AppContext.BaseDirectory, xmlFilename);
-    }
-
-    private static string GetContractsXmlCommentsPath()
-    {
-        return Path.Combine(AppContext.BaseDirectory, "Contracts.xml");
     }
 
     private static void ConfigureXmlComments(SwaggerGenOptions options, string xmlFilePath)

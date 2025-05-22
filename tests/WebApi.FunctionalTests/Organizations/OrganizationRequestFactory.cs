@@ -1,4 +1,4 @@
-using Contracts.Organizations;
+using WebApi.Controllers.Organizations;
 
 namespace WebApi.FunctionalTests.Organizations;
 

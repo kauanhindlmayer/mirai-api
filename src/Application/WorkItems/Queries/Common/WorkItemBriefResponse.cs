@@ -8,8 +8,8 @@ public sealed class WorkItemBriefResponse
     public required string Status { get; init; }
     public required string Type { get; init; }
     public IEnumerable<TagBriefResponse> Tags { get; init; } = [];
-    public DateTime CreatedAt { get; init; }
-    public DateTime? UpdatedAt { get; init; }
+    public DateTime CreatedAtUtc { get; init; }
+    public DateTime? UpdatedAtUtc { get; init; }
 }
 
 public sealed class TagBriefResponse

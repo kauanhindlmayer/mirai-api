@@ -51,8 +51,8 @@ internal static class BoardQueries
                                 Status = card.WorkItem.Status.ToString(),
                                 Tags = card.WorkItem.Tags.Select(tag => tag.Name),
                             },
-                            CreatedAt = card.CreatedAt,
-                            UpdatedAt = card.UpdatedAt,
+                            CreatedAtUtc = card.CreatedAtUtc,
+                            UpdatedAtUtc = card.UpdatedAtUtc,
                         }),
                 }),
         };

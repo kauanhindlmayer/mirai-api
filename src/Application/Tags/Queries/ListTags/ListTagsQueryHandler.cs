@@ -1,36 +1,48 @@
+using Application.Common;
 using Application.Common.Interfaces.Persistence;
-using Application.Tags.Common;
+using Application.Common.Mappings;
+using Application.Common.Sorting;
+using Application.Tags.Queries.Common;
+using Domain.Common;
+using Domain.Tags;
 using ErrorOr;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace Application.Tags.Queries.ListTags;
 
-internal sealed class ListTagsQueryHandler : IRequestHandler<ListTagsQuery, ErrorOr<IReadOnlyList<TagResponse>>>
+internal sealed class ListTagsQueryHandler
+    : IRequestHandler<ListTagsQuery, ErrorOr<PaginatedList<TagResponse>>>
 {
     private readonly IApplicationDbContext _context;
+    private readonly SortMappingProvider _sortMappingProvider;
 
-    public ListTagsQueryHandler(IApplicationDbContext context)
+    public ListTagsQueryHandler(
+        IApplicationDbContext context,
+        SortMappingProvider sortMappingProvider)
     {
         _context = context;
+        _sortMappingProvider = sortMappingProvider;
     }
 
-    public async Task<ErrorOr<IReadOnlyList<TagResponse>>> Handle(
+    public async Task<ErrorOr<PaginatedList<TagResponse>>> Handle(
         ListTagsQuery query,
         CancellationToken cancellationToken)
     {
-        var tagsQuery = _context.Tags
-            .AsNoTracking()
-            .Where(t => t.ProjectId == query.ProjectId);
-
-        if (!string.IsNullOrWhiteSpace(query.SearchTerm))
+        if (!_sortMappingProvider.ValidateMappings<TagResponse, Tag>(query.Sort))
         {
-            tagsQuery = tagsQuery.Where(t => t.Name.ToLower().Contains(query.SearchTerm.ToLower()));
+            return Errors.InvalidSort(query.Sort);
         }
 
+        var tagsQuery = _context.Tags.Where(t => t.ProjectId == query.ProjectId);
+        query.SearchTerm ??= query.SearchTerm?.Trim().ToLower();
+
+        var sortMappings = _sortMappingProvider.GetMappings<TagResponse, Tag>();
+
         var tags = await tagsQuery
+            .Where(t => query.SearchTerm == null || t.Name.ToLower().Contains(query.SearchTerm))
+            .ApplySorting(query.Sort, sortMappings)
             .Select(TagQueries.ProjectToDto())
-            .ToListAsync(cancellationToken);
+            .PaginatedListAsync(query.Page, query.PageSize, cancellationToken);
 
         return tags;
     }

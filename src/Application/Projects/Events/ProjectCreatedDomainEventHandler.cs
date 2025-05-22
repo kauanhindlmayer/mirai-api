@@ -42,9 +42,9 @@ internal sealed class ProjectCreatedDomainEventHandler : INotificationHandler<Pr
         try
         {
             var team = new Team(
-            notification.Project.Id,
-            notification.Project.Name,
-            "The default project team.");
+                notification.Project.Id,
+                notification.Project.Name,
+                "The default project team.");
             await _teamsRepository.AddAsync(team, cancellationToken);
 
             var wikiPage = new WikiPage(
@@ -57,8 +57,8 @@ internal sealed class ProjectCreatedDomainEventHandler : INotificationHandler<Pr
             var sprint = new Sprint(
                 team.Id,
                 "Sprint 1",
-                _dateTimeProvider.UtcNow,
-                _dateTimeProvider.UtcNow.AddDays(14));
+                DateOnly.FromDateTime(_dateTimeProvider.UtcNow),
+                DateOnly.FromDateTime(_dateTimeProvider.UtcNow.AddDays(14)));
             await _sprintsRepository.AddAsync(sprint, cancellationToken);
 
             _logger.LogInformation(

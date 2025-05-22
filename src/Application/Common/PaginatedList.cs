@@ -2,39 +2,39 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Common;
 
-public sealed class PaginatedList<T>
+public sealed class PaginatedList<T> : LinksResponse
 {
     public IReadOnlyList<T> Items { get; } = [];
-    public int PageNumber { get; }
+    public int Page { get; }
     public int PageSize { get; }
     public int TotalCount { get; }
     public int TotalPages => (int)Math.Ceiling(TotalCount / (double)PageSize);
-    public bool HasPreviousPage => PageNumber > 1;
-    public bool HasNextPage => PageNumber * PageSize < TotalCount;
+    public bool HasPreviousPage => Page > 1;
+    public bool HasNextPage => Page * PageSize < TotalCount;
 
     private PaginatedList(
         int totalCount,
-        int pageNumber,
+        int page,
         int pageSize,
         IReadOnlyList<T> items)
     {
         TotalCount = totalCount;
-        PageNumber = pageNumber;
+        Page = page;
         PageSize = pageSize;
         Items = items;
     }
 
     public static async Task<PaginatedList<T>> CreateAsync(
         IQueryable<T> query,
-        int pageNumber,
-        int pageSize,
+        int page = 1,
+        int pageSize = 10,
         CancellationToken cancellationToken = default)
     {
         var totalCount = await query.CountAsync(cancellationToken);
-        var items = await query.Skip((pageNumber - 1) * pageSize)
+        var items = await query.Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync(cancellationToken);
 
-        return new PaginatedList<T>(totalCount, pageNumber, pageSize, items);
+        return new PaginatedList<T>(totalCount, page, pageSize, items);
     }
 }

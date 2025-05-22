@@ -15,4 +15,24 @@ public static class TagErrors
     public static readonly Error TagHasWorkItems = Error.Conflict(
         code: "Tag.TagHasWorkItems",
         description: "The tag has work items associated with it.");
+
+    public static readonly Error CannotMergeIntoItself = Error.Validation(
+        code: "Tag.CannotMergeIntoItself",
+        description: "Cannot merge a tag into itself.");
+
+    public static readonly Error TargetTagNotFound = Error.NotFound(
+        code: "Tag.TargetNotFound",
+        description: "Target tag not found.");
+
+    public static Error SourceTagNotFound(Guid sourceTagId) => Error.NotFound(
+        code: "Tag.SourceNotFound",
+        description: $"Source tag '{sourceTagId}' not found.");
+
+    public static readonly Error SourceAndTargetTagsMustBelongToSameProject = Error.Validation(
+        code: "Tag.SourceAndTargetTagsMustBelongToSameProject",
+        description: "Source and target tags must belong to the same project.");
+
+    public static readonly Error NoTagsFound = Error.NotFound(
+        code: "Tag.NoTagsFound",
+        description: "No tags found for the given project.");
 }

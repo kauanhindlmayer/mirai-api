@@ -8,6 +8,7 @@ using Infrastructure.Jobs;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Repositories;
 using Infrastructure.Services;
+using Infrastructure.Services.Nlp;
 using Infrastructure.Settings;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -54,12 +55,12 @@ public static class DependencyInjection
         services.AddTransient<LinkService>();
         services.AddTransient<IBackgroundJobScheduler, BackgroundJobScheduler>();
 
-        var languageServiceOptions = configuration.GetSection(LanguageServiceOptions.SectionName);
-        services.Configure<LanguageServiceOptions>(languageServiceOptions);
+        var nlpServiceOptions = configuration.GetSection(NlpServiceOptions.SectionName);
+        services.Configure<NlpServiceOptions>(nlpServiceOptions);
 
-        services.AddHttpClient<ILanguageService, LanguageService>((serviceProvider, httpClient) =>
+        services.AddHttpClient<INlpService, NlpService>((serviceProvider, httpClient) =>
         {
-            var options = serviceProvider.GetRequiredService<IOptions<LanguageServiceOptions>>().Value;
+            var options = serviceProvider.GetRequiredService<IOptions<NlpServiceOptions>>().Value;
             httpClient.BaseAddress = new Uri(options.BaseUrl);
             httpClient.DefaultRequestHeaders.Add(ApiKeyHeaderName, options.ApiKey);
         });
@@ -143,13 +144,13 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         var keycloakServiceUri = new Uri(configuration["Keycloak:BaseUrl"]!);
-        var languageServiceUri = new Uri($"{configuration["LanguageService:BaseUrl"]!}/health");
+        var nlpServiceUri = new Uri($"{configuration["NlpService:BaseUrl"]!}/health");
 
         services.AddHealthChecks()
             .AddNpgSql(configuration.GetConnectionString("Database")!)
             .AddRedis(configuration.GetConnectionString("Redis")!)
             .AddUrlGroup(keycloakServiceUri, HttpMethod.Get, "keycloak")
-            .AddUrlGroup(languageServiceUri, HttpMethod.Get, "language-service");
+            .AddUrlGroup(nlpServiceUri, HttpMethod.Get, "nlp-api");
 
         return services;
     }

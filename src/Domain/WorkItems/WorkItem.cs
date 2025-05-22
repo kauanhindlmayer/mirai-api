@@ -21,7 +21,7 @@ public sealed class WorkItem : AggregateRoot
     public WorkItemStatus Status { get; private set; }
     public Planning Planning { get; private set; } = new();
     public Classification Classification { get; private set; } = new();
-    public Vector? SearchVector { get; private set; }
+    public Vector SearchVector { get; private set; } = new Vector(new float[384]);
     public Guid? AssigneeId { get; private set; }
     public User? Assignee { get; private set; }
     public Guid ProjectId { get; private set; }
@@ -33,7 +33,7 @@ public sealed class WorkItem : AggregateRoot
     public ICollection<WorkItem> ChildWorkItems { get; private set; } = [];
     public ICollection<Tag> Tags { get; private set; } = [];
     public ICollection<WorkItemComment> Comments { get; private set; } = [];
-    public DateTime? CompletedAt { get; private set; }
+    public DateTime? CompletedAtUtc { get; private set; }
     public Guid? SprintId { get; private set; }
     public Sprint? Sprint { get; private set; }
 

@@ -1,6 +1,8 @@
+using Application.Common;
+
 namespace Application.Users.Queries.GetCurrentUser;
 
-public sealed class UserResponse
+public sealed class UserResponse : LinksResponse
 {
     public Guid Id { get; init; }
     public required string Email { get; init; }

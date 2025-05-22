@@ -1,4 +1,10 @@
 using Application.Common.Behaviors;
+using Application.Common.Mappings;
+using Application.Common.Sorting;
+using Application.Tags.Queries.ListTags;
+using Application.WorkItems.Queries.Common;
+using Domain.Tags;
+using Domain.WorkItems;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,6 +23,12 @@ public static class DependencyInjection
             options.AddOpenBehavior(typeof(UnitOfWorkBehavior<,>));
         });
         services.AddValidatorsFromAssemblyContaining(typeof(DependencyInjection));
+
+        services.AddTransient<SortMappingProvider>();
+        services.AddSingleton<ISortMappingDefinition, SortMappingDefinition<WorkItemBriefResponse, WorkItem>>(_ =>
+            WorkItemMappings.SortMapping);
+        services.AddSingleton<ISortMappingDefinition, SortMappingDefinition<TagResponse, Tag>>(_ =>
+            TagMappings.SortMapping);
 
         return services;
     }

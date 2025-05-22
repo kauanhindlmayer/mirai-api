@@ -42,7 +42,8 @@ internal sealed class WorkItemConfigurations : IEntityTypeConfiguration<WorkItem
             .HasConversion<string>();
 
         builder.Property(wi => wi.SearchVector)
-            .HasColumnType("vector");
+            .HasColumnType("vector")
+            .IsRequired();
 
         builder.Property(wi => wi.AssigneeId);
 
@@ -80,7 +81,7 @@ internal sealed class WorkItemConfigurations : IEntityTypeConfiguration<WorkItem
             .WithMany(t => t.WorkItems)
             .UsingEntity(j => j.ToTable("work_item_tags"));
 
-        builder.Property(wi => wi.CompletedAt);
+        builder.Property(wi => wi.CompletedAtUtc);
 
         builder.HasOne(wi => wi.Sprint)
             .WithMany(s => s.WorkItems)

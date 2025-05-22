@@ -5,14 +5,14 @@ namespace Domain.UnitTests.Sprints;
 public static class SprintFactory
 {
     public const string Name = "Sprint 1";
-    public static readonly DateTime StartDate = DateTime.Now;
-    public static readonly DateTime EndDate = DateTime.Now.AddDays(14);
+    public static readonly DateOnly StartDate = DateOnly.FromDateTime(DateTime.UtcNow);
+    public static readonly DateOnly EndDate = DateOnly.FromDateTime(DateTime.UtcNow.Date.AddDays(14));
 
     public static Sprint CreateSprint(
         Guid? teamId = null,
         string? name = null,
-        DateTime? startDate = null,
-        DateTime? endDate = null)
+        DateOnly? startDate = null,
+        DateOnly? endDate = null)
     {
         return new(
             teamId ?? Guid.NewGuid(),

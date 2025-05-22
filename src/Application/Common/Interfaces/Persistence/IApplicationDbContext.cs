@@ -3,6 +3,7 @@ using Domain.Organizations;
 using Domain.Projects;
 using Domain.Retrospectives;
 using Domain.Sprints;
+using Domain.TagImportJobs;
 using Domain.Tags;
 using Domain.Teams;
 using Domain.Users;

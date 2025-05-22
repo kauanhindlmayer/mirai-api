@@ -21,8 +21,8 @@ internal static class WorkItemQueries
                 Name = t.Name,
                 Color = t.Color,
             }),
-            CreatedAt = wi.CreatedAt,
-            UpdatedAt = wi.UpdatedAt,
+            CreatedAtUtc = wi.CreatedAtUtc,
+            UpdatedAtUtc = wi.UpdatedAtUtc,
         };
     }
 
@@ -42,11 +42,11 @@ internal static class WorkItemQueries
             {
                 Id = c.Id,
                 Content = c.Content,
-                CreatedAt = c.CreatedAt,
+                CreatedAtUtc = c.CreatedAtUtc,
             }),
             Tags = wi.Tags.Select(t => t.Name),
-            CreatedAt = wi.CreatedAt,
-            UpdatedAt = wi.UpdatedAt,
+            CreatedAtUtc = wi.CreatedAtUtc,
+            UpdatedAtUtc = wi.UpdatedAtUtc,
         };
     }
 }

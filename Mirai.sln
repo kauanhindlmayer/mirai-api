@@ -7,8 +7,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{4538724E-6FD
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "src\Application\Application.csproj", "{56F8F369-2843-49BE-92D8-A2758FF97C24}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contracts", "src\Contracts\Contracts.csproj", "{32759FAB-ADCC-47BA-83C4-AEA77EDA55A8}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "src\Domain\Domain.csproj", "{66FE755F-5FE0-49B1-9CAD-8B84D798AAF5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "src\Infrastructure\Infrastructure.csproj", "{11E19C2F-D6AD-4E3A-B786-2ECC96109220}"

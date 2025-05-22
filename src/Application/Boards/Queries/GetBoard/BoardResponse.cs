@@ -24,8 +24,8 @@ public sealed class BoardCardResponse
     public Guid ColumnId { get; init; }
     public int Position { get; init; }
     public WorkItemResponse WorkItem { get; init; } = null!;
-    public DateTime CreatedAt { get; init; }
-    public DateTime? UpdatedAt { get; init; }
+    public DateTime CreatedAtUtc { get; init; }
+    public DateTime? UpdatedAtUtc { get; init; }
 }
 
 public sealed class WorkItemResponse

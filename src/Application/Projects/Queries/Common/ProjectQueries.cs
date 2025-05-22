@@ -14,8 +14,8 @@ internal static class ProjectQueries
             Name = p.Name,
             Description = p.Description,
             OrganizationId = p.OrganizationId,
-            CreatedAt = p.CreatedAt,
-            UpdatedAt = p.UpdatedAt,
+            CreatedAtUtc = p.CreatedAtUtc,
+            UpdatedAtUtc = p.UpdatedAtUtc,
         };
     }
 }

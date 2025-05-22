@@ -21,7 +21,7 @@ public class LoginUserTests : BaseFunctionalTest
 
         // Act
         var response = await _httpClient.PostAsJsonAsync(
-            "api/users/login",
+            Routes.Users.Login,
             request,
             cancellationToken: TestContext.Current.CancellationToken);
 
@@ -41,7 +41,7 @@ public class LoginUserTests : BaseFunctionalTest
 
         // Act
         var response = await _httpClient.PostAsJsonAsync(
-            "api/users/login",
+            Routes.Users.Login,
             request,
             cancellationToken: TestContext.Current.CancellationToken);
 

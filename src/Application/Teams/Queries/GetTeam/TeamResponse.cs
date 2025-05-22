@@ -6,8 +6,8 @@ public sealed class TeamResponse
     public Guid ProjectId { get; init; }
     public required string Name { get; init; }
     public IEnumerable<MemberResponse> Members { get; init; } = [];
-    public DateTime CreatedAt { get; init; }
-    public DateTime? UpdatedAt { get; init; }
+    public DateTime CreatedAtUtc { get; init; }
+    public DateTime? UpdatedAtUtc { get; init; }
 }
 
 public sealed class MemberResponse

@@ -13,5 +13,9 @@
   <ItemGroup>
     <InternalsVisibleTo Include="Application.UnitTests" />
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Linq.Dynamic.Core" />
+  </ItemGroup>
   
 </Project>

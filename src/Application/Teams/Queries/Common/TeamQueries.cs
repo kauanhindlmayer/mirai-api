@@ -19,8 +19,8 @@ internal static class TeamQueries
                 Id = m.Id,
                 Name = m.FullName,
             }),
-            CreatedAt = t.CreatedAt,
-            UpdatedAt = t.UpdatedAt,
+            CreatedAtUtc = t.CreatedAtUtc,
+            UpdatedAtUtc = t.UpdatedAtUtc,
         };
     }
 
