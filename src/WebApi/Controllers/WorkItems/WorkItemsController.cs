@@ -235,7 +235,7 @@ public sealed class WorkItemsController : ApiController
     [ProducesResponseType(typeof(IReadOnlyList<WorkItemBriefResponse>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IReadOnlyList<WorkItemBriefResponse>>> SearchWorkItems(
         Guid projectId,
-        string searchTerm,
+        [FromQuery(Name = "q")] string searchTerm,
         CancellationToken cancellationToken)
     {
         var query = new SearchWorkItemsQuery(projectId, searchTerm);

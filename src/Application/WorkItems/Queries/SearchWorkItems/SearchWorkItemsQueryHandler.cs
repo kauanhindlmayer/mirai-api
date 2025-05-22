@@ -37,8 +37,8 @@ internal sealed class SearchWorkItemsQueryHandler
 
         var workItems = await _context.WorkItems
             .AsNoTracking()
-            .Where(wi => wi.ProjectId == query.ProjectId && wi.SearchVector != null)
-            .OrderBy(wi => wi.SearchVector!.CosineDistance(searchTermVector))
+            .Where(wi => wi.ProjectId == query.ProjectId)
+            .OrderBy(wi => wi.SearchVector.CosineDistance(searchTermVector))
             .Select(WorkItemQueries.ProjectToBriefDto())
             .Take(10)
             .ToListAsync(cancellationToken);

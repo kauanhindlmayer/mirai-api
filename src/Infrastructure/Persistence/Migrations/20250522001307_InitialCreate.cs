@@ -327,7 +327,7 @@ namespace Infrastructure.Persistence.Migrations
                     acceptance_criteria = table.Column<string>(type: "text", nullable: false),
                     type = table.Column<string>(type: "text", nullable: false),
                     status = table.Column<string>(type: "text", nullable: false),
-                    search_vector = table.Column<Vector>(type: "vector", nullable: true),
+                    search_vector = table.Column<Vector>(type: "vector", nullable: false),
                     assignee_id = table.Column<Guid>(type: "uuid", nullable: true),
                     project_id = table.Column<Guid>(type: "uuid", nullable: false),
                     assigned_team_id = table.Column<Guid>(type: "uuid", nullable: true),

@@ -747,6 +747,7 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnName("project_id");
 
                     b.Property<Vector>("SearchVector")
+                        .IsRequired()
                         .HasColumnType("vector")
                         .HasColumnName("search_vector");
 

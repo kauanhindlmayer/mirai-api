@@ -14,7 +14,7 @@ using Pgvector;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250519231614_InitialCreate")]
+    [Migration("20250522001307_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -750,6 +750,7 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnName("project_id");
 
                     b.Property<Vector>("SearchVector")
+                        .IsRequired()
                         .HasColumnType("vector")
                         .HasColumnName("search_vector");
 

@@ -42,7 +42,8 @@ internal sealed class WorkItemConfigurations : IEntityTypeConfiguration<WorkItem
             .HasConversion<string>();
 
         builder.Property(wi => wi.SearchVector)
-            .HasColumnType("vector");
+            .HasColumnType("vector")
+            .IsRequired();
 
         builder.Property(wi => wi.AssigneeId);
 
