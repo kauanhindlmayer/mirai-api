@@ -124,6 +124,9 @@ public static class DependencyInjection
 
         services.AddTransient<AdminAuthorizationDelegatingHandler>();
 
+        services.AddHttpClient().ConfigureHttpClientDefaults(configure =>
+            configure.AddStandardResilienceHandler());
+
         services.AddHttpClient<IAuthenticationService, AuthenticationService>((serviceProvider, httpClient) =>
         {
             var keycloakOptions = serviceProvider.GetRequiredService<IOptions<KeycloakOptions>>().Value;
