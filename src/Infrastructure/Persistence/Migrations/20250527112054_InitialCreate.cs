@@ -76,6 +76,29 @@ namespace Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "personas",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    avatar_url = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    project_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    created_at_utc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    updated_at_utc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_personas", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_personas_projects_project_id",
+                        column: x => x.project_id,
+                        principalTable: "projects",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "tags",
                 columns: table => new
                 {
@@ -556,6 +579,11 @@ namespace Infrastructure.Persistence.Migrations
                 column: "organizations_id");
 
             migrationBuilder.CreateIndex(
+                name: "ix_personas_project_id",
+                table: "personas",
+                column: "project_id");
+
+            migrationBuilder.CreateIndex(
                 name: "ix_projects_organization_id",
                 table: "projects",
                 column: "organization_id");
@@ -693,6 +721,9 @@ namespace Infrastructure.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "organization_user");
+
+            migrationBuilder.DropTable(
+                name: "personas");
 
             migrationBuilder.DropTable(
                 name: "retrospective_items");

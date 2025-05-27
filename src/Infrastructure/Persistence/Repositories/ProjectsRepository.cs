@@ -47,4 +47,13 @@ internal sealed class ProjectsRepository : Repository<Project>, IProjectsReposit
             .Include(p => p.Teams)
             .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
     }
+
+    public async Task<Project?> GetByIdWithPersonasAsync(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Projects
+            .Include(p => p.Personas)
+            .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
+    }
 }

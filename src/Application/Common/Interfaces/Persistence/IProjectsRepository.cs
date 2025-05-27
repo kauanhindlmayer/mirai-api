@@ -8,4 +8,5 @@ public interface IProjectsRepository : IRepository<Project>
     Task<Project?> GetByIdWithWikiPagesAsync(Guid id, CancellationToken cancellationToken = default);
     Task<Project?> GetByIdWithTagsAsync(Guid id, CancellationToken cancellationToken = default);
     Task<Project?> GetByIdWithTeamsAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<Project?> GetByIdWithPersonasAsync(Guid id, CancellationToken cancellationToken = default);
 }

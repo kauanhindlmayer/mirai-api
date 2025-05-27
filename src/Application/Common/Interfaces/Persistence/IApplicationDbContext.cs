@@ -1,5 +1,6 @@
 using Domain.Boards;
 using Domain.Organizations;
+using Domain.Personas;
 using Domain.Projects;
 using Domain.Retrospectives;
 using Domain.Sprints;
@@ -26,5 +27,6 @@ public interface IApplicationDbContext
     DbSet<WikiPage> WikiPages { get; }
     DbSet<WorkItem> WorkItems { get; }
     DbSet<Sprint> Sprints { get; }
+    DbSet<Persona> Personas { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
