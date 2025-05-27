@@ -21,7 +21,6 @@
     <Using Include="Xunit" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Contracts\Contracts.csproj" />
     <ProjectReference Include="..\..\src\WebApi\WebApi.csproj" />
   </ItemGroup>
   <ItemGroup>
