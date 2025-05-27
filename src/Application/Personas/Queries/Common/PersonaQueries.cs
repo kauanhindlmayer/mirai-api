@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using Application.Personas.Queries.GetPersona;
+using Application.Personas.Queries.ListPersonas;
 using Domain.Personas;
 
 namespace Application.Personas.Queries.Common;
@@ -17,6 +18,16 @@ internal static class PersonaQueries
             ProjectId = p.ProjectId,
             CreatedAtUtc = p.CreatedAtUtc,
             UpdatedAtUtc = p.UpdatedAtUtc,
+        };
+    }
+
+    public static Expression<Func<Persona, PersonaBriefResponse>> ProjectToBriefDto()
+    {
+        return p => new PersonaBriefResponse
+        {
+            Id = p.Id,
+            Name = p.Name,
+            AvatarUrl = p.AvatarUrl,
         };
     }
 }

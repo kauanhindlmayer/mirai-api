@@ -1,6 +1,7 @@
 using System.Net.Mime;
 using Application.Personas.Commands.CreatePersona;
 using Application.Personas.Queries.GetPersona;
+using Application.Personas.Queries.ListPersonas;
 using Asp.Versioning;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -60,6 +61,23 @@ public sealed class PersonasController : ApiController
         CancellationToken cancellationToken)
     {
         var query = new GetPersonaQuery(personaId);
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(Ok, Problem);
+    }
+
+    /// <summary>
+    /// List all personas for a project.
+    /// </summary>
+    /// <param name="projectId">The project's unique identifier.</param>
+    [HttpGet]
+    [ProducesResponseType(typeof(IReadOnlyList<PersonaBriefResponse>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IReadOnlyList<PersonaBriefResponse>>> ListPersonas(
+        Guid projectId,
+        CancellationToken cancellationToken)
+    {
+        var query = new ListPersonasQuery(projectId);
 
         var result = await _sender.Send(query, cancellationToken);
 
