@@ -15,7 +15,8 @@ public sealed class User : Entity
     /// The unique identifier for the user in the identity provider.
     /// </summary>
     public string IdentityId { get; private set; } = string.Empty;
-    public string ImageUrl { get; private set; } = string.Empty;
+    public string? ImageUrl { get; private set; }
+    public Guid? ImageFileId { get; private set; }
     public ICollection<WorkItem> WorkItems { get; private set; } = [];
     public ICollection<Organization> Organizations { get; private set; } = [];
 
@@ -35,9 +36,10 @@ public sealed class User : Entity
         IdentityId = identityId;
     }
 
-    public void SetImageUrl(string imageUrl)
+    public void SetImage(string? imageUrl, Guid? imageFileId)
     {
         ImageUrl = imageUrl;
+        ImageFileId = imageFileId;
     }
 
     public void UpdateProfile(string firstName, string lastName)

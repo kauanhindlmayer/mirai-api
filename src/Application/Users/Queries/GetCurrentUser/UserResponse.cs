@@ -9,5 +9,5 @@ public sealed class UserResponse : LinksResponse
     public required string FirstName { get; init; }
     public required string LastName { get; init; }
     public required string FullName { get; init; }
-    public required string ImageUrl { get; init; }
+    public string? ImageUrl { get; init; }
 }

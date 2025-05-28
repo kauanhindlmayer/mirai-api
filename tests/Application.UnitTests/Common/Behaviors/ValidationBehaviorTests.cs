@@ -29,7 +29,7 @@ public class ValidationBehaviorTests
         _mockValidator
             .ValidateAsync(createOrganizationCommand, TestContext.Current.CancellationToken)
             .Returns(new ValidationResult());
-        _mockNextBehavior.Invoke().Returns(organization.Id);
+        _mockNextBehavior.Invoke(TestContext.Current.CancellationToken).Returns(organization.Id);
 
         // Act
         var result = await _validationBehavior.Handle(
@@ -75,7 +75,7 @@ public class ValidationBehaviorTests
         var validationBehavior = new ValidationBehavior<CreateOrganizationCommand, ErrorOr<Guid>>();
 
         var organization = new Organization("Organization", "Description");
-        _mockNextBehavior.Invoke().Returns(organization.Id);
+        _mockNextBehavior.Invoke(TestContext.Current.CancellationToken).Returns(organization.Id);
 
         // Act
         var result = await validationBehavior.Handle(

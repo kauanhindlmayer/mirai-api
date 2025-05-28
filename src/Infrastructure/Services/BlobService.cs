@@ -14,7 +14,7 @@ internal sealed class BlobService : IBlobService
         _blobServiceClient = blobServiceClient;
     }
 
-    public async Task<string> UploadAsync(
+    public async Task<UploadResponse> UploadAsync(
         Stream stream,
         string contentType,
         CancellationToken cancellationToken = default)
@@ -26,7 +26,7 @@ internal sealed class BlobService : IBlobService
             stream,
             new BlobHttpHeaders { ContentType = contentType },
             cancellationToken: cancellationToken);
-        return blobClient.Uri.ToString();
+        return new UploadResponse(fileId, blobClient.Uri.ToString());
     }
 
     public Task DeleteAsync(

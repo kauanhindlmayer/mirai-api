@@ -45,12 +45,14 @@ internal sealed class CreatePersonaCommandHandler : IRequestHandler<CreatePerson
 
         if (command.File is not null)
         {
-            var avatarUrl = await _blobService.UploadAsync(
+            var uploadResponse = await _blobService.UploadAsync(
                 command.File.OpenReadStream(),
                 command.File.ContentType,
                 cancellationToken);
 
-            persona.SetAvatarUrl(avatarUrl);
+            persona.SetImage(
+                uploadResponse.FileUrl,
+                uploadResponse.FileId);
         }
 
         _projectsRepository.Update(project);

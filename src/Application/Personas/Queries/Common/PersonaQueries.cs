@@ -14,7 +14,7 @@ internal static class PersonaQueries
             Id = p.Id,
             Name = p.Name,
             Description = p.Description,
-            AvatarUrl = p.AvatarUrl,
+            ImageUrl = p.ImageUrl,
             ProjectId = p.ProjectId,
             CreatedAtUtc = p.CreatedAtUtc,
             UpdatedAtUtc = p.UpdatedAtUtc,
@@ -27,7 +27,7 @@ internal static class PersonaQueries
         {
             Id = p.Id,
             Name = p.Name,
-            AvatarUrl = p.AvatarUrl,
+            ImageUrl = p.ImageUrl,
         };
     }
 }

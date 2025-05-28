@@ -14,7 +14,7 @@ using Pgvector;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250527112054_InitialCreate")]
+    [Migration("20250528003918_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -183,11 +183,6 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<string>("AvatarUrl")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)")
-                        .HasColumnName("avatar_url");
-
                     b.Property<DateTime>("CreatedAtUtc")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at_utc");
@@ -196,6 +191,15 @@ namespace Infrastructure.Persistence.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)")
                         .HasColumnName("description");
+
+                    b.Property<Guid?>("ImageFileId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("image_file_id");
+
+                    b.Property<string>("ImageUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("image_url");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -590,8 +594,11 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("identity_id");
 
+                    b.Property<Guid?>("ImageFileId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("image_file_id");
+
                     b.Property<string>("ImageUrl")
-                        .IsRequired()
                         .HasMaxLength(512)
                         .HasColumnType("character varying(512)")
                         .HasColumnName("image_url");

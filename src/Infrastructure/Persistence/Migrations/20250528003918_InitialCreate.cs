@@ -82,7 +82,8 @@ namespace Infrastructure.Persistence.Migrations
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
-                    avatar_url = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    image_url = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    image_file_id = table.Column<Guid>(type: "uuid", nullable: true),
                     project_id = table.Column<Guid>(type: "uuid", nullable: false),
                     created_at_utc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_at_utc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
@@ -217,7 +218,8 @@ namespace Infrastructure.Persistence.Migrations
                     last_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     email = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     identity_id = table.Column<string>(type: "text", nullable: false),
-                    image_url = table.Column<string>(type: "character varying(512)", maxLength: 512, nullable: false),
+                    image_url = table.Column<string>(type: "character varying(512)", maxLength: 512, nullable: true),
+                    image_file_id = table.Column<Guid>(type: "uuid", nullable: true),
                     team_id = table.Column<Guid>(type: "uuid", nullable: true),
                     created_at_utc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_at_utc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)

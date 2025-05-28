@@ -24,5 +24,5 @@ public sealed class WikiPageCommentResponse
 public sealed class AuthorResponse
 {
     public required string Name { get; init; }
-    public required string ImageUrl { get; init; }
+    public string? ImageUrl { get; init; }
 }
