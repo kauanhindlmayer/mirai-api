@@ -28,4 +28,10 @@ public sealed class Persona : Entity
         ImageUrl = imageUrl;
         ImageFileId = imageFileId;
     }
+
+    public void Update(string name, string? description)
+    {
+        Name = name;
+        Description = description;
+    }
 }

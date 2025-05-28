@@ -3,7 +3,7 @@ using Application.Common;
 using Application.Users.Commands.RegisterUser;
 using Application.Users.Commands.UpdateUserProfile;
 using Application.Users.Commands.UpdateUserProfilePicture;
-using Application.Users.Common;
+using Application.Users.Queries.Common;
 using Application.Users.Queries.GetCurrentUser;
 using Application.Users.Queries.LoginUser;
 using Asp.Versioning;

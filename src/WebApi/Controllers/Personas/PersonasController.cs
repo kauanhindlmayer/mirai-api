@@ -1,5 +1,6 @@
 using System.Net.Mime;
 using Application.Personas.Commands.CreatePersona;
+using Application.Personas.Commands.UpdatePersona;
 using Application.Personas.Queries.GetPersona;
 using Application.Personas.Queries.ListPersonas;
 using Asp.Versioning;
@@ -82,5 +83,33 @@ public sealed class PersonasController : ApiController
         var result = await _sender.Send(query, cancellationToken);
 
         return result.Match(Ok, Problem);
+    }
+
+    /// <summary>
+    /// Update a persona.
+    /// </summary>
+    /// <param name="projectId">The project's unique identifier.</param>
+    /// <param name="personaId">The persona's unique identifier.</param>
+    [HttpPut("{personaId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdatePersona(
+        Guid projectId,
+        Guid personaId,
+        [FromForm] UpdatePersonaRequest request,
+        CancellationToken cancellationToken)
+    {
+        var command = new UpdatePersonaCommand(
+            projectId,
+            personaId,
+            request.Name,
+            request.Description,
+            request.File);
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        return result.Match(
+            _ => NoContent(),
+            Problem);
     }
 }
