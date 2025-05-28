@@ -1,5 +1,6 @@
 using System.Net.Mime;
 using Application.Personas.Commands.CreatePersona;
+using Application.Personas.Commands.DeletePersona;
 using Application.Personas.Commands.UpdatePersona;
 using Application.Personas.Queries.GetPersona;
 using Application.Personas.Queries.ListPersonas;
@@ -105,6 +106,28 @@ public sealed class PersonasController : ApiController
             request.Name,
             request.Description,
             request.File);
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        return result.Match(
+            _ => NoContent(),
+            Problem);
+    }
+
+    /// <summary>
+    /// Delete a persona.
+    /// </summary>
+    /// <param name="projectId">The project's unique identifier.</param>
+    /// <param name="personaId">The persona's unique identifier.</param>
+    [HttpDelete("{personaId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeletePersona(
+        Guid projectId,
+        Guid personaId,
+        CancellationToken cancellationToken)
+    {
+        var command = new DeletePersonaCommand(projectId, personaId);
 
         var result = await _sender.Send(command, cancellationToken);
 

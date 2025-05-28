@@ -1,6 +1,6 @@
 using Application.Common.Interfaces.Persistence;
 using Application.Common.Interfaces.Services;
-using Application.WikiPages.Common;
+using Application.WikiPages.Queries.Common;
 using Domain.WikiPages;
 using ErrorOr;
 using MediatR;

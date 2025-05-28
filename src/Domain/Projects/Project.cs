@@ -152,4 +152,16 @@ public sealed class Project : AggregateRoot
         Personas.Add(persona);
         return Result.Success;
     }
+
+    public ErrorOr<Success> RemovePersona(Guid personaId)
+    {
+        var persona = Personas.FirstOrDefault(p => p.Id == personaId);
+        if (persona is null)
+        {
+            return PersonaErrors.NotFound;
+        }
+
+        Personas.Remove(persona);
+        return Result.Success;
+    }
 }
