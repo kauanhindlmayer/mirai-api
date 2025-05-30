@@ -181,6 +181,15 @@ dotnet_diagnostic.SA1623.severity = none
 # IDE0290: Use primary constructor
 csharp_style_prefer_primary_constructors = false
 
+# SA1005: Single line comments should begin with single space
+dotnet_diagnostic.SA1005.severity = none
+
+# SA1515: Single-line comment should be preceded by blank line
+dotnet_diagnostic.SA1515.severity = none
+
+# SA1512: Single-line comments should not be followed by blank line
+dotnet_diagnostic.SA1512.severity = none
+
 [*.{cs,vb}]
 
 # Naming rules

@@ -75,7 +75,7 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("Database");
+        var connectionString = configuration.GetConnectionString("mirai-db");
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(connectionString, options => options.UseVector())
                 .UseSnakeCaseNamingConvention());
@@ -150,8 +150,8 @@ public static class DependencyInjection
         var nlpServiceUri = new Uri($"{configuration["NlpService:BaseUrl"]!}/health");
 
         services.AddHealthChecks()
-            .AddNpgSql(configuration.GetConnectionString("Database")!)
-            .AddRedis(configuration.GetConnectionString("Redis")!)
+            .AddNpgSql(configuration.GetConnectionString("mirai-db")!)
+            .AddRedis(configuration.GetConnectionString("mirai-redis")!)
             .AddUrlGroup(keycloakServiceUri, HttpMethod.Get, "keycloak")
             .AddUrlGroup(nlpServiceUri, HttpMethod.Get, "nlp-api");
 
