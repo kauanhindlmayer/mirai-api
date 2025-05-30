@@ -1,5 +1,4 @@
 using Application.Common.Interfaces.Persistence;
-using Domain.Projects;
 using Domain.Teams;
 using Domain.WorkItems;
 using ErrorOr;

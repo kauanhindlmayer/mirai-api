@@ -1,5 +1,4 @@
 using Domain.Common;
-using Domain.WorkItems;
 using ErrorOr;
 
 namespace Domain.Boards;
