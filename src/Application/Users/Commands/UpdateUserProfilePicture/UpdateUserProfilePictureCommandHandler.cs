@@ -30,18 +30,26 @@ internal sealed class UpdateUserProfilePictureCommandHandler
         var user = await _usersRepository.GetByIdAsync(
             _userContext.UserId,
             cancellationToken);
-
         if (user is null)
         {
             return UserErrors.NotFound;
         }
 
-        var profilePictureUrl = await _blobService.UploadAsync(
+        if (user.ImageFileId.HasValue)
+        {
+            await _blobService.DeleteAsync(
+                user.ImageFileId.Value,
+                cancellationToken);
+        }
+
+        var uploadResponse = await _blobService.UploadAsync(
             command.File.OpenReadStream(),
             command.File.ContentType,
             cancellationToken: cancellationToken);
 
-        user.SetImageUrl(profilePictureUrl);
+        user.SetImage(
+            uploadResponse.FileUrl,
+            uploadResponse.FileId);
         _usersRepository.Update(user);
 
         return Result.Success;

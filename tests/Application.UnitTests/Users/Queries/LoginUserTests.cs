@@ -1,6 +1,6 @@
 using Application.Common.Interfaces.Persistence;
 using Application.Common.Interfaces.Services;
-using Application.Users.Common;
+using Application.Users.Queries.Common;
 using Application.Users.Queries.LoginUser;
 using Domain.Users;
 

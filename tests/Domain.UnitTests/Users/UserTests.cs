@@ -37,7 +37,7 @@ public class UsersTests : BaseTest
         var user = UserFactory.CreateUser();
 
         // Act
-        user.SetImageUrl(UserFactory.ImageUrl);
+        user.SetImage(UserFactory.ImageUrl, UserFactory.ImageFileId);
 
         // Assert
         user.ImageUrl.Should().Be(UserFactory.ImageUrl);

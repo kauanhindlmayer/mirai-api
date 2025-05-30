@@ -1,9 +1,8 @@
 using System.Linq.Expressions;
 using Application.WikiPages.Queries.GetWikiPage;
-using Application.WikiPages.Queries.ListWikiPages;
 using Domain.WikiPages;
 
-namespace Application.WikiPages.Common;
+namespace Application.WikiPages.Queries.Common;
 
 internal static class WikiPageQueries
 {

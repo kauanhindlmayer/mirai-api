@@ -44,5 +44,5 @@ public sealed class AssigneeResponse
 {
     public Guid Id { get; init; }
     public required string Name { get; init; }
-    public required string ImageUrl { get; init; }
+    public string? ImageUrl { get; init; }
 }

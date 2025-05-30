@@ -1,6 +1,6 @@
 using Application.IntegrationTests.Common;
 using Application.Users.Commands.RegisterUser;
-using Application.Users.Common;
+using Application.Users.Queries.Common;
 using Application.Users.Queries.LoginUser;
 using Domain.Users;
 using FluentAssertions;

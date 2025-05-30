@@ -19,7 +19,7 @@ namespace Infrastructure.Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.0")
+                .HasAnnotation("ProductVersion", "9.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "vector");
@@ -172,6 +172,53 @@ namespace Infrastructure.Persistence.Migrations
                         .HasName("pk_organizations");
 
                     b.ToTable("organizations", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Personas.Persona", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("description");
+
+                    b.Property<Guid?>("ImageFileId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("image_file_id");
+
+                    b.Property<string>("ImageUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("image_url");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("name");
+
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("project_id");
+
+                    b.Property<DateTime?>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.HasKey("Id")
+                        .HasName("pk_personas");
+
+                    b.HasIndex("ProjectId")
+                        .HasDatabaseName("ix_personas_project_id");
+
+                    b.ToTable("personas", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Projects.Project", b =>
@@ -544,8 +591,11 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("identity_id");
 
+                    b.Property<Guid?>("ImageFileId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("image_file_id");
+
                     b.Property<string>("ImageUrl")
-                        .IsRequired()
                         .HasMaxLength(512)
                         .HasColumnType("character varying(512)")
                         .HasColumnName("image_url");
@@ -942,6 +992,18 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Board");
                 });
 
+            modelBuilder.Entity("Domain.Personas.Persona", b =>
+                {
+                    b.HasOne("Domain.Projects.Project", "Project")
+                        .WithMany("Personas")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_personas_projects_project_id");
+
+                    b.Navigation("Project");
+                });
+
             modelBuilder.Entity("Domain.Projects.Project", b =>
                 {
                     b.HasOne("Domain.Organizations.Organization", "Organization")
@@ -1216,6 +1278,8 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.Projects.Project", b =>
                 {
+                    b.Navigation("Personas");
+
                     b.Navigation("Tags");
 
                     b.Navigation("Teams");

@@ -2,7 +2,6 @@ using System.Reflection;
 using Application;
 using Domain.Common;
 using Infrastructure.Persistence;
-using WebApi;
 
 namespace ArchitectureTests.Infrastructure;
 

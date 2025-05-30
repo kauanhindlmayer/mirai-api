@@ -1,7 +1,6 @@
 using Domain.Boards.Enums;
 using Domain.Common;
 using Domain.Teams;
-using Domain.WorkItems;
 using ErrorOr;
 
 namespace Domain.Boards;

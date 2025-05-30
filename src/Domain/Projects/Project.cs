@@ -1,5 +1,6 @@
 using Domain.Common;
 using Domain.Organizations;
+using Domain.Personas;
 using Domain.Projects.Events;
 using Domain.Tags;
 using Domain.Teams;
@@ -19,6 +20,7 @@ public sealed class Project : AggregateRoot
     public List<WikiPage> WikiPages { get; private set; } = [];
     public ICollection<Team> Teams { get; private set; } = [];
     public ICollection<Tag> Tags { get; private set; } = [];
+    public ICollection<Persona> Personas { get; private set; } = [];
 
     public Project(string name, string description, Guid organizationId)
     {
@@ -137,6 +139,29 @@ public sealed class Project : AggregateRoot
         }
 
         Tags.Remove(tag);
+        return Result.Success;
+    }
+
+    public ErrorOr<Success> AddPersona(Persona persona)
+    {
+        if (Personas.Any(p => p.Name == persona.Name))
+        {
+            return PersonaErrors.AlreadyExists;
+        }
+
+        Personas.Add(persona);
+        return Result.Success;
+    }
+
+    public ErrorOr<Success> RemovePersona(Guid personaId)
+    {
+        var persona = Personas.FirstOrDefault(p => p.Id == personaId);
+        if (persona is null)
+        {
+            return PersonaErrors.NotFound;
+        }
+
+        Personas.Remove(persona);
         return Result.Success;
     }
 }

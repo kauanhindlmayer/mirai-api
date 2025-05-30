@@ -2,12 +2,15 @@ using Application;
 using Infrastructure;
 using Scalar.AspNetCore;
 using Serilog;
+using ServiceDefaults;
 using WebApi;
 using WebApi.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Host.UseSerilog((_, config) =>
+builder.AddServiceDefaults();
+
+builder.Services.AddSerilog(config =>
     config.ReadFrom.Configuration(builder.Configuration));
 
 builder.Services
@@ -40,6 +43,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapDefaultEndpoints();
 
 await app.RunAsync();
 
