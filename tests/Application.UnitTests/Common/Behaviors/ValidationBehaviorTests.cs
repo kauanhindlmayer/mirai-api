@@ -29,7 +29,9 @@ public class ValidationBehaviorTests
         _mockValidator
             .ValidateAsync(createOrganizationCommand, TestContext.Current.CancellationToken)
             .Returns(new ValidationResult());
-        _mockNextBehavior.Invoke(TestContext.Current.CancellationToken).Returns(organization.Id);
+        _mockNextBehavior
+            .Invoke(TestContext.Current.CancellationToken)
+            .Returns(organization.Id);
 
         // Act
         var result = await _validationBehavior.Handle(
@@ -50,7 +52,6 @@ public class ValidationBehaviorTests
         List<ValidationFailure> validationFailures = [new(
             propertyName: "Organization.Name",
             errorMessage: "The organization name is required.")];
-
         _mockValidator
             .ValidateAsync(createOrganizationCommand, TestContext.Current.CancellationToken)
             .Returns(new ValidationResult(validationFailures));
@@ -73,9 +74,10 @@ public class ValidationBehaviorTests
         // Arrange
         var createOrganizationCommand = new CreateOrganizationCommand("Organization", "Description");
         var validationBehavior = new ValidationBehavior<CreateOrganizationCommand, ErrorOr<Guid>>();
-
         var organization = new Organization("Organization", "Description");
-        _mockNextBehavior.Invoke(TestContext.Current.CancellationToken).Returns(organization.Id);
+        _mockNextBehavior
+            .Invoke(TestContext.Current.CancellationToken)
+            .Returns(organization.Id);
 
         // Act
         var result = await validationBehavior.Handle(

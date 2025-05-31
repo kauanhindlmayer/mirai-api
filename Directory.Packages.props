@@ -5,10 +5,6 @@
   <ItemGroup>
     <PackageVersion Include="Asp.Versioning.Mvc" Version="8.1.0" />
     <PackageVersion Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
-    <PackageVersion Include="AspNetCore.HealthChecks.NpgSql" Version="9.0.0" />
-    <PackageVersion Include="AspNetCore.HealthChecks.Redis" Version="9.0.0" />
-    <PackageVersion Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
-    <PackageVersion Include="AspNetCore.HealthChecks.Uris" Version="9.0.0" />
     <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.3.0" />
     <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="9.3.0" />
     <PackageVersion Include="Aspire.Hosting.Redis" Version="9.3.0" />
