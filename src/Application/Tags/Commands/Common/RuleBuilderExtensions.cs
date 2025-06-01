@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
 using FluentValidation;
 
-namespace Application.Tags.Validation;
+namespace Application.Tags.Commands.Common;
 
 public static partial class RuleBuilderExtensions
 {

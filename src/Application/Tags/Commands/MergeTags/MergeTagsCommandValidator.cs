@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Application.Tags.Commands.MergeTags;
 
-public sealed partial class MergeTagsCommandValidator : AbstractValidator<MergeTagsCommand>
+public sealed class MergeTagsCommandValidator : AbstractValidator<MergeTagsCommand>
 {
     public MergeTagsCommandValidator()
     {

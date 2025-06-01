@@ -20,10 +20,10 @@ internal sealed class UnitOfWorkBehavior<TRequest, TResponse> : IPipelineBehavio
     {
         if (IsNotCommand())
         {
-            return await next();
+            return await next(cancellationToken);
         }
 
-        var response = await next();
+        var response = await next(cancellationToken);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

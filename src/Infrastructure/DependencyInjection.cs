@@ -77,7 +77,7 @@ public static class DependencyInjection
     {
         var connectionString = configuration.GetConnectionString("mirai-db");
         services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseNpgsql(connectionString, options => options.UseVector())
+            options.UseNpgsql(connectionString, npgsqlOptions => npgsqlOptions.UseVector())
                 .UseSnakeCaseNamingConvention());
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();

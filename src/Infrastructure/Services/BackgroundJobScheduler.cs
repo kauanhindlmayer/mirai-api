@@ -2,6 +2,8 @@ using Application.Common.Interfaces.Services;
 using Infrastructure.Jobs;
 using Quartz;
 
+namespace Infrastructure.Services;
+
 internal sealed class BackgroundJobScheduler : IBackgroundJobScheduler
 {
     private readonly ISchedulerFactory _schedulerFactory;

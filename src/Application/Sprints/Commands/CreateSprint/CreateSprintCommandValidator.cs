@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Application.Sprints.Commands.CreateSprint;
 
-public sealed partial class CreateSprintCommandValidator : AbstractValidator<CreateSprintCommand>
+public sealed class CreateSprintCommandValidator : AbstractValidator<CreateSprintCommand>
 {
     public CreateSprintCommandValidator()
     {

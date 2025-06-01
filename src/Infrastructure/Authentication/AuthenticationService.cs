@@ -24,7 +24,7 @@ internal sealed class AuthenticationService : IAuthenticationService
 
         userRepresentationModel.Credentials =
         [
-            new()
+            new CredentialRepresentationModel
             {
                 Type = PasswordCredentialType,
                 Value = password,
