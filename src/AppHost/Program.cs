@@ -16,7 +16,7 @@ var keycloak = builder.AddKeycloak("mirai-idp", port: 8080)
     .WithLifetime(ContainerLifetime.Persistent)
     .WithRealmImport("../../.files/mirai-realm-export.json");
 
-builder.AddProject<Projects.WebApi>("mirai-api")
+builder.AddProject<Projects.Presentation>("mirai-api")
     .WithReference(postgres)
     .WaitFor(postgres)
     .WithReference(redis)
