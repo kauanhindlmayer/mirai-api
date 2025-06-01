@@ -111,11 +111,12 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var authenticationOptions = configuration.GetSection(AuthenticationOptions.SectionName);
-        services.Configure<AuthenticationOptions>(authenticationOptions);
+        var authenticationSection = configuration.GetSection(AuthenticationOptions.SectionName);
+        services.Configure<AuthenticationOptions>(authenticationSection);
 
-        var keycloakOptions = configuration.GetSection(KeycloakOptions.SectionName);
-        services.Configure<KeycloakOptions>(keycloakOptions);
+        var keycloakSection = configuration.GetSection(KeycloakOptions.SectionName);
+        services.Configure<KeycloakOptions>(keycloakSection);
+        var keycloakOptions = keycloakSection.Get<KeycloakOptions>()!;
 
         services
             .ConfigureOptions<JwtBearerOptionsSetup>()
@@ -124,19 +125,14 @@ public static class DependencyInjection
 
         services.AddTransient<AdminAuthorizationDelegatingHandler>();
 
-        services.AddHttpClient().ConfigureHttpClientDefaults(configure =>
-            configure.AddStandardResilienceHandler());
-
-        services.AddHttpClient<IAuthenticationService, AuthenticationService>((sp, httpClient) =>
+        services.AddHttpClient<IAuthenticationService, AuthenticationService>((_, httpClient) =>
         {
-            var options = sp.GetRequiredService<IOptions<KeycloakOptions>>().Value;
-            httpClient.BaseAddress = new Uri(options.AdminUrl);
+            httpClient.BaseAddress = new Uri(keycloakOptions.AdminUrl);
         }).AddHttpMessageHandler<AdminAuthorizationDelegatingHandler>();
 
-        services.AddHttpClient<IJwtService, JwtService>((sp, httpClient) =>
+        services.AddHttpClient<IJwtService, JwtService>((_, httpClient) =>
         {
-            var options = sp.GetRequiredService<IOptions<KeycloakOptions>>().Value;
-            httpClient.BaseAddress = new Uri(options.TokenUrl);
+            httpClient.BaseAddress = new Uri(keycloakOptions.TokenUrl);
         });
 
         return services;
