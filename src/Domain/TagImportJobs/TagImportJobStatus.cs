@@ -1,6 +1,6 @@
 namespace Domain.TagImportJobs;
 
-public enum TagImportStatus
+public enum TagImportJobStatus
 {
     Pending,
     Processing,
