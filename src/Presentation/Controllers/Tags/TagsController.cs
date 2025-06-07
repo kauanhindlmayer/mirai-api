@@ -2,6 +2,7 @@ using System.Net.Mime;
 using Application.Common;
 using Application.Tags.Commands.CreateTag;
 using Application.Tags.Commands.DeleteTag;
+using Application.Tags.Commands.DeleteTags;
 using Application.Tags.Commands.MergeTags;
 using Application.Tags.Commands.UpdateTag;
 using Application.Tags.Queries.ExportTags;
@@ -121,6 +122,31 @@ public sealed class TagsController : ApiController
         CancellationToken cancellationToken)
     {
         var command = new DeleteTagCommand(projectId, tagId);
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        return result.Match(
+            _ => NoContent(),
+            Problem);
+    }
+
+    /// <summary>
+    /// Delete multiple tags from a project.
+    /// </summary>
+    /// <remarks>
+    /// This operation allows for bulk deletion of tags. It is useful for
+    /// cleaning up multiple tags at once.
+    /// </remarks>
+    /// <param name="projectId">The project's unique identifier.</param>
+    [HttpDelete("bulk")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> DeleteTags(
+        Guid projectId,
+        [FromBody] DeleteTagsRequest request,
+        CancellationToken cancellationToken)
+    {
+        var command = new DeleteTagsCommand(projectId, request.TagIds);
 
         var result = await _sender.Send(command, cancellationToken);
 

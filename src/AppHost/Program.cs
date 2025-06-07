@@ -20,8 +20,7 @@ builder.AddProject<Projects.Presentation>("mirai-api")
     .WithReference(postgres)
     .WaitFor(postgres)
     .WithReference(redis)
-    .WithReference(keycloak)
-    .WaitFor(keycloak);
+    .WithReference(keycloak);
 
 builder.AddDockerfile("mirai-nlp-api", "../../../mirai-nlp-api", "Dockerfile")
     .WithLifetime(ContainerLifetime.Persistent)

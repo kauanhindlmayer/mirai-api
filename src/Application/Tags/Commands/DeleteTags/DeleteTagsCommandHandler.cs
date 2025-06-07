@@ -4,14 +4,14 @@ using Domain.Tags;
 using ErrorOr;
 using MediatR;
 
-namespace Application.Tags.Commands.DeleteTag;
+namespace Application.Tags.Commands.DeleteTags;
 
-internal sealed class DeleteTagCommandHandler : IRequestHandler<DeleteTagCommand, ErrorOr<Success>>
+internal sealed class DeleteTagsCommandHandler : IRequestHandler<DeleteTagsCommand, ErrorOr<Success>>
 {
     private readonly IProjectsRepository _projectsRepository;
     private readonly ITagsRepository _tagsRepository;
 
-    public DeleteTagCommandHandler(
+    public DeleteTagsCommandHandler(
         IProjectsRepository projectsRepository,
         ITagsRepository tagsRepository)
     {
@@ -20,7 +20,7 @@ internal sealed class DeleteTagCommandHandler : IRequestHandler<DeleteTagCommand
     }
 
     public async Task<ErrorOr<Success>> Handle(
-        DeleteTagCommand command,
+        DeleteTagsCommand command,
         CancellationToken cancellationToken)
     {
         var project = await _projectsRepository.GetByIdWithTagsAsync(
@@ -31,19 +31,15 @@ internal sealed class DeleteTagCommandHandler : IRequestHandler<DeleteTagCommand
             return ProjectErrors.NotFound;
         }
 
-        var tag = project.Tags.FirstOrDefault(t => t.Id == command.TagId);
-        if (tag is null)
+        var tags = project.Tags
+            .Where(tag => command.TagIds.Contains(tag.Id))
+            .ToList();
+        if (tags.Count == 0)
         {
-            return TagErrors.NotFound;
+            return TagErrors.NoTagsFound;
         }
 
-        var result = project.RemoveTag(tag);
-        if (result.IsError)
-        {
-            return result.Errors;
-        }
-
-        _tagsRepository.Remove(tag);
+        _tagsRepository.RemoveRange(tags, cancellationToken);
         _projectsRepository.Update(project);
 
         return Result.Success;
