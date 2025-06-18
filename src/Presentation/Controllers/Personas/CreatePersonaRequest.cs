@@ -8,5 +8,6 @@ namespace Presentation.Controllers.Personas;
 /// <param name="File">The image file for the persona.</param>
 public sealed record CreatePersonaRequest(
     string Name,
+    string? Category,
     string? Description,
     IFormFile? File);

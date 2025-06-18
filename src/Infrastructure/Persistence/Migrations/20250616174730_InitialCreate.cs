@@ -81,6 +81,7 @@ namespace Infrastructure.Persistence.Migrations
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    category = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
                     image_url = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
                     image_file_id = table.Column<Guid>(type: "uuid", nullable: true),

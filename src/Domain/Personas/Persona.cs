@@ -6,16 +6,22 @@ namespace Domain.Personas;
 public sealed class Persona : Entity
 {
     public string Name { get; private set; } = string.Empty;
+    public string? Category { get; private set; }
     public string? Description { get; private set; }
     public string? ImageUrl { get; private set; }
     public Guid? ImageFileId { get; private set; }
     public Guid ProjectId { get; private set; }
     public Project Project { get; private set; } = null!;
 
-    public Persona(Guid projectId, string name, string? description)
+    public Persona(
+        Guid projectId,
+        string name,
+        string? category,
+        string? description)
     {
         ProjectId = projectId;
         Name = name;
+        Category = category;
         Description = description;
     }
 

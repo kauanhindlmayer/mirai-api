@@ -38,6 +38,7 @@ public sealed class PersonasController : ApiController
         var command = new CreatePersonaCommand(
             projectId,
             request.Name,
+            request.Category,
             request.Description,
             request.File);
 
