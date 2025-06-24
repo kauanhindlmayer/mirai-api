@@ -4,7 +4,7 @@ using Testcontainers.Keycloak;
 using Testcontainers.PostgreSql;
 using Testcontainers.Redis;
 
-namespace Application.IntegrationTests.Common;
+namespace Application.IntegrationTests.Infrastructure;
 
 public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
@@ -42,8 +42,8 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder.UseSetting("ConnectionStrings:Database", _dbContainer.GetConnectionString());
-        builder.UseSetting("ConnectionStrings:Redis", _redisContainer.GetConnectionString());
+        builder.UseSetting("ConnectionStrings:mirai-db", _dbContainer.GetConnectionString());
+        builder.UseSetting("ConnectionStrings:mirai-redis", _redisContainer.GetConnectionString());
 
         var keycloakAddress = _keycloakContainer.GetBaseAddress();
         builder.UseSetting("Keycloak:AdminUrl", $"{keycloakAddress}admin/realms/mirai/");

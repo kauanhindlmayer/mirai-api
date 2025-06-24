@@ -1,7 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
-using Presentation.FunctionalTests.Common;
+using Presentation.FunctionalTests.Infrastructure;
 using Presentation.FunctionalTests.Organizations;
 
 namespace Presentation.FunctionalTests.Projects;

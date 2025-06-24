@@ -8,7 +8,7 @@ var postgres = builder.AddPostgres("mirai-db")
 
 var redis = builder.AddRedis("mirai-redis");
 
-var keycloak = builder.AddKeycloak("mirai-idp")
+var keycloak = builder.AddKeycloak("mirai-idp", port: 8080)
     .WithImageTag("26.2")
     .WithDataVolume()
     .WithRealmImport("../../.files/mirai-realm-export.json");

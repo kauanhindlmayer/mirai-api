@@ -4,7 +4,7 @@ using Application.Users.Queries.Common;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Presentation.FunctionalTests.Users;
 
-namespace Presentation.FunctionalTests.Common;
+namespace Presentation.FunctionalTests.Infrastructure;
 
 [Collection(nameof(FunctionalTestCollection))]
 public abstract class BaseFunctionalTest : IClassFixture<FunctionalTestWebAppFactory>
@@ -27,7 +27,7 @@ public abstract class BaseFunctionalTest : IClassFixture<FunctionalTestWebAppFac
     private async Task<string> GetAccessToken()
     {
         var loginResponse = await _httpClient.PostAsJsonAsync(
-            "api/users/login",
+            Routes.Users.Login,
             UserRequestFactory.CreateLoginUserRequest());
 
         var accessTokenResponse = await loginResponse.Content.ReadFromJsonAsync<AccessTokenResponse>();

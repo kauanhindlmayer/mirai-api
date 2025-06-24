@@ -1,7 +1,7 @@
 using Domain.Organizations;
 using Domain.Organizations.Events;
 using Domain.Projects;
-using Domain.UnitTests.Common;
+using Domain.UnitTests.Infrastructure;
 using Domain.UnitTests.Projects;
 using Domain.UnitTests.Users;
 

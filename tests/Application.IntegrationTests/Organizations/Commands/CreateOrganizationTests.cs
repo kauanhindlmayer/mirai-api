@@ -1,4 +1,4 @@
-using Application.IntegrationTests.Common;
+using Application.IntegrationTests.Infrastructure;
 using Application.Organizations.Commands.CreateOrganization;
 using Domain.Organizations;
 using FluentAssertions;

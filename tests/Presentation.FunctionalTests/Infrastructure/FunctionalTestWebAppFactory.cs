@@ -1,12 +1,13 @@
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Logging;
 using Presentation.FunctionalTests.Users;
 using Testcontainers.Keycloak;
 using Testcontainers.PostgreSql;
 using Testcontainers.Redis;
 
-namespace Presentation.FunctionalTests.Common;
+namespace Presentation.FunctionalTests.Infrastructure;
 
 public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
@@ -46,8 +47,8 @@ public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyn
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder.UseSetting("ConnectionStrings:Database", _dbContainer.GetConnectionString());
-        builder.UseSetting("ConnectionStrings:Redis", _redisContainer.GetConnectionString());
+        builder.UseSetting("ConnectionStrings:mirai-db", _dbContainer.GetConnectionString());
+        builder.UseSetting("ConnectionStrings:mirai-redis", _redisContainer.GetConnectionString());
 
         var keycloakAddress = _keycloakContainer.GetBaseAddress();
         builder.UseSetting("Keycloak:AdminUrl", $"{keycloakAddress}admin/realms/mirai/");
@@ -60,7 +61,7 @@ public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyn
     {
         using var httpClient = CreateClient();
         await httpClient.PostAsJsonAsync(
-            "api/users/register",
+            Routes.Users.Register,
             UserRequestFactory.CreateRegisterUserRequest());
     }
 }

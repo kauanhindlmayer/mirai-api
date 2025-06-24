@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Application.Tags.Commands.MergeTags;
 
-public sealed class MergeTagsCommandHandler : IRequestHandler<MergeTagsCommand, ErrorOr<Success>>
+internal sealed class MergeTagsCommandHandler : IRequestHandler<MergeTagsCommand, ErrorOr<Success>>
 {
     private readonly ITagsRepository _tagRepository;
     private readonly IWorkItemsRepository _workItemRepository;

@@ -1,4 +1,4 @@
-using Application.IntegrationTests.Common;
+using Application.IntegrationTests.Infrastructure;
 using Application.Users.Commands.RegisterUser;
 using Domain.Users;
 using FluentAssertions;

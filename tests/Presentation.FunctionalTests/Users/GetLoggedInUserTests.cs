@@ -2,7 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using Application.Users.Queries.GetCurrentUser;
 using FluentAssertions;
-using Presentation.FunctionalTests.Common;
+using Presentation.FunctionalTests.Infrastructure;
 
 namespace Presentation.FunctionalTests.Users;
 

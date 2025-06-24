@@ -1,4 +1,4 @@
-using Domain.UnitTests.Common;
+using Domain.UnitTests.Infrastructure;
 
 namespace Domain.UnitTests.Users;
 

@@ -1,4 +1,4 @@
-namespace Presentation.FunctionalTests.Common;
+namespace Presentation.FunctionalTests.Infrastructure;
 
 public static class Routes
 {

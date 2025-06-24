@@ -1,6 +1,6 @@
 using Domain.Common;
 
-namespace Domain.UnitTests.Common;
+namespace Domain.UnitTests.Infrastructure;
 
 public abstract class BaseTest
 {
