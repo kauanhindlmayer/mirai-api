@@ -33,8 +33,8 @@ public static class DependencyInjection
         services.AddExceptionHandler<GlobalExceptionHandler>();
 
         services.AddSignalR()
-            .AddJsonProtocol(options =>
-                options.PayloadSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
+            .AddJsonProtocol(config =>
+                config.PayloadSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
         return services;
     }
@@ -47,9 +47,9 @@ public static class DependencyInjection
 
     private static void ConfigureCustomMediaTypes(this IServiceCollection services)
     {
-        services.Configure<MvcOptions>(options =>
+        services.Configure<MvcOptions>(config =>
         {
-            var formatter = options.OutputFormatters
+            var formatter = config.OutputFormatters
                 .OfType<SystemTextJsonOutputFormatter>()
                 .FirstOrDefault()!;
 

@@ -13,12 +13,22 @@ var keycloak = builder.AddKeycloak("mirai-idp", port: 8080)
     .WithDataVolume()
     .WithRealmImport("../../.files/mirai-realm-export.json");
 
-builder.AddProject<Projects.Presentation>("mirai-api")
+var miraiApi = builder.AddProject<Projects.Presentation>("mirai-api")
     .WithReference(postgres)
     .WaitFor(postgres)
     .WithReference(redis)
-    .WithReference(keycloak);
+    .WithReference(keycloak)
+    .WithExternalHttpEndpoints();
 
-builder.AddDockerfile("mirai-nlp-api", "../../../mirai-nlp-api", "Dockerfile");
+builder.AddDockerfile("mirai-nlp-api", "../../../mirai-nlp-api", "Dockerfile")
+    .WithHttpEndpoint(port: 8000, targetPort: 8000)
+    .WithUrl("http://127.0.0.1:8000/docs");
+
+builder.AddNpmApp("mirai-app", "../../../mirai-app")
+    .WithReference(miraiApi)
+    .WaitFor(miraiApi)
+    .WithHttpEndpoint(env: "PORT", port: 5173)
+    .WithExternalHttpEndpoints()
+    .PublishAsDockerFile();
 
 builder.Build().Run();

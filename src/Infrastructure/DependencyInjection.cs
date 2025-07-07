@@ -162,10 +162,13 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var corsOptions = configuration.GetSection(CorsOptions.SectionName).Get<CorsOptions>()!;
+        var corsOptions = configuration
+            .GetSection(CorsOptions.SectionName)
+            .Get<CorsOptions>()!;
 
         services.AddCors(options => options.AddPolicy(CorsOptions.PolicyName, policy => policy
-            .WithOrigins(corsOptions.AllowedOrigins)
+            // .WithOrigins(corsOptions.AllowedOrigins)
+            .AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader()));
 
