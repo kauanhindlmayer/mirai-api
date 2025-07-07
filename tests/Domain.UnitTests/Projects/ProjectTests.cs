@@ -1,7 +1,7 @@
 using Domain.Projects;
 using Domain.Projects.Events;
 using Domain.Tags;
-using Domain.UnitTests.Common;
+using Domain.UnitTests.Infrastructure;
 using Domain.UnitTests.Tags;
 using Domain.UnitTests.Teams;
 using Domain.UnitTests.WikiPages;

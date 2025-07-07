@@ -27,4 +27,11 @@ internal sealed class TagsRepository : Repository<Tag>, ITagsRepository
             .Where(t => t.ProjectId == projectId)
             .ToListAsync(cancellationToken);
     }
+
+    public void RemoveRange(
+        IEnumerable<Tag> tags,
+        CancellationToken cancellationToken = default)
+    {
+        _dbContext.Tags.RemoveRange(tags);
+    }
 }

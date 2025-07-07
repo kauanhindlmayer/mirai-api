@@ -37,7 +37,7 @@ public sealed class CleanupTagImportJobsJob : IJob
     {
         var cutoffDate = DateTime.UtcNow.AddDays(-days);
         int count = await _context.TagImportJobs
-            .Where(j => j.Status == TagImportStatus.Completed && j.CompletedAtUtc < cutoffDate)
+            .Where(j => j.Status == TagImportJobStatus.Completed && j.CompletedAtUtc < cutoffDate)
             .ExecuteDeleteAsync();
 
         if (count > 0)
@@ -50,7 +50,7 @@ public sealed class CleanupTagImportJobsJob : IJob
     {
         var cutoffDate = DateTime.UtcNow.AddDays(-days);
         int count = await _context.TagImportJobs
-            .Where(j => j.Status == TagImportStatus.Failed && j.CompletedAtUtc < cutoffDate)
+            .Where(j => j.Status == TagImportJobStatus.Failed && j.CompletedAtUtc < cutoffDate)
             .ExecuteDeleteAsync();
 
         if (count > 0)
@@ -63,7 +63,7 @@ public sealed class CleanupTagImportJobsJob : IJob
     {
         var cutoffDate = DateTime.UtcNow.AddHours(-hours);
         int count = await _context.TagImportJobs
-            .Where(j => j.Status == TagImportStatus.Processing && j.CreatedAtUtc < cutoffDate)
+            .Where(j => j.Status == TagImportJobStatus.Processing && j.CreatedAtUtc < cutoffDate)
             .ExecuteDeleteAsync();
 
         if (count > 0)

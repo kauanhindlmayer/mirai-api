@@ -26,7 +26,6 @@ internal sealed class DeleteTagCommandHandler : IRequestHandler<DeleteTagCommand
         var project = await _projectsRepository.GetByIdWithTagsAsync(
             command.ProjectId,
             cancellationToken);
-
         if (project is null)
         {
             return ProjectErrors.NotFound;

@@ -23,7 +23,7 @@ internal sealed class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<T
     {
         _logger.LogInformation("Starting request {@RequestName}", typeof(TRequest).Name);
 
-        var result = await next();
+        var result = await next(cancellationToken);
 
         if (result.IsError)
         {

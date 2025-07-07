@@ -39,7 +39,7 @@ internal sealed class QueryCachingBehavior<TRequest, TResponse> : IPipelineBehav
 
         _logger.LogInformation("Cache miss for query {@QueryName}", queryName);
 
-        var result = await next();
+        var result = await next(cancellationToken);
         if (result.IsError)
         {
             return result;

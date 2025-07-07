@@ -2,7 +2,7 @@ using Domain.Boards.Enums;
 
 namespace Domain.Boards;
 
-public static partial class BoardColumnTemplates
+public static class BoardColumnTemplates
 {
     public static readonly Dictionary<ProcessTemplate, List<ColumnTemplate>> Templates = new()
     {

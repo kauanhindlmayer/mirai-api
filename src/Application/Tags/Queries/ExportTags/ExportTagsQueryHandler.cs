@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Application.Tags.Queries.ExportTags;
 
-public sealed class ExportTagsQueryHandler : IRequestHandler<ExportTagsQuery, ErrorOr<byte[]>>
+internal sealed class ExportTagsQueryHandler : IRequestHandler<ExportTagsQuery, ErrorOr<byte[]>>
 {
     private readonly ITagsRepository _tagRepository;
 

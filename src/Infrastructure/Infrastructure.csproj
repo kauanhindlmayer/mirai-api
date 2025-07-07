@@ -2,11 +2,8 @@
 
   <ItemGroup>
     <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" />
-    <PackageReference Include="AspNetCore.HealthChecks.NpgSql" />
-    <PackageReference Include="AspNetCore.HealthChecks.Redis" />
-    <PackageReference Include="AspNetCore.HealthChecks.Uris" />
-    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" />
     <PackageReference Include="Asp.Versioning.Mvc" />
+    <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" />
     <PackageReference Include="Azure.Storage.Blobs" />
     <PackageReference Include="EFCore.NamingConventions" />
     <PackageReference Include="HtmlSanitizer" />
@@ -37,7 +34,7 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="Application.IntegrationTests" />
-    <InternalsVisibleTo Include="WebApi.FunctionalTests" />
+    <InternalsVisibleTo Include="Presentation.FunctionalTests" />
   </ItemGroup>
   
 </Project>

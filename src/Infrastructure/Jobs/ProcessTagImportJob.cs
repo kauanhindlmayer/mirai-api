@@ -23,10 +23,7 @@ public sealed class ProcessTagImportJob : IJob
     public async Task Execute(IJobExecutionContext context)
     {
         var importJobId = context.MergedJobDataMap.GetString("importJobId")!;
-
-        var importJob = _context.TagImportJobs
-            .Where(j => j.Id.ToString() == importJobId)
-            .FirstOrDefault();
+        var importJob = _context.TagImportJobs.FirstOrDefault(j => j.Id.ToString() == importJobId);
 
         if (importJob is null)
         {
@@ -101,7 +98,6 @@ public sealed class ProcessTagImportJob : IJob
             _logger.LogError(ex, "Failed to process tag import job with ID {ImportJobId}.", importJobId);
             importJob.FailProcessing(ex.Message);
             await _context.SaveChangesAsync();
-            return;
         }
     }
 }

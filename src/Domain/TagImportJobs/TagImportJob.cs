@@ -4,7 +4,7 @@ public sealed class TagImportJob
 {
     public Guid Id { get; private set; } = Guid.NewGuid();
     public Guid ProjectId { get; private set; }
-    public TagImportStatus Status { get; private set; }
+    public TagImportJobStatus Status { get; private set; }
     public string FileName { get; private set; } = null!;
     public byte[] FileContent { get; private set; } = [];
     public int TotalRecords { get; private set; }
@@ -23,7 +23,7 @@ public sealed class TagImportJob
         ProjectId = projectId;
         FileName = fileName;
         FileContent = fileContent;
-        Status = TagImportStatus.Pending;
+        Status = TagImportJobStatus.Pending;
         CreatedAtUtc = DateTime.UtcNow;
     }
 
@@ -53,19 +53,19 @@ public sealed class TagImportJob
 
     public void StartProcessing()
     {
-        Status = TagImportStatus.Processing;
+        Status = TagImportJobStatus.Processing;
     }
 
     public void FailProcessing(string error)
     {
-        Status = TagImportStatus.Failed;
+        Status = TagImportJobStatus.Failed;
         Errors.Add(error);
         CompletedAtUtc = DateTime.UtcNow;
     }
 
     public void CompleteProcessing()
     {
-        Status = TagImportStatus.Completed;
+        Status = TagImportJobStatus.Completed;
         CompletedAtUtc = DateTime.UtcNow;
     }
 

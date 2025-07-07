@@ -17,6 +17,9 @@ internal sealed class PersonaConfigurations : IEntityTypeConfiguration<Persona>
             .HasMaxLength(255)
             .IsRequired();
 
+        builder.Property(p => p.Category)
+            .HasMaxLength(100);
+
         builder.Property(p => p.Description)
             .HasMaxLength(500);
 

@@ -1,9 +1,9 @@
-using Application.Tags.Validation;
+using Application.Tags.Commands.Common;
 using FluentValidation;
 
 namespace Application.Tags.Commands.CreateTag;
 
-public sealed partial class CreateTagCommandValidator : AbstractValidator<CreateTagCommand>
+public sealed class CreateTagCommandValidator : AbstractValidator<CreateTagCommand>
 {
     public CreateTagCommandValidator()
     {

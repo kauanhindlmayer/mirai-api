@@ -37,7 +37,6 @@ public static class DependencyInjection
             .AddAuthorization()
             .AddAuthentication(configuration)
             .AddPersistence(configuration)
-            .AddHealthChecks(configuration)
             .AddApiVersioning()
             .AddCorsPolicy(configuration)
             .AddCaching(configuration)
@@ -61,12 +60,13 @@ public static class DependencyInjection
         services.AddHttpClient<INlpService, NlpService>((serviceProvider, httpClient) =>
         {
             var options = serviceProvider.GetRequiredService<IOptions<NlpServiceOptions>>().Value;
-            httpClient.BaseAddress = new Uri(options.BaseUrl);
+            httpClient.BaseAddress = new Uri("http://mirai-nlp-api");
             httpClient.DefaultRequestHeaders.Add(ApiKeyHeaderName, options.ApiKey);
         });
 
         services.AddSingleton<IBlobService, BlobService>();
-        services.AddSingleton(_ => new BlobServiceClient(configuration.GetConnectionString("BlobStorage")!));
+        services.AddSingleton(_ => new BlobServiceClient(configuration["Azure:BlobStorage:ConnectionString"]!));
+        services.Configure<BlobStorageOptions>(configuration.GetSection(BlobStorageOptions.SectionName));
 
         return services;
     }
@@ -77,7 +77,7 @@ public static class DependencyInjection
     {
         var connectionString = configuration.GetConnectionString("mirai-db");
         services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseNpgsql(connectionString, options => options.UseVector())
+            options.UseNpgsql(connectionString, npgsqlOptions => npgsqlOptions.UseVector())
                 .UseSnakeCaseNamingConvention());
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -111,11 +111,12 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var authenticationOptions = configuration.GetSection(AuthenticationOptions.SectionName);
-        services.Configure<AuthenticationOptions>(authenticationOptions);
+        var authenticationSection = configuration.GetSection(AuthenticationOptions.SectionName);
+        services.Configure<AuthenticationOptions>(authenticationSection);
 
-        var keycloakOptions = configuration.GetSection(KeycloakOptions.SectionName);
-        services.Configure<KeycloakOptions>(keycloakOptions);
+        var keycloakSection = configuration.GetSection(KeycloakOptions.SectionName);
+        services.Configure<KeycloakOptions>(keycloakSection);
+        var keycloakOptions = keycloakSection.Get<KeycloakOptions>()!;
 
         services
             .ConfigureOptions<JwtBearerOptionsSetup>()
@@ -124,36 +125,15 @@ public static class DependencyInjection
 
         services.AddTransient<AdminAuthorizationDelegatingHandler>();
 
-        services.AddHttpClient().ConfigureHttpClientDefaults(configure =>
-            configure.AddStandardResilienceHandler());
-
-        services.AddHttpClient<IAuthenticationService, AuthenticationService>((serviceProvider, httpClient) =>
+        services.AddHttpClient<IAuthenticationService, AuthenticationService>((_, httpClient) =>
         {
-            var keycloakOptions = serviceProvider.GetRequiredService<IOptions<KeycloakOptions>>().Value;
             httpClient.BaseAddress = new Uri(keycloakOptions.AdminUrl);
         }).AddHttpMessageHandler<AdminAuthorizationDelegatingHandler>();
 
-        services.AddHttpClient<IJwtService, JwtService>((serviceProvider, httpClient) =>
+        services.AddHttpClient<IJwtService, JwtService>((_, httpClient) =>
         {
-            var keycloakOptions = serviceProvider.GetRequiredService<IOptions<KeycloakOptions>>().Value;
             httpClient.BaseAddress = new Uri(keycloakOptions.TokenUrl);
         });
-
-        return services;
-    }
-
-    private static IServiceCollection AddHealthChecks(
-        this IServiceCollection services,
-        IConfiguration configuration)
-    {
-        var keycloakServiceUri = new Uri(configuration["Keycloak:BaseUrl"]!);
-        var nlpServiceUri = new Uri($"{configuration["NlpService:BaseUrl"]!}/health");
-
-        services.AddHealthChecks()
-            .AddNpgSql(configuration.GetConnectionString("mirai-db")!)
-            .AddRedis(configuration.GetConnectionString("mirai-redis")!)
-            .AddUrlGroup(keycloakServiceUri, HttpMethod.Get, "keycloak")
-            .AddUrlGroup(nlpServiceUri, HttpMethod.Get, "nlp-api");
 
         return services;
     }
@@ -182,10 +162,13 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var corsOptions = configuration.GetSection(CorsOptions.SectionName).Get<CorsOptions>()!;
+        var corsOptions = configuration
+            .GetSection(CorsOptions.SectionName)
+            .Get<CorsOptions>()!;
 
         services.AddCors(options => options.AddPolicy(CorsOptions.PolicyName, policy => policy
-            .WithOrigins(corsOptions.AllowedOrigins)
+            // .WithOrigins(corsOptions.AllowedOrigins)
+            .AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader()));
 
@@ -196,7 +179,7 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("Redis");
+        var connectionString = configuration.GetConnectionString("mirai-redis");
         services.AddStackExchangeRedisCache(options => options.Configuration = connectionString);
         services.AddSingleton<ICacheService, CacheService>();
         return services;

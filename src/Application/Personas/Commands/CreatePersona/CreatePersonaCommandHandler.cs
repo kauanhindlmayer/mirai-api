@@ -35,6 +35,7 @@ internal sealed class CreatePersonaCommandHandler : IRequestHandler<CreatePerson
         var persona = new Persona(
             project.Id,
             command.Name,
+            command.Category,
             command.Description);
 
         var result = project.AddPersona(persona);

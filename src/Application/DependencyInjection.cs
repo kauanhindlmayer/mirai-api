@@ -14,13 +14,13 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        services.AddMediatR(options =>
+        services.AddMediatR(config =>
         {
-            options.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly);
-            options.AddOpenBehavior(typeof(LoggingBehavior<,>));
-            options.AddOpenBehavior(typeof(ValidationBehavior<,>));
-            options.AddOpenBehavior(typeof(QueryCachingBehavior<,>));
-            options.AddOpenBehavior(typeof(UnitOfWorkBehavior<,>));
+            config.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly);
+            config.AddOpenBehavior(typeof(LoggingBehavior<,>));
+            config.AddOpenBehavior(typeof(ValidationBehavior<,>));
+            config.AddOpenBehavior(typeof(QueryCachingBehavior<,>));
+            config.AddOpenBehavior(typeof(UnitOfWorkBehavior<,>));
         });
         services.AddValidatorsFromAssemblyContaining(typeof(DependencyInjection));
 

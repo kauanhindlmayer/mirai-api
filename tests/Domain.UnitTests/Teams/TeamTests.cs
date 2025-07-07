@@ -2,7 +2,7 @@ using Domain.Retrospectives;
 using Domain.Sprints;
 using Domain.Teams;
 using Domain.Teams.Events;
-using Domain.UnitTests.Common;
+using Domain.UnitTests.Infrastructure;
 using Domain.UnitTests.Retrospectives;
 using Domain.UnitTests.Sprints;
 using Domain.UnitTests.Users;
