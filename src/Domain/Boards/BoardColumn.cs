@@ -9,6 +9,7 @@ public sealed class BoardColumn : Entity
     public Board Board { get; private set; } = null!;
     public string Name { get; private set; } = null!;
     public int Position { get; private set; }
+    public bool IsDefault => Position == 0;
 
     /// <summary>
     /// Gets the Work-In-Progress limit, the recommended max cards for this column.
@@ -46,8 +47,12 @@ public sealed class BoardColumn : Entity
             return BoardErrors.CardAlreadyExists;
         }
 
-        card.UpdatePosition(Cards.Count);
-        Cards.Add(card);
+        foreach (var existingCard in Cards)
+        {
+            existingCard.UpdatePosition(existingCard.Position + 1);
+        }
+
+        Cards.Insert(card.Position, card);
         return card;
     }
 
@@ -83,11 +88,9 @@ public sealed class BoardColumn : Entity
 
     public void ReorderCards()
     {
-        var position = 0;
-        foreach (var card in Cards)
+        for (int i = 0; i < Cards.Count; i++)
         {
-            card.UpdatePosition(position);
-            position++;
+            Cards[i].UpdatePosition(i);
         }
     }
 }

@@ -11,7 +11,7 @@ public sealed class BoardCard : Entity
     public WorkItem WorkItem { get; private set; } = null!;
     public int Position { get; private set; }
 
-    public BoardCard(Guid boardColumnId, Guid workItemId, int position)
+    public BoardCard(Guid boardColumnId, Guid workItemId, int position = 0)
     {
         BoardColumnId = boardColumnId;
         WorkItemId = workItemId;

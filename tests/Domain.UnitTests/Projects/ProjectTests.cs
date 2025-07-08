@@ -52,23 +52,6 @@ public class ProjectTests : BaseTest
     }
 
     [Fact]
-    public void AddWorkItem_WhenWorkItemWithSameTitleAlreadyExists_ShouldReturnError()
-    {
-        // Arrange
-        var project = ProjectFactory.CreateProject();
-        var workItem = WorkItemFactory.CreateWorkItem();
-        project.AddWorkItem(workItem);
-
-        // Act
-        var result = project.AddWorkItem(workItem);
-
-        // Assert
-        result.IsError.Should().BeTrue();
-        result.Errors.Should().HaveCount(1);
-        result.FirstError.Should().BeEquivalentTo(ProjectErrors.WorkItemWithSameTitleAlreadyExists);
-    }
-
-    [Fact]
     public void AddWorkItem_WhenWorkItemWithSameTitleDoesNotExists_ShouldAddWorkItem()
     {
         // Arrange

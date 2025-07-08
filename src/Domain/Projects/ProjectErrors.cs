@@ -12,10 +12,6 @@ public static class ProjectErrors
         "Project.AlreadyExists",
         "A project with the same name already exists in the organization.");
 
-    public static readonly Error WorkItemWithSameTitleAlreadyExists = Error.Conflict(
-        code: "WorkItem.WorkItemWithSameTitleAlreadyExists",
-        description: "A work item with the same title already exists.");
-
     public static readonly Error WikiPageWithSameTitleAlreadyExists = Error.Conflict(
         code: "WikiPage.WikiPageWithSameTitleAlreadyExists",
         description: "A wiki page with the same title already exists.");

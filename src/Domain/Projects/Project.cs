@@ -1,3 +1,4 @@
+using Domain.Boards;
 using Domain.Common;
 using Domain.Organizations;
 using Domain.Personas;
@@ -42,9 +43,17 @@ public sealed class Project : AggregateRoot
 
     public ErrorOr<Success> AddWorkItem(WorkItem workItem)
     {
-        if (WorkItems.Any(wi => wi.Title == workItem.Title))
+        var team = Teams.FirstOrDefault(t => t.Id == workItem.AssignedTeamId);
+        if (team is null)
         {
-            return ProjectErrors.WorkItemWithSameTitleAlreadyExists;
+            return TeamErrors.NotFound;
+        }
+
+        var card = new BoardCard(team.Board.DefaultColumn.Id, workItem.Id);
+        var result = team.Board.AddCard(card);
+        if (result.IsError)
+        {
+            return result.Errors;
         }
 
         WorkItems.Add(workItem);

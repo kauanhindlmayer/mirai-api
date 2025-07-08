@@ -60,7 +60,7 @@ public static class DependencyInjection
         services.AddHttpClient<INlpService, NlpService>((serviceProvider, httpClient) =>
         {
             var options = serviceProvider.GetRequiredService<IOptions<NlpServiceOptions>>().Value;
-            httpClient.BaseAddress = new Uri("http://mirai-nlp-api");
+            httpClient.BaseAddress = new Uri(options.BaseUrl);
             httpClient.DefaultRequestHeaders.Add(ApiKeyHeaderName, options.ApiKey);
         });
 
@@ -167,8 +167,7 @@ public static class DependencyInjection
             .Get<CorsOptions>()!;
 
         services.AddCors(options => options.AddPolicy(CorsOptions.PolicyName, policy => policy
-            // .WithOrigins(corsOptions.AllowedOrigins)
-            .AllowAnyOrigin()
+            .WithOrigins(corsOptions.AllowedOrigins)
             .AllowAnyMethod()
             .AllowAnyHeader()));
 

@@ -11,6 +11,7 @@ public sealed class Board : AggregateRoot
     public Team Team { get; private set; } = null!;
     public string Name { get; private set; } = null!;
     public List<BoardColumn> Columns { get; private set; } = [];
+    public BoardColumn DefaultColumn => Columns.FirstOrDefault(c => c.IsDefault)!;
 
     public Board(Guid teamId, string name)
     {

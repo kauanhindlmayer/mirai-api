@@ -15,4 +15,8 @@ public static class TeamErrors
     public static readonly Error MemberAlreadyExists = Error.Validation(
         code: "Team.MemberAlreadyExists",
         description: "User is already a member of this team.");
+
+    public static readonly Error BoardAlreadyExists = Error.Conflict(
+        code: "Team.BoardAlreadyExists",
+        description: "A board already exists for this team.");
 }

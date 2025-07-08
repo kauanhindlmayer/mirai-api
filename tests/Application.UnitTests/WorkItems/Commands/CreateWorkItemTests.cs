@@ -1,8 +1,9 @@
 using Application.Common.Interfaces.Persistence;
 using Application.Common.Interfaces.Services;
 using Application.WorkItems.Commands.CreateWorkItem;
+using Domain.Boards;
 using Domain.Projects;
-using Domain.WorkItems;
+using Domain.Teams;
 using Domain.WorkItems.Enums;
 
 namespace Application.UnitTests.WorkItems.Commands;
@@ -13,7 +14,7 @@ public class CreateWorkItemTests
         Guid.NewGuid(),
         WorkItemType.UserStory,
         "Title",
-        null);
+        Guid.NewGuid());
 
     private readonly CreateWorkItemCommandHandler _handler;
     private readonly IProjectsRepository _projectsRepository;
@@ -51,13 +52,19 @@ public class CreateWorkItemTests
     {
         // Arrange
         var project = new Project("Project", "Description", Guid.NewGuid());
-        _projectsRepository.GetByIdAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        var team = new Team(project.Id, "Team", "Description");
+        var board = new Board(team.Id, "Board");
+        project.AddTeam(team);
+        team.AddBoard(board);
+        _projectsRepository.GetByIdWithTeamsAsync(Command.ProjectId, TestContext.Current.CancellationToken)
             .Returns(project);
         _workItemsRepository.GetNextWorkItemCodeAsync(Command.ProjectId, TestContext.Current.CancellationToken)
             .Returns(1);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command with { AssignedTeamId = team.Id },
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeFalse();
@@ -65,35 +72,23 @@ public class CreateWorkItemTests
     }
 
     [Fact]
-    public async Task Handle_WhenWorkItemWithSameTitleAlreadyExists_ShouldReturnError()
-    {
-        // Arrange
-        var project = new Project("Project", "Description", Guid.NewGuid());
-        var workItem = new WorkItem(Command.ProjectId, 1, "Title", WorkItemType.UserStory);
-        project.AddWorkItem(workItem);
-        _projectsRepository.GetByIdAsync(Command.ProjectId, TestContext.Current.CancellationToken)
-            .Returns(project);
-
-        // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
-
-        // Assert
-        result.IsError.Should().BeTrue();
-        result.FirstError.Should().BeEquivalentTo(ProjectErrors.WorkItemWithSameTitleAlreadyExists);
-    }
-
-    [Fact]
     public async Task Handle_WhenWorkItemIsAddedToProject_ShouldUpdateProject()
     {
         // Arrange
         var project = new Project("Project", "Description", Guid.NewGuid());
-        _projectsRepository.GetByIdAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        var team = new Team(project.Id, "Team", "Description");
+        var board = new Board(team.Id, "Board");
+        project.AddTeam(team);
+        team.AddBoard(board);
+        _projectsRepository.GetByIdWithTeamsAsync(Command.ProjectId, TestContext.Current.CancellationToken)
             .Returns(project);
         _workItemsRepository.GetNextWorkItemCodeAsync(Command.ProjectId, TestContext.Current.CancellationToken)
             .Returns(1);
 
         // Act
-        await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        await _handler.Handle(
+            Command with { AssignedTeamId = team.Id },
+            TestContext.Current.CancellationToken);
 
         // Assert
         _projectsRepository.Received().Update(project);

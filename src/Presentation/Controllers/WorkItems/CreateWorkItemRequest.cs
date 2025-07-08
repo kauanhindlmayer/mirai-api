@@ -13,4 +13,4 @@ namespace Presentation.Controllers.WorkItems;
 public sealed record CreateWorkItemRequest(
     WorkItemType Type,
     string Title,
-    Guid? AssignedTeamId);
+    Guid AssignedTeamId);
