@@ -47,12 +47,9 @@ public sealed class BoardColumn : Entity
             return BoardErrors.CardAlreadyExists;
         }
 
-        foreach (var existingCard in Cards)
-        {
-            existingCard.UpdatePosition(existingCard.Position + 1);
-        }
-
-        Cards.Insert(card.Position, card);
+        ShiftCards(0, 1);
+        card.UpdatePosition(0);
+        Cards.Add(card);
         return card;
     }
 
@@ -65,7 +62,7 @@ public sealed class BoardColumn : Entity
         }
 
         Cards.Remove(card);
-        ReorderCards();
+        ShiftCards(card.Position, -1);
         return card;
     }
 
@@ -81,16 +78,26 @@ public sealed class BoardColumn : Entity
             return BoardErrors.CardAlreadyExists;
         }
 
-        Cards.Insert(position, card);
-        ReorderCards();
+        ShiftCards(position, 1);
+        card.UpdatePosition(position);
+        Cards.Add(card);
         return Result.Success;
     }
 
-    public void ReorderCards()
+    /// <summary>
+    /// Shifts the positions of cards starting from a specific index
+    /// by a given offset.
+    /// </summary>
+    /// <param name="fromIndex">The index from which to start shifting.</param>
+    /// <param name="offset">
+    /// The amount to shift the positions by. Positive values move cards
+    /// down, negative values move them up.
+    /// </param>
+    private void ShiftCards(int fromIndex, int offset)
     {
-        for (int i = 0; i < Cards.Count; i++)
+        foreach (var card in Cards.Where(c => c.Position >= fromIndex))
         {
-            Cards[i].UpdatePosition(i);
+            card.UpdatePosition(card.Position + offset);
         }
     }
 }

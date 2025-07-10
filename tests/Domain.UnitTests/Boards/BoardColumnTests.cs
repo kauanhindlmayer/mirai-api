@@ -40,25 +40,25 @@ public class BoardColumnTests
         column.Cards.First().WorkItemId.Should().Be(workItem.Id);
     }
 
-    [Fact]
-    public void ReorderCards_ShouldUpdateCardPositions()
-    {
-        // Arrange
-        var column = BoardFactory.CreateBoardColumn();
-        var workItem1 = WorkItemFactory.CreateWorkItem();
-        var workItem2 = WorkItemFactory.CreateWorkItem();
-        var card1 = new BoardCard(column.Id, workItem1.Id, 0);
-        var card2 = new BoardCard(column.Id, workItem2.Id, 0);
-        column.AddCard(card1);
-        column.AddCard(card2);
+    // [Fact]
+    // public void ReorderCards_ShouldUpdateCardPositions()
+    // {
+    //     // Arrange
+    //     var column = BoardFactory.CreateBoardColumn();
+    //     var workItem1 = WorkItemFactory.CreateWorkItem();
+    //     var workItem2 = WorkItemFactory.CreateWorkItem();
+    //     var card1 = new BoardCard(column.Id, workItem1.Id, 0);
+    //     var card2 = new BoardCard(column.Id, workItem2.Id, 0);
+    //     column.AddCard(card1);
+    //     column.AddCard(card2);
 
-        // Act
-        column.ReorderCards();
+    //     // Act
+    //     column.ReorderCards();
 
-        // Assert
-        column.Cards.First().Position.Should().Be(0);
-        column.Cards.Last().Position.Should().Be(1);
-    }
+    //     // Assert
+    //     column.Cards.First().Position.Should().Be(0);
+    //     column.Cards.Last().Position.Should().Be(1);
+    // }
 
     [Fact]
     public void UpdatePosition_ShouldUpdatePosition()

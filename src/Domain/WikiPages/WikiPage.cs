@@ -71,12 +71,29 @@ public sealed class WikiPage : AggregateRoot
             return WikiPageErrors.InvalidPosition;
         }
 
+        ShiftSubWikiPages(position, 1);
+        subWikiPage.UpdatePosition(position);
+        subWikiPage.SetParent(this);
         SubWikiPages.Insert(position, subWikiPage);
         return Result.Success;
+    }
+
+    public void SetParent(WikiPage parentWikiPage)
+    {
+        ParentWikiPage = parentWikiPage;
+        ParentWikiPageId = parentWikiPage.Id;
     }
 
     public void RemoveParent()
     {
         ParentWikiPage = null;
+    }
+
+    private void ShiftSubWikiPages(int fromIndex, int offset)
+    {
+        foreach (var page in SubWikiPages.Where(p => p.Position >= fromIndex))
+        {
+            page.UpdatePosition(page.Position + offset);
+        }
     }
 }

@@ -56,8 +56,9 @@ public sealed class Board : AggregateRoot
             return BoardErrors.ColumnAlreadyExists;
         }
 
-        Columns.Insert(position, column);
-        ReorderColumns();
+        ShiftColumns(position, 1);
+        column.UpdatePosition(position);
+        Columns.Add(column);
         return column;
     }
 
@@ -75,7 +76,7 @@ public sealed class Board : AggregateRoot
         }
 
         Columns.Remove(column);
-        ReorderColumns();
+        ShiftColumns(column.Position, -1);
         return Result.Success;
     }
 
@@ -132,13 +133,20 @@ public sealed class Board : AggregateRoot
         }
     }
 
-    private void ReorderColumns()
+    /// <summary>
+    /// Shifts the positions of columns starting from a specific index
+    /// by a given offset.
+    /// </summary>
+    /// <param name="fromIndex">The index from which to start shifting.</param>
+    /// <param name="offset">
+    /// The amount to shift the positions by. Positive values move columns
+    /// to the right, negative values move them to the left.
+    /// </param>
+    private void ShiftColumns(int fromIndex, int offset)
     {
-        var position = 0;
-        foreach (var column in Columns.OrderBy(c => c.Position))
+        foreach (var column in Columns.Where(c => c.Position >= fromIndex))
         {
-            column.UpdatePosition(position);
-            position++;
+            column.UpdatePosition(column.Position + offset);
         }
     }
 }

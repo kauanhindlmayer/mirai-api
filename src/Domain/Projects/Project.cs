@@ -67,6 +67,17 @@ public sealed class Project : AggregateRoot
             return ProjectErrors.WikiPageWithSameTitleAlreadyExists;
         }
 
+        if (wikiPage.ParentWikiPageId is not null)
+        {
+            var parent = WikiPages.FirstOrDefault(wp => wp.Id == wikiPage.ParentWikiPageId);
+            if (parent is null)
+            {
+                return WikiPageErrors.ParentWikiPageNotFound;
+            }
+
+            return parent.InsertSubWikiPage(parent.SubWikiPages.Count, wikiPage);
+        }
+
         wikiPage.UpdatePosition(WikiPages.Count);
         WikiPages.Add(wikiPage);
         return Result.Success;
@@ -100,22 +111,12 @@ public sealed class Project : AggregateRoot
             }
 
             wikiPage.RemoveParent();
-            WikiPages.Insert(targetPosition, wikiPage);
+            ShiftWikiPages(targetPosition, 1);
+            wikiPage.UpdatePosition(targetPosition);
+            WikiPages.Add(wikiPage);
         }
-
-        ReorderWikiPages();
 
         return Result.Success;
-    }
-
-    public void ReorderWikiPages()
-    {
-        var position = 0;
-        foreach (var wikiPage in WikiPages.OrderBy(wp => wp.Position))
-        {
-            wikiPage.UpdatePosition(position);
-            position++;
-        }
     }
 
     public ErrorOr<Success> AddTeam(Team team)
@@ -172,5 +173,13 @@ public sealed class Project : AggregateRoot
 
         Personas.Remove(persona);
         return Result.Success;
+    }
+
+    private void ShiftWikiPages(int fromIndex, int offset)
+    {
+        foreach (var page in WikiPages.Where(p => p.Position >= fromIndex))
+        {
+            page.UpdatePosition(page.Position + offset);
+        }
     }
 }
