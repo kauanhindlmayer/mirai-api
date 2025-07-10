@@ -23,6 +23,15 @@ internal sealed class WikiPagesRepository : Repository<WikiPage>, IWikiPagesRepo
             .FirstOrDefaultAsync(wp => wp.Id == id, cancellationToken);
     }
 
+    public async Task<WikiPage?> GetByIdWithSubWikiPagesAsync(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.WikiPages
+            .Include(wp => wp.SubWikiPages)
+            .FirstOrDefaultAsync(wp => wp.Id == id, cancellationToken);
+    }
+
     public async Task LogViewAsync(
         Guid wikiPageId,
         Guid viewerId,
