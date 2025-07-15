@@ -50,7 +50,7 @@ public sealed class ProcessTagImportJob : IJob
                 try
                 {
                     var existingTag = _context.Tags
-                        .FirstOrDefault(t => t.Name == record.Name && t.ProjectId == record.ProjectId);
+                        .FirstOrDefault(t => t.Name == record.Name && t.ProjectId == importJob.ProjectId);
 
                     if (existingTag is not null)
                     {
@@ -63,7 +63,7 @@ public sealed class ProcessTagImportJob : IJob
                         record.Name,
                         record.Description,
                         record.Color,
-                        record.ProjectId);
+                        importJob.ProjectId);
 
                     _context.Tags.Add(tag);
                     importJob.IncrementSuccessfulRecords();

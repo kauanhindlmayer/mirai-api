@@ -38,11 +38,31 @@ internal static class WorkItemQueries
             AcceptanceCriteria = wi.AcceptanceCriteria,
             Status = wi.Status.ToString(),
             Type = wi.Type.ToString(),
-            Comments = wi.Comments.Select(c => new CommentResponse
+            Planning = wi.Planning.StoryPoints == null && wi.Planning.Priority == null
+                ? null
+                : new PlanningResponse
+                {
+                    StoryPoints = wi.Planning.StoryPoints,
+                    Priority = wi.Planning.Priority,
+                },
+            Classification = wi.Classification.ValueArea == default
+                ? null
+                : new ClassificationResponse
+                {
+                    ValueArea = wi.Classification.ValueArea.ToString(),
+                },
+            AssigneeId = wi.AssigneeId,
+            Comments = wi.Comments.Select(comment => new WorkItemCommentResponse
             {
-                Id = c.Id,
-                Content = c.Content,
-                CreatedAtUtc = c.CreatedAtUtc,
+                Id = comment.Id,
+                Author = new AuthorResponse
+                {
+                    Name = comment.Author.FullName,
+                    ImageUrl = comment.Author.ImageUrl,
+                },
+                Content = comment.Content,
+                CreatedAtUtc = comment.CreatedAtUtc,
+                UpdatedAtUtc = comment.UpdatedAtUtc,
             }),
             Tags = wi.Tags.Select(t => t.Name),
             CreatedAtUtc = wi.CreatedAtUtc,

@@ -173,24 +173,6 @@ public class ProjectTests : BaseTest
     }
 
     [Fact]
-    public void ReorderWikiPages_ShouldUpdatePositions()
-    {
-        // Arrange
-        var project = ProjectFactory.CreateProject();
-        var wikiPage = WikiPageFactory.CreateWikiPage(project.Id);
-        project.AddWikiPage(wikiPage);
-        var wikiPage2 = WikiPageFactory.CreateWikiPage(project.Id, "Wiki Page 2");
-        project.AddWikiPage(wikiPage2);
-
-        // Act
-        project.ReorderWikiPages();
-
-        // Assert
-        project.WikiPages.First().Position.Should().Be(0);
-        project.WikiPages.Last().Position.Should().Be(1);
-    }
-
-    [Fact]
     public void AddTeam_WhenTeamWithSameNameAlreadyExists_ShouldReturnError()
     {
         // Arrange

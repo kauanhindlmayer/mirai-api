@@ -54,7 +54,7 @@ internal sealed class CreateWorkItemCommandHandler : IRequestHandler<CreateWorkI
             command.AssignedTeamId);
 
         var embeddingResponse = await _nlpService.GenerateEmbeddingVectorAsync(
-            $"{workItem.Title} {workItem.Description}");
+            workItem.GetEmbeddingContent());
         if (embeddingResponse.IsError)
         {
             return embeddingResponse.Errors;

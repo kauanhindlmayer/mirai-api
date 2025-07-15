@@ -246,6 +246,32 @@ public sealed class WorkItemsController : ApiController
     }
 
     /// <summary>
+    /// Update a work item.
+    /// </summary>
+    /// <remarks>
+    /// Updates the specific work item by setting the values of the parameters
+    /// passed. Any parameters not provided will be left unchanged.
+    /// </remarks>
+    /// <param name="workItemId">The work item's unique identifier.</param>
+    [HttpPut("{workItemId:guid}")]
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> UpdateWorkItem(
+        Guid workItemId,
+        UpdateWorkItemRequest request,
+        CancellationToken cancellationToken)
+    {
+        var command = request.ToCommand(workItemId);
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        return result.Match(
+            workItemId => Ok(workItemId),
+            Problem);
+    }
+
+    /// <summary>
     /// Delete a work item.
     /// </summary>
     /// <param name="workItemId">The work item's unique identifier.</param>

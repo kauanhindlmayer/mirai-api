@@ -6,7 +6,8 @@ using MediatR;
 
 namespace Application.TagImportJobs.Commands.CreateTagImportJob;
 
-internal sealed class CreateTagImportJobCommandHandler : IRequestHandler<CreateTagImportJobCommand, ErrorOr<Guid>>
+internal sealed class CreateTagImportJobCommandHandler
+    : IRequestHandler<CreateTagImportJobCommand, ErrorOr<Guid>>
 {
     private readonly IApplicationDbContext _context;
     private readonly IBackgroundJobScheduler _backgroundJobScheduler;
