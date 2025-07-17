@@ -38,19 +38,35 @@ internal static class WorkItemQueries
             AcceptanceCriteria = wi.AcceptanceCriteria,
             Status = wi.Status.ToString(),
             Type = wi.Type.ToString(),
-            Planning = wi.Planning.StoryPoints == null && wi.Planning.Priority == null
+            Planning = new PlanningResponse
+            {
+                StoryPoints = wi.Planning.StoryPoints,
+                Priority = wi.Planning.Priority,
+            },
+            Classification = new ClassificationResponse
+            {
+                ValueArea = wi.Classification.ValueArea.ToString(),
+            },
+            ParentWorkItem = wi.ParentWorkItem == null
                 ? null
-                : new PlanningResponse
+                : new RelatedWorkItemResponse
                 {
-                    StoryPoints = wi.Planning.StoryPoints,
-                    Priority = wi.Planning.Priority,
+                    Id = wi.ParentWorkItem.Id,
+                    Code = wi.ParentWorkItem.Code,
+                    Title = wi.ParentWorkItem.Title,
+                    Status = wi.ParentWorkItem.Status.ToString(),
+                    Type = wi.ParentWorkItem.Type.ToString(),
+                    AssigneeId = wi.ParentWorkItem.AssigneeId,
                 },
-            Classification = wi.Classification.ValueArea == default
-                ? null
-                : new ClassificationResponse
-                {
-                    ValueArea = wi.Classification.ValueArea.ToString(),
-                },
+            ChildWorkItems = wi.ChildWorkItems.Select(cwi => new RelatedWorkItemResponse
+            {
+                Id = cwi.Id,
+                Code = cwi.Code,
+                Title = cwi.Title,
+                Status = cwi.Status.ToString(),
+                Type = cwi.Type.ToString(),
+                AssigneeId = cwi.AssigneeId,
+            }),
             AssigneeId = wi.AssigneeId,
             Comments = wi.Comments.Select(comment => new WorkItemCommentResponse
             {
@@ -64,7 +80,12 @@ internal static class WorkItemQueries
                 CreatedAtUtc = comment.CreatedAtUtc,
                 UpdatedAtUtc = comment.UpdatedAtUtc,
             }),
-            Tags = wi.Tags.Select(t => t.Name),
+            Tags = wi.Tags.Select(t => new TagResponse
+            {
+                Id = t.Id,
+                Name = t.Name,
+                Color = t.Color,
+            }),
             CreatedAtUtc = wi.CreatedAtUtc,
             UpdatedAtUtc = wi.UpdatedAtUtc,
         };

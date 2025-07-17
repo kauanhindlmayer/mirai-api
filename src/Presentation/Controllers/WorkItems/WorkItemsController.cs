@@ -181,17 +181,19 @@ public sealed class WorkItemsController : ApiController
     /// <remarks>
     /// If the tag does not exist at project level, it will be created.
     /// </remarks>
+    /// <param name="projectId">The project's unique identifier.</param>
     /// <param name="workItemId">The work item's unique identifier.</param>
     [HttpPost("{workItemId:guid}/tags")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> AddTagToWorkItem(
+        Guid projectId,
         Guid workItemId,
         AddTagToWorkItemRequest request,
         CancellationToken cancellationToken)
     {
-        var command = new AddTagCommand(workItemId, request.Name);
+        var command = new AddTagCommand(projectId, workItemId, request.Name);
 
         var result = await _sender.Send(command, cancellationToken);
 
