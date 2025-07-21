@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Application.WorkItems.Commands.DeleteWorkItem;
 
-public sealed class DeleteWorkItemCommandValidator : AbstractValidator<DeleteWorkItemCommand>
+internal sealed class DeleteWorkItemCommandValidator : AbstractValidator<DeleteWorkItemCommand>
 {
     public DeleteWorkItemCommandValidator()
     {

@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Application.Retrospectives.Commands.CreateRetrospective;
 
-public sealed class CreateRetrospectiveCommandValidator : AbstractValidator<CreateRetrospectiveCommand>
+internal sealed class CreateRetrospectiveCommandValidator : AbstractValidator<CreateRetrospectiveCommand>
 {
     public CreateRetrospectiveCommandValidator()
     {

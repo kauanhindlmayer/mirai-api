@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Application.TagImportJobs.Commands.CreateTagImportJob;
 
-public sealed class CreateTagImportJobCommandValidator : AbstractValidator<CreateTagImportJobCommand>
+internal sealed class CreateTagImportJobCommandValidator : AbstractValidator<CreateTagImportJobCommand>
 {
     private const int MaxFileSizeInMegabytes = 10;
     private const int MaxFileSizeInBytes = MaxFileSizeInMegabytes * 1024 * 1024;

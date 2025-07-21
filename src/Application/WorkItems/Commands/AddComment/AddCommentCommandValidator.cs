@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Application.WorkItems.Commands.AddComment;
 
-public sealed class AddCommentCommandValidator : AbstractValidator<AddCommentCommand>
+internal sealed class AddCommentCommandValidator : AbstractValidator<AddCommentCommand>
 {
     public AddCommentCommandValidator()
     {

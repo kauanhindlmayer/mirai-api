@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Application.WikiPages.Commands.MoveWikiPage;
 
-public sealed class MoveWikiPageCommandValidator : AbstractValidator<MoveWikiPageCommand>
+internal sealed class MoveWikiPageCommandValidator : AbstractValidator<MoveWikiPageCommand>
 {
     public MoveWikiPageCommandValidator()
     {

@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Application.Users.Commands.UpdateUserProfile;
 
-public sealed class UpdateUserProfileCommandValidator : AbstractValidator<UpdateUserProfileCommand>
+internal sealed class UpdateUserProfileCommandValidator : AbstractValidator<UpdateUserProfileCommand>
 {
     public UpdateUserProfileCommandValidator()
     {

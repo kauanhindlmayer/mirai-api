@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Application.Boards.Commands.MoveCard;
 
-public sealed class MoveCardCommandValidator : AbstractValidator<MoveCardCommand>
+internal sealed class MoveCardCommandValidator : AbstractValidator<MoveCardCommand>
 {
     public MoveCardCommandValidator()
     {

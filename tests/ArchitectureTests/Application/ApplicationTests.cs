@@ -36,4 +36,17 @@ public class ApplicationTests : BaseTest
 
         result.IsSuccessful.Should().BeTrue();
     }
+
+    [Fact]
+    public void Validator_Should_NotBePublic()
+    {
+        TestResult result = Types.InAssembly(ApplicationAssembly)
+            .That()
+            .Inherit(typeof(AbstractValidator<>))
+            .Should()
+            .NotBePublic()
+            .GetResult();
+
+        result.IsSuccessful.Should().BeTrue();
+    }
 }

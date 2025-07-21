@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Application.WorkItems.Commands.CreateWorkItem;
 
-public sealed class CreateWorkItemCommandValidator : AbstractValidator<CreateWorkItemCommand>
+internal sealed class CreateWorkItemCommandValidator : AbstractValidator<CreateWorkItemCommand>
 {
     public CreateWorkItemCommandValidator()
     {

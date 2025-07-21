@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Application.WikiPages.Commands.DeleteComment;
 
-public sealed class DeleteCommentCommandValidator : AbstractValidator<DeleteCommentCommand>
+internal sealed class DeleteCommentCommandValidator : AbstractValidator<DeleteCommentCommand>
 {
     public DeleteCommentCommandValidator()
     {
