@@ -189,6 +189,8 @@ public static class DatabaseExtensions
                 team.Id,
                 sprint.Id);
 
+            feature.Update(description: faker.Lorem.Paragraph());
+
             await context.WorkItems.AddAsync(feature);
 
             var featureColumnId = columns[i % columnCount].Id;
@@ -208,6 +210,8 @@ public static class DatabaseExtensions
                     team.Id,
                     sprint.Id,
                     feature.Id);
+
+                userStory.Update(description: faker.Lorem.Paragraph());
 
                 await context.WorkItems.AddAsync(userStory);
 

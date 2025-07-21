@@ -76,17 +76,17 @@ public sealed class WorkItem : AggregateRoot
     }
 
     public void Update(
-        WorkItemType? type,
-        string? title,
-        string? description,
-        string? acceptanceCriteria,
-        WorkItemStatus? status,
-        Guid? assigneeId,
-        Guid? assignedTeamId,
-        Guid? sprintId,
-        Guid? parentWorkItemId,
-        Planning? planning,
-        Classification? classification)
+        WorkItemType? type = null,
+        string? title = null,
+        string? description = null,
+        string? acceptanceCriteria = null,
+        WorkItemStatus? status = null,
+        Guid? assigneeId = null,
+        Guid? assignedTeamId = null,
+        Guid? sprintId = null,
+        Guid? parentWorkItemId = null,
+        Planning? planning = null,
+        Classification? classification = null)
     {
         Type = type ?? Type;
         Title = title ?? Title;

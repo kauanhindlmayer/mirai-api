@@ -48,7 +48,8 @@ internal sealed class UpdateWorkItemCommandHandler
         if (HasWorkItemContentChanged(command, workItem))
         {
             var embeddingResponse = await _nlpService.GenerateEmbeddingVectorAsync(
-                workItem.GetEmbeddingContent());
+                workItem.GetEmbeddingContent(),
+                cancellationToken);
             if (embeddingResponse.IsError)
             {
                 return embeddingResponse.Errors;

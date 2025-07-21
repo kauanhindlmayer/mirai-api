@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using Application.Common.Interfaces.Services;
+using Domain.Nlp;
 using ErrorOr;
 using Microsoft.Extensions.Logging;
 
@@ -18,39 +19,54 @@ internal sealed class NlpService : INlpService
         _logger = logger;
     }
 
-    public async Task<ErrorOr<float[]>> GenerateEmbeddingVectorAsync(string text)
+    public async Task<ErrorOr<float[]>> GenerateEmbeddingVectorAsync(
+        string text,
+        CancellationToken cancellationToken = default)
     {
         try
         {
             var request = new VectorizeTextRequest(text);
-            var response = await _httpClient.PostAsJsonAsync("/embed", request);
-            var embeddingResponse = await response.Content.ReadFromJsonAsync<VectorizeTextResponse>();
+
+            var response = await _httpClient.PostAsJsonAsync(
+                "/embed",
+                request,
+                cancellationToken: cancellationToken);
+
+            var embeddingResponse = await response.Content.ReadFromJsonAsync<VectorizeTextResponse>(
+                cancellationToken: cancellationToken);
+
             return embeddingResponse!.Embedding;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "An unexpected error occurred while generating an embedding.");
-            return Error.Failure(
-                code: "NlpService.EmbeddingException",
-                description: "Unexpected error occurred during embedding generation.");
+            return NlpErrors.EmbeddingFailure;
         }
     }
 
-    public async Task<ErrorOr<string>> SummarizeTextAsync(string text)
+    public async Task<ErrorOr<string>> AnswerQuestionAsync(
+        string question,
+        string context,
+        CancellationToken cancellationToken = default)
     {
         try
         {
-            var request = new SummarizeTextRequest(text);
-            var response = await _httpClient.PostAsJsonAsync("/summarize", request);
-            var summaryResponse = await response.Content.ReadFromJsonAsync<SummarizeTextResponse>();
-            return summaryResponse!.Summary;
+            var request = new AnswerQuestionRequest(question, context);
+
+            var response = await _httpClient.PostAsJsonAsync(
+                "/question-answer",
+                request,
+                cancellationToken: cancellationToken);
+
+            var answerResponse = await response.Content.ReadFromJsonAsync<AnswerQuestionResponse>(
+                cancellationToken: cancellationToken);
+
+            return answerResponse!.Answer;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An unexpected error occurred while summarizing text.");
-            return Error.Failure(
-                code: "NlpService.SummarizationException",
-                description: "Unexpected error occurred during summarization.");
+            _logger.LogError(ex, "An unexpected error occurred while answering a question.");
+            return NlpErrors.AnsweringFailure;
         }
     }
 }

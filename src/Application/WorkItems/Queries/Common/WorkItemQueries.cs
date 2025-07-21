@@ -1,6 +1,8 @@
 using System.Linq.Expressions;
 using Application.WorkItems.Queries.GetWorkItem;
 using Domain.WorkItems;
+using Pgvector;
+using Pgvector.EntityFrameworkCore;
 
 namespace Application.WorkItems.Queries.Common;
 
@@ -88,6 +90,22 @@ internal static class WorkItemQueries
             }),
             CreatedAtUtc = wi.CreatedAtUtc,
             UpdatedAtUtc = wi.UpdatedAtUtc,
+        };
+    }
+
+    public static Expression<Func<WorkItem, WorkItemResponseWithDistance>> ProjectToDtoWithDistance(
+        Vector vector)
+    {
+        return (wi) => new WorkItemResponseWithDistance
+        {
+            Id = wi.Id,
+            Code = wi.Code,
+            Title = wi.Title,
+            Description = wi.Description,
+            Type = wi.Type.ToString(),
+            CreatedAtUtc = wi.CreatedAtUtc,
+            UpdatedAtUtc = wi.UpdatedAtUtc,
+            Distance = wi.SearchVector.CosineDistance(vector),
         };
     }
 }

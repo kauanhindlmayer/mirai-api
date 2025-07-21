@@ -234,8 +234,8 @@ public sealed class WorkItemsController : ApiController
     /// <param name="projectId">The project's unique identifier.</param>
     /// <param name="searchTerm">The search term used to find relevant work items.</param>
     [HttpGet("search")]
-    [ProducesResponseType(typeof(IReadOnlyList<WorkItemBriefResponse>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<IReadOnlyList<WorkItemBriefResponse>>> SearchWorkItems(
+    [ProducesResponseType(typeof(IReadOnlyList<WorkItemResponseWithDistance>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IReadOnlyList<WorkItemResponseWithDistance>>> SearchWorkItems(
         Guid projectId,
         [FromQuery(Name = "q")] string searchTerm,
         CancellationToken cancellationToken)

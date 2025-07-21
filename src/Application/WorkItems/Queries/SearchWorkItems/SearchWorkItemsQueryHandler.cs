@@ -5,13 +5,14 @@ using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Pgvector;
-using Pgvector.EntityFrameworkCore;
 
 namespace Application.WorkItems.Queries.SearchWorkItems;
 
 internal sealed class SearchWorkItemsQueryHandler
-    : IRequestHandler<SearchWorkItemsQuery, ErrorOr<IReadOnlyList<WorkItemBriefResponse>>>
+    : IRequestHandler<SearchWorkItemsQuery, ErrorOr<IReadOnlyList<WorkItemResponseWithDistance>>>
 {
+    private const double MaxDistance = 0.6;
+    private const int MaxItems = 4;
     private readonly INlpService _nlpService;
     private readonly IApplicationDbContext _context;
 
@@ -23,11 +24,14 @@ internal sealed class SearchWorkItemsQueryHandler
         _context = context;
     }
 
-    public async Task<ErrorOr<IReadOnlyList<WorkItemBriefResponse>>> Handle(
+    public async Task<ErrorOr<IReadOnlyList<WorkItemResponseWithDistance>>> Handle(
         SearchWorkItemsQuery query,
         CancellationToken cancellationToken)
     {
-        var result = await _nlpService.GenerateEmbeddingVectorAsync(query.SearchTerm);
+        var result = await _nlpService.GenerateEmbeddingVectorAsync(
+            query.SearchTerm,
+            cancellationToken);
+
         if (result.IsError)
         {
             return result.Errors;
@@ -38,9 +42,10 @@ internal sealed class SearchWorkItemsQueryHandler
         var workItems = await _context.WorkItems
             .AsNoTracking()
             .Where(wi => wi.ProjectId == query.ProjectId)
-            .OrderBy(wi => wi.SearchVector.CosineDistance(searchTermVector))
-            .Select(WorkItemQueries.ProjectToBriefDto())
-            .Take(10)
+            .Select(WorkItemQueries.ProjectToDtoWithDistance(searchTermVector))
+            .Where(x => x.Distance <= MaxDistance)
+            .OrderBy(x => x.Distance)
+            .Take(MaxItems)
             .ToListAsync(cancellationToken);
 
         return workItems;
