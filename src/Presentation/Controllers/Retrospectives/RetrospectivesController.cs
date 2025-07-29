@@ -2,6 +2,7 @@ using System.Net.Mime;
 using Application.Retrospectives.Commands.CreateRetrospective;
 using Application.Retrospectives.Commands.CreateRetrospectiveColumn;
 using Application.Retrospectives.Commands.CreateRetrospectiveItem;
+using Application.Retrospectives.Commands.DeleteRetrospective;
 using Application.Retrospectives.Commands.DeleteRetrospectiveItem;
 using Application.Retrospectives.Queries.GetRetrospective;
 using Application.Retrospectives.Queries.ListRetrospectives;
@@ -193,5 +194,29 @@ public sealed class RetrospectivesController : ApiController
         var result = await _sender.Send(query, cancellationToken);
 
         return result.Match(Ok, Problem);
+    }
+
+    /// <summary>
+    /// Delete a retrospective session.
+    /// </summary>
+    /// <param name="teamId">The team's unique identifier.</param>
+    /// <param name="retrospectiveId">The retrospective session's unique identifier.</param>
+    [HttpDelete("{retrospectiveId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> DeleteRetrospective(
+        Guid teamId,
+        Guid retrospectiveId,
+        CancellationToken cancellationToken)
+    {
+        var command = new DeleteRetrospectiveCommand(
+            teamId,
+            retrospectiveId);
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        return result.Match(
+            _ => NoContent(),
+            Problem);
     }
 }
