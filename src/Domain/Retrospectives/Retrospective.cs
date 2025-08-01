@@ -48,6 +48,21 @@ public sealed class Retrospective : AggregateRoot
         return Result.Success;
     }
 
+    public void Update(
+        string? title = null,
+        int? maxVotesPerUser = null,
+        RetrospectiveTemplate? template = null)
+    {
+        Title = title ?? Title;
+        MaxVotesPerUser = maxVotesPerUser ?? MaxVotesPerUser;
+
+        if (template.HasValue)
+        {
+            Columns.Clear();
+            InitializeDefaultColumns(template.Value);
+        }
+    }
+
     private void InitializeDefaultColumns(RetrospectiveTemplate template)
     {
         var columnTitles = RetrospectiveColumnTemplates.Templates[template];

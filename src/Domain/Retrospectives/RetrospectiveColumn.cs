@@ -28,7 +28,8 @@ public sealed class RetrospectiveColumn : Entity
             return RetrospectiveErrors.ItemAlreadyExists;
         }
 
-        item.UpdatePosition(Items.Count);
+        ShiftItems(0, 1);
+        item.UpdatePosition(0);
         Items.Add(item);
         return Result.Success;
     }
@@ -42,11 +43,26 @@ public sealed class RetrospectiveColumn : Entity
         }
 
         Items.Remove(item);
+        ShiftItems(item.Position, -1);
         return Result.Success;
     }
 
     public void UpdatePosition(int position)
     {
         Position = position;
+    }
+
+    /// <summary>
+    /// Shifts the positions of items in the column.
+    /// This is used when adding or removing items to maintain the correct order.
+    /// </summary>
+    /// <param name="fromIndex">The index from which to start shifting.</param>
+    /// <param name="offset">The amount to shift the positions by.</param>
+    private void ShiftItems(int fromIndex, int offset)
+    {
+        for (int i = fromIndex; i < Items.Count; i++)
+        {
+            Items[i].UpdatePosition(Items[i].Position + offset);
+        }
     }
 }
