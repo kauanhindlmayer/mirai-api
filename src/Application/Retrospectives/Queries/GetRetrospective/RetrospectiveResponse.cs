@@ -5,6 +5,7 @@ public sealed class RetrospectiveResponse
     public Guid Id { get; init; }
     public required string Title { get; init; }
     public int MaxVotesPerUser { get; init; }
+    public required string Template { get; init; }
     public IEnumerable<RetrospectiveColumnResponse> Columns { get; init; } = [];
 }
 

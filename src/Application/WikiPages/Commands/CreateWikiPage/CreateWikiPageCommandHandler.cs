@@ -37,17 +37,6 @@ internal sealed class CreateWikiPageCommandHandler
             return ProjectErrors.NotFound;
         }
 
-        if (command.ParentWikiPageId.HasValue)
-        {
-            var parentWikiPage = project.WikiPages.FirstOrDefault(wikiPage =>
-                wikiPage.Id == command.ParentWikiPageId);
-
-            if (parentWikiPage is null)
-            {
-                return WikiPageErrors.ParentWikiPageNotFound;
-            }
-        }
-
         var sanitizedContent = _htmlSanitizerService.Sanitize(command.Content);
 
         var wikiPage = new WikiPage(

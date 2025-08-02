@@ -4,9 +4,6 @@ namespace Infrastructure.Jobs;
 
 public sealed class CsvTagRecord
 {
-    [Name("project_id")]
-    public Guid ProjectId { get; set; }
-
     [Name("name")]
     public string Name { get; set; } = string.Empty;
 

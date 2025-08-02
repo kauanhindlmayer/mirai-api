@@ -16,8 +16,13 @@ internal sealed class WorkItemCommentConfigurations : IEntityTypeConfiguration<W
         builder.Property(wic => wic.WorkItemId)
             .IsRequired();
 
-        builder.Property(wic => wic.UserId)
+        builder.Property(p => p.AuthorId)
             .IsRequired();
+
+        builder.HasOne(p => p.Author)
+            .WithMany()
+            .HasForeignKey(p => p.AuthorId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.Property(wic => wic.Content)
             .IsRequired();

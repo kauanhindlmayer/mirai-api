@@ -13,6 +13,7 @@ public sealed class BoardColumnResponse
     public Guid Id { get; init; }
     public required string Name { get; init; }
     public int Position { get; init; }
+    public bool IsDefault { get; init; }
     public int? WipLimit { get; init; }
     public string? DefinitionOfDone { get; init; }
     public IEnumerable<BoardCardResponse> Cards { get; init; } = [];

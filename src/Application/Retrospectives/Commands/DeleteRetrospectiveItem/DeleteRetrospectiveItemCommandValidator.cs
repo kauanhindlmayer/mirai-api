@@ -2,7 +2,8 @@ using FluentValidation;
 
 namespace Application.Retrospectives.Commands.DeleteRetrospectiveItem;
 
-public sealed class DeleteRetrospectiveItemCommandValidator : AbstractValidator<DeleteRetrospectiveItemCommand>
+internal sealed class DeleteRetrospectiveItemCommandValidator
+    : AbstractValidator<DeleteRetrospectiveItemCommand>
 {
     public DeleteRetrospectiveItemCommandValidator()
     {

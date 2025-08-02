@@ -20,6 +20,9 @@ internal sealed class RetrospectiveConfigurations : IEntityTypeConfiguration<Ret
         builder.Property(r => r.MaxVotesPerUser)
             .IsRequired();
 
+        builder.Property(r => r.Template)
+            .IsRequired();
+
         builder.Property(r => r.TeamId)
             .IsRequired();
 

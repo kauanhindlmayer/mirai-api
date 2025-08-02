@@ -52,23 +52,6 @@ public class ProjectTests : BaseTest
     }
 
     [Fact]
-    public void AddWorkItem_WhenWorkItemWithSameTitleAlreadyExists_ShouldReturnError()
-    {
-        // Arrange
-        var project = ProjectFactory.CreateProject();
-        var workItem = WorkItemFactory.CreateWorkItem();
-        project.AddWorkItem(workItem);
-
-        // Act
-        var result = project.AddWorkItem(workItem);
-
-        // Assert
-        result.IsError.Should().BeTrue();
-        result.Errors.Should().HaveCount(1);
-        result.FirstError.Should().BeEquivalentTo(ProjectErrors.WorkItemWithSameTitleAlreadyExists);
-    }
-
-    [Fact]
     public void AddWorkItem_WhenWorkItemWithSameTitleDoesNotExists_ShouldAddWorkItem()
     {
         // Arrange
@@ -187,24 +170,6 @@ public class ProjectTests : BaseTest
         project.WikiPages.Should().HaveCount(2);
         project.WikiPages.First().Should().BeEquivalentTo(wikiPage2);
         project.WikiPages.Last().Should().BeEquivalentTo(wikiPage);
-    }
-
-    [Fact]
-    public void ReorderWikiPages_ShouldUpdatePositions()
-    {
-        // Arrange
-        var project = ProjectFactory.CreateProject();
-        var wikiPage = WikiPageFactory.CreateWikiPage(project.Id);
-        project.AddWikiPage(wikiPage);
-        var wikiPage2 = WikiPageFactory.CreateWikiPage(project.Id, "Wiki Page 2");
-        project.AddWikiPage(wikiPage2);
-
-        // Act
-        project.ReorderWikiPages();
-
-        // Assert
-        project.WikiPages.First().Position.Should().Be(0);
-        project.WikiPages.Last().Position.Should().Be(1);
     }
 
     [Fact]

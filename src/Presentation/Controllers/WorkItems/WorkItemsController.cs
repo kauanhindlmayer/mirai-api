@@ -181,17 +181,19 @@ public sealed class WorkItemsController : ApiController
     /// <remarks>
     /// If the tag does not exist at project level, it will be created.
     /// </remarks>
+    /// <param name="projectId">The project's unique identifier.</param>
     /// <param name="workItemId">The work item's unique identifier.</param>
     [HttpPost("{workItemId:guid}/tags")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> AddTagToWorkItem(
+        Guid projectId,
         Guid workItemId,
         AddTagToWorkItemRequest request,
         CancellationToken cancellationToken)
     {
-        var command = new AddTagCommand(workItemId, request.Name);
+        var command = new AddTagCommand(projectId, workItemId, request.Name);
 
         var result = await _sender.Send(command, cancellationToken);
 
@@ -232,8 +234,8 @@ public sealed class WorkItemsController : ApiController
     /// <param name="projectId">The project's unique identifier.</param>
     /// <param name="searchTerm">The search term used to find relevant work items.</param>
     [HttpGet("search")]
-    [ProducesResponseType(typeof(IReadOnlyList<WorkItemBriefResponse>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<IReadOnlyList<WorkItemBriefResponse>>> SearchWorkItems(
+    [ProducesResponseType(typeof(IReadOnlyList<WorkItemResponseWithDistance>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IReadOnlyList<WorkItemResponseWithDistance>>> SearchWorkItems(
         Guid projectId,
         [FromQuery(Name = "q")] string searchTerm,
         CancellationToken cancellationToken)
@@ -243,6 +245,32 @@ public sealed class WorkItemsController : ApiController
         var result = await _sender.Send(query, cancellationToken);
 
         return result.Match(Ok, Problem);
+    }
+
+    /// <summary>
+    /// Update a work item.
+    /// </summary>
+    /// <remarks>
+    /// Updates the specific work item by setting the values of the parameters
+    /// passed. Any parameters not provided will be left unchanged.
+    /// </remarks>
+    /// <param name="workItemId">The work item's unique identifier.</param>
+    [HttpPut("{workItemId:guid}")]
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> UpdateWorkItem(
+        Guid workItemId,
+        UpdateWorkItemRequest request,
+        CancellationToken cancellationToken)
+    {
+        var command = request.ToCommand(workItemId);
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        return result.Match(
+            workItemId => Ok(workItemId),
+            Problem);
     }
 
     /// <summary>

@@ -14,21 +14,26 @@ internal static class RetrospectiveQueries
             Id = r.Id,
             Title = r.Title,
             MaxVotesPerUser = r.MaxVotesPerUser,
-            Columns = r.Columns.Select(c => new RetrospectiveColumnResponse
-            {
-                Id = c.Id,
-                Title = c.Title,
-                Position = c.Position,
-                Items = c.Items.Select(i => new RetrospectiveItemResponse
+            Template = r.Template.ToString(),
+            Columns = r.Columns
+                .OrderBy(i => i.Position)
+                .Select(c => new RetrospectiveColumnResponse
                 {
-                    Id = i.Id,
-                    Content = i.Content,
-                    Position = i.Position,
-                    AuthorId = i.AuthorId,
-                    Votes = i.Votes,
-                    CreatedAtUtc = i.CreatedAtUtc,
+                    Id = c.Id,
+                    Title = c.Title,
+                    Position = c.Position,
+                    Items = c.Items
+                        .OrderBy(c => c.Position)
+                        .Select(i => new RetrospectiveItemResponse
+                        {
+                            Id = i.Id,
+                            Content = i.Content,
+                            Position = i.Position,
+                            AuthorId = i.AuthorId,
+                            Votes = i.Votes,
+                            CreatedAtUtc = i.CreatedAtUtc,
+                        }),
                 }),
-            }),
         };
     }
 

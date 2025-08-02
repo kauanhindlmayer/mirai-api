@@ -45,6 +45,9 @@ internal sealed class ProjectsRepository : Repository<Project>, IProjectsReposit
     {
         return _dbContext.Projects
             .Include(p => p.Teams)
+            .ThenInclude(t => t.Board)
+            .ThenInclude(b => b.Columns)
+            .ThenInclude(c => c.Cards)
             .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
     }
 

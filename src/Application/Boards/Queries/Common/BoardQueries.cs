@@ -23,6 +23,7 @@ internal static class BoardQueries
                     Id = column.Id,
                     Name = column.Name,
                     Position = column.Position,
+                    IsDefault = column.IsDefault,
                     WipLimit = column.WipLimit,
                     DefinitionOfDone = column.DefinitionOfDone,
                     Cards = column.Cards

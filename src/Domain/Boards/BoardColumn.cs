@@ -9,6 +9,7 @@ public sealed class BoardColumn : Entity
     public Board Board { get; private set; } = null!;
     public string Name { get; private set; } = null!;
     public int Position { get; private set; }
+    public bool IsDefault => Position == 0;
 
     /// <summary>
     /// Gets the Work-In-Progress limit, the recommended max cards for this column.
@@ -46,7 +47,8 @@ public sealed class BoardColumn : Entity
             return BoardErrors.CardAlreadyExists;
         }
 
-        card.UpdatePosition(Cards.Count);
+        ShiftCards(0, 1);
+        card.UpdatePosition(0);
         Cards.Add(card);
         return card;
     }
@@ -60,7 +62,7 @@ public sealed class BoardColumn : Entity
         }
 
         Cards.Remove(card);
-        ReorderCards();
+        ShiftCards(card.Position, -1);
         return card;
     }
 
@@ -76,18 +78,26 @@ public sealed class BoardColumn : Entity
             return BoardErrors.CardAlreadyExists;
         }
 
-        Cards.Insert(position, card);
-        ReorderCards();
+        ShiftCards(position, 1);
+        card.UpdatePosition(position);
+        Cards.Add(card);
         return Result.Success;
     }
 
-    public void ReorderCards()
+    /// <summary>
+    /// Shifts the positions of cards starting from a specific index
+    /// by a given offset.
+    /// </summary>
+    /// <param name="fromIndex">The index from which to start shifting.</param>
+    /// <param name="offset">
+    /// The amount to shift the positions by. Positive values move cards
+    /// down, negative values move them up.
+    /// </param>
+    private void ShiftCards(int fromIndex, int offset)
     {
-        var position = 0;
-        foreach (var card in Cards)
+        foreach (var card in Cards.Where(c => c.Position >= fromIndex))
         {
-            card.UpdatePosition(position);
-            position++;
+            card.UpdatePosition(card.Position + offset);
         }
     }
 }

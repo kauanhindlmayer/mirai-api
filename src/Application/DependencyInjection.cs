@@ -22,7 +22,9 @@ public static class DependencyInjection
             config.AddOpenBehavior(typeof(QueryCachingBehavior<,>));
             config.AddOpenBehavior(typeof(UnitOfWorkBehavior<,>));
         });
-        services.AddValidatorsFromAssemblyContaining(typeof(DependencyInjection));
+        services.AddValidatorsFromAssemblyContaining(
+            typeof(DependencyInjection),
+            includeInternalTypes: true);
 
         services.AddTransient<SortMappingProvider>();
         services.AddSingleton<ISortMappingDefinition, SortMappingDefinition<WorkItemBriefResponse, WorkItem>>(_ =>

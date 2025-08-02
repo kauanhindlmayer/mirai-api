@@ -77,4 +77,15 @@ public sealed class Team : AggregateRoot
         Sprints.Add(sprint);
         return Result.Success;
     }
+
+    public ErrorOr<Success> AddBoard(Board board)
+    {
+        if (Board is not null)
+        {
+            return TeamErrors.BoardAlreadyExists;
+        }
+
+        Board = board;
+        return Result.Success;
+    }
 }

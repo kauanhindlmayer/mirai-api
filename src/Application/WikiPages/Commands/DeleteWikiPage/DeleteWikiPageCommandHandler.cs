@@ -18,7 +18,7 @@ internal sealed class DeleteWikiPageCommandHandler : IRequestHandler<DeleteWikiP
         DeleteWikiPageCommand command,
         CancellationToken cancellationToken)
     {
-        var wikiPage = await _wikiPagesRepository.GetByIdAsync(
+        var wikiPage = await _wikiPagesRepository.GetByIdWithSubWikiPagesAsync(
             command.WikiPageId,
             cancellationToken);
 

@@ -1,3 +1,4 @@
+using Domain.Boards;
 using Domain.Common;
 using Domain.Organizations;
 using Domain.Personas;
@@ -42,9 +43,17 @@ public sealed class Project : AggregateRoot
 
     public ErrorOr<Success> AddWorkItem(WorkItem workItem)
     {
-        if (WorkItems.Any(wi => wi.Title == workItem.Title))
+        var team = Teams.FirstOrDefault(t => t.Id == workItem.AssignedTeamId);
+        if (team is null)
         {
-            return ProjectErrors.WorkItemWithSameTitleAlreadyExists;
+            return TeamErrors.NotFound;
+        }
+
+        var card = new BoardCard(team.Board.DefaultColumn.Id, workItem.Id);
+        var result = team.Board.AddCard(card);
+        if (result.IsError)
+        {
+            return result.Errors;
         }
 
         WorkItems.Add(workItem);
@@ -56,6 +65,17 @@ public sealed class Project : AggregateRoot
         if (WikiPages.Any(wp => wp.Title == wikiPage.Title))
         {
             return ProjectErrors.WikiPageWithSameTitleAlreadyExists;
+        }
+
+        if (wikiPage.ParentWikiPageId is not null)
+        {
+            var parent = WikiPages.FirstOrDefault(wp => wp.Id == wikiPage.ParentWikiPageId);
+            if (parent is null)
+            {
+                return WikiPageErrors.ParentWikiPageNotFound;
+            }
+
+            return parent.InsertSubWikiPage(parent.SubWikiPages.Count, wikiPage);
         }
 
         wikiPage.UpdatePosition(WikiPages.Count);
@@ -91,22 +111,12 @@ public sealed class Project : AggregateRoot
             }
 
             wikiPage.RemoveParent();
-            WikiPages.Insert(targetPosition, wikiPage);
+            ShiftWikiPages(targetPosition, 1);
+            wikiPage.UpdatePosition(targetPosition);
+            WikiPages.Add(wikiPage);
         }
-
-        ReorderWikiPages();
 
         return Result.Success;
-    }
-
-    public void ReorderWikiPages()
-    {
-        var position = 0;
-        foreach (var wikiPage in WikiPages.OrderBy(wp => wp.Position))
-        {
-            wikiPage.UpdatePosition(position);
-            position++;
-        }
     }
 
     public ErrorOr<Success> AddTeam(Team team)
@@ -163,5 +173,13 @@ public sealed class Project : AggregateRoot
 
         Personas.Remove(persona);
         return Result.Success;
+    }
+
+    private void ShiftWikiPages(int fromIndex, int offset)
+    {
+        foreach (var page in WikiPages.Where(p => p.Position >= fromIndex))
+        {
+            page.UpdatePosition(page.Position + offset);
+        }
     }
 }

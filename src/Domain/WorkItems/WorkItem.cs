@@ -70,6 +70,37 @@ public sealed class WorkItem : AggregateRoot
         Status = WorkItemStatus.Closed;
     }
 
+    public string GetEmbeddingContent()
+    {
+        return $"{Title} {Description} {AcceptanceCriteria}";
+    }
+
+    public void Update(
+        WorkItemType? type = null,
+        string? title = null,
+        string? description = null,
+        string? acceptanceCriteria = null,
+        WorkItemStatus? status = null,
+        Guid? assigneeId = null,
+        Guid? assignedTeamId = null,
+        Guid? sprintId = null,
+        Guid? parentWorkItemId = null,
+        Planning? planning = null,
+        Classification? classification = null)
+    {
+        Type = type ?? Type;
+        Title = title ?? Title;
+        Description = description ?? Description;
+        AcceptanceCriteria = acceptanceCriteria ?? AcceptanceCriteria;
+        Status = status ?? Status;
+        AssigneeId = assigneeId ?? AssigneeId;
+        AssignedTeamId = assignedTeamId ?? AssignedTeamId;
+        SprintId = sprintId ?? SprintId;
+        ParentWorkItemId = parentWorkItemId ?? ParentWorkItemId;
+        Planning = planning ?? Planning;
+        Classification = classification ?? Classification;
+    }
+
     public ErrorOr<Success> AddComment(WorkItemComment comment)
     {
         if (Status == WorkItemStatus.Closed)

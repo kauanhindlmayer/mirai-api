@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Application.Personas.Commands.CreatePersona;
 
-public sealed class CreatePersonaCommandValidator : AbstractValidator<CreatePersonaCommand>
+internal sealed class CreatePersonaCommandValidator : AbstractValidator<CreatePersonaCommand>
 {
     public CreatePersonaCommandValidator()
     {

@@ -1,5 +1,4 @@
 using System.Net.Mime;
-using Application.Boards.Commands.CreateCard;
 using Application.Boards.Commands.CreateColumn;
 using Application.Boards.Commands.DeleteBoard;
 using Application.Boards.Commands.DeleteColumn;
@@ -141,40 +140,6 @@ public sealed class BoardsController : ApiController
 
         return result.Match(
             _ => NoContent(),
-            Problem);
-    }
-
-    /// <summary>
-    /// Create a card in a column.
-    /// </summary>
-    /// <param name="teamId">The team's unique identifier.</param>
-    /// <param name="boardId">The board's unique identifier.</param>
-    /// <param name="columnId">The column's unique identifier.</param>
-    /// <returns>The unique identifier of the created card.</returns>
-    [HttpPost("{boardId:guid}/columns/{columnId:guid}/cards")]
-    [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> CreateCard(
-        Guid teamId,
-        Guid boardId,
-        Guid columnId,
-        CreateCardRequest request,
-        CancellationToken cancellationToken)
-    {
-        var command = new CreateCardCommand(
-            boardId,
-            columnId,
-            request.Type,
-            request.Title);
-
-        var result = await _sender.Send(command, cancellationToken);
-
-        return result.Match(
-            cardId => CreatedAtAction(
-                nameof(GetBoard),
-                new { teamId, boardId },
-                cardId),
             Problem);
     }
 

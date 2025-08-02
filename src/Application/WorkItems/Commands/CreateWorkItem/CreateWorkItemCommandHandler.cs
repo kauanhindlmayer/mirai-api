@@ -28,22 +28,18 @@ internal sealed class CreateWorkItemCommandHandler : IRequestHandler<CreateWorkI
         CreateWorkItemCommand command,
         CancellationToken cancellationToken)
     {
-        var project = await _projectsRepository.GetByIdAsync(
+        var project = await _projectsRepository.GetByIdWithTeamsAsync(
             command.ProjectId,
             cancellationToken);
-
         if (project is null)
         {
             return ProjectErrors.NotFound;
         }
 
-        if (command.AssignedTeamId.HasValue)
+        var team = project.Teams.FirstOrDefault(t => t.Id == command.AssignedTeamId);
+        if (team is null)
         {
-            var team = project.Teams.FirstOrDefault(t => t.Id == command.AssignedTeamId);
-            if (team is null)
-            {
-                return TeamErrors.NotFound;
-            }
+            return TeamErrors.NotFound;
         }
 
         var workItemCode = await _workItemsRepository.GetNextWorkItemCodeAsync(
@@ -58,7 +54,8 @@ internal sealed class CreateWorkItemCommandHandler : IRequestHandler<CreateWorkI
             command.AssignedTeamId);
 
         var embeddingResponse = await _nlpService.GenerateEmbeddingVectorAsync(
-            $"{workItem.Title} {workItem.Description}");
+            workItem.GetEmbeddingContent(),
+            cancellationToken);
         if (embeddingResponse.IsError)
         {
             return embeddingResponse.Errors;

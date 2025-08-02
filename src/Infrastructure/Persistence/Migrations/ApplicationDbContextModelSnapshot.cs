@@ -282,6 +282,10 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("team_id");
 
+                    b.Property<int>("Template")
+                        .HasColumnType("integer")
+                        .HasColumnName("template");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -881,6 +885,10 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<Guid>("AuthorId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("author_id");
+
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("text")
@@ -894,10 +902,6 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at_utc");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("user_id");
-
                     b.Property<Guid>("WorkItemId")
                         .HasColumnType("uuid")
                         .HasColumnName("work_item_id");
@@ -905,8 +909,8 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasKey("Id")
                         .HasName("pk_work_item_comments");
 
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("ix_work_item_comments_user_id");
+                    b.HasIndex("AuthorId")
+                        .HasDatabaseName("ix_work_item_comments_author_id");
 
                     b.HasIndex("WorkItemId")
                         .HasDatabaseName("ix_work_item_comments_work_item_id");
@@ -1213,12 +1217,12 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.WorkItems.WorkItemComment", b =>
                 {
-                    b.HasOne("Domain.Users.User", "User")
+                    b.HasOne("Domain.Users.User", "Author")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
-                        .HasConstraintName("fk_work_item_comments_users_user_id");
+                        .HasConstraintName("fk_work_item_comments_users_author_id");
 
                     b.HasOne("Domain.WorkItems.WorkItem", "WorkItem")
                         .WithMany("Comments")
@@ -1227,7 +1231,7 @@ namespace Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_work_item_comments_work_items_work_item_id");
 
-                    b.Navigation("User");
+                    b.Navigation("Author");
 
                     b.Navigation("WorkItem");
                 });

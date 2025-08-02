@@ -509,7 +509,7 @@ namespace Infrastructure.Persistence.Migrations
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     work_item_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    user_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    author_id = table.Column<Guid>(type: "uuid", nullable: false),
                     content = table.Column<string>(type: "text", nullable: false),
                     created_at_utc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     updated_at_utc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
@@ -518,11 +518,11 @@ namespace Infrastructure.Persistence.Migrations
                 {
                     table.PrimaryKey("pk_work_item_comments", x => x.id);
                     table.ForeignKey(
-                        name: "fk_work_item_comments_users_user_id",
-                        column: x => x.user_id,
+                        name: "fk_work_item_comments_users_author_id",
+                        column: x => x.author_id,
                         principalTable: "users",
                         principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "fk_work_item_comments_work_items_work_item_id",
                         column: x => x.work_item_id,
@@ -675,9 +675,9 @@ namespace Infrastructure.Persistence.Migrations
                 columns: new[] { "project_id", "parent_wiki_page_id", "position" });
 
             migrationBuilder.CreateIndex(
-                name: "ix_work_item_comments_user_id",
+                name: "ix_work_item_comments_author_id",
                 table: "work_item_comments",
-                column: "user_id");
+                column: "author_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_work_item_comments_work_item_id",

@@ -8,4 +8,4 @@ public sealed record CreateWorkItemCommand(
     Guid ProjectId,
     WorkItemType Type,
     string Title,
-    Guid? AssignedTeamId) : IRequest<ErrorOr<Guid>>;
+    Guid AssignedTeamId) : IRequest<ErrorOr<Guid>>;

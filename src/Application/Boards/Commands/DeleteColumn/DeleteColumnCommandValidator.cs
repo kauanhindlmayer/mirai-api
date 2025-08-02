@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Application.Boards.Commands.DeleteColumn;
 
-public sealed class DeleteColumnCommandValidator : AbstractValidator<DeleteColumnCommand>
+internal sealed class DeleteColumnCommandValidator : AbstractValidator<DeleteColumnCommand>
 {
     public DeleteColumnCommandValidator()
     {
