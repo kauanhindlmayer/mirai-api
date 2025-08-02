@@ -58,7 +58,7 @@ public sealed class Retrospective : AggregateRoot
         Title = title ?? Title;
         MaxVotesPerUser = maxVotesPerUser ?? MaxVotesPerUser;
 
-        if (template.HasValue)
+        if (template.HasValue && template.Value != Template)
         {
             Template = template.Value;
             Columns.Clear();
