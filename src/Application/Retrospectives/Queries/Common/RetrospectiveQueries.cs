@@ -14,6 +14,7 @@ internal static class RetrospectiveQueries
             Id = r.Id,
             Title = r.Title,
             MaxVotesPerUser = r.MaxVotesPerUser,
+            Template = r.Template.ToString(),
             Columns = r.Columns.Select(c => new RetrospectiveColumnResponse
             {
                 Id = c.Id,

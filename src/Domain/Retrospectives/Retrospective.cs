@@ -11,6 +11,7 @@ public sealed class Retrospective : AggregateRoot
     private const int MaxColumns = 5;
     public string Title { get; private set; } = null!;
     public int MaxVotesPerUser { get; private set; }
+    public RetrospectiveTemplate Template { get; private set; }
     public Guid TeamId { get; private set; }
     public Team Team { get; private set; } = null!;
     public ICollection<RetrospectiveColumn> Columns { get; set; } = [];
@@ -23,8 +24,9 @@ public sealed class Retrospective : AggregateRoot
     {
         Title = title;
         MaxVotesPerUser = maxVotesPerUser.GetValueOrDefault(DefaultVotesPerUserLimit);
+        Template = template ?? RetrospectiveTemplate.Classic;
         TeamId = teamId;
-        InitializeDefaultColumns(template ?? RetrospectiveTemplate.Classic);
+        InitializeDefaultColumns();
     }
 
     private Retrospective()
@@ -58,14 +60,15 @@ public sealed class Retrospective : AggregateRoot
 
         if (template.HasValue)
         {
+            Template = template.Value;
             Columns.Clear();
-            InitializeDefaultColumns(template.Value);
+            InitializeDefaultColumns();
         }
     }
 
-    private void InitializeDefaultColumns(RetrospectiveTemplate template)
+    private void InitializeDefaultColumns()
     {
-        var columnTitles = RetrospectiveColumnTemplates.Templates[template];
+        var columnTitles = RetrospectiveColumnTemplates.Templates[Template];
         foreach (var title in columnTitles)
         {
             AddColumn(new RetrospectiveColumn(title, Id));
