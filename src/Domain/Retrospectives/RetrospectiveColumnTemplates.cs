@@ -31,7 +31,7 @@ public static class RetrospectiveColumnTemplates
             }
         },
         {
-            RetrospectiveTemplate.FourLs, new List<string>
+            RetrospectiveTemplate.LikedLearnedLackedLongedFor, new List<string>
             {
                 "Liked",
                 "Learned",

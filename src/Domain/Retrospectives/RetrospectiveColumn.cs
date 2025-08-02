@@ -56,13 +56,13 @@ public sealed class RetrospectiveColumn : Entity
     /// Shifts the positions of items in the column.
     /// This is used when adding or removing items to maintain the correct order.
     /// </summary>
-    /// <param name="fromIndex">The index from which to start shifting.</param>
+    /// <param name="fromPosition">The position from which to start shifting.</param>
     /// <param name="offset">The amount to shift the positions by.</param>
-    private void ShiftItems(int fromIndex, int offset)
+    private void ShiftItems(int fromPosition, int offset)
     {
-        for (int i = fromIndex; i < Items.Count; i++)
+        foreach (var item in Items.Where(i => i.Position >= fromPosition))
         {
-            Items[i].UpdatePosition(Items[i].Position + offset);
+            item.UpdatePosition(item.Position + offset);
         }
     }
 }
