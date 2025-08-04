@@ -21,6 +21,16 @@ internal sealed class OrganizationsRepository : Repository<Organization>,
             .FirstOrDefaultAsync(o => o.Id == id, cancellationToken);
     }
 
+    public async Task<Organization?> GetByIdWithProjectsAndUsersAsync(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Organizations
+            .Include(o => o.Projects)
+            .Include(o => o.Users)
+            .FirstOrDefaultAsync(o => o.Id == id, cancellationToken);
+    }
+
     public Task<bool> ExistsByNameAsync(
         string name,
         CancellationToken cancellationToken = default)

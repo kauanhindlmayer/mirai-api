@@ -4,6 +4,7 @@ using Domain.Projects;
 using Domain.UnitTests.Infrastructure;
 using Domain.UnitTests.Projects;
 using Domain.UnitTests.Users;
+using Domain.Users;
 
 namespace Domain.UnitTests.Organizations;
 
@@ -139,86 +140,121 @@ public class OrganizationTests : BaseTest
     }
 
     [Fact]
-    public void AddMember_WhenMemberAlreadyExists_ShouldReturnError()
+    public void AddUser_WhenUserDoesNotExist_ShouldAddUser()
     {
         // Arrange
         var organization = OrganizationFactory.CreateOrganization();
-        var member = UserFactory.CreateUser();
-        organization.AddMember(member);
+        var user = UserFactory.CreateUser();
 
         // Act
-        var result = organization.AddMember(member);
+        var result = organization.AddUser(user);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        organization.Users.Should().HaveCount(1);
+        organization.Users.First().Should().Be(user);
+    }
+
+    [Fact]
+    public void AddUser_WhenUserDoesNotExist_ShouldRaiseUserAddedToOrganizationDomainEvent()
+    {
+        // Arrange
+        var organization = OrganizationFactory.CreateOrganization();
+        var user = UserFactory.CreateUser();
+
+        // Act
+        organization.AddUser(user);
+
+        // Assert
+        var domainEvent = AssertDomainEventWasPublished<UserAddedToOrganizationDomainEvent>(organization);
+        domainEvent.Organization.Should().Be(organization);
+        domainEvent.User.Should().Be(user);
+    }
+
+    [Fact]
+    public void AddUser_WhenUserAlreadyExists_ShouldReturnError()
+    {
+        // Arrange
+        var organization = OrganizationFactory.CreateOrganization();
+        var user = UserFactory.CreateUser();
+        organization.AddUser(user);
+
+        // Act
+        var result = organization.AddUser(user);
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.Errors.Should().HaveCount(1);
-        result.FirstError.Should().BeEquivalentTo(OrganizationErrors.UserAlreadyMember);
+        result.FirstError.Should().BeEquivalentTo(OrganizationErrors.UserAlreadyExists);
+        organization.Users.Should().HaveCount(1);
     }
 
     [Fact]
-    public void AddMember_WhenMemberDoesNotExists_ShouldAddMember()
+    public void RemoveUser_WhenUserDoesNotExist_ShouldReturnError()
     {
         // Arrange
         var organization = OrganizationFactory.CreateOrganization();
-        var member = UserFactory.CreateUser();
+        var userId = Guid.NewGuid();
 
         // Act
-        var result = organization.AddMember(member);
-
-        // Assert
-        result.IsError.Should().BeFalse();
-        organization.Members.Should().HaveCount(1);
-        organization.Members.First().Should().BeEquivalentTo(member);
-    }
-
-    [Fact]
-    public void RemoveMember_WhenMemberDoesNotExists_ShouldReturnError()
-    {
-        // Arrange
-        var organization = OrganizationFactory.CreateOrganization();
-        var member = UserFactory.CreateUser();
-
-        // Act
-        var result = organization.RemoveMember(member);
+        var result = organization.RemoveUser(userId);
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.Errors.Should().HaveCount(1);
-        result.FirstError.Should().BeEquivalentTo(OrganizationErrors.UserNotMember);
+        result.FirstError.Should().BeEquivalentTo(UserErrors.NotFound);
     }
 
     [Fact]
-    public void RemoveMember_WhenMemberExists_ShouldRemoveMember()
+    public void RemoveUser_WhenUserExists_ShouldRemoveUser()
     {
         // Arrange
         var organization = OrganizationFactory.CreateOrganization();
-        var member = UserFactory.CreateUser();
-        organization.AddMember(member);
+        var user = UserFactory.CreateUser();
+        organization.AddUser(user);
 
         // Act
-        var result = organization.RemoveMember(member);
+        var result = organization.RemoveUser(user.Id);
 
         // Assert
         result.IsError.Should().BeFalse();
-        organization.Members.Should().BeEmpty();
+        organization.Users.Should().BeEmpty();
     }
 
     [Fact]
-    public void RemoveMember_WhenMemberExists_ShouldRemoveCorrectMember()
+    public void RemoveUser_WhenUserExists_ShouldRaiseUserRemovedFromOrganizationDomainEvent()
     {
         // Arrange
         var organization = OrganizationFactory.CreateOrganization();
-        var member1 = UserFactory.CreateUser();
-        var member2 = UserFactory.CreateUser();
-        organization.AddMember(member1);
-        organization.AddMember(member2);
+        var user = UserFactory.CreateUser();
+        organization.AddUser(user);
 
         // Act
-        var result = organization.RemoveMember(member1);
+        organization.RemoveUser(user.Id);
 
         // Assert
-        result.IsError.Should().BeFalse();
-        organization.Members.Should().HaveCount(1);
-        organization.Members.First().Should().BeEquivalentTo(member2);
+        var domainEvent = AssertDomainEventWasPublished<UserRemovedFromOrganizationDomainEvent>(organization);
+        domainEvent.Organization.Should().Be(organization);
+        domainEvent.User.Should().Be(user);
+    }
+
+    [Fact]
+    public void RemoveUser_WhenUserHasProjects_ShouldReturnError()
+    {
+        // Arrange
+        var organization = OrganizationFactory.CreateOrganization();
+        var user = UserFactory.CreateUser();
+        var project = ProjectFactory.CreateProject();
+        organization.AddUser(user);
+        organization.AddProject(project);
+        project.SetOrganization(organization);
+        project.Users.Add(user);
+        project.AddUser(user);
+
+        // Act
+        var result = organization.RemoveUser(user.Id);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().BeEquivalentTo(OrganizationErrors.UserHasProjects);
+        organization.Users.Should().HaveCount(1);
     }
 }

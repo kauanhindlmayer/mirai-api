@@ -3,7 +3,7 @@ using Ganss.Xss;
 
 namespace Infrastructure.Services;
 
-public class HtmlSanitizerService : IHtmlSanitizerService
+public sealed class HtmlSanitizerService : IHtmlSanitizerService
 {
     private readonly HtmlSanitizer _sanitizer;
 

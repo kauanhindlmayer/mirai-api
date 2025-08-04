@@ -1,3 +1,4 @@
+using Domain.Organizations;
 using Domain.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -36,5 +37,18 @@ internal sealed class UserConfigurations : IEntityTypeConfiguration<User>
 
         builder.HasIndex(u => u.Email)
             .IsUnique();
+
+        builder.HasMany(u => u.Organizations)
+            .WithMany(o => o.Users)
+            .UsingEntity(
+                "OrganizationUsers",
+                l => l.HasOne(typeof(Organization)).WithMany().HasForeignKey("OrganizationId"),
+                r => r.HasOne(typeof(User)).WithMany().HasForeignKey("UserId"),
+                j => j.HasKey("OrganizationId", "UserId"));
+
+        builder.HasMany(u => u.WorkItems)
+            .WithOne(w => w.Assignee)
+            .HasForeignKey(w => w.AssigneeId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

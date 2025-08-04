@@ -11,7 +11,7 @@ public sealed class Organization : AggregateRoot
     public string Name { get; private set; } = string.Empty;
     public string? Description { get; private set; }
     public ICollection<Project> Projects { get; private set; } = [];
-    public ICollection<User> Members { get; private set; } = [];
+    public ICollection<User> Users { get; private set; } = [];
 
     public Organization(string name, string description)
     {
@@ -36,6 +36,36 @@ public sealed class Organization : AggregateRoot
         AddDomainEvent(new OrganizationDeletedDomainEvent(this));
     }
 
+    public ErrorOr<Success> AddUser(User user)
+    {
+        if (Users.Any(u => u.Id == user.Id))
+        {
+            return OrganizationErrors.UserAlreadyExists;
+        }
+
+        Users.Add(user);
+        AddDomainEvent(new UserAddedToOrganizationDomainEvent(this, user));
+        return Result.Success;
+    }
+
+    public ErrorOr<Success> RemoveUser(Guid userId)
+    {
+        var user = Users.FirstOrDefault(u => u.Id == userId);
+        if (user is null)
+        {
+            return UserErrors.NotFound;
+        }
+
+        if (Projects.Any(p => p.Users.Any(u => u.Id == userId)))
+        {
+            return OrganizationErrors.UserHasProjects;
+        }
+
+        Users.Remove(user);
+        AddDomainEvent(new UserRemovedFromOrganizationDomainEvent(this, user));
+        return Result.Success;
+    }
+
     public ErrorOr<Success> AddProject(Project project)
     {
         if (Projects.Any(p => p.Name == project.Name))
@@ -56,29 +86,6 @@ public sealed class Organization : AggregateRoot
         }
 
         Projects.Remove(projectToRemove);
-        return Result.Success;
-    }
-
-    public ErrorOr<Success> AddMember(User member)
-    {
-        if (Members.Any(m => m.Id == member.Id))
-        {
-            return OrganizationErrors.UserAlreadyMember;
-        }
-
-        Members.Add(member);
-        return Result.Success;
-    }
-
-    public ErrorOr<Success> RemoveMember(User member)
-    {
-        var memberToRemove = Members.FirstOrDefault(m => m.Id == member.Id);
-        if (memberToRemove is null)
-        {
-            return OrganizationErrors.UserNotMember;
-        }
-
-        Members.Remove(memberToRemove);
         return Result.Success;
     }
 }

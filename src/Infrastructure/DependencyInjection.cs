@@ -53,6 +53,7 @@ public static class DependencyInjection
         services.AddSingleton<IHtmlSanitizerService, HtmlSanitizerService>();
         services.AddTransient<LinkService>();
         services.AddTransient<IBackgroundJobScheduler, BackgroundJobScheduler>();
+        services.AddScoped<IEmailService, EmailService>();
 
         var nlpServiceOptions = configuration.GetSection(NlpServiceOptions.SectionName);
         services.Configure<NlpServiceOptions>(nlpServiceOptions);

@@ -1,4 +1,5 @@
 using Domain.Organizations;
+using Domain.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -24,5 +25,13 @@ internal sealed class OrganizationConfigurations : IEntityTypeConfiguration<Orga
             .WithOne()
             .HasForeignKey(p => p.OrganizationId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(o => o.Users)
+            .WithMany()
+            .UsingEntity(
+                "OrganizationUsers",
+                l => l.HasOne(typeof(User)).WithMany().HasForeignKey("UserId"),
+                r => r.HasOne(typeof(Organization)).WithMany().HasForeignKey("OrganizationId"),
+                j => j.HasKey("OrganizationId", "UserId"));
     }
 }

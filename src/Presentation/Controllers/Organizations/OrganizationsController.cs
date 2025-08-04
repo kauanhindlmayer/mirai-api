@@ -1,7 +1,9 @@
 using System.Net.Mime;
 using Application.Common;
+using Application.Organizations.Commands.AddUserToOrganization;
 using Application.Organizations.Commands.CreateOrganization;
 using Application.Organizations.Commands.DeleteOrganization;
+using Application.Organizations.Commands.RemoveUserFromOrganization;
 using Application.Organizations.Commands.UpdateOrganization;
 using Application.Organizations.Queries.GetOrganization;
 using Application.Organizations.Queries.ListOrganizations;
@@ -154,6 +156,52 @@ public sealed class OrganizationsController : ApiController
         CancellationToken cancellationToken)
     {
         var command = new DeleteOrganizationCommand(organizationId);
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        return result.Match(
+            _ => NoContent(),
+            Problem);
+    }
+
+    /// <summary>
+    /// Add a user to an organization.
+    /// </summary>
+    [HttpPost("{organizationId:guid}/users")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<ActionResult> AddUserToOrganization(
+        Guid organizationId,
+        AddUserToOrganizationRequest request,
+        CancellationToken cancellationToken)
+    {
+        var command = new AddUserToOrganizationCommand(
+            organizationId,
+            request.UserId);
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        return result.Match(
+            _ => NoContent(),
+            Problem);
+    }
+
+    /// <summary>
+    /// Remove a user from an organization.
+    /// </summary>
+    [HttpDelete("{organizationId:guid}/users/{userId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<ActionResult> RemoveUserFromOrganization(
+        Guid organizationId,
+        Guid userId,
+        CancellationToken cancellationToken)
+    {
+        var command = new RemoveUserFromOrganizationCommand(
+            organizationId,
+            userId);
 
         var result = await _sender.Send(command, cancellationToken);
 

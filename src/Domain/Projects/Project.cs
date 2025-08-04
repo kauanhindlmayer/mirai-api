@@ -5,6 +5,7 @@ using Domain.Personas;
 using Domain.Projects.Events;
 using Domain.Tags;
 using Domain.Teams;
+using Domain.Users;
 using Domain.WikiPages;
 using Domain.WorkItems;
 using ErrorOr;
@@ -22,6 +23,7 @@ public sealed class Project : AggregateRoot
     public ICollection<Team> Teams { get; private set; } = [];
     public ICollection<Tag> Tags { get; private set; } = [];
     public ICollection<Persona> Personas { get; private set; } = [];
+    public ICollection<User> Users { get; private set; } = [];
 
     public Project(string name, string description, Guid organizationId)
     {
@@ -39,6 +41,46 @@ public sealed class Project : AggregateRoot
     {
         Name = name;
         Description = description;
+    }
+
+    public ErrorOr<Success> AddUser(User user)
+    {
+        if (!Organization.Users.Any(u => u.Id == user.Id))
+        {
+            return ProjectErrors.UserNotInOrganization;
+        }
+
+        if (Users.Any(u => u.Id == user.Id))
+        {
+            return ProjectErrors.UserAlreadyExists;
+        }
+
+        Users.Add(user);
+        AddDomainEvent(new UserAddedToProjectDomainEvent(this, user));
+        return Result.Success;
+    }
+
+    public ErrorOr<Success> RemoveUser(Guid userId)
+    {
+        var user = Users.FirstOrDefault(u => u.Id == userId);
+        if (user is null)
+        {
+            return UserErrors.NotFound;
+        }
+
+        if (WorkItems.Any(wi => wi.AssigneeId == userId))
+        {
+            return ProjectErrors.UserHasAssignedWorkItems;
+        }
+
+        if (Teams.Any(t => t.Members.Any(m => m.Id == userId)))
+        {
+            return ProjectErrors.UserIsInTeams;
+        }
+
+        Users.Remove(user);
+        AddDomainEvent(new UserRemovedFromProjectDomainEvent(this, user));
+        return Result.Success;
     }
 
     public ErrorOr<Success> AddWorkItem(WorkItem workItem)
@@ -173,6 +215,12 @@ public sealed class Project : AggregateRoot
 
         Personas.Remove(persona);
         return Result.Success;
+    }
+
+    public void SetOrganization(Organization organization)
+    {
+        Organization = organization;
+        OrganizationId = organization.Id;
     }
 
     private void ShiftWikiPages(int fromIndex, int offset)
