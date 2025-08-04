@@ -4,7 +4,10 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.Configurations;
 
-internal sealed class WikiPageConfigurations : IEntityTypeConfiguration<WikiPage>
+internal sealed class WikiPageConfigurations :
+    IEntityTypeConfiguration<WikiPage>,
+    IEntityTypeConfiguration<WikiPageComment>,
+    IEntityTypeConfiguration<WikiPageView>
 {
     public void Configure(EntityTypeBuilder<WikiPage> builder)
     {
@@ -50,5 +53,39 @@ internal sealed class WikiPageConfigurations : IEntityTypeConfiguration<WikiPage
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasIndex(p => new { p.ProjectId, p.ParentWikiPageId, p.Position });
+    }
+
+    public void Configure(EntityTypeBuilder<WikiPageComment> builder)
+    {
+        builder.HasKey(wpc => wpc.Id);
+
+        builder.Property(wpc => wpc.Id)
+            .ValueGeneratedNever();
+
+        builder.Property(wpc => wpc.WikiPageId)
+            .IsRequired();
+
+        builder.Property(wpc => wpc.AuthorId)
+            .IsRequired();
+
+        builder.Property(wpc => wpc.Content)
+            .IsRequired();
+    }
+
+    public void Configure(EntityTypeBuilder<WikiPageView> builder)
+    {
+        builder.HasKey(wpv => wpv.Id);
+
+        builder.Property(wpv => wpv.Id)
+            .ValueGeneratedNever();
+
+        builder.Property(wpv => wpv.WikiPageId)
+            .IsRequired();
+
+        builder.Property(wpv => wpv.ViewedAt)
+            .IsRequired();
+
+        builder.Property(wpv => wpv.ViewerId)
+            .IsRequired();
     }
 }
