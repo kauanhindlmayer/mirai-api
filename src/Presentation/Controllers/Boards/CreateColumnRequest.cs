@@ -1,7 +1,7 @@
 namespace Presentation.Controllers.Boards;
 
 /// <summary>
-/// Data transfer object for creating a column in a board.
+/// Request to create a new column on a board.
 /// </summary>
 /// <param name="Name">The name of the column.</param>
 /// <param name="WipLimit">The work in progress limit for the column.</param>

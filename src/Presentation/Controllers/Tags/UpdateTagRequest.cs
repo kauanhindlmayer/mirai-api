@@ -1,7 +1,7 @@
 namespace Presentation.Controllers.Tags;
 
 /// <summary>
-/// Data transfer object for updating a tag.
+/// Request to update an existing tag.
 /// </summary>
 /// <param name="Name">The name of the tag.</param>
 /// <param name="Description">The description of the tag.</param>

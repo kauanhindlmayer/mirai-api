@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Presentation.Controllers;
 
 /// <summary>
-/// Data transfer object for paginated requests.
+/// Request parameters for paginated and sorted data.
 /// </summary>
 public class PageRequest
 {

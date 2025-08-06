@@ -1,7 +1,7 @@
 namespace Presentation.Controllers.Boards;
 
 /// <summary>
-/// Data transfer object for moving a card to a different column and position.
+/// Request to move a card to a different column.
 /// </summary>
 /// <param name="TargetColumnId">The unique identifier of the target column.</param>
 /// <param name="TargetPosition">The position of the card in the target column.</param>

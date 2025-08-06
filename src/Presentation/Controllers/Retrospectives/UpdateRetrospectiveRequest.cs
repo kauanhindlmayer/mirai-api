@@ -3,7 +3,7 @@ using Domain.Retrospectives.Enums;
 namespace Presentation.Controllers.Retrospectives;
 
 /// <summary>
-/// Data transfer object for updating a retrospective board.
+/// Request to update an existing retrospective.
 /// </summary>
 /// <param name="Title">The title of the retrospective.</param>
 /// <param name="MaxVotesPerUser">The maximum number of votes per user.</param>

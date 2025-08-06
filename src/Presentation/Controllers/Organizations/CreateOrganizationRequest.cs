@@ -1,7 +1,7 @@
 namespace Presentation.Controllers.Organizations;
 
 /// <summary>
-/// Data transfer object for creating an organization.
+/// Request to create a new organization.
 /// </summary>
 /// <param name="Name">The name of the organization.</param>
 /// <param name="Description">The description of the organization.</param>

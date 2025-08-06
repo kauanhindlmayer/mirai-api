@@ -2,6 +2,9 @@ using Domain.WorkItems.Enums;
 
 namespace Presentation.Controllers.WorkItems;
 
+/// <summary>
+/// Query parameters for filtering work items.
+/// </summary>
 public class WorkItemsQueryParameters : PageRequest
 {
     /// <summary>

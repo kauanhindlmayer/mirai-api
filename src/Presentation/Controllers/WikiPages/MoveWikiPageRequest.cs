@@ -1,7 +1,7 @@
 namespace Presentation.Controllers.WikiPages;
 
 /// <summary>
-/// Data transfer object for moving a wiki page.
+/// Request to move a wiki page to a different parent or position.
 /// </summary>
 /// <param name="TargetParentId">The unique identifier of the target parent page.</param>
 /// <param name="TargetPosition">The target position of the page.</param>

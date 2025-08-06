@@ -1,7 +1,7 @@
 namespace Presentation.Controllers.Tags;
 
 /// <summary>
-/// Data transfer object for merging tags.
+/// Request to merge tags.
 /// </summary>
 /// <param name="TargetTagId">
 /// The unique identifier of the tag that will remain after the merge.

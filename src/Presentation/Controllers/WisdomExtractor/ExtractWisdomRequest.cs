@@ -1,9 +1,7 @@
 namespace Presentation.Controllers.WisdomExtractor;
 
 /// <summary>
-/// Represents a request to the Wisdom Extractor feature, which will search
-/// your project’s work items and wiki pages to generate a focused answer and
-/// its source excerpts.
+/// Request to extract wisdom from a given context.
 /// </summary>
 /// <param name="Question">
 /// A natural‑language question or prompt guiding the extractor on what insight

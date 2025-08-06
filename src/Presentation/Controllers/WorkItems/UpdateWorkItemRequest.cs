@@ -5,7 +5,7 @@ using Domain.WorkItems.ValueObjects;
 namespace Presentation.Controllers.WorkItems;
 
 /// <summary>
-/// Data transfer object for updating a work item.
+/// Request to update a work item.
 /// </summary>
 /// <param name="Type">The type of the work item.</param>
 /// <param name="Title">The title of the work item.</param>

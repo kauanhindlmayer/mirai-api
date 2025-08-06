@@ -1,7 +1,7 @@
 namespace Presentation.Controllers.Personas;
 
 /// <summary>
-/// Data transfer object for creating a persona.
+/// Request to create a new persona.
 /// </summary>
 /// <param name="Name">The name of the persona.</param>
 /// <param name="Description">The description of the persona.</param>
