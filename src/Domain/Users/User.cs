@@ -1,5 +1,6 @@
 using Domain.Common;
 using Domain.Organizations;
+using Domain.Projects;
 using Domain.WorkItems;
 
 namespace Domain.Users;
@@ -19,6 +20,7 @@ public sealed class User : Entity
     public Guid? ImageFileId { get; private set; }
     public ICollection<WorkItem> WorkItems { get; private set; } = [];
     public ICollection<Organization> Organizations { get; private set; } = [];
+    public ICollection<Project> Projects { get; private set; } = [];
 
     public User(string firstName, string lastName, string email)
     {

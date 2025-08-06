@@ -14,7 +14,7 @@ internal sealed class TagConfigurations : IEntityTypeConfiguration<Tag>
             .ValueGeneratedNever();
 
         builder.Property(t => t.Name)
-            .HasMaxLength(50)
+            .HasMaxLength(100)
             .IsRequired();
 
         builder.Property(t => t.Description)

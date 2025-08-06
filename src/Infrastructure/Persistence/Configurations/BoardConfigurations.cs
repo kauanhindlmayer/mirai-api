@@ -47,7 +47,7 @@ internal sealed class BoardConfigurations :
             .IsRequired(false);
 
         builder.Property(bc => bc.DefinitionOfDone)
-            .HasMaxLength(255)
+            .HasMaxLength(1000)
             .IsRequired(false);
 
         builder.Property(bc => bc.BoardId)

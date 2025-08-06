@@ -1,4 +1,5 @@
 using Domain.Projects;
+using Domain.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -34,5 +35,25 @@ internal sealed class ProjectConfigurations : IEntityTypeConfiguration<Project>
         builder.HasMany(p => p.Teams)
             .WithOne(t => t.Project)
             .HasForeignKey(t => t.ProjectId);
+
+        builder.HasMany(p => p.Users)
+            .WithMany()
+            .UsingEntity(
+                "ProjectUsers",
+                l => l.HasOne(typeof(User)).WithMany().HasForeignKey("UserId"),
+                r => r.HasOne(typeof(Project)).WithMany().HasForeignKey("ProjectId"),
+                j => j.HasKey("ProjectId", "UserId"));
+
+        builder.HasMany(p => p.Tags)
+            .WithOne(t => t.Project)
+            .HasForeignKey(t => t.ProjectId);
+
+        builder.HasMany(p => p.Personas)
+            .WithOne(pe => pe.Project)
+            .HasForeignKey(pe => pe.ProjectId);
+
+        builder.HasMany(p => p.WikiPages)
+            .WithOne(wp => wp.Project)
+            .HasForeignKey(wp => wp.ProjectId);
     }
 }
