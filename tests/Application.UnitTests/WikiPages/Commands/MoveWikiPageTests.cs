@@ -96,7 +96,8 @@ public class MoveWikiPageTests
         // Assert
         result.IsError.Should().BeFalse();
         project.WikiPages.Should().HaveCount(2);
-        project.WikiPages.Should().ContainInOrder(wikiPage2, wikiPage1);
+        wikiPage1.Position.Should().Be(1);
+        wikiPage2.Position.Should().Be(0);
         _projectsRepository.Received().Update(project);
     }
 

@@ -88,4 +88,9 @@ public sealed class Team : AggregateRoot
         Board = board;
         return Result.Success;
     }
+
+    public void SetBoard(Board board)
+    {
+        Board = board;
+    }
 }

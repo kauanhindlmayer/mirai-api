@@ -10,6 +10,7 @@ public class AddTagTests
 {
     private static readonly AddTagCommand Command = new(
         Guid.NewGuid(),
+        Guid.NewGuid(),
         "Tag Name");
 
     private readonly AddTagCommandHandler _handler;

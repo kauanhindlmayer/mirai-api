@@ -173,26 +173,7 @@ public class BoardColumnTests
         column.AddCardAtPosition(card2, 0);
 
         // Assert
-        column.Cards.First().WorkItemId.Should().Be(workItem2.Id);
-        column.Cards.Last().WorkItemId.Should().Be(workItem1.Id);
-    }
-
-    [Fact]
-    public void AddCardAtPosition_WhenPositionIsValid_ShouldUpdateCardPositions()
-    {
-        // Arrange
-        var column = BoardFactory.CreateBoardColumn();
-        var workItem1 = WorkItemFactory.CreateWorkItem();
-        var card1 = BoardFactory.CreateBoardCard(column.Id, workItem1.Id);
-        column.AddCard(card1);
-        var workItem2 = WorkItemFactory.CreateWorkItem();
-        var card2 = BoardFactory.CreateBoardCard(column.Id, workItem2.Id);
-
-        // Act
-        column.AddCardAtPosition(card2, 0);
-
-        // Assert
-        column.Cards.First().Position.Should().Be(0);
-        column.Cards.Last().Position.Should().Be(1);
+        card1.Position.Should().Be(1);
+        card2.Position.Should().Be(0);
     }
 }

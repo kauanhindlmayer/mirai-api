@@ -5,19 +5,22 @@ namespace Domain.UnitTests.WorkItems;
 
 public static class WorkItemFactory
 {
-    public const string Title = "Title";
-
     public static WorkItem CreateWorkItem(
         Guid? projectId = null,
-        WorkItemType? type = null,
-        string title = Title)
+        int code = 0,
+        string title = "Test Work Item",
+        WorkItemType type = WorkItemType.UserStory,
+        Guid? assignedTeamId = null,
+        Guid? sprintId = null,
+        Guid? parentWorkItemId = null)
     {
-        var workItemCode = 1;
-
-        return new(
+        return new WorkItem(
             projectId ?? Guid.NewGuid(),
-            workItemCode,
+            code,
             title,
-            type ?? WorkItemType.UserStory);
+            type,
+            assignedTeamId,
+            sprintId,
+            parentWorkItemId);
     }
 }
