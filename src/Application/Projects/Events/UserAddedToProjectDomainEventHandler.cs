@@ -4,11 +4,11 @@ using MediatR;
 
 namespace Application.Projects.Events;
 
-internal sealed class UserAddedToProjectHandler : INotificationHandler<UserAddedToProjectDomainEvent>
+internal sealed class UserAddedToProjectDomainEventHandler : INotificationHandler<UserAddedToProjectDomainEvent>
 {
     private readonly IEmailService _emailService;
 
-    public UserAddedToProjectHandler(IEmailService emailService)
+    public UserAddedToProjectDomainEventHandler(IEmailService emailService)
     {
         _emailService = emailService;
     }

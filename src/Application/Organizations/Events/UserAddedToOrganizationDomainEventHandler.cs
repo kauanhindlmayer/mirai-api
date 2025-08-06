@@ -4,12 +4,12 @@ using MediatR;
 
 namespace Application.Organizations.Events;
 
-internal sealed class UserAddedToOrganizationHandler
+internal sealed class UserAddedToOrganizationDomainEventHandler
     : INotificationHandler<UserAddedToOrganizationDomainEvent>
 {
     private readonly IEmailService _emailService;
 
-    public UserAddedToOrganizationHandler(IEmailService emailService)
+    public UserAddedToOrganizationDomainEventHandler(IEmailService emailService)
     {
         _emailService = emailService;
     }

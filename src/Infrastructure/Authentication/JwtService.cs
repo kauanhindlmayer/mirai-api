@@ -4,6 +4,7 @@ using Domain.Users;
 using ErrorOr;
 using Infrastructure.Authentication.Models;
 using Infrastructure.Settings;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Authentication;
@@ -12,13 +13,16 @@ internal sealed class JwtService : IJwtService
 {
     private readonly HttpClient _httpClient;
     private readonly KeycloakOptions _keycloakOptions;
+    private readonly ILogger<JwtService> _logger;
 
     public JwtService(
         HttpClient httpClient,
-        IOptions<KeycloakOptions> keycloakOptions)
+        IOptions<KeycloakOptions> keycloakOptions,
+        ILogger<JwtService> logger)
     {
         _httpClient = httpClient;
         _keycloakOptions = keycloakOptions.Value;
+        _logger = logger;
     }
 
     public async Task<ErrorOr<string>> GetAccessTokenAsync(
@@ -56,8 +60,9 @@ internal sealed class JwtService : IJwtService
 
             return authorizationToken.AccessToken;
         }
-        catch (HttpRequestException)
+        catch (HttpRequestException ex)
         {
+            _logger.LogError(ex, "Error while requesting access token from Keycloak.");
             return UserErrors.InvalidCredentials;
         }
     }

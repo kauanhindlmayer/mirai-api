@@ -10,7 +10,8 @@ internal sealed class CreateOrganizationCommandHandler
 {
     private readonly IOrganizationsRepository _organizationsRepository;
 
-    public CreateOrganizationCommandHandler(IOrganizationsRepository organizationsRepository)
+    public CreateOrganizationCommandHandler(
+        IOrganizationsRepository organizationsRepository)
     {
         _organizationsRepository = organizationsRepository;
     }
@@ -19,7 +20,9 @@ internal sealed class CreateOrganizationCommandHandler
         CreateOrganizationCommand command,
         CancellationToken cancellationToken)
     {
-        if (await _organizationsRepository.ExistsByNameAsync(command.Name, cancellationToken))
+        if (await _organizationsRepository.ExistsByNameAsync(
+            command.Name,
+            cancellationToken))
         {
             return OrganizationErrors.AlreadyExists;
         }
@@ -28,7 +31,9 @@ internal sealed class CreateOrganizationCommandHandler
             command.Name,
             command.Description);
 
-        await _organizationsRepository.AddAsync(organization, cancellationToken);
+        await _organizationsRepository.AddAsync(
+            organization,
+            cancellationToken);
 
         return organization.Id;
     }

@@ -5,14 +5,14 @@ using MediatR;
 
 namespace Application.Organizations.Events;
 
-internal sealed class CacheInvalidationOrganizationHandler :
+internal sealed class OrganizationCacheInvalidationHandler :
     INotificationHandler<OrganizationCreatedDomainEvent>,
     INotificationHandler<OrganizationUpdatedDomainEvent>,
     INotificationHandler<OrganizationDeletedDomainEvent>
 {
     private readonly ICacheService _cacheService;
 
-    public CacheInvalidationOrganizationHandler(ICacheService cacheService)
+    public OrganizationCacheInvalidationHandler(ICacheService cacheService)
     {
         _cacheService = cacheService;
     }

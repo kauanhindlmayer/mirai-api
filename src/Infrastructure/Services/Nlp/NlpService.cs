@@ -1,6 +1,6 @@
 using System.Net.Http.Json;
 using Application.Common.Interfaces.Services;
-using Domain.Nlp;
+using Domain.Common;
 using ErrorOr;
 using Microsoft.Extensions.Logging;
 
@@ -40,7 +40,7 @@ internal sealed class NlpService : INlpService
         catch (Exception ex)
         {
             _logger.LogError(ex, "An unexpected error occurred while generating an embedding.");
-            return NlpErrors.EmbeddingFailure;
+            return Errors.EmbeddingFailure;
         }
     }
 
@@ -66,7 +66,7 @@ internal sealed class NlpService : INlpService
         catch (Exception ex)
         {
             _logger.LogError(ex, "An unexpected error occurred while answering a question.");
-            return NlpErrors.AnsweringFailure;
+            return Errors.AnsweringFailure;
         }
     }
 }

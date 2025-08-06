@@ -1,4 +1,5 @@
 using Application.Common.Interfaces.Persistence;
+using Application.Common.Interfaces.Services;
 using Application.Projects.Queries.Common;
 using Domain.Projects;
 using ErrorOr;
@@ -11,10 +12,14 @@ internal sealed class GetProjectQueryHandler
     : IRequestHandler<GetProjectQuery, ErrorOr<ProjectResponse>>
 {
     private readonly IApplicationDbContext _context;
+    private readonly IUserContext _userContext;
 
-    public GetProjectQueryHandler(IApplicationDbContext context)
+    public GetProjectQueryHandler(
+        IApplicationDbContext context,
+        IUserContext userContext)
     {
         _context = context;
+        _userContext = userContext;
     }
 
     public async Task<ErrorOr<ProjectResponse>> Handle(
@@ -23,7 +28,8 @@ internal sealed class GetProjectQueryHandler
     {
         var project = await _context.Projects
             .AsNoTracking()
-            .Where(p => p.Id == query.ProjectId)
+            .Where(p => p.Id == query.ProjectId
+                        && p.Users.Any(u => u.Id == _userContext.UserId))
             .Select(ProjectQueries.ProjectToDto())
             .FirstOrDefaultAsync(cancellationToken);
 
