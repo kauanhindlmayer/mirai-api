@@ -1,4 +1,4 @@
-using Application.Common.Interfaces.Services;
+using Application.Abstractions.Email;
 using Domain.Organizations.Events;
 using MediatR;
 

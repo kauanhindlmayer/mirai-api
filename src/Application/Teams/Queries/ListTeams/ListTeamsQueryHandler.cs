@@ -1,4 +1,4 @@
-using Application.Common.Interfaces.Persistence;
+using Application.Abstractions;
 using Application.Teams.Queries.Common;
 using ErrorOr;
 using MediatR;

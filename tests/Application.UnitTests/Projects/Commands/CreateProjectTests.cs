@@ -1,4 +1,3 @@
-using Application.Common.Interfaces.Persistence;
 using Application.Projects.Commands.CreateProject;
 using Domain.Organizations;
 using Domain.Projects;

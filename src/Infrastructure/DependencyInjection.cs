@@ -1,7 +1,22 @@
-using Application.Common.Interfaces.Persistence;
-using Application.Common.Interfaces.Services;
+using Application.Abstractions;
+using Application.Abstractions.Authentication;
+using Application.Abstractions.Caching;
+using Application.Abstractions.Email;
+using Application.Abstractions.Jobs;
+using Application.Abstractions.Storage;
 using Asp.Versioning;
 using Azure.Storage.Blobs;
+using Domain.Boards;
+using Domain.Common;
+using Domain.Organizations;
+using Domain.Projects;
+using Domain.Retrospectives;
+using Domain.Sprints;
+using Domain.Tags;
+using Domain.Teams;
+using Domain.Users;
+using Domain.WikiPages;
+using Domain.WorkItems;
 using Infrastructure.Authentication;
 using Infrastructure.Authorization;
 using Infrastructure.Jobs;
@@ -19,7 +34,7 @@ using Microsoft.Extensions.Options;
 using Quartz;
 using AuthenticationOptions = Infrastructure.Settings.AuthenticationOptions;
 using AuthenticationService = Infrastructure.Authentication.AuthenticationService;
-using IAuthenticationService = Application.Common.Interfaces.Services.IAuthenticationService;
+using IAuthenticationService = Application.Abstractions.Authentication.IAuthenticationService;
 
 namespace Infrastructure;
 

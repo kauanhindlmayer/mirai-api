@@ -1,5 +1,4 @@
-using Application.Common;
-using Application.Common.Interfaces.Services;
+using Application.Abstractions.Caching;
 using Domain.Organizations.Events;
 using MediatR;
 

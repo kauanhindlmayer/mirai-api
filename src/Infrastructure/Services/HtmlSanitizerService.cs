@@ -1,4 +1,4 @@
-using Application.Common.Interfaces.Services;
+using Application.Abstractions;
 using Ganss.Xss;
 
 namespace Infrastructure.Services;

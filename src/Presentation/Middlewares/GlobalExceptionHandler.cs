@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Middlewares;
 
-public sealed class GlobalExceptionHandler : IExceptionHandler
+internal sealed class GlobalExceptionHandler : IExceptionHandler
 {
     private readonly IProblemDetailsService _problemDetailsService;
 

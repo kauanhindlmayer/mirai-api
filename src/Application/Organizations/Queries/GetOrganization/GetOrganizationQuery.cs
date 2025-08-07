@@ -1,5 +1,4 @@
-using Application.Common;
-using Application.Common.Interfaces.Services;
+using Application.Abstractions.Caching;
 using ErrorOr;
 
 namespace Application.Organizations.Queries.GetOrganization;

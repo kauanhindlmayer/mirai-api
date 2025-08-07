@@ -1,5 +1,5 @@
 using System.Net.Http.Json;
-using Application.Common.Interfaces.Services;
+using Application.Abstractions.Authentication;
 using Domain.Users;
 using Infrastructure.Authentication.Models;
 

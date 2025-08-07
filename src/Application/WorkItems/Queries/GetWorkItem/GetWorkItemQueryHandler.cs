@@ -1,4 +1,4 @@
-using Application.Common.Interfaces.Persistence;
+using Application.Abstractions;
 using Application.WorkItems.Queries.Common;
 using Domain.WorkItems;
 using ErrorOr;

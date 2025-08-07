@@ -1,4 +1,4 @@
-using Application.Common.Interfaces.Services;
+using Application.Abstractions.Storage;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Infrastructure.Settings;

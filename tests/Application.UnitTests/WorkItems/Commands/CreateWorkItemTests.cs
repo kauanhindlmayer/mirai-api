@@ -1,9 +1,9 @@
-using Application.Common.Interfaces.Persistence;
-using Application.Common.Interfaces.Services;
+using Application.Abstractions;
 using Application.WorkItems.Commands.CreateWorkItem;
 using Domain.Boards;
 using Domain.Projects;
 using Domain.Teams;
+using Domain.WorkItems;
 using Domain.WorkItems.Enums;
 
 namespace Application.UnitTests.WorkItems.Commands;

@@ -1,5 +1,5 @@
 using System.Net.Mime;
-using Application.Common;
+using Application.Abstractions;
 using Application.WorkItems.Commands.AddComment;
 using Application.WorkItems.Commands.AddTag;
 using Application.WorkItems.Commands.AssignWorkItem;

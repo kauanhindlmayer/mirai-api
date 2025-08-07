@@ -1,5 +1,5 @@
-using Application.Common.Interfaces.Persistence;
 using Domain.Teams;
+using Domain.Users;
 using ErrorOr;
 using MediatR;
 

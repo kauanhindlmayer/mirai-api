@@ -1,5 +1,6 @@
-using Application.Common.Interfaces.Persistence;
-using Application.Common.Interfaces.Services;
+using Application.Abstractions;
+using Application.Abstractions.Authentication;
+using Domain.Common;
 using Domain.Projects.Events;
 using Domain.Sprints;
 using Domain.Teams;

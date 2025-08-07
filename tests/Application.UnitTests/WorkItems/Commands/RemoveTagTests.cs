@@ -1,4 +1,3 @@
-using Application.Common.Interfaces.Persistence;
 using Application.WorkItems.Commands.RemoveTag;
 using Domain.Tags;
 using Domain.WorkItems;

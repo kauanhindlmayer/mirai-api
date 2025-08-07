@@ -1,4 +1,4 @@
-using Application.Common.Interfaces.Persistence;
+using Application.Abstractions;
 using Domain.TagImportJobs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

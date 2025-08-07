@@ -1,4 +1,3 @@
-using Application.Common.Interfaces.Persistence;
 using Application.Teams.Commands.CreateTeam;
 using Domain.Projects;
 using Domain.Teams;

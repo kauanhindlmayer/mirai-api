@@ -1,4 +1,4 @@
-using Application.Common;
+using Application.Abstractions;
 
 namespace Application.TagImportJobs.Queries.GetTagImportJob;
 

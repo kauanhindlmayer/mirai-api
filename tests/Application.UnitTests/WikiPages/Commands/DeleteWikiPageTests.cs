@@ -1,4 +1,3 @@
-using Application.Common.Interfaces.Persistence;
 using Application.WikiPages.Commands.DeleteWikiPage;
 using Domain.Projects;
 using Domain.WikiPages;

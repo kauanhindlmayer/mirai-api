@@ -1,4 +1,3 @@
-using Application.Common.Interfaces.Persistence;
 using Domain.Users;
 using Microsoft.EntityFrameworkCore;
 

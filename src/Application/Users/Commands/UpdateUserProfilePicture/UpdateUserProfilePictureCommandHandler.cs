@@ -1,5 +1,5 @@
-using Application.Common.Interfaces.Persistence;
-using Application.Common.Interfaces.Services;
+using Application.Abstractions.Authentication;
+using Application.Abstractions.Storage;
 using Domain.Users;
 using ErrorOr;
 using MediatR;

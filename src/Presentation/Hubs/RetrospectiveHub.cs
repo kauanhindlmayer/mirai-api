@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace Presentation.Hubs;
 
-public class RetrospectiveHub : Hub<IRetrospectiveHub>
+public sealed class RetrospectiveHub : Hub<IRetrospectiveHub>
 {
     private int _connectedClientsCount;
 

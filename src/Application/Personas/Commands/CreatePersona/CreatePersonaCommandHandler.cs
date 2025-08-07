@@ -1,5 +1,4 @@
-using Application.Common.Interfaces.Persistence;
-using Application.Common.Interfaces.Services;
+using Application.Abstractions.Storage;
 using Domain.Personas;
 using Domain.Projects;
 using ErrorOr;
@@ -27,6 +26,7 @@ internal sealed class CreatePersonaCommandHandler : IRequestHandler<CreatePerson
         var project = await _projectsRepository.GetByIdWithPersonasAsync(
             command.ProjectId,
             cancellationToken);
+
         if (project is null)
         {
             return ProjectErrors.NotFound;

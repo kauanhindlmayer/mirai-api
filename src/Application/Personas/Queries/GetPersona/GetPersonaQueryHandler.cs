@@ -1,4 +1,4 @@
-using Application.Common.Interfaces.Persistence;
+using Application.Abstractions;
 using Application.Personas.Queries.Common;
 using Domain.Personas;
 using ErrorOr;

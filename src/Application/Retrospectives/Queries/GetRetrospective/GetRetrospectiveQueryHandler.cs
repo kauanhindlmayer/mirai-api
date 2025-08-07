@@ -1,4 +1,4 @@
-using Application.Common.Interfaces.Persistence;
+using Application.Abstractions;
 using Application.Retrospectives.Queries.Common;
 using Domain.Retrospectives;
 using ErrorOr;

@@ -1,5 +1,5 @@
 using System.Net.Mime;
-using Application.Common;
+using Application.Abstractions;
 using Application.Users.Commands.RegisterUser;
 using Application.Users.Commands.UpdateUserProfile;
 using Application.Users.Commands.UpdateUserProfilePicture;

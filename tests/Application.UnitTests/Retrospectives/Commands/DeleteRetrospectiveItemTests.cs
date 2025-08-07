@@ -1,4 +1,3 @@
-using Application.Common.Interfaces.Persistence;
 using Application.Retrospectives.Commands.DeleteRetrospectiveItem;
 using Domain.Retrospectives;
 

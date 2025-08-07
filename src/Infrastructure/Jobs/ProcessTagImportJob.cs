@@ -1,5 +1,5 @@
 using System.Globalization;
-using Application.Common.Interfaces.Persistence;
+using Application.Abstractions;
 using CsvHelper;
 using Domain.Tags;
 using Microsoft.Extensions.Logging;

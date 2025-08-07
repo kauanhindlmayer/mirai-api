@@ -1,5 +1,4 @@
 using Application.Boards.Commands.CreateColumn;
-using Application.Common.Interfaces.Persistence;
 using Domain.Boards;
 
 namespace Application.UnitTests.Boards.Commands;

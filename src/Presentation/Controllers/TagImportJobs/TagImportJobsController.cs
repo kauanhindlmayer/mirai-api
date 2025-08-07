@@ -1,5 +1,5 @@
 using System.Net.Mime;
-using Application.Common;
+using Application.Abstractions;
 using Application.TagImportJobs.Commands.CreateTagImportJob;
 using Application.TagImportJobs.Queries.GetTagImportJob;
 using Application.TagImportJobs.Queries.ListTagImportJobs;

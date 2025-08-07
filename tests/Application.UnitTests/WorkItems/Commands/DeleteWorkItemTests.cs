@@ -1,4 +1,3 @@
-using Application.Common.Interfaces.Persistence;
 using Application.WorkItems.Commands.DeleteWorkItem;
 using Domain.WorkItems;
 using Domain.WorkItems.Enums;

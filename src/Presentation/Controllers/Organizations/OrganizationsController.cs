@@ -1,5 +1,5 @@
 using System.Net.Mime;
-using Application.Common;
+using Application.Abstractions;
 using Application.Organizations.Commands.AddUserToOrganization;
 using Application.Organizations.Commands.CreateOrganization;
 using Application.Organizations.Commands.DeleteOrganization;

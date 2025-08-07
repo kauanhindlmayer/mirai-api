@@ -1,4 +1,3 @@
-using Application.Common.Interfaces.Persistence;
 using Domain.Boards;
 using ErrorOr;
 using MediatR;

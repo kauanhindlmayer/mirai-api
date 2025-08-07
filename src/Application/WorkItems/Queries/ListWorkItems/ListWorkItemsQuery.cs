@@ -1,4 +1,4 @@
-using Application.Common;
+using Application.Abstractions;
 using Application.WorkItems.Queries.Common;
 using Domain.WorkItems.Enums;
 using ErrorOr;

@@ -1,6 +1,5 @@
-using Application.Common;
-using Application.Common.Interfaces.Persistence;
-using Application.Common.Mappings;
+using Application.Abstractions;
+using Application.Abstractions.Mappings;
 using Application.TagImportJobs.Queries.Common;
 using Application.TagImportJobs.Queries.GetTagImportJob;
 using ErrorOr;

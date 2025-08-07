@@ -1,5 +1,4 @@
-using Application.Common.Interfaces.Persistence;
-using Application.Common.Interfaces.Services;
+using Application.Abstractions.Authentication;
 using Application.WikiPages.Commands.AddComment;
 using Domain.WikiPages;
 

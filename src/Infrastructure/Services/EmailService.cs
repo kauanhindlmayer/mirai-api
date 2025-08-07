@@ -1,4 +1,4 @@
-using Application.Common.Interfaces.Services;
+using Application.Abstractions.Email;
 using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Services;

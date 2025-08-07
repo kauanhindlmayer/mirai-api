@@ -1,5 +1,5 @@
-using Application.Common.Interfaces.Persistence;
-using Application.Common.Interfaces.Services;
+using Application.Abstractions;
+using Application.Abstractions.Authentication;
 using Application.WikiPages.Commands.CreateWikiPage;
 using Domain.Projects;
 using Domain.WikiPages;

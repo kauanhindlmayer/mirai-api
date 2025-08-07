@@ -1,4 +1,3 @@
-using Application.Common.Interfaces.Persistence;
 using Application.Sprints.Commands.AddWorkItemToSprint;
 using Domain.Sprints;
 using Domain.WorkItems;
