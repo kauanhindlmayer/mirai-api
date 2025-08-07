@@ -1,3 +1,4 @@
 {
-  "cSpell.words": ["disableable"]
+  "cSpell.words": ["disableable"],
+  "dotnet.defaultSolution": "Mirai.slnx"
 }

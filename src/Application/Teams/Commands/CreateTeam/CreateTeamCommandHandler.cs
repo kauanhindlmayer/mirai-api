@@ -5,11 +5,13 @@ using MediatR;
 
 namespace Application.Teams.Commands.CreateTeam;
 
-internal sealed class CreateTeamCommandHandler : IRequestHandler<CreateTeamCommand, ErrorOr<Guid>>
+internal sealed class CreateTeamCommandHandler
+    : IRequestHandler<CreateTeamCommand, ErrorOr<Guid>>
 {
     private readonly IProjectsRepository _projectsRepository;
 
-    public CreateTeamCommandHandler(IProjectsRepository projectsRepository)
+    public CreateTeamCommandHandler(
+        IProjectsRepository projectsRepository)
     {
         _projectsRepository = projectsRepository;
     }

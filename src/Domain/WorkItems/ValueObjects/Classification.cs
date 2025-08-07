@@ -1,4 +1,4 @@
-using Domain.Common;
+using Domain.Shared;
 using Domain.WorkItems.Enums;
 
 namespace Domain.WorkItems.ValueObjects;

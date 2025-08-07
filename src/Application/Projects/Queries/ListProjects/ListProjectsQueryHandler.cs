@@ -1,6 +1,5 @@
 using Application.Abstractions;
 using Application.Abstractions.Authentication;
-using Application.Projects.Queries.Common;
 using Application.Projects.Queries.GetProject;
 using ErrorOr;
 using MediatR;

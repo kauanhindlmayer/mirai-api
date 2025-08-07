@@ -5,7 +5,8 @@ using MediatR;
 
 namespace Application.WikiPages.Commands.AddComment;
 
-internal sealed class AddCommentCommandHandler : IRequestHandler<AddCommentCommand, ErrorOr<Guid>>
+internal sealed class AddCommentCommandHandler
+    : IRequestHandler<AddCommentCommand, ErrorOr<Guid>>
 {
     private readonly IWikiPagesRepository _wikiPagesRepository;
     private readonly IUserContext _userContext;

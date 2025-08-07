@@ -1,6 +1,6 @@
-using Domain.Common;
 using Domain.Organizations;
 using Domain.Projects;
+using Domain.Shared;
 using Domain.WorkItems;
 
 namespace Domain.Users;

@@ -1,6 +1,5 @@
 using Application.Abstractions;
 using Application.Abstractions.Authentication;
-using Application.WikiPages.Queries.Common;
 using Domain.WikiPages;
 using ErrorOr;
 using MediatR;
@@ -8,7 +7,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.WikiPages.Queries.GetWikiPage;
 
-internal sealed class GetWikiPageQueryHandler : IRequestHandler<GetWikiPageQuery, ErrorOr<WikiPageResponse>>
+internal sealed class GetWikiPageQueryHandler
+    : IRequestHandler<GetWikiPageQuery, ErrorOr<WikiPageResponse>>
 {
     private readonly IWikiPagesRepository _wikiPagesRepository;
     private readonly IUserContext _userContext;

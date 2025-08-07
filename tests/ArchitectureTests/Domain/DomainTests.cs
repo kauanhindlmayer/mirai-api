@@ -1,6 +1,6 @@
 using System.Reflection;
 using ArchitectureTests.Infrastructure;
-using Domain.Common;
+using Domain.Shared;
 using FluentAssertions;
 using NetArchTest.Rules;
 using TestResult = NetArchTest.Rules.TestResult;

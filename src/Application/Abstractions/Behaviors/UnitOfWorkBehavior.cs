@@ -1,4 +1,4 @@
-using Domain.Common;
+using Domain.Shared;
 using MediatR;
 
 namespace Application.Abstractions.Behaviors;

@@ -30,6 +30,7 @@ internal sealed class UpdateUserProfilePictureCommandHandler
         var user = await _usersRepository.GetByIdAsync(
             _userContext.UserId,
             cancellationToken);
+
         if (user is null)
         {
             return UserErrors.NotFound;

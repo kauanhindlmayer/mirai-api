@@ -1,6 +1,6 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using Application.Users.Queries.Common;
+using Application.Users.Queries.LoginUser;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Presentation.FunctionalTests.Users;
 

@@ -1,6 +1,6 @@
 using System.Reflection;
 using Application;
-using Domain.Common;
+using Domain.Shared;
 using Infrastructure.Persistence;
 
 namespace ArchitectureTests.Infrastructure;

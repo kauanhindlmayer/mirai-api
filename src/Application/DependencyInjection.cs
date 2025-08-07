@@ -2,7 +2,7 @@ using Application.Abstractions.Behaviors;
 using Application.Abstractions.Mappings;
 using Application.Abstractions.Sorting;
 using Application.Tags.Queries.ListTags;
-using Application.WorkItems.Queries.Common;
+using Application.WorkItems.Queries.ListWorkItems;
 using Domain.Tags;
 using Domain.WorkItems;
 using FluentValidation;

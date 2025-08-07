@@ -1,7 +1,7 @@
 using System.Linq.Dynamic.Core;
 using System.Text.RegularExpressions;
 using Application.Abstractions;
-using Application.WorkItems.Queries.Common;
+using Application.WorkItems.Queries;
 using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

@@ -1,5 +1,4 @@
 using Application.Abstractions;
-using Application.Retrospectives.Queries.Common;
 using Domain.Retrospectives;
 using ErrorOr;
 using MediatR;

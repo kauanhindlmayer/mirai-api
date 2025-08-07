@@ -1,5 +1,5 @@
 using Domain.Boards.Enums;
-using Domain.Common;
+using Domain.Shared;
 using Domain.Teams;
 using ErrorOr;
 

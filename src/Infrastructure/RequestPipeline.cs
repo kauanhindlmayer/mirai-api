@@ -1,4 +1,3 @@
-using Infrastructure.Settings;
 using Microsoft.AspNetCore.Builder;
 
 namespace Infrastructure;

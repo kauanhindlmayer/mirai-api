@@ -1,5 +1,5 @@
 using Application.Abstractions.Sorting;
-using Application.WorkItems.Queries.Common;
+using Application.WorkItems.Queries.ListWorkItems;
 using Domain.WorkItems;
 
 namespace Application.Abstractions.Mappings;

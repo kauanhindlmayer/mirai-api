@@ -1,5 +1,4 @@
 using Application.Abstractions.Authentication;
-using Application.Users.Queries.Common;
 using Application.Users.Queries.LoginUser;
 using Domain.Users;
 

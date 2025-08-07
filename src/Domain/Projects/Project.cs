@@ -1,8 +1,8 @@
 using Domain.Boards;
-using Domain.Common;
 using Domain.Organizations;
 using Domain.Personas;
 using Domain.Projects.Events;
+using Domain.Shared;
 using Domain.Tags;
 using Domain.Teams;
 using Domain.Users;

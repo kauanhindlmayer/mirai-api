@@ -1,6 +1,6 @@
-using Domain.Common;
 using Domain.Organizations.Events;
 using Domain.Projects;
+using Domain.Shared;
 using Domain.Users;
 using ErrorOr;
 

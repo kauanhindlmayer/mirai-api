@@ -1,7 +1,7 @@
 using Domain.Boards;
-using Domain.Common;
 using Domain.Projects;
 using Domain.Retrospectives;
+using Domain.Shared;
 using Domain.Sprints;
 using Domain.Teams.Events;
 using Domain.Users;

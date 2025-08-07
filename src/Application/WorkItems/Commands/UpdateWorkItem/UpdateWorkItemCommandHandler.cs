@@ -26,6 +26,7 @@ internal sealed class UpdateWorkItemCommandHandler
         var workItem = await _workItemsRepository.GetByIdAsync(
             command.WorkItemId,
             cancellationToken);
+
         if (workItem is null)
         {
             return WorkItemErrors.NotFound;

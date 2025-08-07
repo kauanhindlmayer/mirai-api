@@ -4,11 +4,13 @@ using MediatR;
 
 namespace Application.WikiPages.Commands.DeleteComment;
 
-internal sealed class DeleteCommentCommandHandler : IRequestHandler<DeleteCommentCommand, ErrorOr<Success>>
+internal sealed class DeleteCommentCommandHandler
+    : IRequestHandler<DeleteCommentCommand, ErrorOr<Success>>
 {
     private readonly IWikiPagesRepository _wikiPagesRepository;
 
-    public DeleteCommentCommandHandler(IWikiPagesRepository wikiPagesRepository)
+    public DeleteCommentCommandHandler(
+        IWikiPagesRepository wikiPagesRepository)
     {
         _wikiPagesRepository = wikiPagesRepository;
     }

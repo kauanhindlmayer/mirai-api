@@ -1,5 +1,4 @@
 using Application.Abstractions;
-using Application.Retrospectives.Queries.Common;
 using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

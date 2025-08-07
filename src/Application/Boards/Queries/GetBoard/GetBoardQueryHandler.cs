@@ -1,5 +1,4 @@
 using Application.Abstractions;
-using Application.Boards.Queries.Common;
 using Domain.Boards;
 using ErrorOr;
 using MediatR;

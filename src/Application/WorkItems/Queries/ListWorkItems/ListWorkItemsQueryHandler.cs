@@ -1,8 +1,7 @@
 using Application.Abstractions;
 using Application.Abstractions.Mappings;
 using Application.Abstractions.Sorting;
-using Application.WorkItems.Queries.Common;
-using Domain.Common;
+using Domain.Shared;
 using Domain.WorkItems;
 using ErrorOr;
 using MediatR;

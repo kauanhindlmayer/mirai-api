@@ -3,7 +3,6 @@ using Application.Abstractions.Authentication;
 using Domain.Users;
 using ErrorOr;
 using Infrastructure.Authentication.Models;
-using Infrastructure.Settings;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 

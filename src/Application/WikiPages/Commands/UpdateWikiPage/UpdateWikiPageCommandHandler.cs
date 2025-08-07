@@ -4,11 +4,13 @@ using MediatR;
 
 namespace Application.WikiPages.Commands.UpdateWikiPage;
 
-internal sealed class UpdateWikiPageCommandHandler : IRequestHandler<UpdateWikiPageCommand, ErrorOr<Guid>>
+internal sealed class UpdateWikiPageCommandHandler
+    : IRequestHandler<UpdateWikiPageCommand, ErrorOr<Guid>>
 {
     private readonly IWikiPagesRepository _wikiPagesRepository;
 
-    public UpdateWikiPageCommandHandler(IWikiPagesRepository wikiPagesRepository)
+    public UpdateWikiPageCommandHandler(
+        IWikiPagesRepository wikiPagesRepository)
     {
         _wikiPagesRepository = wikiPagesRepository;
     }

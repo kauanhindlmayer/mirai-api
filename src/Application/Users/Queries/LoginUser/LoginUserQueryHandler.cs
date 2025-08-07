@@ -1,12 +1,12 @@
 using Application.Abstractions.Authentication;
-using Application.Users.Queries.Common;
 using Domain.Users;
 using ErrorOr;
 using MediatR;
 
 namespace Application.Users.Queries.LoginUser;
 
-internal sealed class LoginUserQueryHandler : IRequestHandler<LoginUserQuery, ErrorOr<AccessTokenResponse>>
+internal sealed class LoginUserQueryHandler
+    : IRequestHandler<LoginUserQuery, ErrorOr<AccessTokenResponse>>
 {
     private readonly IUsersRepository _usersRepository;
     private readonly IJwtService _jwtService;

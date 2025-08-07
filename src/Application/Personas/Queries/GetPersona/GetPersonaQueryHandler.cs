@@ -1,5 +1,4 @@
 using Application.Abstractions;
-using Application.Personas.Queries.Common;
 using Domain.Personas;
 using ErrorOr;
 using MediatR;

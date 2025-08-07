@@ -7,7 +7,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Dashboards.Queries.GetDashboard;
 
-internal class GetDashboardQueryHandler : IRequestHandler<GetDashboardQuery, ErrorOr<DashboardResponse>>
+internal class GetDashboardQueryHandler
+    : IRequestHandler<GetDashboardQuery, ErrorOr<DashboardResponse>>
 {
     private readonly IApplicationDbContext _context;
 

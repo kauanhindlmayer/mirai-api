@@ -5,11 +5,13 @@ using MediatR;
 
 namespace Application.Projects.Commands.UpdateProject;
 
-internal sealed class UpdateProjectCommandHandler : IRequestHandler<UpdateProjectCommand, ErrorOr<Guid>>
+internal sealed class UpdateProjectCommandHandler
+    : IRequestHandler<UpdateProjectCommand, ErrorOr<Guid>>
 {
     private readonly IOrganizationsRepository _organizationsRepository;
 
-    public UpdateProjectCommandHandler(IOrganizationsRepository organizationsRepository)
+    public UpdateProjectCommandHandler(
+        IOrganizationsRepository organizationsRepository)
     {
         _organizationsRepository = organizationsRepository;
     }

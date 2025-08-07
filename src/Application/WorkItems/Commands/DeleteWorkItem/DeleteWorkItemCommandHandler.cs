@@ -4,11 +4,13 @@ using MediatR;
 
 namespace Application.WorkItems.Commands.DeleteWorkItem;
 
-internal sealed class DeleteWorkItemCommandHandler : IRequestHandler<DeleteWorkItemCommand, ErrorOr<Success>>
+internal sealed class DeleteWorkItemCommandHandler
+    : IRequestHandler<DeleteWorkItemCommand, ErrorOr<Success>>
 {
     private readonly IWorkItemsRepository _workItemsRepository;
 
-    public DeleteWorkItemCommandHandler(IWorkItemsRepository workItemsRepository)
+    public DeleteWorkItemCommandHandler(
+        IWorkItemsRepository workItemsRepository)
     {
         _workItemsRepository = workItemsRepository;
     }

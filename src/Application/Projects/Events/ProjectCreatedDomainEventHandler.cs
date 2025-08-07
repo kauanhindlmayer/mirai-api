@@ -1,7 +1,7 @@
-using Application.Abstractions;
 using Application.Abstractions.Authentication;
-using Domain.Common;
+using Application.Abstractions.Time;
 using Domain.Projects.Events;
+using Domain.Shared;
 using Domain.Sprints;
 using Domain.Teams;
 using Domain.WikiPages;
@@ -10,7 +10,8 @@ using Microsoft.Extensions.Logging;
 
 namespace Application.Projects.Events;
 
-internal sealed class ProjectCreatedDomainEventHandler : INotificationHandler<ProjectCreatedDomainEvent>
+internal sealed class ProjectCreatedDomainEventHandler
+    : INotificationHandler<ProjectCreatedDomainEvent>
 {
     private readonly ITeamsRepository _teamsRepository;
     private readonly IWikiPagesRepository _wikiPagesRepository;

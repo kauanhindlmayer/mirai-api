@@ -1,6 +1,5 @@
 using Application.Abstractions;
 using Application.Abstractions.Authentication;
-using Application.Organizations.Queries.Common;
 using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

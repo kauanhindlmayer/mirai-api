@@ -6,7 +6,8 @@ using MediatR;
 
 namespace Application.Personas.Commands.CreatePersona;
 
-internal sealed class CreatePersonaCommandHandler : IRequestHandler<CreatePersonaCommand, ErrorOr<Guid>>
+internal sealed class CreatePersonaCommandHandler
+    : IRequestHandler<CreatePersonaCommand, ErrorOr<Guid>>
 {
     private readonly IProjectsRepository _projectsRepository;
     private readonly IBlobService _blobService;

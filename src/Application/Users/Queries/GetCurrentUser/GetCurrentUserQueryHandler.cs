@@ -7,7 +7,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Users.Queries.GetCurrentUser;
 
-internal sealed class GetCurrentUserQueryHandler : IRequestHandler<GetCurrentUserQuery, ErrorOr<UserResponse>>
+internal sealed class GetCurrentUserQueryHandler
+    : IRequestHandler<GetCurrentUserQuery, ErrorOr<UserResponse>>
 {
     private readonly IUserContext _userContext;
     private readonly IApplicationDbContext _context;

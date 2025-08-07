@@ -1,6 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
-using Application.Users.Queries.Common;
+using Application.Users.Queries.LoginUser;
 using FluentAssertions;
 using Presentation.FunctionalTests.Infrastructure;
 

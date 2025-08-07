@@ -7,7 +7,8 @@ using MediatR;
 
 namespace Application.WorkItems.Commands.CreateWorkItem;
 
-internal sealed class CreateWorkItemCommandHandler : IRequestHandler<CreateWorkItemCommand, ErrorOr<Guid>>
+internal sealed class CreateWorkItemCommandHandler
+    : IRequestHandler<CreateWorkItemCommand, ErrorOr<Guid>>
 {
     private readonly IProjectsRepository _projectsRepository;
     private readonly IWorkItemsRepository _workItemsRepository;
@@ -30,6 +31,7 @@ internal sealed class CreateWorkItemCommandHandler : IRequestHandler<CreateWorkI
         var project = await _projectsRepository.GetByIdWithTeamsAsync(
             command.ProjectId,
             cancellationToken);
+
         if (project is null)
         {
             return ProjectErrors.NotFound;

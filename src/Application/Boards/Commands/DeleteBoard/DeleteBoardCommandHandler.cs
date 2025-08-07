@@ -4,7 +4,8 @@ using MediatR;
 
 namespace Application.Boards.Commands.DeleteBoard;
 
-internal sealed class DeleteBoardCommandHandler : IRequestHandler<DeleteBoardCommand, ErrorOr<Success>>
+internal sealed class DeleteBoardCommandHandler
+    : IRequestHandler<DeleteBoardCommand, ErrorOr<Success>>
 {
     private readonly IBoardsRepository _boardsRepository;
 

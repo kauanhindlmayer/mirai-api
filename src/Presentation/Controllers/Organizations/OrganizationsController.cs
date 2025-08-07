@@ -8,7 +8,7 @@ using Application.Organizations.Commands.UpdateOrganization;
 using Application.Organizations.Queries.GetOrganization;
 using Application.Organizations.Queries.ListOrganizations;
 using Asp.Versioning;
-using Infrastructure.Services;
+using Infrastructure;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Constants;

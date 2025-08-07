@@ -5,7 +5,8 @@ using MediatR;
 
 namespace Application.Tags.Queries.ExportTags;
 
-internal sealed class ExportTagsQueryHandler : IRequestHandler<ExportTagsQuery, ErrorOr<byte[]>>
+internal sealed class ExportTagsQueryHandler
+    : IRequestHandler<ExportTagsQuery, ErrorOr<byte[]>>
 {
     private readonly ITagsRepository _tagRepository;
 
@@ -14,7 +15,9 @@ internal sealed class ExportTagsQueryHandler : IRequestHandler<ExportTagsQuery, 
         _tagRepository = tagRepository;
     }
 
-    public async Task<ErrorOr<byte[]>> Handle(ExportTagsQuery request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<byte[]>> Handle(
+        ExportTagsQuery request,
+        CancellationToken cancellationToken)
     {
         var tags = await _tagRepository.ListByProjectAsync(
             request.ProjectId,

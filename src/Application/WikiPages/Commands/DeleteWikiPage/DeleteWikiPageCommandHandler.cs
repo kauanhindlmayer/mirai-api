@@ -4,11 +4,13 @@ using MediatR;
 
 namespace Application.WikiPages.Commands.DeleteWikiPage;
 
-internal sealed class DeleteWikiPageCommandHandler : IRequestHandler<DeleteWikiPageCommand, ErrorOr<Success>>
+internal sealed class DeleteWikiPageCommandHandler
+    : IRequestHandler<DeleteWikiPageCommand, ErrorOr<Success>>
 {
     private readonly IWikiPagesRepository _wikiPagesRepository;
 
-    public DeleteWikiPageCommandHandler(IWikiPagesRepository wikiPagesRepository)
+    public DeleteWikiPageCommandHandler(
+        IWikiPagesRepository wikiPagesRepository)
     {
         _wikiPagesRepository = wikiPagesRepository;
     }
