@@ -1,6 +1,4 @@
-using Application.Common.Interfaces.Persistence;
-using Application.Common.Interfaces.Services;
-using Application.Users.Queries.Common;
+using Application.Abstractions.Authentication;
 using Application.Users.Queries.LoginUser;
 using Domain.Users;
 

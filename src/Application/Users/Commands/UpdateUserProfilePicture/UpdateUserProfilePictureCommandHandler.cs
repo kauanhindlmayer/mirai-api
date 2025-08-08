@@ -1,5 +1,5 @@
-using Application.Common.Interfaces.Persistence;
-using Application.Common.Interfaces.Services;
+using Application.Abstractions.Authentication;
+using Application.Abstractions.Storage;
 using Domain.Users;
 using ErrorOr;
 using MediatR;
@@ -30,6 +30,7 @@ internal sealed class UpdateUserProfilePictureCommandHandler
         var user = await _usersRepository.GetByIdAsync(
             _userContext.UserId,
             cancellationToken);
+
         if (user is null)
         {
             return UserErrors.NotFound;

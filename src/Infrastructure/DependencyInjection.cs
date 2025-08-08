@@ -1,32 +1,50 @@
-using Application.Common.Interfaces.Persistence;
-using Application.Common.Interfaces.Services;
+using Application.Abstractions;
+using Application.Abstractions.Authentication;
+using Application.Abstractions.Caching;
+using Application.Abstractions.Email;
+using Application.Abstractions.Jobs;
+using Application.Abstractions.Storage;
+using Application.Abstractions.Time;
 using Asp.Versioning;
 using Azure.Storage.Blobs;
+using Domain.Boards;
+using Domain.Organizations;
+using Domain.Projects;
+using Domain.Retrospectives;
+using Domain.Shared;
+using Domain.Sprints;
+using Domain.Tags;
+using Domain.Teams;
+using Domain.Users;
+using Domain.WikiPages;
+using Domain.WorkItems;
+using Infrastructure;
 using Infrastructure.Authentication;
 using Infrastructure.Authorization;
+using Infrastructure.Caching;
+using Infrastructure.Email;
 using Infrastructure.Jobs;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Repositories;
-using Infrastructure.Services;
-using Infrastructure.Services.Nlp;
-using Infrastructure.Settings;
+using Infrastructure.Storage;
+using Infrastructure.Time;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Hosting;
 using Quartz;
-using AuthenticationOptions = Infrastructure.Settings.AuthenticationOptions;
+using AuthenticationOptions = Infrastructure.Authentication.AuthenticationOptions;
 using AuthenticationService = Infrastructure.Authentication.AuthenticationService;
-using IAuthenticationService = Application.Common.Interfaces.Services.IAuthenticationService;
+using IAuthenticationService = Application.Abstractions.Authentication.IAuthenticationService;
 
 namespace Infrastructure;
 
 public static class DependencyInjection
 {
-    private const string ApiKeyHeaderName = "X-API-Key";
-
     public static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
         IConfiguration configuration)
@@ -45,6 +63,19 @@ public static class DependencyInjection
         return services;
     }
 
+    public static WebApplicationBuilder AddOllamaServices(
+        this WebApplicationBuilder builder)
+    {
+        builder
+            .AddOllamaApiClient(ServiceKeys.Chat)
+            .AddKeyedChatClient(ServiceKeys.Chat);
+        builder
+            .AddOllamaApiClient(ServiceKeys.Embedding)
+            .AddKeyedEmbeddingGenerator(ServiceKeys.Embedding);
+
+        return builder;
+    }
+
     private static IServiceCollection AddServices(
         this IServiceCollection services,
         IConfiguration configuration)
@@ -53,17 +84,7 @@ public static class DependencyInjection
         services.AddSingleton<IHtmlSanitizerService, HtmlSanitizerService>();
         services.AddTransient<LinkService>();
         services.AddTransient<IBackgroundJobScheduler, BackgroundJobScheduler>();
-
-        var nlpServiceOptions = configuration.GetSection(NlpServiceOptions.SectionName);
-        services.Configure<NlpServiceOptions>(nlpServiceOptions);
-
-        services.AddHttpClient<INlpService, NlpService>((serviceProvider, httpClient) =>
-        {
-            var options = serviceProvider.GetRequiredService<IOptions<NlpServiceOptions>>().Value;
-            httpClient.BaseAddress = new Uri(options.BaseUrl);
-            httpClient.DefaultRequestHeaders.Add(ApiKeyHeaderName, options.ApiKey);
-        });
-
+        services.AddScoped<IEmailService, EmailService>();
         services.AddSingleton<IBlobService, BlobService>();
         services.AddSingleton(_ => new BlobServiceClient(configuration["Azure:BlobStorage:ConnectionString"]!));
         services.Configure<BlobStorageOptions>(configuration.GetSection(BlobStorageOptions.SectionName));
@@ -75,7 +96,7 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("mirai-db");
+        var connectionString = configuration.GetConnectionString("postgres");
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(connectionString, npgsqlOptions => npgsqlOptions.UseVector())
                 .UseSnakeCaseNamingConvention());
@@ -178,7 +199,7 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("mirai-redis");
+        var connectionString = configuration.GetConnectionString("redis");
         services.AddStackExchangeRedisCache(options => options.Configuration = connectionString);
         services.AddSingleton<ICacheService, CacheService>();
         return services;

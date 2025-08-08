@@ -1,5 +1,4 @@
-using Application.Common.Interfaces.Persistence;
-using Application.WorkItems.Queries.Common;
+using Application.Abstractions;
 using Domain.WorkItems;
 using ErrorOr;
 using MediatR;
@@ -7,7 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.WorkItems.Queries.GetWorkItem;
 
-internal sealed class GetWorkItemQueryHandler : IRequestHandler<GetWorkItemQuery, ErrorOr<WorkItemResponse>>
+internal sealed class GetWorkItemQueryHandler
+    : IRequestHandler<GetWorkItemQuery, ErrorOr<WorkItemResponse>>
 {
     private readonly IApplicationDbContext _context;
 

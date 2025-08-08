@@ -1,4 +1,3 @@
-using Application.Common.Interfaces.Persistence;
 using Domain.Tags;
 using Domain.WorkItems;
 using ErrorOr;
@@ -6,7 +5,8 @@ using MediatR;
 
 namespace Application.WorkItems.Commands.AddTag;
 
-internal sealed class AddTagCommandHandler : IRequestHandler<AddTagCommand, ErrorOr<Success>>
+internal sealed class AddTagCommandHandler
+    : IRequestHandler<AddTagCommand, ErrorOr<Success>>
 {
     private readonly IWorkItemsRepository _workItemsRepository;
     private readonly ITagsRepository _tagsRepository;

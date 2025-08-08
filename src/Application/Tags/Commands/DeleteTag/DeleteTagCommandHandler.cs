@@ -1,4 +1,3 @@
-using Application.Common.Interfaces.Persistence;
 using Domain.Projects;
 using Domain.Tags;
 using ErrorOr;
@@ -6,7 +5,8 @@ using MediatR;
 
 namespace Application.Tags.Commands.DeleteTag;
 
-internal sealed class DeleteTagCommandHandler : IRequestHandler<DeleteTagCommand, ErrorOr<Success>>
+internal sealed class DeleteTagCommandHandler
+    : IRequestHandler<DeleteTagCommand, ErrorOr<Success>>
 {
     private readonly IProjectsRepository _projectsRepository;
     private readonly ITagsRepository _tagsRepository;

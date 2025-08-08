@@ -1,4 +1,4 @@
-using Domain.Common;
+using Domain.Shared;
 using Domain.WorkItems;
 
 namespace Domain.Boards;

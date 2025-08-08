@@ -1,4 +1,4 @@
-using Domain.Common;
+using Domain.Shared;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Repositories;

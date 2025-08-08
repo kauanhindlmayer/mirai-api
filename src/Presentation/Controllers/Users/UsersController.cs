@@ -1,14 +1,13 @@
 using System.Net.Mime;
-using Application.Common;
+using Application.Abstractions;
 using Application.Users.Commands.RegisterUser;
 using Application.Users.Commands.UpdateUserProfile;
 using Application.Users.Commands.UpdateUserProfilePicture;
-using Application.Users.Queries.Common;
 using Application.Users.Queries.GetCurrentUser;
 using Application.Users.Queries.LoginUser;
 using Asp.Versioning;
 using Domain.Users;
-using Infrastructure.Services;
+using Infrastructure;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

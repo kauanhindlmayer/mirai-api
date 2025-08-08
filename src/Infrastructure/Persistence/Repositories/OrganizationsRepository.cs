@@ -1,4 +1,3 @@
-using Application.Common.Interfaces.Persistence;
 using Domain.Organizations;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +17,16 @@ internal sealed class OrganizationsRepository : Repository<Organization>,
     {
         return await _dbContext.Organizations
             .Include(o => o.Projects)
+            .FirstOrDefaultAsync(o => o.Id == id, cancellationToken);
+    }
+
+    public async Task<Organization?> GetByIdWithProjectsAndUsersAsync(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Organizations
+            .Include(o => o.Projects)
+            .Include(o => o.Users)
             .FirstOrDefaultAsync(o => o.Id == id, cancellationToken);
     }
 

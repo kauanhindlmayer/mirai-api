@@ -1,11 +1,11 @@
-using Application.Common.Interfaces.Persistence;
 using Domain.Boards;
 using ErrorOr;
 using MediatR;
 
 namespace Application.Boards.Commands.DeleteColumn;
 
-internal sealed class DeleteColumnCommandHandler : IRequestHandler<DeleteColumnCommand, ErrorOr<Success>>
+internal sealed class DeleteColumnCommandHandler
+    : IRequestHandler<DeleteColumnCommand, ErrorOr<Success>>
 {
     private readonly IBoardsRepository _boardsRepository;
 

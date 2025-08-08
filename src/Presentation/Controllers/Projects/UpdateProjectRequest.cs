@@ -1,7 +1,7 @@
 namespace Presentation.Controllers.Projects;
 
 /// <summary>
-/// Data transfer object for updating a project.
+/// Request to update an existing project.
 /// </summary>
 /// <param name="Name">The name of the project.</param>
 /// <param name="Description">The description of the project.</param>

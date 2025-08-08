@@ -1,11 +1,11 @@
-using Application.Common.Interfaces.Persistence;
 using Domain.Boards;
 using ErrorOr;
 using MediatR;
 
 namespace Application.Boards.Commands.MoveCard;
 
-internal sealed class MoveCardCommandHandler : IRequestHandler<MoveCardCommand, ErrorOr<Success>>
+internal sealed class MoveCardCommandHandler
+    : IRequestHandler<MoveCardCommand, ErrorOr<Success>>
 {
     private readonly IBoardsRepository _boardsRepository;
 

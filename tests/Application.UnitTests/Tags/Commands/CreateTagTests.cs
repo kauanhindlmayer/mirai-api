@@ -1,4 +1,3 @@
-using Application.Common.Interfaces.Persistence;
 using Application.Tags.Commands.CreateTag;
 using Domain.Projects;
 using Domain.Tags;

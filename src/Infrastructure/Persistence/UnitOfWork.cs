@@ -1,4 +1,4 @@
-using Application.Common.Interfaces.Persistence;
+using Domain.Shared;
 
 namespace Infrastructure.Persistence;
 

@@ -1,7 +1,7 @@
 namespace Presentation.Controllers.Tags;
 
 /// <summary>
-/// Data transfer object for creating a tag.
+/// Request to create a new tag.
 /// </summary>
 /// <param name="Name">The name of the tag.</param>
 /// <param name="Description">The description of the tag.</param>

@@ -1,5 +1,4 @@
-using Application.Common.Interfaces.Persistence;
-using Application.TagImportJobs.Queries.Common;
+using Application.Abstractions;
 using Domain.TagImportJobs;
 using ErrorOr;
 using MediatR;

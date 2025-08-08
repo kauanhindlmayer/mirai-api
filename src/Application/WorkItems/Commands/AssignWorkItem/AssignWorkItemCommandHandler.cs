@@ -1,11 +1,12 @@
-using Application.Common.Interfaces.Persistence;
+using Domain.Users;
 using Domain.WorkItems;
 using ErrorOr;
 using MediatR;
 
 namespace Application.WorkItems.Commands.AssignWorkItem;
 
-internal sealed class AssignWorkItemCommandHandler : IRequestHandler<AssignWorkItemCommand, ErrorOr<Success>>
+internal sealed class AssignWorkItemCommandHandler
+    : IRequestHandler<AssignWorkItemCommand, ErrorOr<Success>>
 {
     private readonly IWorkItemsRepository _workItemsRepository;
     private readonly IUsersRepository _usersRepository;

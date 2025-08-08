@@ -1,5 +1,4 @@
-using Application.Common.Interfaces.Persistence;
-using Application.Common.Interfaces.Services;
+using Application.Abstractions.Storage;
 using Domain.Personas;
 using Domain.Projects;
 using ErrorOr;
@@ -7,7 +6,8 @@ using MediatR;
 
 namespace Application.Personas.Commands.CreatePersona;
 
-internal sealed class CreatePersonaCommandHandler : IRequestHandler<CreatePersonaCommand, ErrorOr<Guid>>
+internal sealed class CreatePersonaCommandHandler
+    : IRequestHandler<CreatePersonaCommand, ErrorOr<Guid>>
 {
     private readonly IProjectsRepository _projectsRepository;
     private readonly IBlobService _blobService;
@@ -27,6 +27,7 @@ internal sealed class CreatePersonaCommandHandler : IRequestHandler<CreatePerson
         var project = await _projectsRepository.GetByIdWithPersonasAsync(
             command.ProjectId,
             cancellationToken);
+
         if (project is null)
         {
             return ProjectErrors.NotFound;

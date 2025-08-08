@@ -112,8 +112,8 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnName("created_at_utc");
 
                     b.Property<string>("DefinitionOfDone")
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)")
                         .HasColumnName("definition_of_done");
 
                     b.Property<string>("Name")
@@ -513,8 +513,8 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("name");
 
                     b.Property<Guid>("ProjectId")
@@ -918,23 +918,42 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("work_item_comments", (string)null);
                 });
 
-            modelBuilder.Entity("OrganizationUser", b =>
+            modelBuilder.Entity("OrganizationUsers", b =>
                 {
-                    b.Property<Guid>("MembersId")
+                    b.Property<Guid>("OrganizationId")
                         .HasColumnType("uuid")
-                        .HasColumnName("members_id");
+                        .HasColumnName("organization_id");
 
-                    b.Property<Guid>("OrganizationsId")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uuid")
-                        .HasColumnName("organizations_id");
+                        .HasColumnName("user_id");
 
-                    b.HasKey("MembersId", "OrganizationsId")
-                        .HasName("pk_organization_user");
+                    b.HasKey("OrganizationId", "UserId")
+                        .HasName("pk_organization_users");
 
-                    b.HasIndex("OrganizationsId")
-                        .HasDatabaseName("ix_organization_user_organizations_id");
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_organization_users_user_id");
 
-                    b.ToTable("organization_user", (string)null);
+                    b.ToTable("organization_users", (string)null);
+                });
+
+            modelBuilder.Entity("ProjectUsers", b =>
+                {
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("project_id");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("ProjectId", "UserId")
+                        .HasName("pk_project_users");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_project_users_user_id");
+
+                    b.ToTable("project_users", (string)null);
                 });
 
             modelBuilder.Entity("TagWorkItem", b =>
@@ -1129,7 +1148,7 @@ namespace Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .HasConstraintName("fk_wiki_pages_wiki_pages_parent_wiki_page_id");
 
-                    b.HasOne("Domain.Projects.Project", null)
+                    b.HasOne("Domain.Projects.Project", "Project")
                         .WithMany("WikiPages")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1139,6 +1158,8 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Author");
 
                     b.Navigation("ParentWikiPage");
+
+                    b.Navigation("Project");
                 });
 
             modelBuilder.Entity("Domain.WikiPages.WikiPageComment", b =>
@@ -1184,6 +1205,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasOne("Domain.Users.User", "Assignee")
                         .WithMany("WorkItems")
                         .HasForeignKey("AssigneeId")
+                        .OnDelete(DeleteBehavior.SetNull)
                         .HasConstraintName("fk_work_items_users_assignee_id");
 
                     b.HasOne("Domain.WorkItems.WorkItem", "ParentWorkItem")
@@ -1236,21 +1258,38 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("WorkItem");
                 });
 
-            modelBuilder.Entity("OrganizationUser", b =>
+            modelBuilder.Entity("OrganizationUsers", b =>
                 {
-                    b.HasOne("Domain.Users.User", null)
-                        .WithMany()
-                        .HasForeignKey("MembersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_organization_user_users_members_id");
-
                     b.HasOne("Domain.Organizations.Organization", null)
                         .WithMany()
-                        .HasForeignKey("OrganizationsId")
+                        .HasForeignKey("OrganizationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_organization_user_organizations_organizations_id");
+                        .HasConstraintName("fk_organization_users_organizations_organization_id");
+
+                    b.HasOne("Domain.Users.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_organization_users_users_user_id");
+                });
+
+            modelBuilder.Entity("ProjectUsers", b =>
+                {
+                    b.HasOne("Domain.Projects.Project", null)
+                        .WithMany()
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_project_users_projects_project_id");
+
+                    b.HasOne("Domain.Users.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_project_users_users_user_id");
                 });
 
             modelBuilder.Entity("TagWorkItem", b =>

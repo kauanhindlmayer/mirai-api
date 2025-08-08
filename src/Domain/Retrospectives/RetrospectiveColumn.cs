@@ -1,4 +1,4 @@
-using Domain.Common;
+using Domain.Shared;
 using ErrorOr;
 
 namespace Domain.Retrospectives;

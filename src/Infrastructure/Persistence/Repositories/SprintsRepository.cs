@@ -1,4 +1,3 @@
-using Application.Common.Interfaces.Persistence;
 using Domain.Sprints;
 
 namespace Infrastructure.Persistence.Repositories;

@@ -1,11 +1,11 @@
-using Application.Common.Interfaces.Persistence;
 using Domain.Boards;
 using ErrorOr;
 using MediatR;
 
 namespace Application.Boards.Commands.CreateColumn;
 
-internal sealed class CreateColumnCommandHandler : IRequestHandler<CreateColumnCommand, ErrorOr<Guid>>
+internal sealed class CreateColumnCommandHandler
+    : IRequestHandler<CreateColumnCommand, ErrorOr<Guid>>
 {
     private readonly IBoardsRepository _boardsRepository;
 

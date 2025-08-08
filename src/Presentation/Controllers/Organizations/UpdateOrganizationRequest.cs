@@ -1,7 +1,7 @@
 namespace Presentation.Controllers.Organizations;
 
 /// <summary>
-/// Data transfer object for updating an organization.
+/// Request to update an existing organization.
 /// </summary>
 /// <param name="Name">The name of the organization.</param>
 /// <param name="Description">The description of the organization.</param>

@@ -1,12 +1,12 @@
-using Application.Common.Interfaces.Persistence;
-using Application.Common.Interfaces.Services;
+using Application.Abstractions.Authentication;
 using Domain.Users;
 using ErrorOr;
 using MediatR;
 
 namespace Application.Users.Commands.RegisterUser;
 
-internal sealed class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, ErrorOr<Guid>>
+internal sealed class RegisterUserCommandHandler
+    : IRequestHandler<RegisterUserCommand, ErrorOr<Guid>>
 {
     private readonly IUsersRepository _usersRepository;
     private readonly IAuthenticationService _authenticationService;

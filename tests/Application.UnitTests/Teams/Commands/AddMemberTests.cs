@@ -1,4 +1,3 @@
-using Application.Common.Interfaces.Persistence;
 using Application.Teams.Commands.AddMember;
 using Domain.Teams;
 using Domain.Users;

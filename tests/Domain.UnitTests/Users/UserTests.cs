@@ -2,7 +2,7 @@ using Domain.UnitTests.Infrastructure;
 
 namespace Domain.UnitTests.Users;
 
-public class UsersTests : BaseTest
+public class UserTests : BaseTest
 {
     [Fact]
     public void CreateUser_ShouldSetProperties()

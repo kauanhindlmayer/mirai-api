@@ -1,5 +1,4 @@
-using Application.Boards.Queries.Common;
-using Application.Common.Interfaces.Persistence;
+using Application.Abstractions;
 using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

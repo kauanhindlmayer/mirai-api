@@ -1,15 +1,16 @@
-using Application.Common.Interfaces.Persistence;
 using Domain.WorkItems;
 using ErrorOr;
 using MediatR;
 
 namespace Application.WorkItems.Commands.RemoveTag;
 
-internal sealed class RemoveTagCommandHandler : IRequestHandler<RemoveTagCommand, ErrorOr<Success>>
+internal sealed class RemoveTagCommandHandler
+    : IRequestHandler<RemoveTagCommand, ErrorOr<Success>>
 {
     private readonly IWorkItemsRepository _workItemsRepository;
 
-    public RemoveTagCommandHandler(IWorkItemsRepository workItemsRepository)
+    public RemoveTagCommandHandler(
+        IWorkItemsRepository workItemsRepository)
     {
         _workItemsRepository = workItemsRepository;
     }

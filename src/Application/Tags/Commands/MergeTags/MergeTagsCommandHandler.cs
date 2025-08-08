@@ -1,11 +1,12 @@
-using Application.Common.Interfaces.Persistence;
 using Domain.Tags;
+using Domain.WorkItems;
 using ErrorOr;
 using MediatR;
 
 namespace Application.Tags.Commands.MergeTags;
 
-internal sealed class MergeTagsCommandHandler : IRequestHandler<MergeTagsCommand, ErrorOr<Success>>
+internal sealed class MergeTagsCommandHandler
+    : IRequestHandler<MergeTagsCommand, ErrorOr<Success>>
 {
     private readonly ITagsRepository _tagRepository;
     private readonly IWorkItemsRepository _workItemRepository;
@@ -30,6 +31,7 @@ internal sealed class MergeTagsCommandHandler : IRequestHandler<MergeTagsCommand
         var targetTag = await _tagRepository.GetByIdAsync(
             command.TargetTagId,
             cancellationToken);
+
         if (targetTag is null)
         {
             return TagErrors.TargetTagNotFound;

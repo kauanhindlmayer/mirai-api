@@ -1,4 +1,3 @@
-using Application.Common.Interfaces.Persistence;
 using Domain.Organizations;
 using Domain.Projects;
 using ErrorOr;
@@ -6,11 +5,13 @@ using MediatR;
 
 namespace Application.Projects.Commands.CreateProject;
 
-internal sealed class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand, ErrorOr<Guid>>
+internal sealed class CreateProjectCommandHandler
+    : IRequestHandler<CreateProjectCommand, ErrorOr<Guid>>
 {
     private readonly IOrganizationsRepository _organizationsRepository;
 
-    public CreateProjectCommandHandler(IOrganizationsRepository organizationsRepository)
+    public CreateProjectCommandHandler(
+        IOrganizationsRepository organizationsRepository)
     {
         _organizationsRepository = organizationsRepository;
     }

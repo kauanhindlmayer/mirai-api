@@ -1,4 +1,3 @@
-using Application.Common.Interfaces.Persistence;
 using Application.Organizations.Commands.UpdateOrganization;
 using Domain.Organizations;
 

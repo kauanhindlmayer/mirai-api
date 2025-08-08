@@ -1,4 +1,3 @@
-using Application.Users.Queries.Common;
 using ErrorOr;
 using MediatR;
 

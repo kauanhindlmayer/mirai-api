@@ -1,5 +1,7 @@
 using System.Net.Mime;
+using Application.Projects.Commands.AddUserToProject;
 using Application.Projects.Commands.CreateProject;
+using Application.Projects.Commands.RemoveUserFromProject;
 using Application.Projects.Commands.UpdateProject;
 using Application.Projects.Queries.GetProject;
 using Application.Projects.Queries.ListProjects;
@@ -115,6 +117,56 @@ public sealed class ProjectsController : ApiController
 
         return result.Match(
             _ => Ok(projectId),
+            Problem);
+    }
+
+    /// <summary>
+    /// Add a user to a project.
+    /// </summary>
+    /// <param name="projectId">The project's unique identifier.</param>
+    [HttpPost("{projectId:guid}/users")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<ActionResult> AddUserToProject(
+        Guid projectId,
+        AddUserToProjectRequest request,
+        CancellationToken cancellationToken)
+    {
+        var command = new AddUserToProjectCommand(
+            projectId,
+            request.UserId);
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        return result.Match(
+            _ => NoContent(),
+            Problem);
+    }
+
+    /// <summary>
+    /// Remove a user from a project.
+    /// </summary>
+    /// <param name="projectId">The project's unique identifier.</param>
+    /// <param name="userId">The user's unique identifier.</param>
+    [HttpDelete("{projectId:guid}/users/{userId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<ActionResult> RemoveUserFromProject(
+        Guid projectId,
+        Guid userId,
+        CancellationToken cancellationToken)
+    {
+        var command = new RemoveUserFromProjectCommand(
+            projectId,
+            userId);
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        return result.Match(
+            _ => NoContent(),
             Problem);
     }
 }

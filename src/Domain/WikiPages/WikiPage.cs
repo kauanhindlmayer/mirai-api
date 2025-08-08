@@ -1,4 +1,5 @@
-using Domain.Common;
+using Domain.Projects;
+using Domain.Shared;
 using Domain.Users;
 using ErrorOr;
 
@@ -6,12 +7,13 @@ namespace Domain.WikiPages;
 
 public sealed class WikiPage : AggregateRoot
 {
-    public Guid ProjectId { get; private set; }
     public string Title { get; private set; } = string.Empty;
     public string Content { get; private set; } = string.Empty;
     public int Position { get; private set; }
     public Guid AuthorId { get; private set; }
     public User Author { get; private set; } = null!;
+    public Guid ProjectId { get; private set; }
+    public Project Project { get; private set; } = null!;
     public Guid? ParentWikiPageId { get; private set; }
     public WikiPage? ParentWikiPage { get; private set; }
     public List<WikiPage> SubWikiPages { get; private set; } = [];

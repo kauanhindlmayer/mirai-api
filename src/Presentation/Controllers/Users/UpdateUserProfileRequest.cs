@@ -1,7 +1,7 @@
 namespace Presentation.Controllers.Users;
 
 /// <summary>
-/// Data transfer object for updating a user's profile.
+/// Request to update a user's profile.
 /// </summary>
 /// <param name="FirstName">The first name of the user.</param>
 /// <param name="LastName">The last name of the user.</param>

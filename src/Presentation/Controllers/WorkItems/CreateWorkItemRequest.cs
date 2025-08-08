@@ -3,7 +3,7 @@ using Domain.WorkItems.Enums;
 namespace Presentation.Controllers.WorkItems;
 
 /// <summary>
-/// Data transfer object for creating a work item.
+/// Request to create a new work item.
 /// </summary>
 /// <param name="Type">The type of the work item.</param>
 /// <param name="Title">The title of the work item.</param>

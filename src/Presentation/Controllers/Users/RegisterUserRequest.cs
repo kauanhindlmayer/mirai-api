@@ -1,7 +1,7 @@
 namespace Presentation.Controllers.Users;
 
 /// <summary>
-/// Data transfer object for registering a user.
+/// Request to register a new user.
 /// </summary>
 /// <param name="Email">The email of the user.</param>
 /// <param name="Password">The password of the user.</param>

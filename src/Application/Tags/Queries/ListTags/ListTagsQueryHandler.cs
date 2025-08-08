@@ -1,9 +1,7 @@
-using Application.Common;
-using Application.Common.Interfaces.Persistence;
-using Application.Common.Mappings;
-using Application.Common.Sorting;
-using Application.Tags.Queries.Common;
-using Domain.Common;
+using Application.Abstractions;
+using Application.Abstractions.Mappings;
+using Application.Abstractions.Sorting;
+using Domain.Shared;
 using Domain.Tags;
 using ErrorOr;
 using MediatR;

@@ -1,9 +1,10 @@
-using Application.Common.Interfaces.Persistence;
-using Application.Common.Interfaces.Services;
-using Application.WorkItems.Queries.Common;
+using Application.Abstractions;
+using Domain.Shared;
 using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.AI;
+using Microsoft.Extensions.DependencyInjection;
 using Pgvector;
 
 namespace Application.WorkItems.Queries.SearchWorkItems;
@@ -12,15 +13,15 @@ internal sealed class SearchWorkItemsQueryHandler
     : IRequestHandler<SearchWorkItemsQuery, ErrorOr<IReadOnlyList<WorkItemResponseWithDistance>>>
 {
     private const double MaxDistance = 0.6;
-    private const int MaxItems = 4;
-    private readonly INlpService _nlpService;
+    private const int MaxItems = 10;
+    private readonly IEmbeddingGenerator<string, Embedding<float>> _embeddingGenerator;
     private readonly IApplicationDbContext _context;
 
     public SearchWorkItemsQueryHandler(
-        INlpService nlpService,
+        [FromKeyedServices(ServiceKeys.Embedding)] IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator,
         IApplicationDbContext context)
     {
-        _nlpService = nlpService;
+        _embeddingGenerator = embeddingGenerator;
         _context = context;
     }
 
@@ -28,16 +29,11 @@ internal sealed class SearchWorkItemsQueryHandler
         SearchWorkItemsQuery query,
         CancellationToken cancellationToken)
     {
-        var result = await _nlpService.GenerateEmbeddingVectorAsync(
+        var embedding = await _embeddingGenerator.GenerateAsync(
             query.SearchTerm,
-            cancellationToken);
+            cancellationToken: cancellationToken);
 
-        if (result.IsError)
-        {
-            return result.Errors;
-        }
-
-        var searchTermVector = new Vector(result.Value);
+        var searchTermVector = new Vector(embedding.Vector.ToArray());
 
         var workItems = await _context.WorkItems
             .AsNoTracking()

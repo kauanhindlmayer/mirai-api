@@ -1,11 +1,12 @@
-using Application.Common.Interfaces.Persistence;
 using Domain.Teams;
+using Domain.Users;
 using ErrorOr;
 using MediatR;
 
 namespace Application.Teams.Commands.AddMember;
 
-internal sealed class AddMemberCommandHandler : IRequestHandler<AddMemberCommand, ErrorOr<Success>>
+internal sealed class AddMemberCommandHandler
+    : IRequestHandler<AddMemberCommand, ErrorOr<Success>>
 {
     private readonly ITeamsRepository _teamsRepository;
     private readonly IUsersRepository _usersRepository;

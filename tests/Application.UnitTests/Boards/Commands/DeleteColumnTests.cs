@@ -1,5 +1,4 @@
 using Application.Boards.Commands.DeleteColumn;
-using Application.Common.Interfaces.Persistence;
 using Domain.Boards;
 using Domain.WorkItems;
 using Domain.WorkItems.Enums;

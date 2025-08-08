@@ -1,4 +1,3 @@
-using Application.Common.Interfaces.Persistence;
 using Application.WorkItems.Commands.AssignWorkItem;
 using Domain.Users;
 using Domain.WorkItems;

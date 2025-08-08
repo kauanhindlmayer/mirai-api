@@ -3,7 +3,7 @@ using Domain.Retrospectives.Enums;
 namespace Presentation.Controllers.Retrospectives;
 
 /// <summary>
-/// Data transfer object for creating a retrospective board.
+/// Request to create a new retrospective.
 /// </summary>
 /// <param name="Title">The title of the retrospective.</param>
 /// <param name="MaxVotesPerUser">The maximum number of votes per user.</param>

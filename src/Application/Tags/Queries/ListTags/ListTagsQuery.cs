@@ -1,4 +1,4 @@
-using Application.Common;
+using Application.Abstractions;
 using ErrorOr;
 using MediatR;
 

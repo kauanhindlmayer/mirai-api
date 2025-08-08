@@ -1,4 +1,4 @@
-using Application.WorkItems.Queries.Common;
+using Application.WorkItems.Queries.SearchWorkItems;
 
 namespace Application.WisdomExtractor.Queries.ExtractWisdom;
 

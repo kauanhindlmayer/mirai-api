@@ -3,6 +3,7 @@
   <ItemGroup>
     <PackageReference Include="FluentValidation" />
     <PackageReference Include="FluentValidation.AspNetCore" />
+    <PackageReference Include="Microsoft.Extensions.AI.Abstractions" />
     <PackageReference Include="Serilog" />
     <PackageReference Include="System.Linq.Dynamic.Core" />
   </ItemGroup>

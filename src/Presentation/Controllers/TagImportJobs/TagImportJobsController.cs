@@ -1,10 +1,10 @@
 using System.Net.Mime;
-using Application.Common;
+using Application.Abstractions;
 using Application.TagImportJobs.Commands.CreateTagImportJob;
 using Application.TagImportJobs.Queries.GetTagImportJob;
 using Application.TagImportJobs.Queries.ListTagImportJobs;
 using Asp.Versioning;
-using Infrastructure.Services;
+using Infrastructure;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Constants;

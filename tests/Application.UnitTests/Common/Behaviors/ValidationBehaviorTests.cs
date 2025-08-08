@@ -1,4 +1,4 @@
-using Application.Common.Behaviors;
+using Application.Abstractions.Behaviors;
 using Application.Organizations.Commands.CreateOrganization;
 using Domain.Organizations;
 using FluentValidation;

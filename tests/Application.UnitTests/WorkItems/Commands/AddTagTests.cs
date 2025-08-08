@@ -1,4 +1,3 @@
-using Application.Common.Interfaces.Persistence;
 using Application.WorkItems.Commands.AddTag;
 using Domain.Tags;
 using Domain.WorkItems;
@@ -9,6 +8,7 @@ namespace Application.UnitTests.WorkItems.Commands;
 public class AddTagTests
 {
     private static readonly AddTagCommand Command = new(
+        Guid.NewGuid(),
         Guid.NewGuid(),
         "Tag Name");
 

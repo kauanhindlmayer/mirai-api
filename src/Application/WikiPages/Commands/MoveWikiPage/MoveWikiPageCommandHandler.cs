@@ -1,15 +1,16 @@
-using Application.Common.Interfaces.Persistence;
 using Domain.Projects;
 using ErrorOr;
 using MediatR;
 
 namespace Application.WikiPages.Commands.MoveWikiPage;
 
-internal sealed class MoveWikiPageCommandHandler : IRequestHandler<MoveWikiPageCommand, ErrorOr<Success>>
+internal sealed class MoveWikiPageCommandHandler
+    : IRequestHandler<MoveWikiPageCommand, ErrorOr<Success>>
 {
     private readonly IProjectsRepository _projectsRepository;
 
-    public MoveWikiPageCommandHandler(IProjectsRepository projectsRepository)
+    public MoveWikiPageCommandHandler(
+        IProjectsRepository projectsRepository)
     {
         _projectsRepository = projectsRepository;
     }

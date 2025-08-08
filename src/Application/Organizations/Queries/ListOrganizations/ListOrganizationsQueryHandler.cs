@@ -1,5 +1,5 @@
-using Application.Common.Interfaces.Persistence;
-using Application.Organizations.Queries.Common;
+using Application.Abstractions;
+using Application.Abstractions.Authentication;
 using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -10,10 +10,14 @@ internal sealed class ListOrganizationsQueryHandler
     : IRequestHandler<ListOrganizationsQuery, ErrorOr<IReadOnlyList<OrganizationBriefResponse>>>
 {
     private readonly IApplicationDbContext _context;
+    private readonly IUserContext _userContext;
 
-    public ListOrganizationsQueryHandler(IApplicationDbContext context)
+    public ListOrganizationsQueryHandler(
+        IApplicationDbContext context,
+        IUserContext userContext)
     {
         _context = context;
+        _userContext = userContext;
     }
 
     public async Task<ErrorOr<IReadOnlyList<OrganizationBriefResponse>>> Handle(
@@ -22,6 +26,7 @@ internal sealed class ListOrganizationsQueryHandler
     {
         var organizations = await _context.Organizations
             .AsNoTracking()
+            .Where(o => o.Users.Any(u => u.Id == _userContext.UserId))
             .OrderBy(o => o.Name)
             .Select(OrganizationQueries.ProjectToBriefDto())
             .ToListAsync(cancellationToken);

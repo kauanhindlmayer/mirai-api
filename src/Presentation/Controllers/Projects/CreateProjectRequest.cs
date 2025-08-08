@@ -1,7 +1,7 @@
 namespace Presentation.Controllers.Projects;
 
 /// <summary>
-/// Data transfer object for creating a project.
+/// Request to create a new project.
 /// </summary>
 /// <param name="Name">The name of the project.</param>
 /// <param name="Description">The description of the project.</param>

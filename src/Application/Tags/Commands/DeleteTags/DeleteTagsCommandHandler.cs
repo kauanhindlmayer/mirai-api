@@ -1,4 +1,3 @@
-using Application.Common.Interfaces.Persistence;
 using Domain.Projects;
 using Domain.Tags;
 using ErrorOr;
@@ -6,7 +5,8 @@ using MediatR;
 
 namespace Application.Tags.Commands.DeleteTags;
 
-internal sealed class DeleteTagsCommandHandler : IRequestHandler<DeleteTagsCommand, ErrorOr<Success>>
+internal sealed class DeleteTagsCommandHandler
+    : IRequestHandler<DeleteTagsCommand, ErrorOr<Success>>
 {
     private readonly IProjectsRepository _projectsRepository;
     private readonly ITagsRepository _tagsRepository;
@@ -26,6 +26,7 @@ internal sealed class DeleteTagsCommandHandler : IRequestHandler<DeleteTagsComma
         var project = await _projectsRepository.GetByIdWithTagsAsync(
             command.ProjectId,
             cancellationToken);
+
         if (project is null)
         {
             return ProjectErrors.NotFound;
@@ -34,6 +35,7 @@ internal sealed class DeleteTagsCommandHandler : IRequestHandler<DeleteTagsComma
         var tags = project.Tags
             .Where(tag => command.TagIds.Contains(tag.Id))
             .ToList();
+
         if (tags.Count == 0)
         {
             return TagErrors.NoTagsFound;

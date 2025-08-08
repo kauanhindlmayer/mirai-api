@@ -1,5 +1,4 @@
-using Application.Common;
-using Application.WorkItems.Queries.Common;
+using Application.Abstractions;
 using Domain.WorkItems.Enums;
 using ErrorOr;
 using MediatR;

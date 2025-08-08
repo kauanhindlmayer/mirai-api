@@ -1,4 +1,3 @@
-using Application.Common.Interfaces.Persistence;
 using Domain.Projects;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +8,26 @@ internal sealed class ProjectsRepository : Repository<Project>, IProjectsReposit
     public ProjectsRepository(ApplicationDbContext dbContext)
         : base(dbContext)
     {
+    }
+
+    public Task<Project?> GetByIdWithOrganizationAndUsersAsync(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        return _dbContext.Projects
+            .Include(p => p.Organization)
+            .Include(p => p.Users)
+            .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
+    }
+
+    public Task<Project?> GetByIdWithUsersAndTeamsAsync(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        return _dbContext.Projects
+            .Include(p => p.Users)
+            .Include(p => p.Teams)
+            .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
     }
 
     public async Task<Project?> GetByIdWithWorkItemsAsync(

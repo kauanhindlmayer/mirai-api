@@ -10,7 +10,7 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
 {
     private readonly PostgreSqlContainer _dbContainer = new PostgreSqlBuilder()
         .WithImage("ankane/pgvector:latest")
-        .WithDatabase("mirai-db")
+        .WithDatabase("postgres")
         .WithUsername("postgres")
         .WithPassword("postgres")
         .Build();
@@ -42,8 +42,8 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder.UseSetting("ConnectionStrings:mirai-db", _dbContainer.GetConnectionString());
-        builder.UseSetting("ConnectionStrings:mirai-redis", _redisContainer.GetConnectionString());
+        builder.UseSetting("ConnectionStrings:postgres", _dbContainer.GetConnectionString());
+        builder.UseSetting("ConnectionStrings:redis", _redisContainer.GetConnectionString());
 
         var keycloakAddress = _keycloakContainer.GetBaseAddress();
         builder.UseSetting("Keycloak:AdminUrl", $"{keycloakAddress}admin/realms/mirai/");

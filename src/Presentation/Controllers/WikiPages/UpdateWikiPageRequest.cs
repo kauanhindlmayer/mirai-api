@@ -1,7 +1,7 @@
 namespace Presentation.Controllers.WikiPages;
 
 /// <summary>
-/// Data transfer object for updating a wiki page.
+/// Request to update a wiki page.
 /// </summary>
 /// <param name="Title">The title of the wiki page.</param>
 /// <param name="Content">The content of the wiki page.</param>

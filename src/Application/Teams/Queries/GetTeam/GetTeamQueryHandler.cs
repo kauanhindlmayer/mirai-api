@@ -1,5 +1,4 @@
-using Application.Common.Interfaces.Persistence;
-using Application.Teams.Queries.Common;
+using Application.Abstractions;
 using Domain.Teams;
 using ErrorOr;
 using MediatR;
@@ -7,7 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Teams.Queries.GetTeam;
 
-internal sealed class GetTeamQueryHandler : IRequestHandler<GetTeamQuery, ErrorOr<TeamResponse>>
+internal sealed class GetTeamQueryHandler
+    : IRequestHandler<GetTeamQuery, ErrorOr<TeamResponse>>
 {
     private readonly IApplicationDbContext _context;
 

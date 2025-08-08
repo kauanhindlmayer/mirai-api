@@ -1,7 +1,7 @@
 using Domain.Boards;
-using Domain.Common;
 using Domain.Projects;
 using Domain.Retrospectives;
+using Domain.Shared;
 using Domain.Sprints;
 using Domain.Teams.Events;
 using Domain.Users;
@@ -87,5 +87,10 @@ public sealed class Team : AggregateRoot
 
         Board = board;
         return Result.Success;
+    }
+
+    public void SetBoard(Board board)
+    {
+        Board = board;
     }
 }

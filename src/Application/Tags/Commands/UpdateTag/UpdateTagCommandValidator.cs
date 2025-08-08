@@ -1,4 +1,3 @@
-using Application.Tags.Commands.Common;
 using FluentValidation;
 
 namespace Application.Tags.Commands.UpdateTag;

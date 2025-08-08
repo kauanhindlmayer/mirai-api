@@ -1,4 +1,3 @@
-using Application.Common.Interfaces.Persistence;
 using Application.WikiPages.Commands.DeleteWikiPage;
 using Domain.Projects;
 using Domain.WikiPages;
@@ -46,11 +45,13 @@ public class DeleteWikiPageTests
             Guid.NewGuid(),
             parentWikiPage.Id);
         parentWikiPage.InsertSubWikiPage(wikiPage.SubWikiPages.Count, wikiPage);
-        _wikiPagesRepository.GetByIdAsync(Command.WikiPageId, TestContext.Current.CancellationToken)
+        _wikiPagesRepository.GetByIdWithSubWikiPagesAsync(parentWikiPage.Id, TestContext.Current.CancellationToken)
             .Returns(parentWikiPage);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command with { WikiPageId = parentWikiPage.Id },
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -62,7 +63,9 @@ public class DeleteWikiPageTests
     {
         // Arrange
         var wikiPage = new WikiPage(Guid.NewGuid(), "Title", "Content", Guid.NewGuid());
-        _wikiPagesRepository.GetByIdAsync(Command.WikiPageId, TestContext.Current.CancellationToken)
+        _wikiPagesRepository.GetByIdWithSubWikiPagesAsync(
+            Command.WikiPageId,
+            TestContext.Current.CancellationToken)
             .Returns(wikiPage);
 
         // Act

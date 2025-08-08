@@ -1,4 +1,4 @@
-using Application.Common.Interfaces.Persistence;
+using Application.Abstractions;
 using Domain.Backlogs;
 using Domain.WorkItems;
 using ErrorOr;

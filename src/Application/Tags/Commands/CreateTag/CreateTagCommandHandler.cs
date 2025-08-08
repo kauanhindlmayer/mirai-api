@@ -1,4 +1,3 @@
-using Application.Common.Interfaces.Persistence;
 using Domain.Projects;
 using Domain.Tags;
 using ErrorOr;
@@ -6,7 +5,8 @@ using MediatR;
 
 namespace Application.Tags.Commands.CreateTag;
 
-internal sealed class CreateTagCommandHandler : IRequestHandler<CreateTagCommand, ErrorOr<Guid>>
+internal sealed class CreateTagCommandHandler
+    : IRequestHandler<CreateTagCommand, ErrorOr<Guid>>
 {
     private readonly IProjectsRepository _projectsRepository;
 

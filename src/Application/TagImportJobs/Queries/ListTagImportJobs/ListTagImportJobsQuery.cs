@@ -1,4 +1,4 @@
-using Application.Common;
+using Application.Abstractions;
 using Application.TagImportJobs.Queries.GetTagImportJob;
 using ErrorOr;
 using MediatR;

@@ -1,12 +1,12 @@
-using Application.Common.Interfaces.Persistence;
-using Application.Common.Interfaces.Services;
+using Application.Abstractions.Authentication;
 using Domain.WorkItems;
 using ErrorOr;
 using MediatR;
 
 namespace Application.WorkItems.Commands.AddComment;
 
-internal sealed class AddCommentCommandHandler : IRequestHandler<AddCommentCommand, ErrorOr<Guid>>
+internal sealed class AddCommentCommandHandler
+    : IRequestHandler<AddCommentCommand, ErrorOr<Guid>>
 {
     private readonly IWorkItemsRepository _workItemsRepository;
     private readonly IUserContext _userContext;

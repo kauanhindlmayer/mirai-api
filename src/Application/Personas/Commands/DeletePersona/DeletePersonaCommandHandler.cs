@@ -1,4 +1,3 @@
-using Application.Common.Interfaces.Persistence;
 using Domain.Projects;
 using ErrorOr;
 using MediatR;
@@ -22,6 +21,7 @@ internal sealed class DeletePersonaCommandHandler
         var project = await _projectsRepository.GetByIdWithPersonasAsync(
             command.ProjectId,
             cancellationToken);
+
         if (project is null)
         {
             return ProjectErrors.NotFound;

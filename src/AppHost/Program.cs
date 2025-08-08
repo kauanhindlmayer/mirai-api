@@ -1,28 +1,33 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-var postgres = builder.AddPostgres("mirai-db")
+var postgres = builder.AddPostgres("postgres")
     .WithImage("pgvector/pgvector")
     .WithImageTag("0.8.0-pg17")
     .WithDataVolume()
     .WithPgAdmin();
 
-var redis = builder.AddRedis("mirai-redis");
+var redis = builder.AddRedis("redis");
 
-var keycloak = builder.AddKeycloak("mirai-idp", port: 8080)
+var keycloak = builder.AddKeycloak("keycloak", port: 8080)
     .WithImageTag("26.2")
     .WithDataVolume()
     .WithRealmImport("../../.files/mirai-realm-export.json");
+
+var ollama = builder.AddOllama("ollama")
+    .WithDataVolume()
+    .WithContainerRuntimeArgs("--gpus=all");
+
+var llama = ollama.AddModel("chat", "llama3.2:1b");
+var minilm = ollama.AddModel("embedding", "all-minilm");
 
 var miraiApi = builder.AddProject<Projects.Presentation>("mirai-api")
     .WithReference(postgres)
     .WaitFor(postgres)
     .WithReference(redis)
     .WithReference(keycloak)
+    .WithReference(llama)
+    .WithReference(minilm)
     .WithExternalHttpEndpoints();
-
-builder.AddDockerfile("mirai-nlp-api", "../../../mirai-nlp-api", "Dockerfile")
-    .WithHttpEndpoint(port: 8000, targetPort: 8000)
-    .WithUrl("http://127.0.0.1:8000/docs");
 
 builder.AddNpmApp("mirai-app", "../../../mirai-app")
     .WithReference(miraiApi)

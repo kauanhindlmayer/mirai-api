@@ -79,7 +79,7 @@ public static class DatabaseExtensions
                 team.Name);
             await context.Boards.AddAsync(board);
 
-            var users = await SeedUsers(faker, context);
+            var users = await SeedUsers(context, organization, project);
             await SeedWikiPages(faker, context, project, users);
             await SeedWorkItems(faker, context, project, team, sprint, board);
 
@@ -94,23 +94,30 @@ public static class DatabaseExtensions
     }
 
     private static async Task<List<User>> SeedUsers(
-        Faker faker,
         ApplicationDbContext context,
-        int count = 5)
+        Organization organization,
+        Project project)
     {
+        var seedUserData = new[]
+        {
+            new { FirstName = "John", LastName = "Doe", Email = "john.doe@mirai.com", IdentityId = "user-1-12345-67890-abcdef" },
+            new { FirstName = "Jane", LastName = "Smith", Email = "jane.smith@mirai.com", IdentityId = "user-2-23456-78901-bcdefg" },
+            new { FirstName = "Bob", LastName = "Johnson", Email = "bob.johnson@mirai.com", IdentityId = "user-3-34567-89012-cdefgh" },
+        };
+
         var users = new List<User>();
 
-        for (int i = 0; i < count; i++)
+        foreach (var userData in seedUserData)
         {
-            var user = new User(
-                faker.Name.FirstName(),
-                faker.Name.LastName(),
-                faker.Internet.Email());
-            user.SetIdentityId(Guid.NewGuid().ToString());
+            var user = new User(userData.FirstName, userData.LastName, userData.Email);
+            user.SetIdentityId(userData.IdentityId);
             users.Add(user);
+            organization.AddUser(user);
+            project.AddUser(user);
         }
 
         await context.AddRangeAsync(users);
+
         return users;
     }
 

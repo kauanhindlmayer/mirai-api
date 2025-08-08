@@ -1,12 +1,12 @@
-using Application.Common.Interfaces.Persistence;
-using Application.Common.Interfaces.Services;
+using Application.Abstractions.Authentication;
 using Domain.Users;
 using ErrorOr;
 using MediatR;
 
 namespace Application.Users.Commands.UpdateUserProfile;
 
-internal sealed class UpdateUserProfileCommandHandler : IRequestHandler<UpdateUserProfileCommand, ErrorOr<Success>>
+internal sealed class UpdateUserProfileCommandHandler
+    : IRequestHandler<UpdateUserProfileCommand, ErrorOr<Success>>
 {
     private readonly IUsersRepository _usersRepository;
     private readonly IUserContext _userContext;

@@ -1,4 +1,3 @@
-using Application.Common.Interfaces.Persistence;
 using Domain.Organizations;
 using ErrorOr;
 using MediatR;

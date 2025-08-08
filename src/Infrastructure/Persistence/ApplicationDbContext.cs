@@ -1,10 +1,10 @@
-using Application.Common.Interfaces.Persistence;
+using Application.Abstractions;
 using Domain.Boards;
-using Domain.Common;
 using Domain.Organizations;
 using Domain.Personas;
 using Domain.Projects;
 using Domain.Retrospectives;
+using Domain.Shared;
 using Domain.Sprints;
 using Domain.TagImportJobs;
 using Domain.Tags;

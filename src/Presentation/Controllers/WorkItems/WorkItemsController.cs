@@ -1,12 +1,11 @@
 using System.Net.Mime;
-using Application.Common;
+using Application.Abstractions;
 using Application.WorkItems.Commands.AddComment;
 using Application.WorkItems.Commands.AddTag;
 using Application.WorkItems.Commands.AssignWorkItem;
 using Application.WorkItems.Commands.CreateWorkItem;
 using Application.WorkItems.Commands.DeleteWorkItem;
 using Application.WorkItems.Commands.RemoveTag;
-using Application.WorkItems.Queries.Common;
 using Application.WorkItems.Queries.GetWorkItem;
 using Application.WorkItems.Queries.GetWorkItemsStats;
 using Application.WorkItems.Queries.ListWorkItems;

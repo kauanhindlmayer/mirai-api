@@ -4,7 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.Configurations;
 
-internal sealed class WorkItemConfigurations : IEntityTypeConfiguration<WorkItem>
+internal sealed class WorkItemConfigurations :
+    IEntityTypeConfiguration<WorkItem>,
+    IEntityTypeConfiguration<WorkItemComment>
 {
     public void Configure(EntityTypeBuilder<WorkItem> builder)
     {
@@ -86,5 +88,27 @@ internal sealed class WorkItemConfigurations : IEntityTypeConfiguration<WorkItem
         builder.HasOne(wi => wi.Sprint)
             .WithMany(s => s.WorkItems)
             .HasForeignKey(wi => wi.SprintId);
+    }
+
+    public void Configure(EntityTypeBuilder<WorkItemComment> builder)
+    {
+        builder.HasKey(wic => wic.Id);
+
+        builder.Property(wic => wic.Id)
+            .ValueGeneratedNever();
+
+        builder.Property(wic => wic.WorkItemId)
+            .IsRequired();
+
+        builder.Property(p => p.AuthorId)
+            .IsRequired();
+
+        builder.Property(wic => wic.Content)
+            .IsRequired();
+
+        builder.HasOne(p => p.Author)
+            .WithMany()
+            .HasForeignKey(p => p.AuthorId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

@@ -1,5 +1,5 @@
-using Domain.Common;
 using Domain.Retrospectives.Enums;
+using Domain.Shared;
 using Domain.Teams;
 using ErrorOr;
 

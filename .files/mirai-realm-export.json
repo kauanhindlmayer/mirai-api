@@ -434,6 +434,75 @@
       },
       "notBefore": 0,
       "groups": []
+    },
+    {
+      "id": "user-1-12345-67890-abcdef",
+      "createdTimestamp": 1689227091368,
+      "username": "john.doe@mirai.com",
+      "email": "john.doe@mirai.com",
+      "firstName": "John",
+      "lastName": "Doe",
+      "enabled": true,
+      "totp": false,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Test@123",
+          "temporary": false
+        }
+      ],
+      "disableableCredentialTypes": [],
+      "requiredActions": [],
+      "realmRoles": ["default-roles-mirai"],
+      "notBefore": 0,
+      "groups": []
+    },
+    {
+      "id": "user-2-23456-78901-bcdefg",
+      "createdTimestamp": 1689227091368,
+      "username": "jane.smith@mirai.com",
+      "email": "jane.smith@mirai.com",
+      "firstName": "Jane",
+      "lastName": "Smith",
+      "enabled": true,
+      "totp": false,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Test@123",
+          "temporary": false
+        }
+      ],
+      "disableableCredentialTypes": [],
+      "requiredActions": [],
+      "realmRoles": ["default-roles-mirai"],
+      "notBefore": 0,
+      "groups": []
+    },
+    {
+      "id": "user-3-34567-89012-cdefgh",
+      "createdTimestamp": 1689227091368,
+      "username": "bob.johnson@mirai.com",
+      "email": "bob.johnson@mirai.com",
+      "firstName": "Bob",
+      "lastName": "Johnson",
+      "enabled": true,
+      "totp": false,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Test@123",
+          "temporary": false
+        }
+      ],
+      "disableableCredentialTypes": [],
+      "requiredActions": [],
+      "realmRoles": ["default-roles-mirai"],
+      "notBefore": 0,
+      "groups": []
     }
   ],
   "scopeMappings": [

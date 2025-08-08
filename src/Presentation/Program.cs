@@ -9,6 +9,7 @@ using ServiceDefaults;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
+builder.AddOllamaServices();
 
 builder.Services.AddSerilog(config =>
     config.ReadFrom.Configuration(builder.Configuration));

@@ -1,8 +1,9 @@
-using Application.Common.Interfaces.Persistence;
-using Application.Common.Interfaces.Services;
+using Domain.Shared;
 using Domain.WorkItems;
 using ErrorOr;
 using MediatR;
+using Microsoft.Extensions.AI;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.WorkItems.Commands.UpdateWorkItem;
 
@@ -10,14 +11,14 @@ internal sealed class UpdateWorkItemCommandHandler
     : IRequestHandler<UpdateWorkItemCommand, ErrorOr<Guid>>
 {
     private readonly IWorkItemsRepository _workItemsRepository;
-    private readonly INlpService _nlpService;
+    private readonly IEmbeddingGenerator<string, Embedding<float>> _embeddingGenerator;
 
     public UpdateWorkItemCommandHandler(
         IWorkItemsRepository workItemsRepository,
-        INlpService nlpService)
+        [FromKeyedServices(ServiceKeys.Embedding)] IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator)
     {
         _workItemsRepository = workItemsRepository;
-        _nlpService = nlpService;
+        _embeddingGenerator = embeddingGenerator;
     }
 
     public async Task<ErrorOr<Guid>> Handle(
@@ -27,6 +28,7 @@ internal sealed class UpdateWorkItemCommandHandler
         var workItem = await _workItemsRepository.GetByIdAsync(
             command.WorkItemId,
             cancellationToken);
+
         if (workItem is null)
         {
             return WorkItemErrors.NotFound;
@@ -47,15 +49,11 @@ internal sealed class UpdateWorkItemCommandHandler
 
         if (HasWorkItemContentChanged(command, workItem))
         {
-            var embeddingResponse = await _nlpService.GenerateEmbeddingVectorAsync(
+            var embedding = await _embeddingGenerator.GenerateAsync(
                 workItem.GetEmbeddingContent(),
-                cancellationToken);
-            if (embeddingResponse.IsError)
-            {
-                return embeddingResponse.Errors;
-            }
+                cancellationToken: cancellationToken);
 
-            workItem.SetSearchVector(embeddingResponse.Value);
+            workItem.SetSearchVector(embedding.Vector.ToArray());
         }
 
         _workItemsRepository.Update(workItem);

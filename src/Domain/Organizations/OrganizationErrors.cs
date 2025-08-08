@@ -12,11 +12,11 @@ public static class OrganizationErrors
         "Organization.AlreadyExists",
         "An organization with the same name already exists.");
 
-    public static readonly Error UserAlreadyMember = Error.Validation(
-        "Organization.UserAlreadyMember",
-        "The user is already a member of the organization.");
+    public static readonly Error UserAlreadyExists = Error.Conflict(
+      "Organization.UserAlreadyExists",
+      "User already exists in this organization.");
 
-    public static readonly Error UserNotMember = Error.Validation(
-        "Organization.UserNotMember",
-        "The user is not a member of the organization.");
+    public static readonly Error UserHasProjects = Error.Conflict(
+        "Organization.UserHasProjects",
+        "Cannot remove user who has projects in this organization.");
 }

@@ -1,7 +1,7 @@
 namespace Presentation.Controllers.Dashboards;
 
 /// <summary>
-/// Data transfer object for retrieving a dashboard.
+/// Request to get a dashboard.
 /// </summary>
 /// <param name="StartDate">
 /// The start date for filtering. If not provided, the default is the current date.

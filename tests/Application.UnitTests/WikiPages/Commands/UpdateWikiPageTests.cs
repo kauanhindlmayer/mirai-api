@@ -1,4 +1,3 @@
-using Application.Common.Interfaces.Persistence;
 using Application.WikiPages.Commands.UpdateWikiPage;
 using Domain.WikiPages;
 
