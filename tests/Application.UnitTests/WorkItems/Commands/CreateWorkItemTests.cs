@@ -1,10 +1,10 @@
-using Application.Abstractions;
 using Application.WorkItems.Commands.CreateWorkItem;
 using Domain.Boards;
 using Domain.Projects;
 using Domain.Teams;
 using Domain.WorkItems;
 using Domain.WorkItems.Enums;
+using Microsoft.Extensions.AI;
 
 namespace Application.UnitTests.WorkItems.Commands;
 
@@ -19,17 +19,17 @@ public class CreateWorkItemTests
     private readonly CreateWorkItemCommandHandler _handler;
     private readonly IProjectsRepository _projectsRepository;
     private readonly IWorkItemsRepository _workItemsRepository;
-    private readonly INlpService _nlpService;
+    private readonly IEmbeddingGenerator<string, Embedding<float>> _embeddingGenerator;
 
     public CreateWorkItemTests()
     {
         _projectsRepository = Substitute.For<IProjectsRepository>();
         _workItemsRepository = Substitute.For<IWorkItemsRepository>();
-        _nlpService = Substitute.For<INlpService>();
+        _embeddingGenerator = Substitute.For<IEmbeddingGenerator<string, Embedding<float>>>();
         _handler = new CreateWorkItemCommandHandler(
             _projectsRepository,
             _workItemsRepository,
-            _nlpService);
+            _embeddingGenerator);
     }
 
     [Fact]

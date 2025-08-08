@@ -24,18 +24,18 @@ using Infrastructure.Authorization;
 using Infrastructure.Caching;
 using Infrastructure.Email;
 using Infrastructure.Jobs;
-using Infrastructure.Nlp;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Repositories;
-using Infrastructure.Settings;
 using Infrastructure.Storage;
 using Infrastructure.Time;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Hosting;
 using Quartz;
 using AuthenticationOptions = Infrastructure.Authentication.AuthenticationOptions;
 using AuthenticationService = Infrastructure.Authentication.AuthenticationService;
@@ -45,8 +45,6 @@ namespace Infrastructure;
 
 public static class DependencyInjection
 {
-    private const string ApiKeyHeaderName = "X-API-Key";
-
     public static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
         IConfiguration configuration)
@@ -65,6 +63,19 @@ public static class DependencyInjection
         return services;
     }
 
+    public static WebApplicationBuilder AddOllamaServices(
+        this WebApplicationBuilder builder)
+    {
+        builder
+            .AddOllamaApiClient(ServiceKeys.Chat)
+            .AddKeyedChatClient(ServiceKeys.Chat);
+        builder
+            .AddOllamaApiClient(ServiceKeys.Embedding)
+            .AddKeyedEmbeddingGenerator(ServiceKeys.Embedding);
+
+        return builder;
+    }
+
     private static IServiceCollection AddServices(
         this IServiceCollection services,
         IConfiguration configuration)
@@ -74,17 +85,6 @@ public static class DependencyInjection
         services.AddTransient<LinkService>();
         services.AddTransient<IBackgroundJobScheduler, BackgroundJobScheduler>();
         services.AddScoped<IEmailService, EmailService>();
-
-        var nlpServiceOptions = configuration.GetSection(NlpServiceOptions.SectionName);
-        services.Configure<NlpServiceOptions>(nlpServiceOptions);
-
-        services.AddHttpClient<INlpService, NlpService>((serviceProvider, httpClient) =>
-        {
-            var options = serviceProvider.GetRequiredService<IOptions<NlpServiceOptions>>().Value;
-            httpClient.BaseAddress = new Uri(options.BaseUrl);
-            httpClient.DefaultRequestHeaders.Add(ApiKeyHeaderName, options.ApiKey);
-        });
-
         services.AddSingleton<IBlobService, BlobService>();
         services.AddSingleton(_ => new BlobServiceClient(configuration["Azure:BlobStorage:ConnectionString"]!));
         services.Configure<BlobStorageOptions>(configuration.GetSection(BlobStorageOptions.SectionName));
@@ -96,7 +96,7 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("mirai-db");
+        var connectionString = configuration.GetConnectionString("postgres");
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(connectionString, npgsqlOptions => npgsqlOptions.UseVector())
                 .UseSnakeCaseNamingConvention());
@@ -199,7 +199,7 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("mirai-redis");
+        var connectionString = configuration.GetConnectionString("redis");
         services.AddStackExchangeRedisCache(options => options.Configuration = connectionString);
         services.AddSingleton<ICacheService, CacheService>();
         return services;
