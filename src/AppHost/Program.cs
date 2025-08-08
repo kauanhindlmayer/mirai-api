@@ -1,3 +1,5 @@
+using Dutchskull.Aspire.PolyRepo;
+
 var builder = DistributedApplication.CreateBuilder(args);
 
 var postgres = builder.AddPostgres("postgres")
@@ -29,7 +31,12 @@ var miraiApi = builder.AddProject<Projects.Presentation>("mirai-api")
     .WithReference(minilm)
     .WithExternalHttpEndpoints();
 
-builder.AddNpmApp("mirai-app", "../../../mirai-app")
+var repository = builder.AddRepository(
+    "mirai-repo",
+    "https://github.com/kauanhindlmayer/mirai-app",
+    config => config.WithDefaultBranch("main"));
+
+builder.AddNpmAppFromRepository("mirai-app", repository, string.Empty)
     .WithReference(miraiApi)
     .WaitFor(miraiApi)
     .WithHttpEndpoint(env: "PORT", port: 5173)

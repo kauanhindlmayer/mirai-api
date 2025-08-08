@@ -17,7 +17,8 @@
     <PackageReference Include="Aspire.Hosting.PostgreSQL" />
     <PackageReference Include="Aspire.Hosting.Redis" />
     <PackageReference Include="Aspire.Hosting.Keycloak" />
-    <PackageReference Include="CommunityToolkit.Aspire.Hosting.Ollama" />  
+    <PackageReference Include="CommunityToolkit.Aspire.Hosting.Ollama" />
+    <PackageReference Include="Dutchskull.Aspire.PolyRepo" />  
   </ItemGroup>
 
   <ItemGroup>
