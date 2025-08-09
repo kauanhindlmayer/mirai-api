@@ -32,18 +32,12 @@ internal sealed class CreateRetrospectiveItemCommandHandler
             return RetrospectiveErrors.NotFound;
         }
 
-        var column = retrospective.Columns.FirstOrDefault(c => c.Id == command.ColumnId);
-        if (column is null)
-        {
-            return RetrospectiveErrors.ColumnNotFound;
-        }
-
         var retrospectiveItem = new RetrospectiveItem(
             command.Content,
             command.ColumnId,
             _userContext.UserId);
 
-        var result = column.AddItem(retrospectiveItem);
+        var result = retrospective.AddItem(retrospectiveItem);
         if (result.IsError)
         {
             return result.Errors;

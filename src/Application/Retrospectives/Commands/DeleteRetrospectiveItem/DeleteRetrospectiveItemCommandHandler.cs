@@ -28,13 +28,7 @@ internal sealed class DeleteRetrospectiveItemCommandHandler
             return RetrospectiveErrors.NotFound;
         }
 
-        var column = retrospective.Columns.FirstOrDefault(c => c.Id == command.ColumnId);
-        if (column is null)
-        {
-            return RetrospectiveErrors.ColumnNotFound;
-        }
-
-        var result = column.RemoveItem(command.ItemId);
+        var result = retrospective.RemoveItem(command.ItemId);
         if (result.IsError)
         {
             return result.Errors;

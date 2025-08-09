@@ -7,7 +7,7 @@ public sealed class WorkItemResponse
     public int Code { get; init; }
     public required string Title { get; init; }
     public string? Description { get; init; }
-    public required string AcceptanceCriteria { get; init; }
+    public string? AcceptanceCriteria { get; init; }
     public required string Status { get; init; }
     public required string Type { get; init; }
     public PlanningResponse? Planning { get; init; }

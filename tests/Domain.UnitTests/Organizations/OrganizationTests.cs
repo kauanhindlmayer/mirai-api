@@ -115,7 +115,7 @@ public class OrganizationTests : BaseTest
         var project = ProjectFactory.CreateProject();
 
         // Act
-        var result = organization.RemoveProject(project);
+        var result = organization.RemoveProject(project.Id);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -132,7 +132,7 @@ public class OrganizationTests : BaseTest
         organization.AddProject(project);
 
         // Act
-        var result = organization.RemoveProject(project);
+        var result = organization.RemoveProject(project.Id);
 
         // Assert
         result.IsError.Should().BeFalse();

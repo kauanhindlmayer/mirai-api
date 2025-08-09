@@ -9,7 +9,8 @@ internal sealed class DeletePersonaCommandHandler
 {
     private readonly IProjectsRepository _projectsRepository;
 
-    public DeletePersonaCommandHandler(IProjectsRepository projectsRepository)
+    public DeletePersonaCommandHandler(
+        IProjectsRepository projectsRepository)
     {
         _projectsRepository = projectsRepository;
     }

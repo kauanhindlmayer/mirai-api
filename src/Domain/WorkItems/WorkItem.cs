@@ -14,9 +14,9 @@ namespace Domain.WorkItems;
 public sealed class WorkItem : AggregateRoot
 {
     public int Code { get; private set; }
-    public string Title { get; private set; } = string.Empty;
+    public string Title { get; private set; } = null!;
     public string? Description { get; private set; }
-    public string AcceptanceCriteria { get; private set; } = string.Empty;
+    public string? AcceptanceCriteria { get; private set; }
     public WorkItemType Type { get; private set; }
     public WorkItemStatus Status { get; private set; }
     public Planning Planning { get; private set; } = new();
@@ -68,11 +68,6 @@ public sealed class WorkItem : AggregateRoot
     public void Close()
     {
         Status = WorkItemStatus.Closed;
-    }
-
-    public string GetEmbeddingContent()
-    {
-        return $"{Title} {Description} {AcceptanceCriteria}";
     }
 
     public void Update(
@@ -144,5 +139,27 @@ public sealed class WorkItem : AggregateRoot
     public void SetSearchVector(float[] embedding)
     {
         SearchVector = new Vector(embedding);
+    }
+
+    public string GetEmbeddingContent()
+    {
+        var parts = new List<string>
+        {
+            $"Title: {Title}",
+            $"Type: {Type}",
+            $"Status: {Status}",
+        };
+
+        if (!string.IsNullOrWhiteSpace(Description))
+        {
+            parts.Add($"Description: {Description}");
+        }
+
+        if (!string.IsNullOrWhiteSpace(AcceptanceCriteria))
+        {
+            parts.Add($"Acceptance Criteria: {AcceptanceCriteria}");
+        }
+
+        return string.Join("\n", parts);
     }
 }

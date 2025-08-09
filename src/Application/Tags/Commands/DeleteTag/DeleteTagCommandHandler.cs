@@ -26,24 +26,19 @@ internal sealed class DeleteTagCommandHandler
         var project = await _projectsRepository.GetByIdWithTagsAsync(
             command.ProjectId,
             cancellationToken);
+
         if (project is null)
         {
             return ProjectErrors.NotFound;
         }
 
-        var tag = project.Tags.FirstOrDefault(t => t.Id == command.TagId);
-        if (tag is null)
-        {
-            return TagErrors.NotFound;
-        }
-
-        var result = project.RemoveTag(tag);
+        var result = project.RemoveTag(command.TagId);
         if (result.IsError)
         {
             return result.Errors;
         }
 
-        _tagsRepository.Remove(tag);
+        _tagsRepository.Remove(result.Value);
         _projectsRepository.Update(project);
 
         return Result.Success;

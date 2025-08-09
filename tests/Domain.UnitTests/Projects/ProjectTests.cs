@@ -241,7 +241,7 @@ public class ProjectTests : BaseTest
         project.AddTag(tag);
 
         // Act
-        var result = project.RemoveTag(tag);
+        var result = project.RemoveTag(tag.Id);
 
         // Assert
         result.IsError.Should().BeFalse();

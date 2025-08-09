@@ -105,10 +105,10 @@ public sealed class RetrospectivesController : ApiController
         var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
-            _ => CreatedAtAction(
+            columnId => CreatedAtAction(
                 nameof(GetRetrospective),
                 new { teamId, retrospectiveId },
-                retrospectiveId),
+                columnId),
             Problem);
     }
 

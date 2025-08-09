@@ -104,6 +104,7 @@ internal static class WorkItemQueries
             Code = wi.Code,
             Title = wi.Title,
             Description = wi.Description,
+            AcceptanceCriteria = wi.AcceptanceCriteria,
             Type = wi.Type.ToString(),
             CreatedAtUtc = wi.CreatedAtUtc,
             UpdatedAtUtc = wi.UpdatedAtUtc,

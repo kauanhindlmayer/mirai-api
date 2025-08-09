@@ -44,7 +44,9 @@ public sealed class Board : AggregateRoot
         return column;
     }
 
-    public ErrorOr<BoardColumn> AddColumnAtPosition(BoardColumn column, int position)
+    public ErrorOr<BoardColumn> AddColumnAtPosition(
+        BoardColumn column,
+        int position)
     {
         if (position < 0 || position > Columns.Count)
         {

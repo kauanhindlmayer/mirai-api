@@ -7,7 +7,7 @@ namespace Domain.WikiPages;
 
 public sealed class WikiPage : AggregateRoot
 {
-    public string Title { get; private set; } = string.Empty;
+    public string Title { get; private set; } = null!;
     public string Content { get; private set; } = string.Empty;
     public int Position { get; private set; }
     public Guid AuthorId { get; private set; }

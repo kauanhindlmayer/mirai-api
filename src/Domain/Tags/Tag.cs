@@ -10,7 +10,7 @@ public sealed class Tag : Entity
     public string? Description { get; private set; }
 
     /// <summary>
-    /// Gets the color of the tag in hexadecimal format.
+    /// The color of the tag in hexadecimal format.
     /// </summary>
     public string Color { get; private set; } = string.Empty;
     public Guid ProjectId { get; private set; }

@@ -38,6 +38,6 @@ internal sealed class CreateRetrospectiveColumnCommandHandler
 
         _retrospectivesRepository.Update(retrospective);
 
-        return retrospective.Id;
+        return column.Id;
     }
 }

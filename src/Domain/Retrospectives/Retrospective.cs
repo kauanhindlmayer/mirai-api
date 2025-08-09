@@ -23,7 +23,7 @@ public sealed class Retrospective : AggregateRoot
         Guid teamId)
     {
         Title = title;
-        MaxVotesPerUser = maxVotesPerUser.GetValueOrDefault(DefaultVotesPerUserLimit);
+        MaxVotesPerUser = maxVotesPerUser ?? DefaultVotesPerUserLimit;
         Template = template ?? RetrospectiveTemplate.Classic;
         TeamId = teamId;
         InitializeDefaultColumns();
@@ -31,6 +31,22 @@ public sealed class Retrospective : AggregateRoot
 
     private Retrospective()
     {
+    }
+
+    public void Update(
+        string? title = null,
+        int? maxVotesPerUser = null,
+        RetrospectiveTemplate? template = null)
+    {
+        Title = title ?? Title;
+        MaxVotesPerUser = maxVotesPerUser ?? MaxVotesPerUser;
+
+        if (template.HasValue && template.Value != Template)
+        {
+            Template = template.Value;
+            Columns.Clear();
+            InitializeDefaultColumns();
+        }
     }
 
     public ErrorOr<Success> AddColumn(RetrospectiveColumn column)
@@ -50,20 +66,27 @@ public sealed class Retrospective : AggregateRoot
         return Result.Success;
     }
 
-    public void Update(
-        string? title = null,
-        int? maxVotesPerUser = null,
-        RetrospectiveTemplate? template = null)
+    public ErrorOr<Success> AddItem(RetrospectiveItem item)
     {
-        Title = title ?? Title;
-        MaxVotesPerUser = maxVotesPerUser ?? MaxVotesPerUser;
-
-        if (template.HasValue && template.Value != Template)
+        var column = Columns.FirstOrDefault(c => c.Id == item.RetrospectiveColumnId);
+        if (column is null)
         {
-            Template = template.Value;
-            Columns.Clear();
-            InitializeDefaultColumns();
+            return RetrospectiveErrors.ColumnNotFound;
         }
+
+        column.AddItem(item);
+        return Result.Success;
+    }
+
+    public ErrorOr<Success> RemoveItem(Guid itemId)
+    {
+        var column = Columns.FirstOrDefault(c => c.Items.Any(i => i.Id == itemId));
+        if (column is null)
+        {
+            return RetrospectiveErrors.ItemNotFound;
+        }
+
+        return column.RemoveItem(itemId);
     }
 
     private void InitializeDefaultColumns()

@@ -14,7 +14,7 @@ public sealed class Team : AggregateRoot
 {
     public Guid ProjectId { get; private set; }
     public Project Project { get; private set; } = null!;
-    public string Name { get; private set; } = string.Empty;
+    public string Name { get; private set; } = null!;
     public string? Description { get; private set; }
     public Board Board { get; private set; } = null!;
     public ICollection<User> Members { get; private set; } = [];
@@ -27,7 +27,7 @@ public sealed class Team : AggregateRoot
         ProjectId = projectId;
         Name = name;
         Description = description;
-        AddDomainEvent(new TeamCreatedDomainEvent(this));
+        RaiseDomainEvent(new TeamCreatedDomainEvent(this));
     }
 
     private Team()
@@ -87,10 +87,5 @@ public sealed class Team : AggregateRoot
 
         Board = board;
         return Result.Success;
-    }
-
-    public void SetBoard(Board board)
-    {
-        Board = board;
     }
 }

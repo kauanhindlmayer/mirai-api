@@ -20,7 +20,7 @@ public abstract class Entity
         _domainEvents.Clear();
     }
 
-    public void AddDomainEvent(IDomainEvent domainEvent)
+    public void RaiseDomainEvent(IDomainEvent domainEvent)
     {
         _domainEvents.Add(domainEvent);
     }

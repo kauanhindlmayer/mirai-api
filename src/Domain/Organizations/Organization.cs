@@ -8,7 +8,7 @@ namespace Domain.Organizations;
 
 public sealed class Organization : AggregateRoot
 {
-    public string Name { get; private set; } = string.Empty;
+    public string Name { get; private set; } = null!;
     public string? Description { get; private set; }
     public ICollection<Project> Projects { get; private set; } = [];
     public ICollection<User> Users { get; private set; } = [];
@@ -17,7 +17,7 @@ public sealed class Organization : AggregateRoot
     {
         Name = name;
         Description = description;
-        AddDomainEvent(new OrganizationCreatedDomainEvent(this));
+        RaiseDomainEvent(new OrganizationCreatedDomainEvent(this));
     }
 
     private Organization()
@@ -28,12 +28,12 @@ public sealed class Organization : AggregateRoot
     {
         Name = name;
         Description = description;
-        AddDomainEvent(new OrganizationUpdatedDomainEvent(this));
+        RaiseDomainEvent(new OrganizationUpdatedDomainEvent(this));
     }
 
     public void Delete()
     {
-        AddDomainEvent(new OrganizationDeletedDomainEvent(this));
+        RaiseDomainEvent(new OrganizationDeletedDomainEvent(this));
     }
 
     public ErrorOr<Success> AddUser(User user)
@@ -44,7 +44,7 @@ public sealed class Organization : AggregateRoot
         }
 
         Users.Add(user);
-        AddDomainEvent(new UserAddedToOrganizationDomainEvent(this, user));
+        RaiseDomainEvent(new UserAddedToOrganizationDomainEvent(this, user));
         return Result.Success;
     }
 
@@ -62,7 +62,7 @@ public sealed class Organization : AggregateRoot
         }
 
         Users.Remove(user);
-        AddDomainEvent(new UserRemovedFromOrganizationDomainEvent(this, user));
+        RaiseDomainEvent(new UserRemovedFromOrganizationDomainEvent(this, user));
         return Result.Success;
     }
 
@@ -77,15 +77,15 @@ public sealed class Organization : AggregateRoot
         return Result.Success;
     }
 
-    public ErrorOr<Success> RemoveProject(Project project)
+    public ErrorOr<Success> RemoveProject(Guid projectId)
     {
-        var projectToRemove = Projects.FirstOrDefault(p => p.Id == project.Id);
-        if (projectToRemove is null)
+        var project = Projects.FirstOrDefault(p => p.Id == projectId);
+        if (project is null)
         {
             return ProjectErrors.NotFound;
         }
 
-        Projects.Remove(projectToRemove);
+        Projects.Remove(project);
         return Result.Success;
     }
 }
