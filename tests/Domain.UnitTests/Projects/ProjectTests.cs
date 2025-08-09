@@ -3,7 +3,6 @@ using Domain.Projects;
 using Domain.Projects.Events;
 using Domain.Tags;
 using Domain.Teams;
-using Domain.UnitTests.Boards;
 using Domain.UnitTests.Infrastructure;
 using Domain.UnitTests.Organizations;
 using Domain.UnitTests.Personas;
@@ -355,7 +354,7 @@ public class ProjectTests : BaseTest
         project.Organization.AddUser(user);
         project.AddUser(user);
         project.AddTeam(team);
-        team.AddMember(user);
+        team.AddUser(user);
 
         // Act
         var result = project.RemoveUser(user.Id);

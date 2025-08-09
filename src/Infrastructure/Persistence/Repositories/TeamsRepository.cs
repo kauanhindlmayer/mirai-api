@@ -15,7 +15,7 @@ internal sealed class TeamsRepository : Repository<Team>, ITeamsRepository
         CancellationToken cancellationToken = default)
     {
         return await _dbContext.Teams
-            .Include(t => t.Members)
+            .Include(t => t.Users)
             .FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
     }
 

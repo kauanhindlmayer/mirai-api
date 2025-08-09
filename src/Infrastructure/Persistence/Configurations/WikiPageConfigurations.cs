@@ -70,6 +70,11 @@ internal sealed class WikiPageConfigurations :
 
         builder.Property(wpc => wpc.Content)
             .IsRequired();
+
+        builder.HasOne(wpc => wpc.Author)
+            .WithMany()
+            .HasForeignKey(wpc => wpc.AuthorId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 
     public void Configure(EntityTypeBuilder<WikiPageView> builder)
@@ -87,5 +92,10 @@ internal sealed class WikiPageConfigurations :
 
         builder.Property(wpv => wpv.ViewerId)
             .IsRequired();
+
+        builder.HasOne(wpv => wpv.Viewer)
+            .WithMany()
+            .HasForeignKey(wpv => wpv.ViewerId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

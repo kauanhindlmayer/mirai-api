@@ -74,7 +74,7 @@ public class AssignWorkItemTests
         // Assert
         result.Should().BeOfType<ErrorOr<Success>>();
         result.IsError.Should().BeFalse();
-        workItem.AssigneeId.Should().Be(Command.AssigneeId);
+        workItem.AssignedUserId.Should().Be(Command.AssigneeId);
     }
 
     [Fact]

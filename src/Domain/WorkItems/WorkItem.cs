@@ -22,8 +22,8 @@ public sealed class WorkItem : AggregateRoot
     public Planning Planning { get; private set; } = new();
     public Classification Classification { get; private set; } = new();
     public Vector SearchVector { get; private set; } = new(new float[384]);
-    public Guid? AssigneeId { get; private set; }
-    public User? Assignee { get; private set; }
+    public Guid? AssignedUserId { get; private set; }
+    public User? AssignedUser { get; private set; }
     public Guid ProjectId { get; private set; }
     public Project Project { get; private set; } = null!;
     public Guid? AssignedTeamId { get; private set; }
@@ -60,9 +60,9 @@ public sealed class WorkItem : AggregateRoot
     {
     }
 
-    public void Assign(Guid assigneeId)
+    public void Assign(Guid userId)
     {
-        AssigneeId = assigneeId;
+        AssignedUserId = userId;
     }
 
     public void Close()
@@ -88,7 +88,7 @@ public sealed class WorkItem : AggregateRoot
         Description = description ?? Description;
         AcceptanceCriteria = acceptanceCriteria ?? AcceptanceCriteria;
         Status = status ?? Status;
-        AssigneeId = assigneeId ?? AssigneeId;
+        AssignedUserId = assigneeId ?? AssignedUserId;
         AssignedTeamId = assignedTeamId ?? AssignedTeamId;
         SprintId = sprintId ?? SprintId;
         ParentWorkItemId = parentWorkItemId ?? ParentWorkItemId;

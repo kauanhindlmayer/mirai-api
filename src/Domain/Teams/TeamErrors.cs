@@ -8,13 +8,17 @@ public static class TeamErrors
         code: "Team.NotFound",
         description: "Team not found.");
 
-    public static readonly Error MemberNotFound = Error.NotFound(
-        code: "Team.MemberNotFound",
-        description: "Team member not found.");
-
-    public static readonly Error MemberAlreadyExists = Error.Validation(
-        code: "Team.MemberAlreadyExists",
+    public static Error UserAlreadyExists => Error.Conflict(
+        code: "Team.UserAlreadyExists",
         description: "User is already a member of this team.");
+
+    public static Error UserNotFound => Error.NotFound(
+        code: "Team.UserNotFound",
+        description: "User is not a member of this team.");
+
+    public static Error UserHasAssignedWorkItems => Error.Conflict(
+        code: "Team.UserHasAssignedWorkItems",
+        description: "Cannot remove user who has assigned work items in this team.");
 
     public static readonly Error BoardAlreadyExists = Error.Conflict(
         code: "Team.BoardAlreadyExists",

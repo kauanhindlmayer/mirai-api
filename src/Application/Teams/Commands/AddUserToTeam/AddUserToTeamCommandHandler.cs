@@ -3,15 +3,15 @@ using Domain.Users;
 using ErrorOr;
 using MediatR;
 
-namespace Application.Teams.Commands.AddMember;
+namespace Application.Teams.Commands.AddUserToTeam;
 
-internal sealed class AddMemberCommandHandler
-    : IRequestHandler<AddMemberCommand, ErrorOr<Success>>
+internal sealed class AddUserToTeamCommandHandler
+    : IRequestHandler<AddUserToTeamCommand, ErrorOr<Success>>
 {
     private readonly ITeamsRepository _teamsRepository;
     private readonly IUsersRepository _usersRepository;
 
-    public AddMemberCommandHandler(
+    public AddUserToTeamCommandHandler(
         ITeamsRepository teamsRepository,
         IUsersRepository usersRepository)
     {
@@ -20,7 +20,7 @@ internal sealed class AddMemberCommandHandler
     }
 
     public async Task<ErrorOr<Success>> Handle(
-        AddMemberCommand command,
+        AddUserToTeamCommand command,
         CancellationToken cancellationToken)
     {
         var team = await _teamsRepository.GetByIdAsync(
@@ -32,16 +32,16 @@ internal sealed class AddMemberCommandHandler
             return TeamErrors.NotFound;
         }
 
-        var member = await _usersRepository.GetByIdAsync(
-            command.MemberId,
+        var user = await _usersRepository.GetByIdAsync(
+            command.UserId,
             cancellationToken);
 
-        if (member is null)
+        if (user is null)
         {
-            return TeamErrors.MemberNotFound;
+            return TeamErrors.UserNotFound;
         }
 
-        var result = team.AddMember(member);
+        var result = team.AddUser(user);
         if (result.IsError)
         {
             return result.Errors;

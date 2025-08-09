@@ -1,24 +1,24 @@
-using Application.Teams.Commands.AddMember;
+using Application.Teams.Commands.AddUserToTeam;
 using Domain.Teams;
 using Domain.Users;
 
 namespace Application.UnitTests.Teams.Commands;
 
-public class AddMemberTests
+public class AddUserToTeamTests
 {
-    private static readonly AddMemberCommand Command = new(
+    private static readonly AddUserToTeamCommand Command = new(
         Guid.NewGuid(),
         Guid.NewGuid());
 
-    private readonly AddMemberCommandHandler _handler;
+    private readonly AddUserToTeamCommandHandler _handler;
     private readonly ITeamsRepository _teamsRepository;
     private readonly IUsersRepository _usersRepository;
 
-    public AddMemberTests()
+    public AddUserToTeamTests()
     {
         _teamsRepository = Substitute.For<ITeamsRepository>();
         _usersRepository = Substitute.For<IUsersRepository>();
-        _handler = new AddMemberCommandHandler(
+        _handler = new AddUserToTeamCommandHandler(
             _teamsRepository,
             _usersRepository);
     }
@@ -39,13 +39,13 @@ public class AddMemberTests
     }
 
     [Fact]
-    public async Task Handle_WhenMemberDoesNotExist_ShouldReturnError()
+    public async Task Handle_WhenUserDoesNotExist_ShouldReturnError()
     {
         // Arrange
         var team = new Team(Guid.NewGuid(), "Name", "Description");
         _teamsRepository.GetByIdAsync(Command.TeamId, TestContext.Current.CancellationToken)
             .Returns(team);
-        _usersRepository.GetByIdAsync(Command.MemberId, TestContext.Current.CancellationToken)
+        _usersRepository.GetByIdAsync(Command.UserId, TestContext.Current.CancellationToken)
             .Returns(null as User);
 
         // Act
@@ -53,46 +53,46 @@ public class AddMemberTests
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Should().Be(TeamErrors.MemberNotFound);
+        result.FirstError.Should().Be(TeamErrors.UserNotFound);
     }
 
     [Fact]
-    public async Task Handle_WhenMemberAlreadyExists_ShouldReturnError()
+    public async Task Handle_WhenUserAlreadyExists_ShouldReturnError()
     {
         // Arrange
         var team = new Team(Guid.NewGuid(), "Name", "Description");
-        var member = new User("John", "Doe", "john.doe@email.com");
-        team.AddMember(member);
+        var user = new User("John", "Doe", "john.doe@email.com");
+        team.AddUser(user);
         _teamsRepository.GetByIdAsync(Command.TeamId, TestContext.Current.CancellationToken)
             .Returns(team);
-        _usersRepository.GetByIdAsync(Command.MemberId, TestContext.Current.CancellationToken)
-            .Returns(member);
+        _usersRepository.GetByIdAsync(Command.UserId, TestContext.Current.CancellationToken)
+            .Returns(user);
 
         // Act
         var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Should().Be(TeamErrors.MemberAlreadyExists);
+        result.FirstError.Should().Be(TeamErrors.UserAlreadyExists);
     }
 
     [Fact]
-    public async Task Handle_WhenMemberDoesNotExist_ShouldAddMember()
+    public async Task Handle_WhenUserDoesNotExist_ShouldAddUserToTeam()
     {
         // Arrange
         var team = new Team(Guid.NewGuid(), "Name", "Description");
-        var member = new User("John", "Doe", "john.doe@email.com");
+        var user = new User("John", "Doe", "john.doe@email.com");
         _teamsRepository.GetByIdAsync(Command.TeamId, TestContext.Current.CancellationToken)
             .Returns(team);
-        _usersRepository.GetByIdAsync(Command.MemberId, TestContext.Current.CancellationToken)
-            .Returns(member);
+        _usersRepository.GetByIdAsync(Command.UserId, TestContext.Current.CancellationToken)
+            .Returns(user);
 
         // Act
         var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeFalse();
-        team.Members.Should().Contain(member);
+        team.Users.Should().Contain(user);
         _teamsRepository.Received().Update(team);
     }
 }

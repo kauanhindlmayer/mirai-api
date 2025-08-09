@@ -35,67 +35,67 @@ public class TeamTests : BaseTest
     }
 
     [Fact]
-    public void AddMember_WhenMemberAlreadyExists_ShouldReturnError()
+    public void AddUser_WhenUserAlreadyExists_ShouldReturnError()
     {
         // Arrange
         var team = TeamFactory.CreateTeam();
-        var member = UserFactory.CreateUser();
-        team.AddMember(member);
+        var user = UserFactory.CreateUser();
+        team.AddUser(user);
 
         // Act
-        var result = team.AddMember(member);
+        var result = team.AddUser(user);
 
         // Assert
         result.IsError.Should().BeTrue();
         result.Errors.Should().HaveCount(1);
-        result.FirstError.Should().BeEquivalentTo(TeamErrors.MemberAlreadyExists);
+        result.FirstError.Should().BeEquivalentTo(TeamErrors.UserAlreadyExists);
     }
 
     [Fact]
-    public void AddMember_WhenMemberDoesNotExist_ShouldAddMember()
+    public void AddUser_WhenUserDoesNotExist_ShouldAddUser()
     {
         // Arrange
         var team = TeamFactory.CreateTeam();
-        var member = UserFactory.CreateUser();
+        var user = UserFactory.CreateUser();
 
         // Act
-        var result = team.AddMember(member);
+        var result = team.AddUser(user);
 
         // Assert
         result.IsError.Should().BeFalse();
-        team.Members.Should().Contain(member);
+        team.Users.Should().Contain(user);
     }
 
     [Fact]
-    public void RemoveMember_WhenMemberDoesNotExist_ShouldReturnError()
+    public void RemoveUser_WhenUserDoesNotExist_ShouldReturnError()
     {
         // Arrange
         var team = TeamFactory.CreateTeam();
-        var member = UserFactory.CreateUser();
+        var user = UserFactory.CreateUser();
 
         // Act
-        var result = team.RemoveMember(member);
+        var result = team.RemoveUser(user.Id);
 
         // Assert
         result.IsError.Should().BeTrue();
         result.Errors.Should().HaveCount(1);
-        result.FirstError.Should().BeEquivalentTo(TeamErrors.MemberNotFound);
+        result.FirstError.Should().BeEquivalentTo(TeamErrors.UserNotFound);
     }
 
     [Fact]
-    public void RemoveMember_WhenMemberExists_ShouldRemoveMember()
+    public void RemoveUser_WhenUserExists_ShouldRemoveUser()
     {
         // Arrange
         var team = TeamFactory.CreateTeam();
-        var member = UserFactory.CreateUser();
-        team.AddMember(member);
+        var user = UserFactory.CreateUser();
+        team.AddUser(user);
 
         // Act
-        var result = team.RemoveMember(member);
+        var result = team.RemoveUser(user.Id);
 
         // Assert
         result.IsError.Should().BeFalse();
-        team.Members.Should().NotContain(member);
+        team.Users.Should().NotContain(user);
     }
 
     [Fact]

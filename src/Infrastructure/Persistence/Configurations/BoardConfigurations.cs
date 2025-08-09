@@ -27,6 +27,9 @@ internal sealed class BoardConfigurations :
             .WithOne(c => c.Board)
             .HasForeignKey(c => c.BoardId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasIndex(b => b.TeamId)
+            .IsUnique();
     }
 
     public void Configure(EntityTypeBuilder<BoardColumn> builder)
@@ -61,6 +64,11 @@ internal sealed class BoardConfigurations :
             .WithOne(c => c.BoardColumn)
             .HasForeignKey(c => c.BoardColumnId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasIndex(bc => bc.BoardId);
+
+        builder.HasIndex(bc => new { bc.BoardId, bc.Position })
+            .IsUnique();
     }
 
     public void Configure(EntityTypeBuilder<BoardCard> builder)
@@ -87,5 +95,13 @@ internal sealed class BoardConfigurations :
             .WithMany()
             .HasForeignKey(bc => bc.WorkItemId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasIndex(bc => bc.BoardColumnId);
+
+        builder.HasIndex(bc => bc.WorkItemId)
+            .IsUnique();
+
+        builder.HasIndex(bc => new { bc.BoardColumnId, bc.Position })
+            .IsUnique();
     }
 }

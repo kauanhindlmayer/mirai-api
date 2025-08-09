@@ -14,7 +14,7 @@ internal static class TeamQueries
             Id = t.Id,
             ProjectId = t.ProjectId,
             Name = t.Name,
-            Members = t.Members.Select(m => new MemberResponse
+            Members = t.Users.Select(m => new MemberResponse
             {
                 Id = m.Id,
                 Name = m.FullName,

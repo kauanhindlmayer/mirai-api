@@ -1,6 +1,7 @@
 using Domain.Organizations;
 using Domain.Projects;
 using Domain.Shared;
+using Domain.Teams;
 using Domain.WorkItems;
 
 namespace Domain.Users;
@@ -21,6 +22,7 @@ public sealed class User : Entity
     public ICollection<WorkItem> WorkItems { get; private set; } = [];
     public ICollection<Organization> Organizations { get; private set; } = [];
     public ICollection<Project> Projects { get; private set; } = [];
+    public ICollection<Team> Teams { get; private set; } = [];
 
     public User(string firstName, string lastName, string email)
     {

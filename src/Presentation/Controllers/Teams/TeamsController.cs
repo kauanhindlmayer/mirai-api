@@ -1,5 +1,5 @@
 using System.Net.Mime;
-using Application.Teams.Commands.AddMember;
+using Application.Teams.Commands.AddUserToTeam;
 using Application.Teams.Commands.CreateTeam;
 using Application.Teams.Queries.GetTeam;
 using Application.Teams.Queries.ListTeams;
@@ -93,12 +93,12 @@ public sealed class TeamsController : ApiController
     [HttpPost("{teamId:guid}/members")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> AddMember(
+    public async Task<ActionResult> AddUserToTeam(
         Guid teamId,
-        AddMemberRequest request,
+        AddUserToTeamRequest request,
         CancellationToken cancellationToken)
     {
-        var command = new AddMemberCommand(teamId, request.MemberId);
+        var command = new AddUserToTeamCommand(teamId, request.UserId);
 
         var result = await _sender.Send(command, cancellationToken);
 

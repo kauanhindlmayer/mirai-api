@@ -68,12 +68,12 @@ public sealed class Project : AggregateRoot
             return UserErrors.NotFound;
         }
 
-        if (WorkItems.Any(wi => wi.AssigneeId == userId))
+        if (WorkItems.Any(wi => wi.AssignedUserId == userId))
         {
             return ProjectErrors.UserHasAssignedWorkItems;
         }
 
-        if (Teams.Any(t => t.Members.Any(m => m.Id == userId)))
+        if (Teams.Any(t => t.Users.Any(m => m.Id == userId)))
         {
             return ProjectErrors.UserIsInTeams;
         }

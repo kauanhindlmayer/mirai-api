@@ -19,7 +19,7 @@ public class WorkItemTests
         workItem.Assign(assigneeId);
 
         // Assert
-        workItem.AssigneeId.Should().Be(assigneeId);
+        workItem.AssignedUserId.Should().Be(assigneeId);
     }
 
     [Fact]

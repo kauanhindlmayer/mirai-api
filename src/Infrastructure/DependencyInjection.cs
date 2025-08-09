@@ -96,7 +96,7 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("postgres");
+        var connectionString = configuration.GetConnectionString("mirai-db");
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(connectionString, npgsqlOptions => npgsqlOptions.UseVector())
                 .UseSnakeCaseNamingConvention());

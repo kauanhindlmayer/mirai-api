@@ -27,11 +27,23 @@ internal sealed class OrganizationConfigurations : IEntityTypeConfiguration<Orga
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasMany(o => o.Users)
-            .WithMany()
-            .UsingEntity(
+            .WithMany(u => u.Organizations)
+            .UsingEntity<Dictionary<string, object>>(
                 "OrganizationUsers",
-                l => l.HasOne(typeof(User)).WithMany().HasForeignKey("UserId"),
-                r => r.HasOne(typeof(Organization)).WithMany().HasForeignKey("OrganizationId"),
-                j => j.HasKey("OrganizationId", "UserId"));
+                j => j.HasOne<User>()
+                    .WithMany()
+                    .HasForeignKey("UserId")
+                    .OnDelete(DeleteBehavior.Cascade),
+                j => j.HasOne<Organization>()
+                    .WithMany()
+                    .HasForeignKey("OrganizationId")
+                    .OnDelete(DeleteBehavior.Cascade),
+                j =>
+                {
+                    j.HasKey("OrganizationId", "UserId");
+                    j.ToTable("OrganizationUsers");
+                    j.HasIndex("UserId");
+                    j.HasIndex("OrganizationId");
+                });
     }
 }

@@ -40,13 +40,13 @@ internal static class BoardQueries
                                 Code = card.WorkItem.Code,
                                 Title = card.WorkItem.Title,
                                 StoryPoints = card.WorkItem.Planning.StoryPoints,
-                                Assignee = card.WorkItem.Assignee == null
+                                Assignee = card.WorkItem.AssignedUser == null
                                     ? null
                                     : new AssigneeResponse
                                     {
-                                        Id = card.WorkItem.Assignee.Id,
-                                        Name = card.WorkItem.Assignee.FullName,
-                                        ImageUrl = card.WorkItem.Assignee.ImageUrl,
+                                        Id = card.WorkItem.AssignedUser.Id,
+                                        Name = card.WorkItem.AssignedUser.FullName,
+                                        ImageUrl = card.WorkItem.AssignedUser.ImageUrl,
                                     },
                                 Type = card.WorkItem.Type.ToString(),
                                 Status = card.WorkItem.Status.ToString(),
