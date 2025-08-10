@@ -9,16 +9,16 @@ namespace Application.Users.Commands.UpdateUserProfilePicture;
 internal sealed class UpdateUserProfilePictureCommandHandler
     : IRequestHandler<UpdateUserProfilePictureCommand, ErrorOr<Success>>
 {
-    private readonly IUsersRepository _usersRepository;
+    private readonly IUserRepository _userRepository;
     private readonly IUserContext _userContext;
     private readonly IBlobService _blobService;
 
     public UpdateUserProfilePictureCommandHandler(
-        IUsersRepository usersRepository,
+        IUserRepository userRepository,
         IUserContext userContext,
         IBlobService blobService)
     {
-        _usersRepository = usersRepository;
+        _userRepository = userRepository;
         _userContext = userContext;
         _blobService = blobService;
     }
@@ -27,7 +27,7 @@ internal sealed class UpdateUserProfilePictureCommandHandler
         UpdateUserProfilePictureCommand command,
         CancellationToken cancellationToken)
     {
-        var user = await _usersRepository.GetByIdAsync(
+        var user = await _userRepository.GetByIdAsync(
             _userContext.UserId,
             cancellationToken);
 
@@ -51,7 +51,7 @@ internal sealed class UpdateUserProfilePictureCommandHandler
         user.SetImage(
             uploadResponse.FileUrl,
             uploadResponse.FileId);
-        _usersRepository.Update(user);
+        _userRepository.Update(user);
 
         return Result.Success;
     }

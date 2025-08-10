@@ -15,18 +15,18 @@ public class CreateWikiPageTests
         null);
 
     private readonly CreateWikiPageCommandHandler _handler;
-    private readonly IProjectsRepository _projectsRepository;
+    private readonly IProjectRepository _projectRepository;
     private readonly IUserContext _userContext;
     private readonly IHtmlSanitizerService _htmlSanitizerService;
 
     public CreateWikiPageTests()
     {
-        _projectsRepository = Substitute.For<IProjectsRepository>();
+        _projectRepository = Substitute.For<IProjectRepository>();
         _userContext = Substitute.For<IUserContext>();
         _htmlSanitizerService = Substitute.For<IHtmlSanitizerService>();
 
         _handler = new CreateWikiPageCommandHandler(
-            _projectsRepository,
+            _projectRepository,
             _userContext,
             _htmlSanitizerService);
     }
@@ -35,7 +35,7 @@ public class CreateWikiPageTests
     public async Task Handle_WhenProjectDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _projectsRepository.GetByIdWithWikiPagesAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _projectRepository.GetByIdWithWikiPagesAsync(Command.ProjectId, TestContext.Current.CancellationToken)
             .Returns(null as Project);
 
         // Act
@@ -51,7 +51,7 @@ public class CreateWikiPageTests
     {
         // Arrange
         var project = new Project("Project", "Description", Guid.NewGuid());
-        _projectsRepository.GetByIdWithWikiPagesAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _projectRepository.GetByIdWithWikiPagesAsync(Command.ProjectId, TestContext.Current.CancellationToken)
             .Returns(project);
 
         // Act
@@ -71,7 +71,7 @@ public class CreateWikiPageTests
         var project = new Project("Project", "Description", Guid.NewGuid());
         var wikiPage = new WikiPage(Guid.NewGuid(), Command.Title, Command.Content, Guid.NewGuid(), null);
         project.AddWikiPage(wikiPage);
-        _projectsRepository.GetByIdWithWikiPagesAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _projectRepository.GetByIdWithWikiPagesAsync(Command.ProjectId, TestContext.Current.CancellationToken)
             .Returns(project);
 
         // Act
@@ -87,7 +87,7 @@ public class CreateWikiPageTests
     {
         // Arrange
         var project = new Project("Project", "Description", Guid.NewGuid());
-        _projectsRepository.GetByIdWithWikiPagesAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _projectRepository.GetByIdWithWikiPagesAsync(Command.ProjectId, TestContext.Current.CancellationToken)
             .Returns(project);
         _htmlSanitizerService.Sanitize(Command.Content).Returns(Command.Content);
 

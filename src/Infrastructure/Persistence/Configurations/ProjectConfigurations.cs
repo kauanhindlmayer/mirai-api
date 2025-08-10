@@ -39,21 +39,21 @@ internal sealed class ProjectConfigurations : IEntityTypeConfiguration<Project>
         builder.HasMany(p => p.Users)
             .WithMany(u => u.Projects)
             .UsingEntity<Dictionary<string, object>>(
-                "ProjectUsers",
+                "project_users",
                 j => j.HasOne<User>()
                     .WithMany()
-                    .HasForeignKey("UserId")
+                    .HasForeignKey("user_id")
                     .OnDelete(DeleteBehavior.Cascade),
                 j => j.HasOne<Project>()
                     .WithMany()
-                    .HasForeignKey("ProjectId")
+                    .HasForeignKey("project_id")
                     .OnDelete(DeleteBehavior.Cascade),
                 j =>
                 {
-                    j.HasKey("ProjectId", "UserId");
-                    j.ToTable("ProjectUsers");
-                    j.HasIndex("UserId");
-                    j.HasIndex("ProjectId");
+                    j.HasKey("project_id", "user_id");
+                    j.ToTable("project_users");
+                    j.HasIndex("user_id");
+                    j.HasIndex("project_id");
                 });
 
         builder.HasMany(p => p.Tags)

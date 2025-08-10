@@ -8,22 +8,22 @@ namespace Application.Teams.Commands.AddUserToTeam;
 internal sealed class AddUserToTeamCommandHandler
     : IRequestHandler<AddUserToTeamCommand, ErrorOr<Success>>
 {
-    private readonly ITeamsRepository _teamsRepository;
-    private readonly IUsersRepository _usersRepository;
+    private readonly ITeamRepository _teamRepository;
+    private readonly IUserRepository _userRepository;
 
     public AddUserToTeamCommandHandler(
-        ITeamsRepository teamsRepository,
-        IUsersRepository usersRepository)
+        ITeamRepository teamRepository,
+        IUserRepository userRepository)
     {
-        _teamsRepository = teamsRepository;
-        _usersRepository = usersRepository;
+        _teamRepository = teamRepository;
+        _userRepository = userRepository;
     }
 
     public async Task<ErrorOr<Success>> Handle(
         AddUserToTeamCommand command,
         CancellationToken cancellationToken)
     {
-        var team = await _teamsRepository.GetByIdAsync(
+        var team = await _teamRepository.GetByIdAsync(
             command.TeamId,
             cancellationToken);
 
@@ -32,7 +32,7 @@ internal sealed class AddUserToTeamCommandHandler
             return TeamErrors.NotFound;
         }
 
-        var user = await _usersRepository.GetByIdAsync(
+        var user = await _userRepository.GetByIdAsync(
             command.UserId,
             cancellationToken);
 
@@ -47,7 +47,7 @@ internal sealed class AddUserToTeamCommandHandler
             return result.Errors;
         }
 
-        _teamsRepository.Update(team);
+        _teamRepository.Update(team);
 
         return Result.Success;
     }

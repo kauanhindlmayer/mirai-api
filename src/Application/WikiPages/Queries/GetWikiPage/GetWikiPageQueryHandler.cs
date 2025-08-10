@@ -1,6 +1,7 @@
 using Application.Abstractions;
 using Application.Abstractions.Authentication;
 using Domain.WikiPages;
+using Domain.WikiPages.Events;
 using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -10,18 +11,18 @@ namespace Application.WikiPages.Queries.GetWikiPage;
 internal sealed class GetWikiPageQueryHandler
     : IRequestHandler<GetWikiPageQuery, ErrorOr<WikiPageResponse>>
 {
-    private readonly IWikiPagesRepository _wikiPagesRepository;
     private readonly IUserContext _userContext;
     private readonly IApplicationDbContext _context;
+    private readonly IPublisher _publisher;
 
     public GetWikiPageQueryHandler(
-        IWikiPagesRepository wikiPagesRepository,
         IUserContext userContext,
-        IApplicationDbContext context)
+        IApplicationDbContext context,
+        IPublisher publisher)
     {
-        _wikiPagesRepository = wikiPagesRepository;
         _userContext = userContext;
         _context = context;
+        _publisher = publisher;
     }
 
     public async Task<ErrorOr<WikiPageResponse>> Handle(
@@ -39,9 +40,8 @@ internal sealed class GetWikiPageQueryHandler
             return WikiPageErrors.NotFound;
         }
 
-        await _wikiPagesRepository.LogViewAsync(
-            wikiPage.Id,
-            _userContext.UserId,
+        await _publisher.Publish(
+            new WikiPageViewedDomainEvent(wikiPage.Id, _userContext.UserId),
             cancellationToken);
 
         return wikiPage;

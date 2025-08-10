@@ -11,23 +11,23 @@ public class AddUserToTeamTests
         Guid.NewGuid());
 
     private readonly AddUserToTeamCommandHandler _handler;
-    private readonly ITeamsRepository _teamsRepository;
-    private readonly IUsersRepository _usersRepository;
+    private readonly ITeamRepository _teamRepository;
+    private readonly IUserRepository _userRepository;
 
     public AddUserToTeamTests()
     {
-        _teamsRepository = Substitute.For<ITeamsRepository>();
-        _usersRepository = Substitute.For<IUsersRepository>();
+        _teamRepository = Substitute.For<ITeamRepository>();
+        _userRepository = Substitute.For<IUserRepository>();
         _handler = new AddUserToTeamCommandHandler(
-            _teamsRepository,
-            _usersRepository);
+            _teamRepository,
+            _userRepository);
     }
 
     [Fact]
     public async Task Handle_WhenTeamDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _teamsRepository.GetByIdAsync(Command.TeamId, TestContext.Current.CancellationToken)
+        _teamRepository.GetByIdAsync(Command.TeamId, TestContext.Current.CancellationToken)
             .Returns(null as Team);
 
         // Act
@@ -43,9 +43,9 @@ public class AddUserToTeamTests
     {
         // Arrange
         var team = new Team(Guid.NewGuid(), "Name", "Description");
-        _teamsRepository.GetByIdAsync(Command.TeamId, TestContext.Current.CancellationToken)
+        _teamRepository.GetByIdAsync(Command.TeamId, TestContext.Current.CancellationToken)
             .Returns(team);
-        _usersRepository.GetByIdAsync(Command.UserId, TestContext.Current.CancellationToken)
+        _userRepository.GetByIdAsync(Command.UserId, TestContext.Current.CancellationToken)
             .Returns(null as User);
 
         // Act
@@ -63,9 +63,9 @@ public class AddUserToTeamTests
         var team = new Team(Guid.NewGuid(), "Name", "Description");
         var user = new User("John", "Doe", "john.doe@email.com");
         team.AddUser(user);
-        _teamsRepository.GetByIdAsync(Command.TeamId, TestContext.Current.CancellationToken)
+        _teamRepository.GetByIdAsync(Command.TeamId, TestContext.Current.CancellationToken)
             .Returns(team);
-        _usersRepository.GetByIdAsync(Command.UserId, TestContext.Current.CancellationToken)
+        _userRepository.GetByIdAsync(Command.UserId, TestContext.Current.CancellationToken)
             .Returns(user);
 
         // Act
@@ -82,9 +82,9 @@ public class AddUserToTeamTests
         // Arrange
         var team = new Team(Guid.NewGuid(), "Name", "Description");
         var user = new User("John", "Doe", "john.doe@email.com");
-        _teamsRepository.GetByIdAsync(Command.TeamId, TestContext.Current.CancellationToken)
+        _teamRepository.GetByIdAsync(Command.TeamId, TestContext.Current.CancellationToken)
             .Returns(team);
-        _usersRepository.GetByIdAsync(Command.UserId, TestContext.Current.CancellationToken)
+        _userRepository.GetByIdAsync(Command.UserId, TestContext.Current.CancellationToken)
             .Returns(user);
 
         // Act
@@ -93,6 +93,6 @@ public class AddUserToTeamTests
         // Assert
         result.IsError.Should().BeFalse();
         team.Users.Should().Contain(user);
-        _teamsRepository.Received().Update(team);
+        _teamRepository.Received().Update(team);
     }
 }

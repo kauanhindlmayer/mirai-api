@@ -7,19 +7,19 @@ namespace Application.WikiPages.Commands.UpdateWikiPage;
 internal sealed class UpdateWikiPageCommandHandler
     : IRequestHandler<UpdateWikiPageCommand, ErrorOr<Guid>>
 {
-    private readonly IWikiPagesRepository _wikiPagesRepository;
+    private readonly IWikiPageRepository _wikiPageRepository;
 
     public UpdateWikiPageCommandHandler(
-        IWikiPagesRepository wikiPagesRepository)
+        IWikiPageRepository wikiPageRepository)
     {
-        _wikiPagesRepository = wikiPagesRepository;
+        _wikiPageRepository = wikiPageRepository;
     }
 
     public async Task<ErrorOr<Guid>> Handle(
         UpdateWikiPageCommand command,
         CancellationToken cancellationToken)
     {
-        var wikiPage = await _wikiPagesRepository.GetByIdAsync(
+        var wikiPage = await _wikiPageRepository.GetByIdAsync(
             command.WikiPageId,
             cancellationToken);
 
@@ -29,7 +29,7 @@ internal sealed class UpdateWikiPageCommandHandler
         }
 
         wikiPage.Update(command.Title, command.Content);
-        _wikiPagesRepository.Update(wikiPage);
+        _wikiPageRepository.Update(wikiPage);
 
         return wikiPage.Id;
     }

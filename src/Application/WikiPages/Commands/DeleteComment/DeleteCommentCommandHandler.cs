@@ -7,19 +7,19 @@ namespace Application.WikiPages.Commands.DeleteComment;
 internal sealed class DeleteCommentCommandHandler
     : IRequestHandler<DeleteCommentCommand, ErrorOr<Success>>
 {
-    private readonly IWikiPagesRepository _wikiPagesRepository;
+    private readonly IWikiPageRepository _wikiPageRepository;
 
     public DeleteCommentCommandHandler(
-        IWikiPagesRepository wikiPagesRepository)
+        IWikiPageRepository wikiPageRepository)
     {
-        _wikiPagesRepository = wikiPagesRepository;
+        _wikiPageRepository = wikiPageRepository;
     }
 
     public async Task<ErrorOr<Success>> Handle(
         DeleteCommentCommand command,
         CancellationToken cancellationToken)
     {
-        var wikiPage = await _wikiPagesRepository.GetByIdWithCommentsAsync(
+        var wikiPage = await _wikiPageRepository.GetByIdWithCommentsAsync(
             command.WikiPageId,
             cancellationToken);
 
@@ -34,7 +34,7 @@ internal sealed class DeleteCommentCommandHandler
             return result.Errors;
         }
 
-        _wikiPagesRepository.Update(wikiPage);
+        _wikiPageRepository.Update(wikiPage);
 
         return Result.Success;
     }

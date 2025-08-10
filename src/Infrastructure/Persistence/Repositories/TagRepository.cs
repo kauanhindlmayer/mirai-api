@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Repositories;
 
-internal sealed class TagsRepository : Repository<Tag>, ITagsRepository
+internal sealed class TagRepository : Repository<Tag>, ITagRepository
 {
-    public TagsRepository(ApplicationDbContext dbContext)
+    public TagRepository(ApplicationDbContext dbContext)
         : base(dbContext)
     {
     }

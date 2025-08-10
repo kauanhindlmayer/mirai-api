@@ -7,18 +7,18 @@ namespace Application.Boards.Commands.MoveCard;
 internal sealed class MoveCardCommandHandler
     : IRequestHandler<MoveCardCommand, ErrorOr<Success>>
 {
-    private readonly IBoardsRepository _boardsRepository;
+    private readonly IBoardRepository _boardRepository;
 
-    public MoveCardCommandHandler(IBoardsRepository boardsRepository)
+    public MoveCardCommandHandler(IBoardRepository boardRepository)
     {
-        _boardsRepository = boardsRepository;
+        _boardRepository = boardRepository;
     }
 
     public async Task<ErrorOr<Success>> Handle(
         MoveCardCommand command,
         CancellationToken cancellationToken)
     {
-        var board = await _boardsRepository.GetByIdWithCardsAsync(
+        var board = await _boardRepository.GetByIdWithCardsAsync(
             command.BoardId,
             cancellationToken);
 
@@ -38,7 +38,7 @@ internal sealed class MoveCardCommandHandler
             return result.Errors;
         }
 
-        _boardsRepository.Update(board);
+        _boardRepository.Update(board);
 
         return Result.Success;
     }

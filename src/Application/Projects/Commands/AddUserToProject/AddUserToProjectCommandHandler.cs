@@ -8,22 +8,22 @@ namespace Application.Projects.Commands.AddUserToProject;
 internal sealed class AddUserToProjectCommandHandler
     : IRequestHandler<AddUserToProjectCommand, ErrorOr<Success>>
 {
-    private readonly IProjectsRepository _projectsRepository;
-    private readonly IUsersRepository _usersRepository;
+    private readonly IProjectRepository _projectRepository;
+    private readonly IUserRepository _userRepository;
 
     public AddUserToProjectCommandHandler(
-        IProjectsRepository projectsRepository,
-        IUsersRepository usersRepository)
+        IProjectRepository projectRepository,
+        IUserRepository userRepository)
     {
-        _projectsRepository = projectsRepository;
-        _usersRepository = usersRepository;
+        _projectRepository = projectRepository;
+        _userRepository = userRepository;
     }
 
     public async Task<ErrorOr<Success>> Handle(
         AddUserToProjectCommand command,
         CancellationToken cancellationToken)
     {
-        var project = await _projectsRepository.GetByIdWithOrganizationAndUsersAsync(
+        var project = await _projectRepository.GetByIdWithOrganizationAndUsersAsync(
             command.ProjectId,
             cancellationToken);
 
@@ -32,7 +32,7 @@ internal sealed class AddUserToProjectCommandHandler
             return ProjectErrors.NotFound;
         }
 
-        var user = await _usersRepository.GetByIdAsync(
+        var user = await _userRepository.GetByIdAsync(
             command.UserId,
             cancellationToken);
 
@@ -47,7 +47,7 @@ internal sealed class AddUserToProjectCommandHandler
             return result.Errors;
         }
 
-        _projectsRepository.Update(project);
+        _projectRepository.Update(project);
 
         return Result.Success;
     }

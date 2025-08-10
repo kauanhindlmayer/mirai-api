@@ -11,12 +11,12 @@ public class UpdateOrganizationTests
         "Updated Description");
 
     private readonly UpdateOrganizationCommandHandler _handler;
-    private readonly IOrganizationsRepository _mockOrganizationsRepository;
+    private readonly IOrganizationRepository _mockorganizationRepository;
 
     public UpdateOrganizationTests()
     {
-        _mockOrganizationsRepository = Substitute.For<IOrganizationsRepository>();
-        _handler = new UpdateOrganizationCommandHandler(_mockOrganizationsRepository);
+        _mockorganizationRepository = Substitute.For<IOrganizationRepository>();
+        _handler = new UpdateOrganizationCommandHandler(_mockorganizationRepository);
     }
 
     [Fact]
@@ -24,7 +24,7 @@ public class UpdateOrganizationTests
     {
         // Arrange
         var organization = new Organization("Test Organization", "Test Description");
-        _mockOrganizationsRepository.GetByIdAsync(Command.Id, TestContext.Current.CancellationToken)
+        _mockorganizationRepository.GetByIdAsync(Command.Id, TestContext.Current.CancellationToken)
             .Returns(organization);
 
         // Act
@@ -33,14 +33,14 @@ public class UpdateOrganizationTests
         // Assert
         result.IsError.Should().BeFalse();
         result.Value.Should().NotBeEmpty();
-        _mockOrganizationsRepository.Received().Update(organization);
+        _mockorganizationRepository.Received().Update(organization);
     }
 
     [Fact]
     public async Task Handle_WhenOrganizationDoesNotExist_ReturnsError()
     {
         // Arrange
-        _mockOrganizationsRepository.GetByIdAsync(Command.Id, TestContext.Current.CancellationToken)
+        _mockorganizationRepository.GetByIdAsync(Command.Id, TestContext.Current.CancellationToken)
             .Returns(null as Organization);
 
         // Act

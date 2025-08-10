@@ -14,19 +14,19 @@ public class UpdateTagTests
         "Color");
 
     private readonly UpdateTagCommandHandler _handler;
-    private readonly IProjectsRepository _projectsRepository;
+    private readonly IProjectRepository _projectRepository;
 
     public UpdateTagTests()
     {
-        _projectsRepository = Substitute.For<IProjectsRepository>();
-        _handler = new UpdateTagCommandHandler(_projectsRepository);
+        _projectRepository = Substitute.For<IProjectRepository>();
+        _handler = new UpdateTagCommandHandler(_projectRepository);
     }
 
     [Fact]
     public async Task Handle_WhenProjectDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _projectsRepository.GetByIdWithTagsAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _projectRepository.GetByIdWithTagsAsync(Command.ProjectId, TestContext.Current.CancellationToken)
             .Returns(null as Project);
 
         // Act
@@ -42,7 +42,7 @@ public class UpdateTagTests
     {
         // Arrange
         var project = new Project("Project", "Description", Guid.NewGuid());
-        _projectsRepository.GetByIdWithTagsAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _projectRepository.GetByIdWithTagsAsync(Command.ProjectId, TestContext.Current.CancellationToken)
             .Returns(project);
 
         // Act
@@ -60,7 +60,7 @@ public class UpdateTagTests
         var project = new Project("Project", "Description", Command.ProjectId);
         var tag = new Tag("Name", "Description", "Color");
         project.AddTag(tag);
-        _projectsRepository.GetByIdWithTagsAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _projectRepository.GetByIdWithTagsAsync(Command.ProjectId, TestContext.Current.CancellationToken)
             .Returns(project);
 
         // Act
@@ -74,6 +74,6 @@ public class UpdateTagTests
         tag.Name.Should().Be(Command.Name);
         tag.Description.Should().Be(Command.Description);
         tag.Color.Should().Be(Command.Color);
-        _projectsRepository.Received().Update(project);
+        _projectRepository.Received().Update(project);
     }
 }

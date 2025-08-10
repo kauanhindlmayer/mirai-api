@@ -12,17 +12,17 @@ namespace Application.WorkItems.Commands.CreateWorkItem;
 internal sealed class CreateWorkItemCommandHandler
     : IRequestHandler<CreateWorkItemCommand, ErrorOr<Guid>>
 {
-    private readonly IProjectsRepository _projectsRepository;
-    private readonly IWorkItemsRepository _workItemsRepository;
+    private readonly IProjectRepository _projectRepository;
+    private readonly IWorkItemRepository _workItemRepository;
     private readonly IEmbeddingGenerator<string, Embedding<float>> _embeddingGenerator;
 
     public CreateWorkItemCommandHandler(
-        IProjectsRepository projectsRepository,
-        IWorkItemsRepository workItemsRepository,
+        IProjectRepository projectRepository,
+        IWorkItemRepository workItemRepository,
         [FromKeyedServices(ServiceKeys.Embedding)] IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator)
     {
-        _projectsRepository = projectsRepository;
-        _workItemsRepository = workItemsRepository;
+        _projectRepository = projectRepository;
+        _workItemRepository = workItemRepository;
         _embeddingGenerator = embeddingGenerator;
     }
 
@@ -30,7 +30,7 @@ internal sealed class CreateWorkItemCommandHandler
         CreateWorkItemCommand command,
         CancellationToken cancellationToken)
     {
-        var project = await _projectsRepository.GetByIdWithTeamsAsync(
+        var project = await _projectRepository.GetByIdWithTeamsAsync(
             command.ProjectId,
             cancellationToken);
 
@@ -45,7 +45,7 @@ internal sealed class CreateWorkItemCommandHandler
             return TeamErrors.NotFound;
         }
 
-        var workItemCode = await _workItemsRepository.GetNextWorkItemCodeAsync(
+        var workItemCode = await _workItemRepository.GetNextWorkItemCodeAsync(
             command.ProjectId,
             cancellationToken);
 
@@ -68,7 +68,7 @@ internal sealed class CreateWorkItemCommandHandler
             return result.Errors;
         }
 
-        _projectsRepository.Update(project);
+        _projectRepository.Update(project);
 
         return workItem.Id;
     }

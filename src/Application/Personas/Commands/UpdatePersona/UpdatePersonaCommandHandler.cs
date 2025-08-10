@@ -9,14 +9,14 @@ namespace Application.Personas.Commands.UpdatePersona;
 internal sealed class UpdatePersonaCommandHandler
     : IRequestHandler<UpdatePersonaCommand, ErrorOr<Success>>
 {
-    private readonly IProjectsRepository _projectsRepository;
+    private readonly IProjectRepository _projectRepository;
     private readonly IBlobService _blobService;
 
     public UpdatePersonaCommandHandler(
-        IProjectsRepository projectsRepository,
+        IProjectRepository projectRepository,
         IBlobService blobService)
     {
-        _projectsRepository = projectsRepository;
+        _projectRepository = projectRepository;
         _blobService = blobService;
     }
 
@@ -24,7 +24,7 @@ internal sealed class UpdatePersonaCommandHandler
         UpdatePersonaCommand command,
         CancellationToken cancellationToken)
     {
-        var project = await _projectsRepository.GetByIdWithPersonasAsync(
+        var project = await _projectRepository.GetByIdWithPersonasAsync(
             command.ProjectId,
             cancellationToken);
 
@@ -59,7 +59,7 @@ internal sealed class UpdatePersonaCommandHandler
         }
 
         persona.Update(command.Name, command.Description);
-        _projectsRepository.Update(project);
+        _projectRepository.Update(project);
 
         return Result.Success;
     }

@@ -13,19 +13,19 @@ public class CreateSprintTests
         DateOnly.FromDateTime(DateTime.UtcNow.AddDays(14)));
 
     private readonly CreateSprintCommandHandler _handler;
-    private readonly ITeamsRepository _teamsRepository;
+    private readonly ITeamRepository _teamRepository;
 
     public CreateSprintTests()
     {
-        _teamsRepository = Substitute.For<ITeamsRepository>();
-        _handler = new CreateSprintCommandHandler(_teamsRepository);
+        _teamRepository = Substitute.For<ITeamRepository>();
+        _handler = new CreateSprintCommandHandler(_teamRepository);
     }
 
     [Fact]
     public async Task Handle_WhenTeamDoesNotExists_ShouldReturnError()
     {
         // Arrange
-        _teamsRepository.GetByIdAsync(Command.TeamId, TestContext.Current.CancellationToken)
+        _teamRepository.GetByIdAsync(Command.TeamId, TestContext.Current.CancellationToken)
             .Returns(null as Team);
 
         // Act
@@ -47,7 +47,7 @@ public class CreateSprintTests
             DateOnly.FromDateTime(DateTime.UtcNow),
             DateOnly.FromDateTime(DateTime.UtcNow.AddDays(14)));
         team.AddSprint(sprint);
-        _teamsRepository.GetByIdAsync(Command.TeamId, TestContext.Current.CancellationToken)
+        _teamRepository.GetByIdAsync(Command.TeamId, TestContext.Current.CancellationToken)
             .Returns(team);
 
         // Act

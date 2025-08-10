@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Repositories;
 
-internal sealed class OrganizationsRepository : Repository<Organization>,
-    IOrganizationsRepository
+internal sealed class OrganizationRepository : Repository<Organization>,
+    IOrganizationRepository
 {
-    public OrganizationsRepository(ApplicationDbContext dbContext)
+    public OrganizationRepository(ApplicationDbContext dbContext)
         : base(dbContext)
     {
     }

@@ -11,12 +11,12 @@ public class DeleteOrganizationTests
         "Test Description");
 
     private readonly DeleteOrganizationCommandHandler _handler;
-    private readonly IOrganizationsRepository _mockOrganizationsRepository;
+    private readonly IOrganizationRepository _mockorganizationRepository;
 
     public DeleteOrganizationTests()
     {
-        _mockOrganizationsRepository = Substitute.For<IOrganizationsRepository>();
-        _handler = new DeleteOrganizationCommandHandler(_mockOrganizationsRepository);
+        _mockorganizationRepository = Substitute.For<IOrganizationRepository>();
+        _handler = new DeleteOrganizationCommandHandler(_mockorganizationRepository);
     }
 
     [Fact]
@@ -24,7 +24,7 @@ public class DeleteOrganizationTests
     {
         // Arrange
         var organization = new Organization(Command.Name, Command.Description);
-        _mockOrganizationsRepository.GetByIdAsync(organization.Id, TestContext.Current.CancellationToken)
+        _mockorganizationRepository.GetByIdAsync(organization.Id, TestContext.Current.CancellationToken)
             .Returns(organization);
         var command = new DeleteOrganizationCommand(organization.Id);
 
@@ -39,7 +39,7 @@ public class DeleteOrganizationTests
     public async Task Handle_WhenOrganizationDoesNotExist_ShouldReturnNotFound()
     {
         // Arrange
-        _mockOrganizationsRepository.GetByIdAsync(Arg.Any<Guid>(), TestContext.Current.CancellationToken)
+        _mockorganizationRepository.GetByIdAsync(Arg.Any<Guid>(), TestContext.Current.CancellationToken)
             .Returns(null as Organization);
         var command = new DeleteOrganizationCommand(Guid.NewGuid());
 

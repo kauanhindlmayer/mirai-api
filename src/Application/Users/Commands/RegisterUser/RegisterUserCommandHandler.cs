@@ -8,14 +8,14 @@ namespace Application.Users.Commands.RegisterUser;
 internal sealed class RegisterUserCommandHandler
     : IRequestHandler<RegisterUserCommand, ErrorOr<Guid>>
 {
-    private readonly IUsersRepository _usersRepository;
+    private readonly IUserRepository _userRepository;
     private readonly IAuthenticationService _authenticationService;
 
     public RegisterUserCommandHandler(
-        IUsersRepository usersRepository,
+        IUserRepository userRepository,
         IAuthenticationService authenticationService)
     {
-        _usersRepository = usersRepository;
+        _userRepository = userRepository;
         _authenticationService = authenticationService;
     }
 
@@ -23,7 +23,7 @@ internal sealed class RegisterUserCommandHandler
         RegisterUserCommand command,
         CancellationToken cancellationToken)
     {
-        if (await _usersRepository.ExistsByEmailAsync(command.Email, cancellationToken))
+        if (await _userRepository.ExistsByEmailAsync(command.Email, cancellationToken))
         {
             return UserErrors.AlreadyExists;
         }
@@ -39,7 +39,7 @@ internal sealed class RegisterUserCommandHandler
             cancellationToken);
 
         user.SetIdentityId(identityId);
-        await _usersRepository.AddAsync(user, cancellationToken);
+        await _userRepository.AddAsync(user, cancellationToken);
 
         return user.Id;
     }

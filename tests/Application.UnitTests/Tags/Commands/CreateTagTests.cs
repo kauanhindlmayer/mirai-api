@@ -13,19 +13,19 @@ public class CreateTagTests
         "#FFFFFF");
 
     private readonly CreateTagCommandHandler _handler;
-    private readonly IProjectsRepository _projectsRepository;
+    private readonly IProjectRepository _projectRepository;
 
     public CreateTagTests()
     {
-        _projectsRepository = Substitute.For<IProjectsRepository>();
-        _handler = new CreateTagCommandHandler(_projectsRepository);
+        _projectRepository = Substitute.For<IProjectRepository>();
+        _handler = new CreateTagCommandHandler(_projectRepository);
     }
 
     [Fact]
     public async Task Handle_WhenProjectDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _projectsRepository.GetByIdWithTagsAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _projectRepository.GetByIdWithTagsAsync(Command.ProjectId, TestContext.Current.CancellationToken)
             .Returns(null as Project);
 
         // Act
@@ -43,7 +43,7 @@ public class CreateTagTests
         var project = new Project("Test Project", "Test Description", Guid.NewGuid());
         var tag = new Tag("Test Tag", "Test Description", "#FFFFFF");
         project.AddTag(tag);
-        _projectsRepository.GetByIdWithTagsAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _projectRepository.GetByIdWithTagsAsync(Command.ProjectId, TestContext.Current.CancellationToken)
             .Returns(project);
 
         // Act
@@ -59,7 +59,7 @@ public class CreateTagTests
     {
         // Arrange
         var project = new Project("Test Project", "Test Description", Guid.NewGuid());
-        _projectsRepository.GetByIdWithTagsAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _projectRepository.GetByIdWithTagsAsync(Command.ProjectId, TestContext.Current.CancellationToken)
             .Returns(project);
 
         // Act
@@ -71,6 +71,6 @@ public class CreateTagTests
         project.Tags.First().Name.Should().Be(Command.Name);
         project.Tags.First().Description.Should().Be(Command.Description);
         project.Tags.First().Color.Should().Be(Command.Color);
-        _projectsRepository.Received(1).Update(project);
+        _projectRepository.Received(1).Update(project);
     }
 }

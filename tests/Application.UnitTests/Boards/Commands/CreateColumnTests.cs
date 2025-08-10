@@ -13,19 +13,19 @@ public class CreateColumnTests
         0);
 
     private readonly CreateColumnCommandHandler _handler;
-    private readonly IBoardsRepository _boardsRepository;
+    private readonly IBoardRepository _boardRepository;
 
     public CreateColumnTests()
     {
-        _boardsRepository = Substitute.For<IBoardsRepository>();
-        _handler = new CreateColumnCommandHandler(_boardsRepository);
+        _boardRepository = Substitute.For<IBoardRepository>();
+        _handler = new CreateColumnCommandHandler(_boardRepository);
     }
 
     [Fact]
     public async Task Handle_WhenBoardDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _boardsRepository.GetByIdWithColumnsAsync(Command.BoardId, TestContext.Current.CancellationToken)
+        _boardRepository.GetByIdWithColumnsAsync(Command.BoardId, TestContext.Current.CancellationToken)
             .Returns(null as Board);
 
         // Act
@@ -41,7 +41,7 @@ public class CreateColumnTests
     {
         // Arrange
         var board = new Board(Command.BoardId, "Board");
-        _boardsRepository.GetByIdWithColumnsAsync(Command.BoardId, TestContext.Current.CancellationToken)
+        _boardRepository.GetByIdWithColumnsAsync(Command.BoardId, TestContext.Current.CancellationToken)
             .Returns(board);
 
         // Act
@@ -60,7 +60,7 @@ public class CreateColumnTests
         // Arrange
         var board = new Board(Command.BoardId, "Board");
         board.AddColumn(new BoardColumn(board.Id, Command.Name));
-        _boardsRepository.GetByIdWithColumnsAsync(Command.BoardId, TestContext.Current.CancellationToken)
+        _boardRepository.GetByIdWithColumnsAsync(Command.BoardId, TestContext.Current.CancellationToken)
             .Returns(board);
 
         // Act
@@ -76,7 +76,7 @@ public class CreateColumnTests
     {
         // Arrange
         var board = new Board(Command.BoardId, "Board");
-        _boardsRepository.GetByIdWithColumnsAsync(Command.BoardId, TestContext.Current.CancellationToken)
+        _boardRepository.GetByIdWithColumnsAsync(Command.BoardId, TestContext.Current.CancellationToken)
             .Returns(board);
 
         // Act

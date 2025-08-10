@@ -17,18 +17,18 @@ public class CreateWorkItemTests
         Guid.NewGuid());
 
     private readonly CreateWorkItemCommandHandler _handler;
-    private readonly IProjectsRepository _projectsRepository;
-    private readonly IWorkItemsRepository _workItemsRepository;
+    private readonly IProjectRepository _projectRepository;
+    private readonly IWorkItemRepository _workItemRepository;
     private readonly IEmbeddingGenerator<string, Embedding<float>> _embeddingGenerator;
 
     public CreateWorkItemTests()
     {
-        _projectsRepository = Substitute.For<IProjectsRepository>();
-        _workItemsRepository = Substitute.For<IWorkItemsRepository>();
+        _projectRepository = Substitute.For<IProjectRepository>();
+        _workItemRepository = Substitute.For<IWorkItemRepository>();
         _embeddingGenerator = Substitute.For<IEmbeddingGenerator<string, Embedding<float>>>();
         _handler = new CreateWorkItemCommandHandler(
-            _projectsRepository,
-            _workItemsRepository,
+            _projectRepository,
+            _workItemRepository,
             _embeddingGenerator);
     }
 
@@ -36,7 +36,7 @@ public class CreateWorkItemTests
     public async Task Handle_WhenProjectDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _projectsRepository.GetByIdAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _projectRepository.GetByIdAsync(Command.ProjectId, TestContext.Current.CancellationToken)
             .Returns(null as Project);
 
         // Act
@@ -56,9 +56,9 @@ public class CreateWorkItemTests
         var board = new Board(team.Id, "Board");
         project.AddTeam(team);
         team.AddBoard(board);
-        _projectsRepository.GetByIdWithTeamsAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _projectRepository.GetByIdWithTeamsAsync(Command.ProjectId, TestContext.Current.CancellationToken)
             .Returns(project);
-        _workItemsRepository.GetNextWorkItemCodeAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _workItemRepository.GetNextWorkItemCodeAsync(Command.ProjectId, TestContext.Current.CancellationToken)
             .Returns(1);
 
         // Act
@@ -80,9 +80,9 @@ public class CreateWorkItemTests
         var board = new Board(team.Id, "Board");
         project.AddTeam(team);
         team.AddBoard(board);
-        _projectsRepository.GetByIdWithTeamsAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _projectRepository.GetByIdWithTeamsAsync(Command.ProjectId, TestContext.Current.CancellationToken)
             .Returns(project);
-        _workItemsRepository.GetNextWorkItemCodeAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _workItemRepository.GetNextWorkItemCodeAsync(Command.ProjectId, TestContext.Current.CancellationToken)
             .Returns(1);
 
         // Act
@@ -91,6 +91,6 @@ public class CreateWorkItemTests
             TestContext.Current.CancellationToken);
 
         // Assert
-        _projectsRepository.Received().Update(project);
+        _projectRepository.Received().Update(project);
     }
 }

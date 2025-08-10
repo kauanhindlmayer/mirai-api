@@ -8,14 +8,14 @@ namespace Application.WorkItems.Commands.AddTag;
 internal sealed class AddTagCommandHandler
     : IRequestHandler<AddTagCommand, ErrorOr<Success>>
 {
-    private readonly IWorkItemsRepository _workItemsRepository;
-    private readonly ITagsRepository _tagsRepository;
+    private readonly IWorkItemRepository _workItemRepository;
+    private readonly ITagRepository _tagsRepository;
 
     public AddTagCommandHandler(
-        IWorkItemsRepository workItemsRepository,
-        ITagsRepository tagsRepository)
+        IWorkItemRepository workItemRepository,
+        ITagRepository tagsRepository)
     {
-        _workItemsRepository = workItemsRepository;
+        _workItemRepository = workItemRepository;
         _tagsRepository = tagsRepository;
     }
 
@@ -23,7 +23,7 @@ internal sealed class AddTagCommandHandler
         AddTagCommand command,
         CancellationToken cancellationToken)
     {
-        var workItem = await _workItemsRepository.GetByIdWithTagsAsync(
+        var workItem = await _workItemRepository.GetByIdWithTagsAsync(
             command.WorkItemId,
             cancellationToken);
 
@@ -36,7 +36,7 @@ internal sealed class AddTagCommandHandler
             ?? new Tag(command.TagName, string.Empty, string.Empty, command.ProjectId);
 
         workItem.AddTag(tag);
-        _workItemsRepository.Update(workItem);
+        _workItemRepository.Update(workItem);
 
         return Result.Success;
     }

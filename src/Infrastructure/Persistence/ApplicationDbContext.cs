@@ -61,7 +61,8 @@ public sealed class ApplicationDbContext(
 
     public DbSet<Persona> Personas { get; init; }
 
-    public async override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    public async override Task<int> SaveChangesAsync(
+        CancellationToken cancellationToken = default)
     {
         var domainEvents = ChangeTracker.Entries<Entity>()
            .SelectMany(entry =>

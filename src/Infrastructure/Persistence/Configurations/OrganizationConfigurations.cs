@@ -29,21 +29,21 @@ internal sealed class OrganizationConfigurations : IEntityTypeConfiguration<Orga
         builder.HasMany(o => o.Users)
             .WithMany(u => u.Organizations)
             .UsingEntity<Dictionary<string, object>>(
-                "OrganizationUsers",
+                "organization_users",
                 j => j.HasOne<User>()
                     .WithMany()
-                    .HasForeignKey("UserId")
+                    .HasForeignKey("user_id")
                     .OnDelete(DeleteBehavior.Cascade),
                 j => j.HasOne<Organization>()
                     .WithMany()
-                    .HasForeignKey("OrganizationId")
+                    .HasForeignKey("organization_id")
                     .OnDelete(DeleteBehavior.Cascade),
                 j =>
                 {
-                    j.HasKey("OrganizationId", "UserId");
-                    j.ToTable("OrganizationUsers");
-                    j.HasIndex("UserId");
-                    j.HasIndex("OrganizationId");
+                    j.HasKey("organization_id", "user_id");
+                    j.ToTable("organization_users");
+                    j.HasIndex("user_id");
+                    j.HasIndex("organization_id");
                 });
     }
 }

@@ -8,22 +8,22 @@ namespace Application.Organizations.Commands.AddUserToOrganization;
 internal sealed class AddUserToOrganizationCommandHandler
     : IRequestHandler<AddUserToOrganizationCommand, ErrorOr<Success>>
 {
-    private readonly IOrganizationsRepository _organizationsRepository;
-    private readonly IUsersRepository _usersRepository;
+    private readonly IOrganizationRepository _organizationRepository;
+    private readonly IUserRepository _userRepository;
 
     public AddUserToOrganizationCommandHandler(
-        IOrganizationsRepository organizationsRepository,
-        IUsersRepository usersRepository)
+        IOrganizationRepository organizationRepository,
+        IUserRepository userRepository)
     {
-        _organizationsRepository = organizationsRepository;
-        _usersRepository = usersRepository;
+        _organizationRepository = organizationRepository;
+        _userRepository = userRepository;
     }
 
     public async Task<ErrorOr<Success>> Handle(
         AddUserToOrganizationCommand command,
         CancellationToken cancellationToken)
     {
-        var organization = await _organizationsRepository.GetByIdAsync(
+        var organization = await _organizationRepository.GetByIdAsync(
             command.OrganizationId,
             cancellationToken);
 
@@ -32,7 +32,7 @@ internal sealed class AddUserToOrganizationCommandHandler
             return OrganizationErrors.NotFound;
         }
 
-        var user = await _usersRepository.GetByIdAsync(
+        var user = await _userRepository.GetByIdAsync(
             command.UserId,
             cancellationToken);
 
@@ -47,7 +47,7 @@ internal sealed class AddUserToOrganizationCommandHandler
             return result.Errors;
         }
 
-        _organizationsRepository.Update(organization);
+        _organizationRepository.Update(organization);
 
         return Result.Success;
     }

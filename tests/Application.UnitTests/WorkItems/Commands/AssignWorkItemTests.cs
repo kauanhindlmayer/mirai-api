@@ -12,23 +12,23 @@ public class AssignWorkItemTests
        Guid.NewGuid());
 
     private readonly AssignWorkItemCommandHandler _handler;
-    private readonly IWorkItemsRepository _workItemsRepository;
-    private readonly IUsersRepository _usersRepository;
+    private readonly IWorkItemRepository _workItemRepository;
+    private readonly IUserRepository _userRepository;
 
     public AssignWorkItemTests()
     {
-        _workItemsRepository = Substitute.For<IWorkItemsRepository>();
-        _usersRepository = Substitute.For<IUsersRepository>();
+        _workItemRepository = Substitute.For<IWorkItemRepository>();
+        _userRepository = Substitute.For<IUserRepository>();
         _handler = new AssignWorkItemCommandHandler(
-            _workItemsRepository,
-            _usersRepository);
+            _workItemRepository,
+            _userRepository);
     }
 
     [Fact]
     public async Task Handle_WhenWorkItemDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _workItemsRepository.GetByIdAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
+        _workItemRepository.GetByIdAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
             .Returns(null as WorkItem);
 
         // Act
@@ -44,9 +44,9 @@ public class AssignWorkItemTests
     {
         // Arrange
         var workItem = new WorkItem(Guid.NewGuid(), 1, "Title", WorkItemType.UserStory);
-        _workItemsRepository.GetByIdAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
+        _workItemRepository.GetByIdAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
             .Returns(workItem);
-        _usersRepository.GetByIdAsync(Command.AssigneeId, TestContext.Current.CancellationToken)
+        _userRepository.GetByIdAsync(Command.AssigneeId, TestContext.Current.CancellationToken)
             .Returns(null as User);
 
         // Act
@@ -63,9 +63,9 @@ public class AssignWorkItemTests
         // Arrange
         var workItem = new WorkItem(Guid.NewGuid(), 1, "Title", WorkItemType.UserStory);
         var assignee = new User("John", "Doe", "john.doe@email.com");
-        _workItemsRepository.GetByIdAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
+        _workItemRepository.GetByIdAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
             .Returns(workItem);
-        _usersRepository.GetByIdAsync(Command.AssigneeId, TestContext.Current.CancellationToken)
+        _userRepository.GetByIdAsync(Command.AssigneeId, TestContext.Current.CancellationToken)
             .Returns(assignee);
 
         // Act
@@ -83,9 +83,9 @@ public class AssignWorkItemTests
         // Arrange
         var workItem = new WorkItem(Guid.NewGuid(), 1, "Title", WorkItemType.UserStory);
         var assignee = new User("John", "Doe", "john.doe@email.com");
-        _workItemsRepository.GetByIdAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
+        _workItemRepository.GetByIdAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
             .Returns(workItem);
-        _usersRepository.GetByIdAsync(Command.AssigneeId, TestContext.Current.CancellationToken)
+        _userRepository.GetByIdAsync(Command.AssigneeId, TestContext.Current.CancellationToken)
             .Returns(assignee);
 
         // Act
@@ -94,6 +94,6 @@ public class AssignWorkItemTests
         // Assert
         result.Should().BeOfType<ErrorOr<Success>>();
         result.IsError.Should().BeFalse();
-        _workItemsRepository.Received().Update(workItem);
+        _workItemRepository.Received().Update(workItem);
     }
 }

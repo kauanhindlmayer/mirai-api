@@ -8,22 +8,22 @@ namespace Application.Sprints.Commands.AddWorkItemToSprint;
 internal sealed class AddWorkItemToSprintCommandHandler
     : IRequestHandler<AddWorkItemToSprintCommand, ErrorOr<Success>>
 {
-    private readonly ISprintsRepository _sprintsRepository;
-    private readonly IWorkItemsRepository _workItemsRepository;
+    private readonly ISprintRepository _sprintRepository;
+    private readonly IWorkItemRepository _workItemRepository;
 
     public AddWorkItemToSprintCommandHandler(
-        ISprintsRepository sprintsRepository,
-        IWorkItemsRepository workItemsRepository)
+        ISprintRepository sprintRepository,
+        IWorkItemRepository workItemRepository)
     {
-        _sprintsRepository = sprintsRepository;
-        _workItemsRepository = workItemsRepository;
+        _sprintRepository = sprintRepository;
+        _workItemRepository = workItemRepository;
     }
 
     public async Task<ErrorOr<Success>> Handle(
         AddWorkItemToSprintCommand command,
         CancellationToken cancellationToken)
     {
-        var sprint = await _sprintsRepository.GetByIdAsync(
+        var sprint = await _sprintRepository.GetByIdAsync(
             command.SprintId,
             cancellationToken);
 
@@ -32,7 +32,7 @@ internal sealed class AddWorkItemToSprintCommandHandler
             return SprintErrors.NotFound;
         }
 
-        var workItem = await _workItemsRepository.GetByIdAsync(
+        var workItem = await _workItemRepository.GetByIdAsync(
             command.WorkItemId,
             cancellationToken);
 
@@ -47,7 +47,7 @@ internal sealed class AddWorkItemToSprintCommandHandler
             return result.Errors;
         }
 
-        _sprintsRepository.Update(sprint);
+        _sprintRepository.Update(sprint);
 
         return Result.Success;
     }

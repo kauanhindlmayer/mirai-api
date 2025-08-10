@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Repositories;
 
-internal sealed class WikiPagesRepository : Repository<WikiPage>, IWikiPagesRepository
+internal sealed class WikiPageRepository : Repository<WikiPage>, IWikiPageRepository
 {
-    public WikiPagesRepository(ApplicationDbContext dbContext)
+    public WikiPageRepository(ApplicationDbContext dbContext)
         : base(dbContext)
     {
     }
@@ -29,28 +29,6 @@ internal sealed class WikiPagesRepository : Repository<WikiPage>, IWikiPagesRepo
         return await _dbContext.WikiPages
             .Include(wp => wp.SubWikiPages)
             .FirstOrDefaultAsync(wp => wp.Id == id, cancellationToken);
-    }
-
-    public async Task LogViewAsync(
-        Guid wikiPageId,
-        Guid viewerId,
-        CancellationToken cancellationToken = default)
-    {
-        var hasRecentView = await _dbContext.WikiPageViews
-            .AnyAsync(
-                wpv => wpv.WikiPageId == wikiPageId &&
-                       wpv.ViewerId == viewerId &&
-                       wpv.ViewedAt > DateTime.UtcNow.AddMinutes(-30),
-                cancellationToken);
-
-        if (hasRecentView)
-        {
-            return;
-        }
-
-        var wikiPageView = new WikiPageView(wikiPageId, viewerId);
-        _dbContext.WikiPageViews.Add(wikiPageView);
-        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
     public Task<int> GetViewsForLastDaysAsync(

@@ -14,19 +14,19 @@ public class CreateRetrospectiveTests
         Guid.NewGuid());
 
     private readonly CreateRetrospectiveCommandHandler _handler;
-    private readonly ITeamsRepository _teamsRepository;
+    private readonly ITeamRepository _teamRepository;
 
     public CreateRetrospectiveTests()
     {
-        _teamsRepository = Substitute.For<ITeamsRepository>();
-        _handler = new CreateRetrospectiveCommandHandler(_teamsRepository);
+        _teamRepository = Substitute.For<ITeamRepository>();
+        _handler = new CreateRetrospectiveCommandHandler(_teamRepository);
     }
 
     [Fact]
     public async Task Handle_WhenTeamDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _teamsRepository.GetByIdAsync(Command.TeamId, TestContext.Current.CancellationToken)
+        _teamRepository.GetByIdAsync(Command.TeamId, TestContext.Current.CancellationToken)
             .Returns(null as Team);
 
         // Act
@@ -45,7 +45,7 @@ public class CreateRetrospectiveTests
         var team = new Team(Guid.NewGuid(), "Test Team", "Test Description");
         var retrospective = new Retrospective("Test Retrospective", 5, null, Guid.NewGuid());
         team.AddRetrospective(retrospective);
-        _teamsRepository.GetByIdAsync(Command.TeamId, TestContext.Current.CancellationToken)
+        _teamRepository.GetByIdAsync(Command.TeamId, TestContext.Current.CancellationToken)
             .Returns(team);
 
         // Act
@@ -62,7 +62,7 @@ public class CreateRetrospectiveTests
     {
         // Arrange
         var team = new Team(Guid.NewGuid(), "Test Team", "Test Description");
-        _teamsRepository.GetByIdAsync(Command.TeamId, TestContext.Current.CancellationToken)
+        _teamRepository.GetByIdAsync(Command.TeamId, TestContext.Current.CancellationToken)
             .Returns(team);
 
         // Act
@@ -72,7 +72,7 @@ public class CreateRetrospectiveTests
         result.Should().BeOfType<ErrorOr<Guid>>();
         result.IsError.Should().BeFalse();
         result.Value.Should().NotBeEmpty();
-        _teamsRepository.Received().Update(team);
+        _teamRepository.Received().Update(team);
         team.Retrospectives.Should().Contain(r => r.Id == result.Value);
     }
 }

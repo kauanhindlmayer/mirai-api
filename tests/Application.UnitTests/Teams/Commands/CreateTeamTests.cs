@@ -12,19 +12,19 @@ public class CreateTeamTests
         "Description");
 
     private readonly CreateTeamCommandHandler _handler;
-    private readonly IProjectsRepository _projectsRepository;
+    private readonly IProjectRepository _projectRepository;
 
     public CreateTeamTests()
     {
-        _projectsRepository = Substitute.For<IProjectsRepository>();
-        _handler = new CreateTeamCommandHandler(_projectsRepository);
+        _projectRepository = Substitute.For<IProjectRepository>();
+        _handler = new CreateTeamCommandHandler(_projectRepository);
     }
 
     [Fact]
     public async Task Handle_WhenProjectDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _projectsRepository.GetByIdAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _projectRepository.GetByIdAsync(Command.ProjectId, TestContext.Current.CancellationToken)
             .Returns(null as Project);
 
         // Act
@@ -41,7 +41,7 @@ public class CreateTeamTests
         // Arrange
         var project = new Project("Name", "Description", Guid.NewGuid());
         project.AddTeam(new Team(project.Id, Command.Name, Command.Description));
-        _projectsRepository.GetByIdAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _projectRepository.GetByIdAsync(Command.ProjectId, TestContext.Current.CancellationToken)
             .Returns(project);
 
         // Act
@@ -57,7 +57,7 @@ public class CreateTeamTests
     {
         // Arrange
         var project = new Project("Name", "Description", Guid.NewGuid());
-        _projectsRepository.GetByIdAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _projectRepository.GetByIdAsync(Command.ProjectId, TestContext.Current.CancellationToken)
             .Returns(project);
 
         // Act
@@ -66,6 +66,6 @@ public class CreateTeamTests
         // Assert
         result.IsError.Should().BeFalse();
         result.Value.Should().NotBeEmpty();
-        _projectsRepository.Received().Update(project);
+        _projectRepository.Received().Update(project);
     }
 }

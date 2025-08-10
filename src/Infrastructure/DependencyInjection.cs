@@ -102,16 +102,16 @@ public static class DependencyInjection
                 .UseSnakeCaseNamingConvention());
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
-        services.AddScoped<IOrganizationsRepository, OrganizationsRepository>();
-        services.AddScoped<IProjectsRepository, ProjectsRepository>();
-        services.AddScoped<IWorkItemsRepository, WorkItemsRepository>();
-        services.AddScoped<IWikiPagesRepository, WikiPagesRepository>();
-        services.AddScoped<IRetrospectivesRepository, RetrospectivesRepository>();
-        services.AddScoped<ITeamsRepository, TeamsRepository>();
-        services.AddScoped<IUsersRepository, UsersRepository>();
-        services.AddScoped<ITagsRepository, TagsRepository>();
-        services.AddScoped<IBoardsRepository, BoardsRepository>();
-        services.AddScoped<ISprintsRepository, SprintsRepository>();
+        services.AddScoped<IOrganizationRepository, OrganizationRepository>();
+        services.AddScoped<IProjectRepository, ProjectRepository>();
+        services.AddScoped<IWorkItemRepository, WorkItemRepository>();
+        services.AddScoped<IWikiPageRepository, WikiPageRepository>();
+        services.AddScoped<IRetrospectivesRepository, RetrospectiveRepository>();
+        services.AddScoped<ITeamRepository, TeamRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<ITagRepository, TagRepository>();
+        services.AddScoped<IBoardRepository, BoardRepository>();
+        services.AddScoped<ISprintRepository, SprintRepository>();
 
         services.AddScoped<IApplicationDbContext>(sp =>
             sp.GetRequiredService<ApplicationDbContext>());

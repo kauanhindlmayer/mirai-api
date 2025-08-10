@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Repositories;
 
-internal sealed class TeamsRepository : Repository<Team>, ITeamsRepository
+internal sealed class TeamRepository : Repository<Team>, ITeamRepository
 {
-    public TeamsRepository(ApplicationDbContext dbContext)
+    public TeamRepository(ApplicationDbContext dbContext)
         : base(dbContext)
     {
     }

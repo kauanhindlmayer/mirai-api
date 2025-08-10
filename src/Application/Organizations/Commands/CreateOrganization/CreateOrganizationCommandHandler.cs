@@ -7,19 +7,19 @@ namespace Application.Organizations.Commands.CreateOrganization;
 internal sealed class CreateOrganizationCommandHandler
     : IRequestHandler<CreateOrganizationCommand, ErrorOr<Guid>>
 {
-    private readonly IOrganizationsRepository _organizationsRepository;
+    private readonly IOrganizationRepository _organizationRepository;
 
     public CreateOrganizationCommandHandler(
-        IOrganizationsRepository organizationsRepository)
+        IOrganizationRepository organizationRepository)
     {
-        _organizationsRepository = organizationsRepository;
+        _organizationRepository = organizationRepository;
     }
 
     public async Task<ErrorOr<Guid>> Handle(
         CreateOrganizationCommand command,
         CancellationToken cancellationToken)
     {
-        if (await _organizationsRepository.ExistsByNameAsync(
+        if (await _organizationRepository.ExistsByNameAsync(
             command.Name,
             cancellationToken))
         {
@@ -30,7 +30,7 @@ internal sealed class CreateOrganizationCommandHandler
             command.Name,
             command.Description);
 
-        await _organizationsRepository.AddAsync(
+        await _organizationRepository.AddAsync(
             organization,
             cancellationToken);
 

@@ -8,18 +8,18 @@ namespace Application.Tags.Commands.UpdateTag;
 internal sealed class UpdateTagCommandHandler
     : IRequestHandler<UpdateTagCommand, ErrorOr<Guid>>
 {
-    private readonly IProjectsRepository _projectsRepository;
+    private readonly IProjectRepository _projectRepository;
 
-    public UpdateTagCommandHandler(IProjectsRepository projectsRepository)
+    public UpdateTagCommandHandler(IProjectRepository projectRepository)
     {
-        _projectsRepository = projectsRepository;
+        _projectRepository = projectRepository;
     }
 
     public async Task<ErrorOr<Guid>> Handle(
         UpdateTagCommand command,
         CancellationToken cancellationToken)
     {
-        var project = await _projectsRepository.GetByIdWithTagsAsync(
+        var project = await _projectRepository.GetByIdWithTagsAsync(
             command.ProjectId,
             cancellationToken);
 
@@ -35,7 +35,7 @@ internal sealed class UpdateTagCommandHandler
         }
 
         tag.Update(command.Name, command.Description, command.Color);
-        _projectsRepository.Update(project);
+        _projectRepository.Update(project);
 
         return tag.Id;
     }

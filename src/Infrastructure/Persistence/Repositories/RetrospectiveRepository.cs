@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Repositories;
 
-internal sealed class RetrospectivesRepository : Repository<Retrospective>,
+internal sealed class RetrospectiveRepository : Repository<Retrospective>,
     IRetrospectivesRepository
 {
-    public RetrospectivesRepository(ApplicationDbContext dbContext)
+    public RetrospectiveRepository(ApplicationDbContext dbContext)
         : base(dbContext)
     {
     }

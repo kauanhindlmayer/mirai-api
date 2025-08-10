@@ -8,18 +8,18 @@ namespace Application.Sprints.Commands.CreateSprint;
 internal sealed class CreateSprintCommandHandler
     : IRequestHandler<CreateSprintCommand, ErrorOr<Guid>>
 {
-    private readonly ITeamsRepository _teamsRepository;
+    private readonly ITeamRepository _teamRepository;
 
-    public CreateSprintCommandHandler(ITeamsRepository teamsRepository)
+    public CreateSprintCommandHandler(ITeamRepository teamRepository)
     {
-        _teamsRepository = teamsRepository;
+        _teamRepository = teamRepository;
     }
 
     public async Task<ErrorOr<Guid>> Handle(
         CreateSprintCommand command,
         CancellationToken cancellationToken)
     {
-        var team = await _teamsRepository.GetByIdAsync(
+        var team = await _teamRepository.GetByIdAsync(
             command.TeamId,
             cancellationToken);
 
@@ -40,7 +40,7 @@ internal sealed class CreateSprintCommandHandler
             return result.Errors;
         }
 
-        _teamsRepository.Update(team);
+        _teamRepository.Update(team);
 
         return sprint.Id;
     }

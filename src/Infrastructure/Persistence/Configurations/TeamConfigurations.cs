@@ -53,21 +53,21 @@ internal sealed class TeamConfigurations : IEntityTypeConfiguration<Team>
         builder.HasMany(t => t.Users)
             .WithMany(u => u.Teams)
             .UsingEntity<Dictionary<string, object>>(
-                "TeamUsers",
+                "team_users",
                 j => j.HasOne<User>()
                     .WithMany()
-                    .HasForeignKey("UserId")
+                    .HasForeignKey("user_id")
                     .OnDelete(DeleteBehavior.Cascade),
                 j => j.HasOne<Team>()
                     .WithMany()
-                    .HasForeignKey("TeamId")
+                    .HasForeignKey("team_id")
                     .OnDelete(DeleteBehavior.Cascade),
                 j =>
                 {
-                    j.HasKey("TeamId", "UserId");
-                    j.ToTable("TeamUsers");
-                    j.HasIndex("UserId");
-                    j.HasIndex("TeamId");
+                    j.HasKey("team_id", "user_id");
+                    j.ToTable("team_users");
+                    j.HasIndex("user_id");
+                    j.HasIndex("team_id");
                 });
 
         builder.HasIndex(t => t.ProjectId);

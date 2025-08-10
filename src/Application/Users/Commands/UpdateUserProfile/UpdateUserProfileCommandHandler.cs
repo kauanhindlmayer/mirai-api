@@ -8,14 +8,14 @@ namespace Application.Users.Commands.UpdateUserProfile;
 internal sealed class UpdateUserProfileCommandHandler
     : IRequestHandler<UpdateUserProfileCommand, ErrorOr<Success>>
 {
-    private readonly IUsersRepository _usersRepository;
+    private readonly IUserRepository _userRepository;
     private readonly IUserContext _userContext;
 
     public UpdateUserProfileCommandHandler(
-        IUsersRepository usersRepository,
+        IUserRepository userRepository,
         IUserContext userContext)
     {
-        _usersRepository = usersRepository;
+        _userRepository = userRepository;
         _userContext = userContext;
     }
 
@@ -23,7 +23,7 @@ internal sealed class UpdateUserProfileCommandHandler
         UpdateUserProfileCommand command,
         CancellationToken cancellationToken)
     {
-        var user = await _usersRepository.GetByIdAsync(
+        var user = await _userRepository.GetByIdAsync(
             _userContext.UserId,
             cancellationToken);
 
@@ -33,7 +33,7 @@ internal sealed class UpdateUserProfileCommandHandler
         }
 
         user.UpdateProfile(command.FirstName, command.LastName);
-        _usersRepository.Update(user);
+        _userRepository.Update(user);
 
         return Result.Success;
     }

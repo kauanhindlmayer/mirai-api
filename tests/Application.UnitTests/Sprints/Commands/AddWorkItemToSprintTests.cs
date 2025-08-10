@@ -13,23 +13,23 @@ public class AddWorkItemToSprintTests
         Guid.NewGuid());
 
     private readonly AddWorkItemToSprintCommandHandler _handler;
-    private readonly ISprintsRepository _sprintsRepository;
-    private readonly IWorkItemsRepository _workItemsRepository;
+    private readonly ISprintRepository _sprintRepository;
+    private readonly IWorkItemRepository _workItemRepository;
 
     public AddWorkItemToSprintTests()
     {
-        _sprintsRepository = Substitute.For<ISprintsRepository>();
-        _workItemsRepository = Substitute.For<IWorkItemsRepository>();
+        _sprintRepository = Substitute.For<ISprintRepository>();
+        _workItemRepository = Substitute.For<IWorkItemRepository>();
         _handler = new AddWorkItemToSprintCommandHandler(
-            _sprintsRepository,
-            _workItemsRepository);
+            _sprintRepository,
+            _workItemRepository);
     }
 
     [Fact]
     public async Task Handle_WhenSprintDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _sprintsRepository.GetByIdAsync(Command.SprintId, TestContext.Current.CancellationToken)
+        _sprintRepository.GetByIdAsync(Command.SprintId, TestContext.Current.CancellationToken)
             .Returns(null as Sprint);
 
         // Act
@@ -49,10 +49,10 @@ public class AddWorkItemToSprintTests
             "Name",
             DateOnly.FromDateTime(DateTime.Now),
             DateOnly.FromDateTime(DateTime.Now.AddDays(14)));
-        _sprintsRepository.GetByIdAsync(Command.SprintId, TestContext.Current.CancellationToken)
+        _sprintRepository.GetByIdAsync(Command.SprintId, TestContext.Current.CancellationToken)
             .Returns(sprint);
 
-        _workItemsRepository.GetByIdAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
+        _workItemRepository.GetByIdAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
             .Returns(null as WorkItem);
 
         // Act
@@ -75,10 +75,10 @@ public class AddWorkItemToSprintTests
         var workItem = new WorkItem(Guid.NewGuid(), 1, "Name", WorkItemType.UserStory);
         sprint.AddWorkItem(workItem);
 
-        _sprintsRepository.GetByIdAsync(Command.SprintId, TestContext.Current.CancellationToken)
+        _sprintRepository.GetByIdAsync(Command.SprintId, TestContext.Current.CancellationToken)
             .Returns(sprint);
 
-        _workItemsRepository.GetByIdAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
+        _workItemRepository.GetByIdAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
             .Returns(workItem);
 
         // Act
@@ -100,10 +100,10 @@ public class AddWorkItemToSprintTests
             DateOnly.FromDateTime(DateTime.Now.AddDays(14)));
         var workItem = new WorkItem(Guid.NewGuid(), 1, "Name", WorkItemType.UserStory);
 
-        _sprintsRepository.GetByIdAsync(Command.SprintId, TestContext.Current.CancellationToken)
+        _sprintRepository.GetByIdAsync(Command.SprintId, TestContext.Current.CancellationToken)
             .Returns(sprint);
 
-        _workItemsRepository.GetByIdAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
+        _workItemRepository.GetByIdAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
             .Returns(workItem);
 
         // Act
@@ -112,6 +112,6 @@ public class AddWorkItemToSprintTests
         // Assert
         result.IsError.Should().BeFalse();
         sprint.WorkItems.Should().Contain(workItem);
-        _sprintsRepository.Received().Update(sprint);
+        _sprintRepository.Received().Update(sprint);
     }
 }

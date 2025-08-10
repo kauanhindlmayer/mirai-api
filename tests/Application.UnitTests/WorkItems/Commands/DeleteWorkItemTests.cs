@@ -9,19 +9,19 @@ public class DeleteWorkItemTests
     private static readonly DeleteWorkItemCommand Command = new(Guid.NewGuid());
 
     private readonly DeleteWorkItemCommandHandler _handler;
-    private readonly IWorkItemsRepository _workItemsRepository;
+    private readonly IWorkItemRepository _workItemRepository;
 
     public DeleteWorkItemTests()
     {
-        _workItemsRepository = Substitute.For<IWorkItemsRepository>();
-        _handler = new DeleteWorkItemCommandHandler(_workItemsRepository);
+        _workItemRepository = Substitute.For<IWorkItemRepository>();
+        _handler = new DeleteWorkItemCommandHandler(_workItemRepository);
     }
 
     [Fact]
     public async Task Handle_WhenWorkItemDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _workItemsRepository.GetByIdAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
+        _workItemRepository.GetByIdAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
             .Returns(null as WorkItem);
 
         // Act
@@ -37,7 +37,7 @@ public class DeleteWorkItemTests
     {
         // Arrange
         var workItem = new WorkItem(Guid.NewGuid(), 1, "Title", WorkItemType.UserStory);
-        _workItemsRepository.GetByIdAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
+        _workItemRepository.GetByIdAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
             .Returns(workItem);
 
         // Act

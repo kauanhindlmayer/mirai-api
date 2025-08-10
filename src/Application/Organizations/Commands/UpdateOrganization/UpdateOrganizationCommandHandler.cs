@@ -7,18 +7,18 @@ namespace Application.Organizations.Commands.UpdateOrganization;
 internal sealed class UpdateOrganizationCommandHandler
     : IRequestHandler<UpdateOrganizationCommand, ErrorOr<Guid>>
 {
-    private readonly IOrganizationsRepository _organizationsRepository;
+    private readonly IOrganizationRepository _organizationRepository;
 
-    public UpdateOrganizationCommandHandler(IOrganizationsRepository organizationsRepository)
+    public UpdateOrganizationCommandHandler(IOrganizationRepository organizationRepository)
     {
-        _organizationsRepository = organizationsRepository;
+        _organizationRepository = organizationRepository;
     }
 
     public async Task<ErrorOr<Guid>> Handle(
         UpdateOrganizationCommand command,
         CancellationToken cancellationToken)
     {
-        var organization = await _organizationsRepository.GetByIdAsync(
+        var organization = await _organizationRepository.GetByIdAsync(
             command.Id,
             cancellationToken);
 
@@ -28,7 +28,7 @@ internal sealed class UpdateOrganizationCommandHandler
         }
 
         organization.Update(command.Name, command.Description);
-        _organizationsRepository.Update(organization);
+        _organizationRepository.Update(organization);
 
         return organization.Id;
     }

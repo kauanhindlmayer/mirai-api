@@ -15,19 +15,19 @@ public class MoveCardTests
         0);
 
     private readonly MoveCardCommandHandler _handler;
-    private readonly IBoardsRepository _boardsRepository;
+    private readonly IBoardRepository _boardRepository;
 
     public MoveCardTests()
     {
-        _boardsRepository = Substitute.For<IBoardsRepository>();
-        _handler = new MoveCardCommandHandler(_boardsRepository);
+        _boardRepository = Substitute.For<IBoardRepository>();
+        _handler = new MoveCardCommandHandler(_boardRepository);
     }
 
     [Fact]
     public async Task Handle_WhenBoardDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _boardsRepository.GetByIdWithCardsAsync(Command.BoardId, TestContext.Current.CancellationToken)
+        _boardRepository.GetByIdWithCardsAsync(Command.BoardId, TestContext.Current.CancellationToken)
             .Returns(null as Board);
 
         // Act
@@ -43,7 +43,7 @@ public class MoveCardTests
     {
         // Arrange
         var board = new Board(Guid.NewGuid(), "Board");
-        _boardsRepository.GetByIdWithCardsAsync(Command.BoardId, TestContext.Current.CancellationToken)
+        _boardRepository.GetByIdWithCardsAsync(Command.BoardId, TestContext.Current.CancellationToken)
             .Returns(board);
 
         // Act
@@ -63,7 +63,7 @@ public class MoveCardTests
         var targetColumn = new BoardColumn(board.Id, "TargetColumn");
         board.AddColumn(column);
         board.AddColumn(targetColumn);
-        _boardsRepository.GetByIdWithCardsAsync(Command.BoardId, TestContext.Current.CancellationToken)
+        _boardRepository.GetByIdWithCardsAsync(Command.BoardId, TestContext.Current.CancellationToken)
             .Returns(board);
 
         // Act
@@ -86,7 +86,7 @@ public class MoveCardTests
         var card = new BoardCard(column.Id, workItem.Id, 0);
         column.AddCard(card);
         board.AddColumn(column);
-        _boardsRepository.GetByIdWithCardsAsync(Command.BoardId, TestContext.Current.CancellationToken)
+        _boardRepository.GetByIdWithCardsAsync(Command.BoardId, TestContext.Current.CancellationToken)
             .Returns(board);
 
         // Act
@@ -111,7 +111,7 @@ public class MoveCardTests
         var workItem = new WorkItem(Guid.NewGuid(), 1, "Title", WorkItemType.UserStory);
         var card = new BoardCard(column.Id, workItem.Id, 0);
         column.AddCard(card);
-        _boardsRepository.GetByIdWithCardsAsync(board.Id, TestContext.Current.CancellationToken)
+        _boardRepository.GetByIdWithCardsAsync(board.Id, TestContext.Current.CancellationToken)
             .Returns(board);
         var command = new MoveCardCommand(
             board.Id,
@@ -141,7 +141,7 @@ public class MoveCardTests
         var card = new BoardCard(column.Id, workItem.Id, 0);
         column.AddCard(card);
         targetColumn.AddCard(card);
-        _boardsRepository.GetByIdWithCardsAsync(board.Id, TestContext.Current.CancellationToken)
+        _boardRepository.GetByIdWithCardsAsync(board.Id, TestContext.Current.CancellationToken)
             .Returns(board);
         var command = new MoveCardCommand(
             board.Id,
@@ -170,7 +170,7 @@ public class MoveCardTests
         column.AddCard(card);
         board.AddColumn(column);
         board.AddColumn(targetColumn);
-        _boardsRepository.GetByIdWithCardsAsync(board.Id, TestContext.Current.CancellationToken)
+        _boardRepository.GetByIdWithCardsAsync(board.Id, TestContext.Current.CancellationToken)
             .Returns(board);
         var command = new MoveCardCommand(
             board.Id,
@@ -187,6 +187,6 @@ public class MoveCardTests
         result.Value.Should().BeOfType<Success>();
         column.Cards.Should().BeEmpty();
         targetColumn.Cards.Should().ContainSingle(c => c.WorkItemId == workItem.Id);
-        _boardsRepository.Received().Update(board);
+        _boardRepository.Received().Update(board);
     }
 }

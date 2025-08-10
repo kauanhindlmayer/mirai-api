@@ -7,19 +7,19 @@ namespace Application.WikiPages.Commands.MoveWikiPage;
 internal sealed class MoveWikiPageCommandHandler
     : IRequestHandler<MoveWikiPageCommand, ErrorOr<Success>>
 {
-    private readonly IProjectsRepository _projectsRepository;
+    private readonly IProjectRepository _projectRepository;
 
     public MoveWikiPageCommandHandler(
-        IProjectsRepository projectsRepository)
+        IProjectRepository projectRepository)
     {
-        _projectsRepository = projectsRepository;
+        _projectRepository = projectRepository;
     }
 
     public async Task<ErrorOr<Success>> Handle(
         MoveWikiPageCommand command,
         CancellationToken cancellationToken)
     {
-        var project = await _projectsRepository.GetByIdWithWikiPagesAsync(
+        var project = await _projectRepository.GetByIdWithWikiPagesAsync(
             command.ProjectId,
             cancellationToken);
 
@@ -38,7 +38,7 @@ internal sealed class MoveWikiPageCommandHandler
             return result.Errors;
         }
 
-        _projectsRepository.Update(project);
+        _projectRepository.Update(project);
 
         return Result.Success;
     }

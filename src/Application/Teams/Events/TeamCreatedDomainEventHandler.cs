@@ -7,14 +7,14 @@ namespace Application.Teams.Events;
 
 internal sealed class TeamCreatedDomainEventHandler : INotificationHandler<TeamCreatedDomainEvent>
 {
-    private readonly IBoardsRepository _boardsRepository;
+    private readonly IBoardRepository _boardRepository;
     private readonly ILogger<TeamCreatedDomainEventHandler> _logger;
 
     public TeamCreatedDomainEventHandler(
-        IBoardsRepository boardsRepository,
+        IBoardRepository boardRepository,
         ILogger<TeamCreatedDomainEventHandler> logger)
     {
-        _boardsRepository = boardsRepository;
+        _boardRepository = boardRepository;
         _logger = logger;
     }
 
@@ -26,7 +26,7 @@ internal sealed class TeamCreatedDomainEventHandler : INotificationHandler<TeamC
             notification.Team.Id,
             notification.Team.Name);
 
-        await _boardsRepository.AddAsync(board, cancellationToken);
+        await _boardRepository.AddAsync(board, cancellationToken);
 
         _logger.LogInformation(
             "Board created for team {TeamName}",

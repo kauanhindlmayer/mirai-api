@@ -8,19 +8,19 @@ public class DeleteBoardTests
     private static readonly DeleteBoardCommand Command = new(Guid.NewGuid());
 
     private readonly DeleteBoardCommandHandler _handler;
-    private readonly IBoardsRepository _boardsRepository;
+    private readonly IBoardRepository _boardRepository;
 
     public DeleteBoardTests()
     {
-        _boardsRepository = Substitute.For<IBoardsRepository>();
-        _handler = new DeleteBoardCommandHandler(_boardsRepository);
+        _boardRepository = Substitute.For<IBoardRepository>();
+        _handler = new DeleteBoardCommandHandler(_boardRepository);
     }
 
     [Fact]
     public async Task Handle_WhenBoardDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _boardsRepository.GetByIdAsync(Guid.NewGuid(), TestContext.Current.CancellationToken)
+        _boardRepository.GetByIdAsync(Guid.NewGuid(), TestContext.Current.CancellationToken)
             .Returns(null as Board);
 
         // Act
@@ -36,7 +36,7 @@ public class DeleteBoardTests
     {
         // Arrange
         var board = new Board(Guid.NewGuid(), "Board");
-        _boardsRepository.GetByIdAsync(Command.BoardId, TestContext.Current.CancellationToken)
+        _boardRepository.GetByIdAsync(Command.BoardId, TestContext.Current.CancellationToken)
             .Returns(board);
 
         // Act
@@ -44,6 +44,6 @@ public class DeleteBoardTests
 
         // Assert
         result.IsError.Should().BeFalse();
-        _boardsRepository.Received().Remove(board);
+        _boardRepository.Received().Remove(board);
     }
 }

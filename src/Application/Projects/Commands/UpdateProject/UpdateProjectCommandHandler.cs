@@ -8,19 +8,19 @@ namespace Application.Projects.Commands.UpdateProject;
 internal sealed class UpdateProjectCommandHandler
     : IRequestHandler<UpdateProjectCommand, ErrorOr<Guid>>
 {
-    private readonly IOrganizationsRepository _organizationsRepository;
+    private readonly IOrganizationRepository _organizationRepository;
 
     public UpdateProjectCommandHandler(
-        IOrganizationsRepository organizationsRepository)
+        IOrganizationRepository organizationRepository)
     {
-        _organizationsRepository = organizationsRepository;
+        _organizationRepository = organizationRepository;
     }
 
     public async Task<ErrorOr<Guid>> Handle(
         UpdateProjectCommand command,
         CancellationToken cancellationToken)
     {
-        var organization = await _organizationsRepository.GetByIdWithProjectsAsync(
+        var organization = await _organizationRepository.GetByIdWithProjectsAsync(
             command.OrganizationId,
             cancellationToken);
 
@@ -36,7 +36,7 @@ internal sealed class UpdateProjectCommandHandler
         }
 
         project.Update(command.Name, command.Description);
-        _organizationsRepository.Update(organization);
+        _organizationRepository.Update(organization);
 
         return project.Id;
     }

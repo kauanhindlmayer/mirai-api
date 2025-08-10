@@ -8,18 +8,18 @@ namespace Application.Tags.Commands.CreateTag;
 internal sealed class CreateTagCommandHandler
     : IRequestHandler<CreateTagCommand, ErrorOr<Guid>>
 {
-    private readonly IProjectsRepository _projectsRepository;
+    private readonly IProjectRepository _projectRepository;
 
-    public CreateTagCommandHandler(IProjectsRepository projectsRepository)
+    public CreateTagCommandHandler(IProjectRepository projectRepository)
     {
-        _projectsRepository = projectsRepository;
+        _projectRepository = projectRepository;
     }
 
     public async Task<ErrorOr<Guid>> Handle(
         CreateTagCommand command,
         CancellationToken cancellationToken)
     {
-        var project = await _projectsRepository.GetByIdWithTagsAsync(
+        var project = await _projectRepository.GetByIdWithTagsAsync(
             command.ProjectId,
             cancellationToken);
 
@@ -39,7 +39,7 @@ internal sealed class CreateTagCommandHandler
             return result.Errors;
         }
 
-        _projectsRepository.Update(project);
+        _projectRepository.Update(project);
 
         return tag.Id;
     }

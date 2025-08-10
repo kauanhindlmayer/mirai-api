@@ -11,15 +11,15 @@ public class LoginUserTests
         "password");
 
     private readonly LoginUserQueryHandler _handler;
-    private readonly IUsersRepository _mockUsersRepository;
+    private readonly IUserRepository _mockuserRepository;
     private readonly IJwtService _mockJwtService;
 
     public LoginUserTests()
     {
-        _mockUsersRepository = Substitute.For<IUsersRepository>();
+        _mockuserRepository = Substitute.For<IUserRepository>();
         _mockJwtService = Substitute.For<IJwtService>();
         _handler = new LoginUserQueryHandler(
-            _mockUsersRepository,
+            _mockuserRepository,
             _mockJwtService);
     }
 
@@ -27,7 +27,7 @@ public class LoginUserTests
     public async Task Handle_WhenUserDoesNotExist_ReturnsNotFoundError()
     {
         // Arrange
-        _mockUsersRepository.GetByEmailAsync(Query.Email, TestContext.Current.CancellationToken)
+        _mockuserRepository.GetByEmailAsync(Query.Email, TestContext.Current.CancellationToken)
             .Returns(null as User);
 
         // Act
@@ -43,7 +43,7 @@ public class LoginUserTests
     {
         // Arrange
         var user = new User("John", "Doe", "john.doe@email.com");
-        _mockUsersRepository.GetByEmailAsync(Query.Email, TestContext.Current.CancellationToken)
+        _mockuserRepository.GetByEmailAsync(Query.Email, TestContext.Current.CancellationToken)
             .Returns(user);
 
         var accessTokenResponse = new AccessTokenResponse("access_token");
@@ -58,7 +58,7 @@ public class LoginUserTests
 
         // Assert
         result.Value.Should().BeEquivalentTo(accessTokenResponse);
-        await _mockUsersRepository.Received(1).GetByEmailAsync(
+        await _mockuserRepository.Received(1).GetByEmailAsync(
             Query.Email,
             TestContext.Current.CancellationToken);
         await _mockJwtService.Received(1).GetAccessTokenAsync(
@@ -72,7 +72,7 @@ public class LoginUserTests
     {
         // Arrange
         var user = new User("John", "Doe", "john.doe@email.com");
-        _mockUsersRepository.GetByEmailAsync(Query.Email, TestContext.Current.CancellationToken)
+        _mockuserRepository.GetByEmailAsync(Query.Email, TestContext.Current.CancellationToken)
             .Returns(user);
 
         _mockJwtService.GetAccessTokenAsync(

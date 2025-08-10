@@ -13,15 +13,15 @@ public class AddTagTests
         "Tag Name");
 
     private readonly AddTagCommandHandler _handler;
-    private readonly IWorkItemsRepository _workItemsRepository;
-    private readonly ITagsRepository _tagsRepository;
+    private readonly IWorkItemRepository _workItemRepository;
+    private readonly ITagRepository _tagsRepository;
 
     public AddTagTests()
     {
-        _workItemsRepository = Substitute.For<IWorkItemsRepository>();
-        _tagsRepository = Substitute.For<ITagsRepository>();
+        _workItemRepository = Substitute.For<IWorkItemRepository>();
+        _tagsRepository = Substitute.For<ITagRepository>();
         _handler = new AddTagCommandHandler(
-            _workItemsRepository,
+            _workItemRepository,
             _tagsRepository);
     }
 
@@ -29,7 +29,7 @@ public class AddTagTests
     public async Task Handle_WhenWorkItemDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _workItemsRepository.GetByIdWithTagsAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
+        _workItemRepository.GetByIdWithTagsAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
             .Returns(null as WorkItem);
 
         // Act
@@ -45,7 +45,7 @@ public class AddTagTests
     {
         // Arrange
         var workItem = new WorkItem(Guid.NewGuid(), 1, "Title", WorkItemType.UserStory);
-        _workItemsRepository.GetByIdWithTagsAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
+        _workItemRepository.GetByIdWithTagsAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
             .Returns(workItem);
         _tagsRepository.GetByNameAsync(Command.TagName, TestContext.Current.CancellationToken)
             .Returns(null as Tag);
@@ -65,7 +65,7 @@ public class AddTagTests
         // Arrange
         var workItem = new WorkItem(Guid.NewGuid(), 1, "Title", WorkItemType.UserStory);
         var tag = new Tag(Command.TagName, string.Empty, string.Empty);
-        _workItemsRepository.GetByIdWithTagsAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
+        _workItemRepository.GetByIdWithTagsAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
             .Returns(workItem);
         _tagsRepository.GetByNameAsync(Command.TagName, TestContext.Current.CancellationToken)
             .Returns(tag);

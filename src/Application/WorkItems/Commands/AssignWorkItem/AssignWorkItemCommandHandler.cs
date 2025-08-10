@@ -8,22 +8,22 @@ namespace Application.WorkItems.Commands.AssignWorkItem;
 internal sealed class AssignWorkItemCommandHandler
     : IRequestHandler<AssignWorkItemCommand, ErrorOr<Success>>
 {
-    private readonly IWorkItemsRepository _workItemsRepository;
-    private readonly IUsersRepository _usersRepository;
+    private readonly IWorkItemRepository _workItemRepository;
+    private readonly IUserRepository _userRepository;
 
     public AssignWorkItemCommandHandler(
-        IWorkItemsRepository workItemsRepository,
-        IUsersRepository usersRepository)
+        IWorkItemRepository workItemRepository,
+        IUserRepository userRepository)
     {
-        _workItemsRepository = workItemsRepository;
-        _usersRepository = usersRepository;
+        _workItemRepository = workItemRepository;
+        _userRepository = userRepository;
     }
 
     public async Task<ErrorOr<Success>> Handle(
         AssignWorkItemCommand command,
         CancellationToken cancellationToken)
     {
-        var workItem = await _workItemsRepository.GetByIdAsync(
+        var workItem = await _workItemRepository.GetByIdAsync(
             command.WorkItemId,
             cancellationToken);
 
@@ -32,7 +32,7 @@ internal sealed class AssignWorkItemCommandHandler
             return WorkItemErrors.NotFound;
         }
 
-        var assignee = await _usersRepository.GetByIdAsync(
+        var assignee = await _userRepository.GetByIdAsync(
             command.AssigneeId,
             cancellationToken);
 
@@ -42,7 +42,7 @@ internal sealed class AssignWorkItemCommandHandler
         }
 
         workItem.Assign(command.AssigneeId);
-        _workItemsRepository.Update(workItem);
+        _workItemRepository.Update(workItem);
 
         return Result.Success;
     }

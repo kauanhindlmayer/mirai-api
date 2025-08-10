@@ -13,15 +13,15 @@ public class RegisterUserTests
         "Doe");
 
     private readonly RegisterUserCommandHandler _handler;
-    private readonly IUsersRepository _mockUsersRepository;
+    private readonly IUserRepository _mockuserRepository;
     private readonly IAuthenticationService _mockAuthenticationService;
 
     public RegisterUserTests()
     {
-        _mockUsersRepository = Substitute.For<IUsersRepository>();
+        _mockuserRepository = Substitute.For<IUserRepository>();
         _mockAuthenticationService = Substitute.For<IAuthenticationService>();
         _handler = new RegisterUserCommandHandler(
-            _mockUsersRepository,
+            _mockuserRepository,
             _mockAuthenticationService);
     }
 
@@ -29,7 +29,7 @@ public class RegisterUserTests
     public async Task Handle_WhenUserExists_ReturnsAlreadyExistsError()
     {
         // Arrange
-        _mockUsersRepository.ExistsByEmailAsync(Command.Email, TestContext.Current.CancellationToken)
+        _mockuserRepository.ExistsByEmailAsync(Command.Email, TestContext.Current.CancellationToken)
             .Returns(true);
 
         // Act
@@ -44,7 +44,7 @@ public class RegisterUserTests
     public async Task Handle_WhenUserDoesNotExist_ReturnsUserId()
     {
         // Arrange
-        _mockUsersRepository.ExistsByEmailAsync(Command.Email, TestContext.Current.CancellationToken)
+        _mockuserRepository.ExistsByEmailAsync(Command.Email, TestContext.Current.CancellationToken)
             .Returns(false);
         _mockAuthenticationService.RegisterAsync(
             Arg.Any<User>(),

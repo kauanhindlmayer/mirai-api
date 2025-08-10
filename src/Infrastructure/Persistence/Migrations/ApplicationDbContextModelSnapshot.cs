@@ -932,50 +932,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("work_item_comments", (string)null);
                 });
 
-            modelBuilder.Entity("OrganizationUsers", b =>
-                {
-                    b.Property<Guid>("OrganizationId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("organization_id");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("OrganizationId", "UserId")
-                        .HasName("pk_organization_users");
-
-                    b.HasIndex("OrganizationId")
-                        .HasDatabaseName("ix_organization_users_organization_id");
-
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("ix_organization_users_user_id");
-
-                    b.ToTable("OrganizationUsers", (string)null);
-                });
-
-            modelBuilder.Entity("ProjectUsers", b =>
-                {
-                    b.Property<Guid>("ProjectId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("project_id");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("ProjectId", "UserId")
-                        .HasName("pk_project_users");
-
-                    b.HasIndex("ProjectId")
-                        .HasDatabaseName("ix_project_users_project_id");
-
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("ix_project_users_user_id");
-
-                    b.ToTable("ProjectUsers", (string)null);
-                });
-
             modelBuilder.Entity("TagWorkItem", b =>
                 {
                     b.Property<Guid>("TagsId")
@@ -995,26 +951,70 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("work_item_tags", (string)null);
                 });
 
-            modelBuilder.Entity("TeamUsers", b =>
+            modelBuilder.Entity("organization_users", b =>
                 {
-                    b.Property<Guid>("TeamId")
+                    b.Property<Guid>("organization_id")
                         .HasColumnType("uuid")
-                        .HasColumnName("team_id");
+                        .HasColumnName("organization_id");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("user_id")
                         .HasColumnType("uuid")
                         .HasColumnName("user_id");
 
-                    b.HasKey("TeamId", "UserId")
+                    b.HasKey("organization_id", "user_id")
+                        .HasName("pk_organization_users");
+
+                    b.HasIndex("organization_id")
+                        .HasDatabaseName("ix_organization_users_organization_id");
+
+                    b.HasIndex("user_id")
+                        .HasDatabaseName("ix_organization_users_user_id");
+
+                    b.ToTable("organization_users", (string)null);
+                });
+
+            modelBuilder.Entity("project_users", b =>
+                {
+                    b.Property<Guid>("project_id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("project_id");
+
+                    b.Property<Guid>("user_id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("project_id", "user_id")
+                        .HasName("pk_project_users");
+
+                    b.HasIndex("project_id")
+                        .HasDatabaseName("ix_project_users_project_id");
+
+                    b.HasIndex("user_id")
+                        .HasDatabaseName("ix_project_users_user_id");
+
+                    b.ToTable("project_users", (string)null);
+                });
+
+            modelBuilder.Entity("team_users", b =>
+                {
+                    b.Property<Guid>("team_id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("team_id");
+
+                    b.Property<Guid>("user_id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("team_id", "user_id")
                         .HasName("pk_team_users");
 
-                    b.HasIndex("TeamId")
+                    b.HasIndex("team_id")
                         .HasDatabaseName("ix_team_users_team_id");
 
-                    b.HasIndex("UserId")
+                    b.HasIndex("user_id")
                         .HasDatabaseName("ix_team_users_user_id");
 
-                    b.ToTable("TeamUsers", (string)null);
+                    b.ToTable("team_users", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Boards.Board", b =>
@@ -1302,40 +1302,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("WorkItem");
                 });
 
-            modelBuilder.Entity("OrganizationUsers", b =>
-                {
-                    b.HasOne("Domain.Organizations.Organization", null)
-                        .WithMany()
-                        .HasForeignKey("OrganizationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_organization_users_organizations_organization_id");
-
-                    b.HasOne("Domain.Users.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_organization_users_users_user_id");
-                });
-
-            modelBuilder.Entity("ProjectUsers", b =>
-                {
-                    b.HasOne("Domain.Projects.Project", null)
-                        .WithMany()
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_project_users_projects_project_id");
-
-                    b.HasOne("Domain.Users.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_project_users_users_user_id");
-                });
-
             modelBuilder.Entity("TagWorkItem", b =>
                 {
                     b.HasOne("Domain.Tags.Tag", null)
@@ -1353,18 +1319,52 @@ namespace Infrastructure.Persistence.Migrations
                         .HasConstraintName("fk_work_item_tags_work_items_work_items_id");
                 });
 
-            modelBuilder.Entity("TeamUsers", b =>
+            modelBuilder.Entity("organization_users", b =>
+                {
+                    b.HasOne("Domain.Organizations.Organization", null)
+                        .WithMany()
+                        .HasForeignKey("organization_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_organization_users_organizations_organization_id");
+
+                    b.HasOne("Domain.Users.User", null)
+                        .WithMany()
+                        .HasForeignKey("user_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_organization_users_users_user_id");
+                });
+
+            modelBuilder.Entity("project_users", b =>
+                {
+                    b.HasOne("Domain.Projects.Project", null)
+                        .WithMany()
+                        .HasForeignKey("project_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_project_users_projects_project_id");
+
+                    b.HasOne("Domain.Users.User", null)
+                        .WithMany()
+                        .HasForeignKey("user_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_project_users_users_user_id");
+                });
+
+            modelBuilder.Entity("team_users", b =>
                 {
                     b.HasOne("Domain.Teams.Team", null)
                         .WithMany()
-                        .HasForeignKey("TeamId")
+                        .HasForeignKey("team_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_team_users_teams_team_id");
 
                     b.HasOne("Domain.Users.User", null)
                         .WithMany()
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("user_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_team_users_users_user_id");

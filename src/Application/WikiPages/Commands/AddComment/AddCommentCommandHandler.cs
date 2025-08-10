@@ -8,14 +8,14 @@ namespace Application.WikiPages.Commands.AddComment;
 internal sealed class AddCommentCommandHandler
     : IRequestHandler<AddCommentCommand, ErrorOr<Guid>>
 {
-    private readonly IWikiPagesRepository _wikiPagesRepository;
+    private readonly IWikiPageRepository _wikiPageRepository;
     private readonly IUserContext _userContext;
 
     public AddCommentCommandHandler(
-        IWikiPagesRepository wikiPagesRepository,
+        IWikiPageRepository wikiPageRepository,
         IUserContext userContext)
     {
-        _wikiPagesRepository = wikiPagesRepository;
+        _wikiPageRepository = wikiPageRepository;
         _userContext = userContext;
     }
 
@@ -23,7 +23,7 @@ internal sealed class AddCommentCommandHandler
         AddCommentCommand command,
         CancellationToken cancellationToken)
     {
-        var wikiPage = await _wikiPagesRepository.GetByIdAsync(
+        var wikiPage = await _wikiPageRepository.GetByIdAsync(
             command.WikiPageId,
             cancellationToken);
 
@@ -38,7 +38,7 @@ internal sealed class AddCommentCommandHandler
             command.Content);
 
         wikiPage.AddComment(comment);
-        _wikiPagesRepository.Update(wikiPage);
+        _wikiPageRepository.Update(wikiPage);
 
         return comment.Id;
     }

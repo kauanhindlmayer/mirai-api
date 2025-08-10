@@ -10,19 +10,19 @@ public class CreateOrganizationTests
         "Test Description");
 
     private readonly CreateOrganizationCommandHandler _handler;
-    private readonly IOrganizationsRepository _mockOrganizationsRepository;
+    private readonly IOrganizationRepository _mockorganizationRepository;
 
     public CreateOrganizationTests()
     {
-        _mockOrganizationsRepository = Substitute.For<IOrganizationsRepository>();
-        _handler = new CreateOrganizationCommandHandler(_mockOrganizationsRepository);
+        _mockorganizationRepository = Substitute.For<IOrganizationRepository>();
+        _handler = new CreateOrganizationCommandHandler(_mockorganizationRepository);
     }
 
     [Fact]
     public async Task Handle_WhenOrganizationExists_ShouldReturnError()
     {
         // Arrange
-        _mockOrganizationsRepository.ExistsByNameAsync(Command.Name, TestContext.Current.CancellationToken)
+        _mockorganizationRepository.ExistsByNameAsync(Command.Name, TestContext.Current.CancellationToken)
             .Returns(true);
 
         // Act
@@ -37,7 +37,7 @@ public class CreateOrganizationTests
     public async Task Handle_WhenOrganizationDoesNotExist_ShouldReturnOrganizationId()
     {
         // Arrange
-        _mockOrganizationsRepository.ExistsByNameAsync(Command.Name, TestContext.Current.CancellationToken)
+        _mockorganizationRepository.ExistsByNameAsync(Command.Name, TestContext.Current.CancellationToken)
             .Returns(false);
 
         // Act
