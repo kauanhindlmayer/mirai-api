@@ -18,14 +18,14 @@ public sealed class Retrospective : AggregateRoot
 
     public Retrospective(
         string title,
-        int? maxVotesPerUser,
-        RetrospectiveTemplate? template,
-        Guid teamId)
+        Guid teamId,
+        int? maxVotesPerUser = null,
+        RetrospectiveTemplate? template = null)
     {
         Title = title;
+        TeamId = teamId;
         MaxVotesPerUser = maxVotesPerUser ?? DefaultVotesPerUserLimit;
         Template = template ?? RetrospectiveTemplate.Classic;
-        TeamId = teamId;
         InitializeDefaultColumns();
     }
 

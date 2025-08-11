@@ -103,7 +103,7 @@ public class TeamTests : BaseTest
     {
         // Arrange
         var team = TeamFactory.CreateTeam();
-        var retrospective = RetrospectiveFactory.CreateRetrospective();
+        var retrospective = RetrospectiveData.Create();
         team.AddRetrospective(retrospective);
 
         // Act
@@ -120,7 +120,7 @@ public class TeamTests : BaseTest
     {
         // Arrange
         var team = TeamFactory.CreateTeam();
-        var retrospective = RetrospectiveFactory.CreateRetrospective();
+        var retrospective = RetrospectiveData.Create();
 
         // Act
         var result = team.AddRetrospective(retrospective);
