@@ -8,4 +8,9 @@ public interface IAuthenticationService
         User user,
         string password,
         CancellationToken cancellationToken = default);
+
+    Task<string> RegisterWithGoogleAsync(
+        User user,
+        string googleIdToken,
+        CancellationToken cancellationToken = default);
 }
