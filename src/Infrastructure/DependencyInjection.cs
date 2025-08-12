@@ -106,7 +106,7 @@ public static class DependencyInjection
         services.AddScoped<IProjectRepository, ProjectRepository>();
         services.AddScoped<IWorkItemRepository, WorkItemRepository>();
         services.AddScoped<IWikiPageRepository, WikiPageRepository>();
-        services.AddScoped<IRetrospectivesRepository, RetrospectiveRepository>();
+        services.AddScoped<IRetrospectiveRepository, RetrospectiveRepository>();
         services.AddScoped<ITeamRepository, TeamRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ITagRepository, TagRepository>();

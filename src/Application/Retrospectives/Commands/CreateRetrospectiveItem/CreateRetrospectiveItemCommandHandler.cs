@@ -8,14 +8,14 @@ namespace Application.Retrospectives.Commands.CreateRetrospectiveItem;
 internal sealed class CreateRetrospectiveItemCommandHandler
     : IRequestHandler<CreateRetrospectiveItemCommand, ErrorOr<RetrospectiveItem>>
 {
-    private readonly IRetrospectivesRepository _retrospectivesRepository;
+    private readonly IRetrospectiveRepository _retrospectiveRepository;
     private readonly IUserContext _userContext;
 
     public CreateRetrospectiveItemCommandHandler(
-        IRetrospectivesRepository retrospectivesRepository,
+        IRetrospectiveRepository retrospectiveRepository,
         IUserContext userContext)
     {
-        _retrospectivesRepository = retrospectivesRepository;
+        _retrospectiveRepository = retrospectiveRepository;
         _userContext = userContext;
     }
 
@@ -23,7 +23,7 @@ internal sealed class CreateRetrospectiveItemCommandHandler
         CreateRetrospectiveItemCommand command,
         CancellationToken cancellationToken)
     {
-        var retrospective = await _retrospectivesRepository.GetByIdWithColumnsAsync(
+        var retrospective = await _retrospectiveRepository.GetByIdWithColumnsAsync(
             command.RetrospectiveId,
             cancellationToken);
 
@@ -43,7 +43,7 @@ internal sealed class CreateRetrospectiveItemCommandHandler
             return result.Errors;
         }
 
-        _retrospectivesRepository.Update(retrospective);
+        _retrospectiveRepository.Update(retrospective);
 
         return retrospectiveItem;
     }

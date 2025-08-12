@@ -12,19 +12,19 @@ public class CreateProjectTests
         Guid.NewGuid());
 
     private readonly CreateProjectCommandHandler _handler;
-    private readonly IOrganizationRepository _mockorganizationRepository;
+    private readonly IOrganizationRepository _mockOrganizationRepository;
 
     public CreateProjectTests()
     {
-        _mockorganizationRepository = Substitute.For<IOrganizationRepository>();
-        _handler = new CreateProjectCommandHandler(_mockorganizationRepository);
+        _mockOrganizationRepository = Substitute.For<IOrganizationRepository>();
+        _handler = new CreateProjectCommandHandler(_mockOrganizationRepository);
     }
 
     [Fact]
     public async Task Handle_WhenOrganizationDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _mockorganizationRepository.GetByIdWithProjectsAsync(Command.OrganizationId, TestContext.Current.CancellationToken)
+        _mockOrganizationRepository.GetByIdWithProjectsAsync(Command.OrganizationId, TestContext.Current.CancellationToken)
             .Returns(null as Organization);
 
         // Act
@@ -40,7 +40,7 @@ public class CreateProjectTests
     {
         // Arrange
         var organization = new Organization("Test Organization", "Test Description");
-        _mockorganizationRepository.GetByIdWithProjectsAsync(Command.OrganizationId, TestContext.Current.CancellationToken)
+        _mockOrganizationRepository.GetByIdWithProjectsAsync(Command.OrganizationId, TestContext.Current.CancellationToken)
             .Returns(organization);
 
         // Act
@@ -58,7 +58,7 @@ public class CreateProjectTests
         var organization = new Organization("Test Organization", "Test Description");
         var project = new Project("Test Project", "Test Description", organization.Id);
         organization.AddProject(project);
-        _mockorganizationRepository.GetByIdWithProjectsAsync(Command.OrganizationId, TestContext.Current.CancellationToken)
+        _mockOrganizationRepository.GetByIdWithProjectsAsync(Command.OrganizationId, TestContext.Current.CancellationToken)
             .Returns(organization);
 
         // Act

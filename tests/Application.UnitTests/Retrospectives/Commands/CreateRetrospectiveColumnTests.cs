@@ -10,19 +10,21 @@ public class CreateRetrospectiveColumnTests
         Guid.NewGuid());
 
     private readonly CreateRetrospectiveColumnCommandHandler _handler;
-    private readonly IRetrospectivesRepository _retrospectivesRepository;
+    private readonly IRetrospectiveRepository _retrospectiveRepository;
 
     public CreateRetrospectiveColumnTests()
     {
-        _retrospectivesRepository = Substitute.For<IRetrospectivesRepository>();
-        _handler = new CreateRetrospectiveColumnCommandHandler(_retrospectivesRepository);
+        _retrospectiveRepository = Substitute.For<IRetrospectiveRepository>();
+        _handler = new CreateRetrospectiveColumnCommandHandler(_retrospectiveRepository);
     }
 
     [Fact]
     public async Task Handle_WhenRetrospectiveDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _retrospectivesRepository.GetByIdWithColumnsAsync(Command.RetrospectiveId, TestContext.Current.CancellationToken)
+        _retrospectiveRepository.GetByIdWithColumnsAsync(
+            Command.RetrospectiveId,
+            TestContext.Current.CancellationToken)
             .Returns(null as Retrospective);
 
         // Act
@@ -38,10 +40,12 @@ public class CreateRetrospectiveColumnTests
     public async Task Handle_WhenColumnAlreadyExists_ShouldReturnError()
     {
         // Arrange
-        var retrospective = new Retrospective("Test Retrospective", 5, null, Guid.NewGuid());
+        var retrospective = new Retrospective("Test Retrospective", Guid.NewGuid(), 5, null);
         var column = new RetrospectiveColumn("Test Column", retrospective.Id);
         retrospective.AddColumn(column);
-        _retrospectivesRepository.GetByIdWithColumnsAsync(Command.RetrospectiveId, TestContext.Current.CancellationToken)
+        _retrospectiveRepository.GetByIdWithColumnsAsync(
+            Command.RetrospectiveId,
+            TestContext.Current.CancellationToken)
             .Returns(retrospective);
 
         // Act
@@ -57,10 +61,12 @@ public class CreateRetrospectiveColumnTests
     public async Task Handle_WhenMaxColumnsReached_ShouldReturnError()
     {
         // Arrange
-        var retrospective = new Retrospective("Test Retrospective", 5, null, Guid.NewGuid());
+        var retrospective = new Retrospective("Test Retrospective", Guid.NewGuid(), 5, null);
         retrospective.AddColumn(new RetrospectiveColumn("Column 4", retrospective.Id));
         retrospective.AddColumn(new RetrospectiveColumn("Column 5", retrospective.Id));
-        _retrospectivesRepository.GetByIdWithColumnsAsync(Command.RetrospectiveId, TestContext.Current.CancellationToken)
+        _retrospectiveRepository.GetByIdWithColumnsAsync(
+            Command.RetrospectiveId,
+            TestContext.Current.CancellationToken)
             .Returns(retrospective);
 
         // Act
@@ -76,8 +82,10 @@ public class CreateRetrospectiveColumnTests
     public async Task Handle_WhenCommandIsValid_ShouldCreateColumn()
     {
         // Arrange
-        var retrospective = new Retrospective("Test Retrospective", 5, null, Guid.NewGuid());
-        _retrospectivesRepository.GetByIdWithColumnsAsync(Command.RetrospectiveId, TestContext.Current.CancellationToken)
+        var retrospective = new Retrospective("Test Retrospective", Guid.NewGuid(), 5, null);
+        _retrospectiveRepository.GetByIdWithColumnsAsync(
+            Command.RetrospectiveId,
+            TestContext.Current.CancellationToken)
             .Returns(retrospective);
 
         // Act
@@ -89,6 +97,6 @@ public class CreateRetrospectiveColumnTests
         result.Value.Should().Be(retrospective.Id);
         retrospective.Columns.Should().ContainSingle(c => c.Title == Command.Title)
             .Which.Position.Should().Be(retrospective.Columns.Count - 1);
-        _retrospectivesRepository.Received().Update(retrospective);
+        _retrospectiveRepository.Received().Update(retrospective);
     }
 }

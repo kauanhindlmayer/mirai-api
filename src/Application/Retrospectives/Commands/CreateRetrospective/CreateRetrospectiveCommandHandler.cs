@@ -30,9 +30,9 @@ internal sealed class CreateRetrospectiveCommandHandler
 
         var retrospective = new Retrospective(
             command.Title,
+            command.TeamId,
             command.MaxVotesPerUser,
-            command.Template,
-            command.TeamId);
+            command.Template);
 
         var result = team.AddRetrospective(retrospective);
         if (result.IsError)

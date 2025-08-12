@@ -7,19 +7,19 @@ namespace Application.Retrospectives.Commands.UpdateRetrospective;
 internal sealed class UpdateRetrospectiveCommandHandler
     : IRequestHandler<UpdateRetrospectiveCommand, ErrorOr<Guid>>
 {
-    private readonly IRetrospectivesRepository _retrospectivesRepository;
+    private readonly IRetrospectiveRepository _retrospectiveRepository;
 
     public UpdateRetrospectiveCommandHandler(
-        IRetrospectivesRepository retrospectivesRepository)
+        IRetrospectiveRepository retrospectiveRepository)
     {
-        _retrospectivesRepository = retrospectivesRepository;
+        _retrospectiveRepository = retrospectiveRepository;
     }
 
     public async Task<ErrorOr<Guid>> Handle(
         UpdateRetrospectiveCommand command,
         CancellationToken cancellationToken)
     {
-        var retrospective = await _retrospectivesRepository.GetByIdWithColumnsAsync(
+        var retrospective = await _retrospectiveRepository.GetByIdWithColumnsAsync(
             command.RetrospectiveId,
             cancellationToken);
 
@@ -33,7 +33,7 @@ internal sealed class UpdateRetrospectiveCommandHandler
             command.MaxVotesPerUser,
             command.Template);
 
-        _retrospectivesRepository.Update(retrospective);
+        _retrospectiveRepository.Update(retrospective);
 
         return retrospective.Id;
     }

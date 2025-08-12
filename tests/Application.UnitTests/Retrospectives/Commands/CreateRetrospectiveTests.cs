@@ -43,7 +43,7 @@ public class CreateRetrospectiveTests
     {
         // Arrange
         var team = new Team(Guid.NewGuid(), "Test Team", "Test Description");
-        var retrospective = new Retrospective("Test Retrospective", 5, null, Guid.NewGuid());
+        var retrospective = new Retrospective("Test Retrospective", Guid.NewGuid(), 5, null);
         team.AddRetrospective(retrospective);
         _teamRepository.GetByIdAsync(Command.TeamId, TestContext.Current.CancellationToken)
             .Returns(team);

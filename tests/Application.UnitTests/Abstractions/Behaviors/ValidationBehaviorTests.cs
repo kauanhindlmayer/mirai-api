@@ -5,7 +5,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
 
-namespace Application.UnitTests.Common.Behaviors;
+namespace Application.UnitTests.Abstractions.Behaviors;
 
 public class ValidationBehaviorTests
 {

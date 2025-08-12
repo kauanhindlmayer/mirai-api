@@ -7,19 +7,19 @@ namespace Application.Retrospectives.Commands.CreateRetrospectiveColumn;
 internal sealed class CreateRetrospectiveColumnCommandHandler
     : IRequestHandler<CreateRetrospectiveColumnCommand, ErrorOr<Guid>>
 {
-    private readonly IRetrospectivesRepository _retrospectivesRepository;
+    private readonly IRetrospectiveRepository _retrospectiveRepository;
 
     public CreateRetrospectiveColumnCommandHandler(
-        IRetrospectivesRepository retrospectivesRepository)
+        IRetrospectiveRepository retrospectiveRepository)
     {
-        _retrospectivesRepository = retrospectivesRepository;
+        _retrospectiveRepository = retrospectiveRepository;
     }
 
     public async Task<ErrorOr<Guid>> Handle(
         CreateRetrospectiveColumnCommand command,
         CancellationToken cancellationToken)
     {
-        var retrospective = await _retrospectivesRepository.GetByIdWithColumnsAsync(
+        var retrospective = await _retrospectiveRepository.GetByIdWithColumnsAsync(
             command.RetrospectiveId,
             cancellationToken);
 
@@ -36,7 +36,7 @@ internal sealed class CreateRetrospectiveColumnCommandHandler
             return result.Errors;
         }
 
-        _retrospectivesRepository.Update(retrospective);
+        _retrospectiveRepository.Update(retrospective);
 
         return column.Id;
     }

@@ -7,19 +7,19 @@ namespace Application.Retrospectives.Commands.DeleteRetrospectiveItem;
 internal sealed class DeleteRetrospectiveItemCommandHandler
     : IRequestHandler<DeleteRetrospectiveItemCommand, ErrorOr<Success>>
 {
-    private readonly IRetrospectivesRepository _retrospectivesRepository;
+    private readonly IRetrospectiveRepository _retrospectiveRepository;
 
     public DeleteRetrospectiveItemCommandHandler(
-        IRetrospectivesRepository retrospectivesRepository)
+        IRetrospectiveRepository retrospectiveRepository)
     {
-        _retrospectivesRepository = retrospectivesRepository;
+        _retrospectiveRepository = retrospectiveRepository;
     }
 
     public async Task<ErrorOr<Success>> Handle(
         DeleteRetrospectiveItemCommand command,
         CancellationToken cancellationToken)
     {
-        var retrospective = await _retrospectivesRepository.GetByIdWithColumnsAsync(
+        var retrospective = await _retrospectiveRepository.GetByIdWithColumnsAsync(
             command.RetrospectiveId,
             cancellationToken);
 
@@ -34,7 +34,7 @@ internal sealed class DeleteRetrospectiveItemCommandHandler
             return result.Errors;
         }
 
-        _retrospectivesRepository.Update(retrospective);
+        _retrospectiveRepository.Update(retrospective);
 
         return Result.Success;
     }
