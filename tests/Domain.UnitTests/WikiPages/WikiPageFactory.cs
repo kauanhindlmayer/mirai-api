@@ -8,7 +8,6 @@ internal static class WikiPageFactory
     public const string Content = "Content";
     public static readonly Guid ProjectId = Guid.NewGuid();
     public static readonly Guid AuthorId = Guid.NewGuid();
-    public static readonly Guid ParentWikiPageId = Guid.NewGuid();
 
     public static WikiPage Create(
         Guid? projectId = null,
@@ -22,6 +21,6 @@ internal static class WikiPageFactory
             title ?? Title,
             content ?? Content,
             authorId ?? AuthorId,
-            parentWikiPageId ?? ParentWikiPageId);
+            parentWikiPageId);
     }
 }

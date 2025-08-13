@@ -9,7 +9,7 @@ namespace Domain.UnitTests.WorkItems;
 public class WorkItemTests
 {
     [Fact]
-    public void Constructor_WithValidParameters_ShouldCreateWorkItem()
+    public void Constructor_ShouldSetProperties()
     {
         // Act
         var workItem = WorkItemFactory.Create();

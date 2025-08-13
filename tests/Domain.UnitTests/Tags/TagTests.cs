@@ -3,7 +3,7 @@ namespace Domain.UnitTests.Tags;
 public class TagTests
 {
     [Fact]
-    public void CreateTag_ShouldSetProperties()
+    public void Constructor_ShouldSetProperties()
     {
         // Act
         var tag = TagFactory.Create();

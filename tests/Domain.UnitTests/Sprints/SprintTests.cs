@@ -6,7 +6,7 @@ namespace Domain.UnitTests.Sprints;
 public class SprintTests
 {
     [Fact]
-    public void Constructor_ShouldInitializeProperties()
+    public void Constructor_ShouldSetProperties()
     {
         // Act
         var sprint = SprintFactory.Create();

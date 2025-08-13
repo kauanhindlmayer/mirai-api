@@ -111,7 +111,7 @@ public class ProjectTests : BaseTest
     {
         // Arrange
         var project = ProjectFactory.Create();
-        var wikiPage = WikiPageFactory.Create();
+        var wikiPage = WikiPageFactory.Create(project.Id);
         project.AddWikiPage(wikiPage);
 
         // Act
@@ -128,7 +128,7 @@ public class ProjectTests : BaseTest
     {
         // Arrange
         var project = ProjectFactory.Create();
-        var wikiPage = WikiPageFactory.Create(project.Id);
+        var wikiPage = WikiPageFactory.Create(project.Id, "Wiki Page 1");
         project.AddWikiPage(wikiPage);
         var targetParent = WikiPageFactory.Create(project.Id, "Wiki Page 2");
         project.AddWikiPage(targetParent);

@@ -1,18 +1,21 @@
+using Domain.Boards;
 using Domain.Retrospectives;
 using Domain.Sprints;
 using Domain.Teams;
 using Domain.Teams.Events;
+using Domain.UnitTests.Boards;
 using Domain.UnitTests.Infrastructure;
 using Domain.UnitTests.Retrospectives;
 using Domain.UnitTests.Sprints;
 using Domain.UnitTests.Users;
+using Domain.UnitTests.WorkItems;
 
 namespace Domain.UnitTests.Teams;
 
 public class TeamTests : BaseTest
 {
     [Fact]
-    public void CreateTeam_ShouldRaiseTeamCreatedDomainEvent()
+    public void Constructor_ShouldRaiseTeamCreatedDomainEvent()
     {
         // Arrange
         var team = TeamFactory.Create();
@@ -23,7 +26,7 @@ public class TeamTests : BaseTest
     }
 
     [Fact]
-    public void CreateTeam_ShouldSetProperties()
+    public void Constructor_ShouldSetProperties()
     {
         // Act
         var team = TeamFactory.Create();
@@ -80,6 +83,26 @@ public class TeamTests : BaseTest
         result.IsError.Should().BeTrue();
         result.Errors.Should().HaveCount(1);
         result.FirstError.Should().BeEquivalentTo(TeamErrors.UserNotFound);
+    }
+
+    [Fact]
+    public void RemoveUser_WhenUserHasAssignedWorkItems_ShouldReturnError()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+        var user = UserFactory.Create();
+        var workItem = WorkItemFactory.Create(assignedTeamId: team.Id);
+        workItem.Assign(user.Id);
+        team.AddUser(user);
+        team.WorkItems.Add(workItem);
+
+        // Act
+        var result = team.RemoveUser(user.Id);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.Errors.Should().HaveCount(1);
+        result.FirstError.Should().BeEquivalentTo(TeamErrors.UserHasAssignedWorkItems);
     }
 
     [Fact]
@@ -160,5 +183,37 @@ public class TeamTests : BaseTest
         // Assert
         result.IsError.Should().BeFalse();
         team.Sprints.Should().Contain(sprint);
+    }
+
+    [Fact]
+    public void AddBoard_WhenBoardAlreadyExists_ShouldReturnError()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+        var board = BoardFactory.Create();
+        team.AddBoard(board);
+
+        // Act
+        var result = team.AddBoard(board);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.Errors.Should().HaveCount(1);
+        result.FirstError.Should().BeEquivalentTo(TeamErrors.BoardAlreadyExists);
+    }
+
+    [Fact]
+    public void AddBoard_WhenBoardDoesNotExist_ShouldAddBoard()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+        var board = BoardFactory.Create();
+
+        // Act
+        var result = team.AddBoard(board);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        team.Board.Should().Be(board);
     }
 }

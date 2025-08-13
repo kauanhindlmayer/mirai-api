@@ -5,7 +5,7 @@ namespace Domain.UnitTests.Retrospectives;
 public class RetrospectiveColumnTests
 {
     [Fact]
-    public void Constructor_ShouldInitializeProperties()
+    public void Constructor_ShouldSetProperties()
     {
         // Act
         var column = RetrospectiveColumnFactory.Create();

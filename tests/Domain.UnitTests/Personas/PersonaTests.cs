@@ -3,7 +3,7 @@ namespace Domain.UnitTests.Personas;
 public class PersonaTests
 {
     [Fact]
-    public void Constructor_ShouldInitializeProperties()
+    public void Constructor_ShouldSetProperties()
     {
         // Act
         var persona = PersonaFactory.Create();
