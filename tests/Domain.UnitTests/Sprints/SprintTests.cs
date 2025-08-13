@@ -6,16 +6,16 @@ namespace Domain.UnitTests.Sprints;
 public class SprintTests
 {
     [Fact]
-    public void CreateSprint_ShouldSetProperties()
+    public void Constructor_ShouldInitializeProperties()
     {
         // Act
-        var sprint = SprintData.Create();
+        var sprint = SprintFactory.Create();
 
         // Assert
-        sprint.TeamId.Should().Be(SprintData.TeamId);
-        sprint.Name.Should().Be(SprintData.Name);
-        sprint.StartDate.Should().Be(SprintData.StartDate);
-        sprint.EndDate.Should().Be(SprintData.EndDate);
+        sprint.TeamId.Should().Be(SprintFactory.TeamId);
+        sprint.Name.Should().Be(SprintFactory.Name);
+        sprint.StartDate.Should().Be(SprintFactory.StartDate);
+        sprint.EndDate.Should().Be(SprintFactory.EndDate);
         sprint.WorkItems.Should().BeEmpty();
     }
 
@@ -23,8 +23,8 @@ public class SprintTests
     public void AddWorkItem_ShouldAddWorkItem()
     {
         // Arrange
-        var sprint = SprintData.Create();
-        var workItem = WorkItemData.Create();
+        var sprint = SprintFactory.Create();
+        var workItem = WorkItemFactory.Create();
 
         // Act
         var result = sprint.AddWorkItem(workItem);
@@ -38,8 +38,8 @@ public class SprintTests
     public void AddWorkItem_WhenWorkItemAlreadyInSprint_ShouldReturnError()
     {
         // Arrange
-        var sprint = SprintData.Create();
-        var workItem = WorkItemData.Create();
+        var sprint = SprintFactory.Create();
+        var workItem = WorkItemFactory.Create();
         sprint.AddWorkItem(workItem);
 
         // Act

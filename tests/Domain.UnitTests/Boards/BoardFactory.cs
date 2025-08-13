@@ -5,14 +5,15 @@ namespace Domain.UnitTests.Boards;
 public static class BoardFactory
 {
     public const string Name = "Test Board";
+    public static readonly Guid TeamId = Guid.NewGuid();
 
-    public static Board CreateBoard(
-        Guid? projectId = null,
-        string name = Name)
+    public static Board Create(
+        Guid? teamId = null,
+        string? name = null)
     {
         return new(
-            projectId ?? Guid.NewGuid(),
-            name);
+            teamId ?? TeamId,
+            name ?? Name);
     }
 
     public static BoardColumn CreateBoardColumn(

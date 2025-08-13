@@ -22,7 +22,7 @@ public class ProjectTests : BaseTest
     public void CreateProject_ShouldSetProperties()
     {
         // Act
-        var project = ProjectFactory.CreateProject();
+        var project = ProjectFactory.Create();
 
         // Assert
         project.Name.Should().Be(ProjectFactory.Name);
@@ -34,7 +34,7 @@ public class ProjectTests : BaseTest
     public void CreateProject_ShouldRaiseProjectCreatedDomainEvent()
     {
         // Act
-        var project = ProjectFactory.CreateProject();
+        var project = ProjectFactory.Create();
 
         // Assert
         var domainEvent = AssertDomainEventWasPublished<ProjectCreatedDomainEvent>(project);
@@ -45,7 +45,7 @@ public class ProjectTests : BaseTest
     public void Update_ShouldUpdateProperties()
     {
         // Arrange
-        var project = ProjectFactory.CreateProject();
+        var project = ProjectFactory.Create();
         var name = "New Name";
         var description = "New Description";
 
@@ -61,8 +61,8 @@ public class ProjectTests : BaseTest
     public void AddWikiPage_WhenWikiPageWithSameTitleAlreadyExists_ShouldReturnError()
     {
         // Arrange
-        var project = ProjectFactory.CreateProject();
-        var wikiPage = WikiPageFactory.CreateWikiPage();
+        var project = ProjectFactory.Create();
+        var wikiPage = WikiPageFactory.Create();
         project.AddWikiPage(wikiPage);
 
         // Act
@@ -78,8 +78,8 @@ public class ProjectTests : BaseTest
     public void AddWikiPage_WhenWikiPageWithSameTitleDoesNotExists_ShouldAddWikiPage()
     {
         // Arrange
-        var project = ProjectFactory.CreateProject();
-        var wikiPage = WikiPageFactory.CreateWikiPage();
+        var project = ProjectFactory.Create();
+        var wikiPage = WikiPageFactory.Create();
 
         // Act
         var result = project.AddWikiPage(wikiPage);
@@ -94,8 +94,8 @@ public class ProjectTests : BaseTest
     public void MoveWikiPage_WhenWikiPageDoesNotExists_ShouldReturnError()
     {
         // Arrange
-        var project = ProjectFactory.CreateProject();
-        var wikiPage = WikiPageFactory.CreateWikiPage();
+        var project = ProjectFactory.Create();
+        var wikiPage = WikiPageFactory.Create();
 
         // Act
         var result = project.MoveWikiPage(wikiPage.Id, null, 0);
@@ -110,8 +110,8 @@ public class ProjectTests : BaseTest
     public void MoveWikiPage_WhenTargetParentDoesNotExists_ShouldReturnError()
     {
         // Arrange
-        var project = ProjectFactory.CreateProject();
-        var wikiPage = WikiPageFactory.CreateWikiPage();
+        var project = ProjectFactory.Create();
+        var wikiPage = WikiPageFactory.Create();
         project.AddWikiPage(wikiPage);
 
         // Act
@@ -127,10 +127,10 @@ public class ProjectTests : BaseTest
     public void MoveWikiPage_WhenTargetParentExists_ShouldMoveWikiPage()
     {
         // Arrange
-        var project = ProjectFactory.CreateProject();
-        var wikiPage = WikiPageFactory.CreateWikiPage(project.Id);
+        var project = ProjectFactory.Create();
+        var wikiPage = WikiPageFactory.Create(project.Id);
         project.AddWikiPage(wikiPage);
-        var targetParent = WikiPageFactory.CreateWikiPage(project.Id, "Wiki Page 2");
+        var targetParent = WikiPageFactory.Create(project.Id, "Wiki Page 2");
         project.AddWikiPage(targetParent);
 
         // Act
@@ -146,10 +146,10 @@ public class ProjectTests : BaseTest
     public void MoveWikiPage_WhenWikiPageExists_ShouldMoveWikiPage()
     {
         // Arrange
-        var project = ProjectFactory.CreateProject();
-        var wikiPage1 = WikiPageFactory.CreateWikiPage(project.Id, "Wiki Page 1");
-        var wikiPage2 = WikiPageFactory.CreateWikiPage(project.Id, "Wiki Page 2");
-        var wikiPage3 = WikiPageFactory.CreateWikiPage(project.Id, "Wiki Page 3");
+        var project = ProjectFactory.Create();
+        var wikiPage1 = WikiPageFactory.Create(project.Id, "Wiki Page 1");
+        var wikiPage2 = WikiPageFactory.Create(project.Id, "Wiki Page 2");
+        var wikiPage3 = WikiPageFactory.Create(project.Id, "Wiki Page 3");
         project.AddWikiPage(wikiPage1);
         project.AddWikiPage(wikiPage2);
         project.AddWikiPage(wikiPage3);
@@ -169,8 +169,8 @@ public class ProjectTests : BaseTest
     public void AddTeam_WhenTeamWithSameNameAlreadyExists_ShouldReturnError()
     {
         // Arrange
-        var project = ProjectFactory.CreateProject();
-        var team = TeamFactory.CreateTeam();
+        var project = ProjectFactory.Create();
+        var team = TeamFactory.Create();
         project.AddTeam(team);
 
         // Act
@@ -186,8 +186,8 @@ public class ProjectTests : BaseTest
     public void AddTeam_WhenTeamWithSameNameDoesNotExists_ShouldAddTeam()
     {
         // Arrange
-        var project = ProjectFactory.CreateProject();
-        var team = TeamFactory.CreateTeam();
+        var project = ProjectFactory.Create();
+        var team = TeamFactory.Create();
 
         // Act
         var result = project.AddTeam(team);
@@ -202,8 +202,8 @@ public class ProjectTests : BaseTest
     public void AddTag_WhenTagWithSameNameAlreadyExists_ShouldReturnError()
     {
         // Arrange
-        var project = ProjectFactory.CreateProject();
-        var tag = TagFactory.CreateTag();
+        var project = ProjectFactory.Create();
+        var tag = TagFactory.Create();
         project.AddTag(tag);
 
         // Act
@@ -219,8 +219,8 @@ public class ProjectTests : BaseTest
     public void AddTag_WhenTagWithSameNameDoesNotExists_ShouldAddTag()
     {
         // Arrange
-        var project = ProjectFactory.CreateProject();
-        var tag = TagFactory.CreateTag();
+        var project = ProjectFactory.Create();
+        var tag = TagFactory.Create();
 
         // Act
         var result = project.AddTag(tag);
@@ -235,8 +235,8 @@ public class ProjectTests : BaseTest
     public void RemoveTag_WhenTagExists_ShouldRemoveTag()
     {
         // Arrange
-        var project = ProjectFactory.CreateProject();
-        var tag = TagFactory.CreateTag();
+        var project = ProjectFactory.Create();
+        var tag = TagFactory.Create();
         project.AddTag(tag);
 
         // Act
@@ -251,9 +251,9 @@ public class ProjectTests : BaseTest
     public void AddUser_WhenUserNotInOrganization_ShouldReturnError()
     {
         // Arrange
-        var project = ProjectFactory.CreateProject();
-        var user = UserFactory.CreateUser();
-        var organization = OrganizationFactory.CreateOrganization();
+        var project = ProjectFactory.Create();
+        var user = UserFactory.Create();
+        var organization = OrganizationFactory.Create();
         project.SetOrganization(organization);
 
         // Act
@@ -269,9 +269,9 @@ public class ProjectTests : BaseTest
     public void AddUser_WhenUserAlreadyInProject_ShouldReturnError()
     {
         // Arrange
-        var project = ProjectFactory.CreateProject();
-        var user = UserFactory.CreateUser();
-        var organization = OrganizationFactory.CreateOrganization();
+        var project = ProjectFactory.Create();
+        var user = UserFactory.Create();
+        var organization = OrganizationFactory.Create();
         project.SetOrganization(organization);
         project.Organization.AddUser(user);
         project.AddUser(user);
@@ -289,9 +289,9 @@ public class ProjectTests : BaseTest
     public void AddUser_WhenUserInOrganizationAndNotInProject_ShouldAddUser()
     {
         // Arrange
-        var project = ProjectFactory.CreateProject();
-        var user = UserFactory.CreateUser();
-        var organization = OrganizationFactory.CreateOrganization();
+        var project = ProjectFactory.Create();
+        var user = UserFactory.Create();
+        var organization = OrganizationFactory.Create();
         project.SetOrganization(organization);
         project.Organization.AddUser(user);
 
@@ -308,9 +308,9 @@ public class ProjectTests : BaseTest
     public void AddUser_WhenUserAdded_ShouldRaiseUserAddedToProjectDomainEvent()
     {
         // Arrange
-        var project = ProjectFactory.CreateProject();
-        var user = UserFactory.CreateUser();
-        var organization = OrganizationFactory.CreateOrganization();
+        var project = ProjectFactory.Create();
+        var user = UserFactory.Create();
+        var organization = OrganizationFactory.Create();
         project.SetOrganization(organization);
         project.Organization.AddUser(user);
         project.ClearDomainEvents();
@@ -329,9 +329,9 @@ public class ProjectTests : BaseTest
     public void RemoveUser_WhenUserNotInProject_ShouldReturnError()
     {
         // Arrange
-        var project = ProjectFactory.CreateProject();
+        var project = ProjectFactory.Create();
         var userId = Guid.NewGuid();
-        var organization = OrganizationFactory.CreateOrganization();
+        var organization = OrganizationFactory.Create();
         project.SetOrganization(organization);
 
         // Act
@@ -346,10 +346,10 @@ public class ProjectTests : BaseTest
     public void RemoveUser_WhenUserIsInTeams_ShouldReturnError()
     {
         // Arrange
-        var project = ProjectFactory.CreateProject();
-        var user = UserFactory.CreateUser();
-        var team = TeamFactory.CreateTeam(project.Id);
-        var organization = OrganizationFactory.CreateOrganization();
+        var project = ProjectFactory.Create();
+        var user = UserFactory.Create();
+        var team = TeamFactory.Create(project.Id);
+        var organization = OrganizationFactory.Create();
         project.SetOrganization(organization);
         project.Organization.AddUser(user);
         project.AddUser(user);
@@ -369,9 +369,9 @@ public class ProjectTests : BaseTest
     public void RemoveUser_WhenUserCanBeRemoved_ShouldRemoveUser()
     {
         // Arrange
-        var project = ProjectFactory.CreateProject();
-        var user = UserFactory.CreateUser();
-        var organization = OrganizationFactory.CreateOrganization();
+        var project = ProjectFactory.Create();
+        var user = UserFactory.Create();
+        var organization = OrganizationFactory.Create();
         project.SetOrganization(organization);
         project.Organization.AddUser(user);
         project.AddUser(user);
@@ -388,9 +388,9 @@ public class ProjectTests : BaseTest
     public void RemoveUser_WhenUserRemoved_ShouldRaiseUserRemovedFromProjectDomainEvent()
     {
         // Arrange
-        var project = ProjectFactory.CreateProject();
-        var user = UserFactory.CreateUser();
-        var organization = OrganizationFactory.CreateOrganization();
+        var project = ProjectFactory.Create();
+        var user = UserFactory.Create();
+        var organization = OrganizationFactory.Create();
         project.SetOrganization(organization);
         project.Organization.AddUser(user);
         project.AddUser(user);
@@ -410,8 +410,8 @@ public class ProjectTests : BaseTest
     public void AddWorkItem_WhenTeamNotFound_ShouldReturnError()
     {
         // Arrange
-        var project = ProjectFactory.CreateProject();
-        var workItem = WorkItemFactory.CreateWorkItem(assignedTeamId: Guid.NewGuid());
+        var project = ProjectFactory.Create();
+        var workItem = WorkItemFactory.Create(assignedTeamId: Guid.NewGuid());
 
         // Act
         var result = project.AddWorkItem(workItem);
@@ -426,9 +426,9 @@ public class ProjectTests : BaseTest
     public void AddWikiPage_WhenParentWikiPageNotFound_ShouldReturnError()
     {
         // Arrange
-        var project = ProjectFactory.CreateProject();
+        var project = ProjectFactory.Create();
         var parentId = Guid.NewGuid();
-        var wikiPage = WikiPageFactory.CreateWikiPage(project.Id, parentWikiPageId: parentId);
+        var wikiPage = WikiPageFactory.Create(project.Id, parentWikiPageId: parentId);
 
         // Act
         var result = project.AddWikiPage(wikiPage);
@@ -443,10 +443,10 @@ public class ProjectTests : BaseTest
     public void AddWikiPage_WhenParentExists_ShouldAddAsSubWikiPage()
     {
         // Arrange
-        var project = ProjectFactory.CreateProject();
-        var parentWikiPage = WikiPageFactory.CreateWikiPage(project.Id);
+        var project = ProjectFactory.Create();
+        var parentWikiPage = WikiPageFactory.Create(project.Id);
         project.AddWikiPage(parentWikiPage);
-        var childWikiPage = WikiPageFactory.CreateWikiPage(
+        var childWikiPage = WikiPageFactory.Create(
             project.Id,
             "Child Page",
             parentWikiPageId: parentWikiPage.Id);
@@ -464,8 +464,8 @@ public class ProjectTests : BaseTest
     public void MoveWikiPage_WhenTargetPositionInvalid_ShouldReturnError()
     {
         // Arrange
-        var project = ProjectFactory.CreateProject();
-        var wikiPage = WikiPageFactory.CreateWikiPage(project.Id);
+        var project = ProjectFactory.Create();
+        var wikiPage = WikiPageFactory.Create(project.Id);
         project.AddWikiPage(wikiPage);
 
         // Act
@@ -480,8 +480,8 @@ public class ProjectTests : BaseTest
     public void AddPersona_WhenPersonaWithSameNameAlreadyExists_ShouldReturnError()
     {
         // Arrange
-        var project = ProjectFactory.CreateProject();
-        var persona = PersonaFactory.CreatePersona(project.Id);
+        var project = ProjectFactory.Create();
+        var persona = PersonaFactory.Create(project.Id);
         project.AddPersona(persona);
 
         // Act
@@ -497,8 +497,8 @@ public class ProjectTests : BaseTest
     public void AddPersona_WhenPersonaWithSameNameDoesNotExist_ShouldAddPersona()
     {
         // Arrange
-        var project = ProjectFactory.CreateProject();
-        var persona = PersonaFactory.CreatePersona(project.Id);
+        var project = ProjectFactory.Create();
+        var persona = PersonaFactory.Create(project.Id);
 
         // Act
         var result = project.AddPersona(persona);
@@ -513,7 +513,7 @@ public class ProjectTests : BaseTest
     public void RemovePersona_WhenPersonaNotFound_ShouldReturnError()
     {
         // Arrange
-        var project = ProjectFactory.CreateProject();
+        var project = ProjectFactory.Create();
         var personaId = Guid.NewGuid();
 
         // Act
@@ -528,8 +528,8 @@ public class ProjectTests : BaseTest
     public void RemovePersona_WhenPersonaExists_ShouldRemovePersona()
     {
         // Arrange
-        var project = ProjectFactory.CreateProject();
-        var persona = PersonaFactory.CreatePersona(project.Id);
+        var project = ProjectFactory.Create();
+        var persona = PersonaFactory.Create(project.Id);
         project.AddPersona(persona);
 
         // Act
@@ -544,8 +544,8 @@ public class ProjectTests : BaseTest
     public void SetOrganization_ShouldUpdateOrganizationAndId()
     {
         // Arrange
-        var project = ProjectFactory.CreateProject();
-        var newOrganization = OrganizationFactory.CreateOrganization();
+        var project = ProjectFactory.Create();
+        var newOrganization = OrganizationFactory.Create();
 
         // Act
         project.SetOrganization(newOrganization);

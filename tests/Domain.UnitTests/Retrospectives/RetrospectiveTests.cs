@@ -9,13 +9,13 @@ public class RetrospectiveTests
     public void Constructor_ShouldInitializePropertiesAndDefaultColumns()
     {
         // Act
-        var retrospective = RetrospectiveData.Create();
+        var retrospective = RetrospectiveFactory.Create();
 
         // Assert
-        retrospective.Title.Should().Be(RetrospectiveData.Title);
-        retrospective.MaxVotesPerUser.Should().Be(RetrospectiveData.MaxVotesPerUser);
-        retrospective.Template.Should().Be(RetrospectiveData.Template);
-        retrospective.TeamId.Should().Be(RetrospectiveData.TeamId);
+        retrospective.Title.Should().Be(RetrospectiveFactory.Title);
+        retrospective.MaxVotesPerUser.Should().Be(RetrospectiveFactory.MaxVotesPerUser);
+        retrospective.Template.Should().Be(RetrospectiveFactory.Template);
+        retrospective.TeamId.Should().Be(RetrospectiveFactory.TeamId);
         retrospective.Columns.Should().NotBeEmpty();
     }
 
@@ -23,7 +23,7 @@ public class RetrospectiveTests
     public void Update_ShouldModifyTitleAndMaxVotesPerUser()
     {
         // Arrange
-        var retrospective = RetrospectiveData.Create();
+        var retrospective = RetrospectiveFactory.Create();
         var newTitle = "New Title";
         var newVotes = 10;
 
@@ -39,7 +39,7 @@ public class RetrospectiveTests
     public void Update_ShouldChangeTemplateAndResetColumns()
     {
         // Arrange
-        var retrospective = RetrospectiveData.Create();
+        var retrospective = RetrospectiveFactory.Create();
         var originalColumnCount = retrospective.Columns.Count;
 
         // Act
@@ -55,7 +55,7 @@ public class RetrospectiveTests
     public void AddColumn_WhenValid_ShouldAddColumn()
     {
         // Arrange
-        var retrospective = RetrospectiveData.Create();
+        var retrospective = RetrospectiveFactory.Create();
         retrospective.Columns.Clear();
         var column = new RetrospectiveColumn("New Column", retrospective.Id);
 
@@ -71,7 +71,7 @@ public class RetrospectiveTests
     public void AddColumn_WhenMaxColumnsReached_ShouldReturnError()
     {
         // Arrange
-        var retrospective = RetrospectiveData.Create();
+        var retrospective = RetrospectiveFactory.Create();
         retrospective.Columns.Clear();
         for (int i = 0; i < 5; i++)
         {
@@ -92,7 +92,7 @@ public class RetrospectiveTests
     public void AddColumn_WhenTitleAlreadyExists_ShouldReturnError()
     {
         // Arrange
-        var retrospective = RetrospectiveData.Create();
+        var retrospective = RetrospectiveFactory.Create();
         retrospective.Columns.Clear();
         var column = new RetrospectiveColumn("Duplicate", retrospective.Id);
         retrospective.AddColumn(column);
@@ -109,12 +109,12 @@ public class RetrospectiveTests
     public void AddItem_WhenColumnExists_ShouldAddItem()
     {
         // Arrange
-        var retrospective = RetrospectiveData.Create();
+        var retrospective = RetrospectiveFactory.Create();
         var column = retrospective.Columns.First();
         var item = new RetrospectiveItem(
             "Test Item",
             column.Id,
-            RetrospectiveColumnData.AuthorId);
+            RetrospectiveColumnFactory.AuthorId);
 
         // Act
         var result = retrospective.AddItem(item);
@@ -128,11 +128,11 @@ public class RetrospectiveTests
     public void AddItem_WhenColumnNotFound_ShouldReturnError()
     {
         // Arrange
-        var retrospective = RetrospectiveData.Create();
+        var retrospective = RetrospectiveFactory.Create();
         var item = new RetrospectiveItem(
             "Test Item",
             Guid.NewGuid(),
-            RetrospectiveColumnData.AuthorId);
+            RetrospectiveColumnFactory.AuthorId);
 
         // Act
         var result = retrospective.AddItem(item);
@@ -146,12 +146,12 @@ public class RetrospectiveTests
     public void RemoveItem_WhenItemExists_ShouldRemoveItem()
     {
         // Arrange
-        var retrospective = RetrospectiveData.Create();
+        var retrospective = RetrospectiveFactory.Create();
         var column = retrospective.Columns.First();
         var item = new RetrospectiveItem(
             "Item 1",
             column.Id,
-            RetrospectiveColumnData.AuthorId);
+            RetrospectiveColumnFactory.AuthorId);
         retrospective.AddItem(item);
 
         // Act
@@ -166,7 +166,7 @@ public class RetrospectiveTests
     public void RemoveItem_WhenItemNotFound_ShouldReturnError()
     {
         // Arrange
-        var retrospective = RetrospectiveData.Create();
+        var retrospective = RetrospectiveFactory.Create();
 
         // Act
         var result = retrospective.RemoveItem(Guid.NewGuid());

@@ -9,12 +9,16 @@ public static class TagFactory
     public const string Color = "#CCCCCC";
     public static readonly Guid ProjectId = Guid.NewGuid();
 
-    public static Tag CreateTag(
-        string name = Name,
-        string description = Description,
-        string color = Color,
+    public static Tag Create(
+        string? name = null,
+        string? description = null,
+        string? color = null,
         Guid? projectId = null)
     {
-        return new(name, description, color, projectId ?? ProjectId);
+        return new(
+            name ?? Name,
+            description ?? Description,
+            color ?? Color,
+            projectId ?? ProjectId);
     }
 }

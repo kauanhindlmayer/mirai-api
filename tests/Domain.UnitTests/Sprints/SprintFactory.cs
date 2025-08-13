@@ -2,7 +2,7 @@ using Domain.Sprints;
 
 namespace Domain.UnitTests.Sprints;
 
-internal static class SprintData
+internal static class SprintFactory
 {
     public const string Name = "Sprint 1";
     public static readonly Guid TeamId = Guid.NewGuid();

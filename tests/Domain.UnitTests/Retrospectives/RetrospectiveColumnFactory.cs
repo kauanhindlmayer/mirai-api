@@ -2,7 +2,7 @@ using Domain.Retrospectives;
 
 namespace Domain.UnitTests.Retrospectives;
 
-internal static class RetrospectiveColumnData
+internal static class RetrospectiveColumnFactory
 {
     public static readonly string Title = "Column Title";
     public static readonly Guid RetrospectiveId = Guid.NewGuid();

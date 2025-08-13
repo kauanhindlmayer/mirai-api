@@ -9,7 +9,7 @@ public class BoardTests
     public void CreateBoard_ShouldSetProperties()
     {
         // Act
-        var board = BoardFactory.CreateBoard();
+        var board = BoardFactory.Create();
 
         // Assert
         board.Name.Should().Be(BoardFactory.Name);
@@ -20,7 +20,7 @@ public class BoardTests
     public void AddColumn_WhenColumnWithSameNameAlreadyExists_ShouldReturnError()
     {
         // Arrange
-        var board = BoardFactory.CreateBoard();
+        var board = BoardFactory.Create();
         var column = BoardFactory.CreateBoardColumn();
         board.AddColumn(column);
 
@@ -37,7 +37,7 @@ public class BoardTests
     public void AddColumn_WhenColumnDoesNotExists_ShouldAddColumn()
     {
         // Arrange
-        var board = BoardFactory.CreateBoard();
+        var board = BoardFactory.Create();
         var column = BoardFactory.CreateBoardColumn();
 
         // Act
@@ -53,7 +53,7 @@ public class BoardTests
     public void RemoveColumn_WhenColumnDoesNotExists_ShouldReturnError()
     {
         // Arrange
-        var board = BoardFactory.CreateBoard();
+        var board = BoardFactory.Create();
         var column = BoardFactory.CreateBoardColumn();
 
         // Act
@@ -69,9 +69,9 @@ public class BoardTests
     public void RemoveColumn_WhenColumnHasCards_ShouldReturnError()
     {
         // Arrange
-        var board = BoardFactory.CreateBoard();
+        var board = BoardFactory.Create();
         var column = BoardFactory.CreateBoardColumn();
-        var workItem = WorkItemFactory.CreateWorkItem();
+        var workItem = WorkItemFactory.Create();
         var card = BoardFactory.CreateBoardCard(column.Id, workItem.Id);
         column.AddCard(card);
         board.AddColumn(column);
@@ -89,7 +89,7 @@ public class BoardTests
     public void RemoveColumn_WhenColumnDoesNotHaveCards_ShouldRemoveColumn()
     {
         // Arrange
-        var board = BoardFactory.CreateBoard();
+        var board = BoardFactory.Create();
         var column = BoardFactory.CreateBoardColumn();
         board.AddColumn(column);
 
@@ -105,7 +105,7 @@ public class BoardTests
     public void RemoveColumn_WhenColumnDoesNotHaveCards_ShouldReorderColumns()
     {
         // Arrange
-        var board = BoardFactory.CreateBoard();
+        var board = BoardFactory.Create();
         var column1 = BoardFactory.CreateBoardColumn(name: "Column 1");
         var column2 = BoardFactory.CreateBoardColumn(name: "Column 2");
         var column3 = BoardFactory.CreateBoardColumn(name: "Column 3");
@@ -126,7 +126,7 @@ public class BoardTests
     public void RemoveColumn_WhenColumnDoesNotHaveCards_ShouldReorderColumnsWithGaps()
     {
         // Arrange
-        var board = BoardFactory.CreateBoard();
+        var board = BoardFactory.Create();
         var column1 = BoardFactory.CreateBoardColumn(name: "Column 1");
         var column2 = BoardFactory.CreateBoardColumn(name: "Column 2");
         var column3 = BoardFactory.CreateBoardColumn(name: "Column 3");

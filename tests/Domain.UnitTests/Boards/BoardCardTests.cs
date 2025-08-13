@@ -9,7 +9,7 @@ public class BoardCardTests
     {
         // Arrange
         var column = BoardFactory.CreateBoardColumn();
-        var workItem = WorkItemFactory.CreateWorkItem();
+        var workItem = WorkItemFactory.Create();
 
         // Act
         var card = BoardFactory.CreateBoardCard(column.Id, workItem.Id);

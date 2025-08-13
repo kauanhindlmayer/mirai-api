@@ -4,13 +4,15 @@ namespace Domain.UnitTests.Organizations;
 
 public static class OrganizationFactory
 {
-    public const string Name = "Organization";
-    public const string Description = "Description";
+    public const string Name = "Test Organization";
+    public const string Description = "Test Description";
 
-    public static Organization CreateOrganization(
-        string name = Name,
-        string description = Description)
+    public static Organization Create(
+        string? name = null,
+        string? description = null)
     {
-        return new(name, description);
+        return new(
+            name ?? Name,
+            description ?? Description);
     }
 }

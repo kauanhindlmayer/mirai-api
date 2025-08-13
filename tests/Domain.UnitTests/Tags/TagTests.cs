@@ -6,7 +6,7 @@ public class TagTests
     public void CreateTag_ShouldSetProperties()
     {
         // Act
-        var tag = TagFactory.CreateTag();
+        var tag = TagFactory.Create();
 
         // Assert
         tag.Name.Should().Be(TagFactory.Name);
@@ -18,7 +18,7 @@ public class TagTests
     public void Update_ShouldUpdateProperties()
     {
         // Arrange
-        var tag = TagFactory.CreateTag();
+        var tag = TagFactory.Create();
         var name = "Updated Name";
         var description = "Updated Description";
         var color = "#FFFFFF";

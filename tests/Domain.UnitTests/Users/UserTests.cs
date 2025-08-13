@@ -6,13 +6,13 @@ public class UserTests
     public void Constructor_ShouldSetProperties()
     {
         // Act
-        var user = UserData.Create();
+        var user = UserFactory.Create();
 
         // Assert
-        Assert.Equal(UserData.FirstName, user.FirstName);
-        Assert.Equal(UserData.LastName, user.LastName);
-        Assert.Equal(UserData.Email, user.Email);
-        Assert.Equal($"{UserData.FirstName} {UserData.LastName}", user.FullName);
+        Assert.Equal(UserFactory.FirstName, user.FirstName);
+        Assert.Equal(UserFactory.LastName, user.LastName);
+        Assert.Equal(UserFactory.Email, user.Email);
+        Assert.Equal($"{UserFactory.FirstName} {UserFactory.LastName}", user.FullName);
         Assert.Empty(user.IdentityId);
         Assert.Null(user.ImageUrl);
         Assert.Null(user.ImageFileId);
@@ -22,7 +22,7 @@ public class UserTests
     public void SetIdentityId_ShouldUpdateIdentityId()
     {
         // Arrange
-        var user = UserData.Create();
+        var user = UserFactory.Create();
         var identityId = Guid.NewGuid().ToString();
 
         // Act
@@ -36,7 +36,7 @@ public class UserTests
     public void SetImage_ShouldUpdateImageProperties()
     {
         // Arrange
-        var user = UserData.Create();
+        var user = UserFactory.Create();
         var imageUrl = "https://example.com/avatar.png";
         var imageFileId = Guid.NewGuid();
 
@@ -52,7 +52,7 @@ public class UserTests
     public void UpdateProfile_ShouldUpdateFirstAndLastName()
     {
         // Arrange
-        var user = UserData.Create();
+        var user = UserFactory.Create();
         var newFirstName = "Jane";
         var newLastName = "Smith";
 

@@ -3,7 +3,7 @@ using Domain.Retrospectives.Enums;
 
 namespace Domain.UnitTests.Retrospectives;
 
-internal static class RetrospectiveData
+internal static class RetrospectiveFactory
 {
     public static readonly string Title = $"Retrospective {DateTime.Now:MMM dd, yyyy}";
     public static readonly Guid TeamId = Guid.NewGuid();

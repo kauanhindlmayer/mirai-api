@@ -10,7 +10,7 @@ public class BoardColumnTests
     {
         // Arrange
         var column = BoardFactory.CreateBoardColumn();
-        var workItem = WorkItemFactory.CreateWorkItem();
+        var workItem = WorkItemFactory.Create();
         var card = BoardFactory.CreateBoardCard(column.Id, workItem.Id);
         column.AddCard(card);
 
@@ -28,7 +28,7 @@ public class BoardColumnTests
     {
         // Arrange
         var column = BoardFactory.CreateBoardColumn();
-        var workItem = WorkItemFactory.CreateWorkItem();
+        var workItem = WorkItemFactory.Create();
         var card = BoardFactory.CreateBoardCard(column.Id, workItem.Id);
 
         // Act
@@ -78,7 +78,7 @@ public class BoardColumnTests
     {
         // Arrange
         var column = BoardFactory.CreateBoardColumn();
-        var workItem = WorkItemFactory.CreateWorkItem();
+        var workItem = WorkItemFactory.Create();
 
         // Act
         var result = column.RemoveCard(workItem.Id);
@@ -94,7 +94,7 @@ public class BoardColumnTests
     {
         // Arrange
         var column = BoardFactory.CreateBoardColumn();
-        var workItem = WorkItemFactory.CreateWorkItem();
+        var workItem = WorkItemFactory.Create();
         var card = BoardFactory.CreateBoardCard(column.Id, workItem.Id);
         column.AddCard(card);
 
@@ -111,7 +111,7 @@ public class BoardColumnTests
     {
         // Arrange
         var column = BoardFactory.CreateBoardColumn();
-        var workItem = WorkItemFactory.CreateWorkItem();
+        var workItem = WorkItemFactory.Create();
         var card = BoardFactory.CreateBoardCard(column.Id, workItem.Id);
 
         // Act
@@ -128,7 +128,7 @@ public class BoardColumnTests
     {
         // Arrange
         var column = BoardFactory.CreateBoardColumn();
-        var workItem = WorkItemFactory.CreateWorkItem();
+        var workItem = WorkItemFactory.Create();
         var card = BoardFactory.CreateBoardCard(column.Id, workItem.Id);
         column.AddCard(card);
 
@@ -146,7 +146,7 @@ public class BoardColumnTests
     {
         // Arrange
         var column = BoardFactory.CreateBoardColumn();
-        var workItem = WorkItemFactory.CreateWorkItem();
+        var workItem = WorkItemFactory.Create();
         var card = new BoardCard(column.Id, workItem.Id, 0);
 
         // Act
@@ -163,10 +163,10 @@ public class BoardColumnTests
     {
         // Arrange
         var column = BoardFactory.CreateBoardColumn();
-        var workItem1 = WorkItemFactory.CreateWorkItem();
+        var workItem1 = WorkItemFactory.Create();
         var card1 = BoardFactory.CreateBoardCard(column.Id, workItem1.Id);
         column.AddCard(card1);
-        var workItem2 = WorkItemFactory.CreateWorkItem();
+        var workItem2 = WorkItemFactory.Create();
         var card2 = BoardFactory.CreateBoardCard(column.Id, workItem2.Id);
 
         // Act

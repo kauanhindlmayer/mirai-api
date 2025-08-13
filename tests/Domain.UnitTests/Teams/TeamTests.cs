@@ -15,7 +15,7 @@ public class TeamTests : BaseTest
     public void CreateTeam_ShouldRaiseTeamCreatedDomainEvent()
     {
         // Arrange
-        var team = TeamFactory.CreateTeam();
+        var team = TeamFactory.Create();
 
         // Assert
         var domainEvent = AssertDomainEventWasPublished<TeamCreatedDomainEvent>(team);
@@ -26,7 +26,7 @@ public class TeamTests : BaseTest
     public void CreateTeam_ShouldSetProperties()
     {
         // Act
-        var team = TeamFactory.CreateTeam();
+        var team = TeamFactory.Create();
 
         // Assert
         team.ProjectId.Should().NotBeEmpty();
@@ -38,8 +38,8 @@ public class TeamTests : BaseTest
     public void AddUser_WhenUserAlreadyExists_ShouldReturnError()
     {
         // Arrange
-        var team = TeamFactory.CreateTeam();
-        var user = UserFactory.CreateUser();
+        var team = TeamFactory.Create();
+        var user = UserFactory.Create();
         team.AddUser(user);
 
         // Act
@@ -55,8 +55,8 @@ public class TeamTests : BaseTest
     public void AddUser_WhenUserDoesNotExist_ShouldAddUser()
     {
         // Arrange
-        var team = TeamFactory.CreateTeam();
-        var user = UserFactory.CreateUser();
+        var team = TeamFactory.Create();
+        var user = UserFactory.Create();
 
         // Act
         var result = team.AddUser(user);
@@ -70,8 +70,8 @@ public class TeamTests : BaseTest
     public void RemoveUser_WhenUserDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        var team = TeamFactory.CreateTeam();
-        var user = UserFactory.CreateUser();
+        var team = TeamFactory.Create();
+        var user = UserFactory.Create();
 
         // Act
         var result = team.RemoveUser(user.Id);
@@ -86,8 +86,8 @@ public class TeamTests : BaseTest
     public void RemoveUser_WhenUserExists_ShouldRemoveUser()
     {
         // Arrange
-        var team = TeamFactory.CreateTeam();
-        var user = UserFactory.CreateUser();
+        var team = TeamFactory.Create();
+        var user = UserFactory.Create();
         team.AddUser(user);
 
         // Act
@@ -102,8 +102,8 @@ public class TeamTests : BaseTest
     public void AddRetrospective_WhenRetrospectiveAlreadyExists_ShouldReturnError()
     {
         // Arrange
-        var team = TeamFactory.CreateTeam();
-        var retrospective = RetrospectiveData.Create();
+        var team = TeamFactory.Create();
+        var retrospective = RetrospectiveFactory.Create();
         team.AddRetrospective(retrospective);
 
         // Act
@@ -119,8 +119,8 @@ public class TeamTests : BaseTest
     public void AddRetrospective_WhenRetrospectiveDoesNotExist_ShouldAddRetrospective()
     {
         // Arrange
-        var team = TeamFactory.CreateTeam();
-        var retrospective = RetrospectiveData.Create();
+        var team = TeamFactory.Create();
+        var retrospective = RetrospectiveFactory.Create();
 
         // Act
         var result = team.AddRetrospective(retrospective);
@@ -134,8 +134,8 @@ public class TeamTests : BaseTest
     public void AddSprint_WhenSprintAlreadyExists_ShouldReturnError()
     {
         // Arrange
-        var team = TeamFactory.CreateTeam();
-        var sprint = SprintFactory.CreateSprint();
+        var team = TeamFactory.Create();
+        var sprint = SprintFactory.Create();
         team.AddSprint(sprint);
 
         // Act
@@ -151,8 +151,8 @@ public class TeamTests : BaseTest
     public void AddSprint_WhenSprintDoesNotExist_ShouldAddSprint()
     {
         // Arrange
-        var team = TeamFactory.CreateTeam();
-        var sprint = SprintFactory.CreateSprint();
+        var team = TeamFactory.Create();
+        var sprint = SprintFactory.Create();
 
         // Act
         var result = team.AddSprint(sprint);

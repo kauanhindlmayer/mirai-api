@@ -8,11 +8,11 @@ public class RetrospectiveColumnTests
     public void Constructor_ShouldInitializeProperties()
     {
         // Act
-        var column = RetrospectiveColumnData.Create();
+        var column = RetrospectiveColumnFactory.Create();
 
         // Assert
-        column.Title.Should().Be(RetrospectiveColumnData.Title);
-        column.RetrospectiveId.Should().Be(RetrospectiveColumnData.RetrospectiveId);
+        column.Title.Should().Be(RetrospectiveColumnFactory.Title);
+        column.RetrospectiveId.Should().Be(RetrospectiveColumnFactory.RetrospectiveId);
         column.Items.Should().BeEmpty();
     }
 
@@ -20,11 +20,11 @@ public class RetrospectiveColumnTests
     public void AddItem_WhenUnique_ShouldAddAtPositionZeroAndShiftOthers()
     {
         // Arrange
-        var column = RetrospectiveColumnData.Create();
-        var existingItem = RetrospectiveColumnData.CreateItem("Existing Item", column.Id, position: 0);
+        var column = RetrospectiveColumnFactory.Create();
+        var existingItem = RetrospectiveColumnFactory.CreateItem("Existing Item", column.Id, position: 0);
         column.Items.Add(existingItem);
 
-        var newItem = RetrospectiveColumnData.CreateItem("New Item", column.Id);
+        var newItem = RetrospectiveColumnFactory.CreateItem("New Item", column.Id);
 
         // Act
         var result = column.AddItem(newItem);
@@ -40,11 +40,11 @@ public class RetrospectiveColumnTests
     public void AddItem_WhenContentAlreadyExists_ShouldReturnError()
     {
         // Arrange
-        var column = RetrospectiveColumnData.Create();
-        var item = RetrospectiveColumnData.CreateItem("Duplicate", column.Id);
+        var column = RetrospectiveColumnFactory.Create();
+        var item = RetrospectiveColumnFactory.CreateItem("Duplicate", column.Id);
         column.Items.Add(item);
 
-        var duplicateItem = RetrospectiveColumnData.CreateItem("Duplicate", column.Id);
+        var duplicateItem = RetrospectiveColumnFactory.CreateItem("Duplicate", column.Id);
 
         // Act
         var result = column.AddItem(duplicateItem);
@@ -59,9 +59,9 @@ public class RetrospectiveColumnTests
     public void RemoveItem_WhenExists_ShouldRemoveAndShiftPositions()
     {
         // Arrange
-        var column = RetrospectiveColumnData.Create();
-        var item1 = RetrospectiveColumnData.CreateItem("Item 1", column.Id, position: 0);
-        var item2 = RetrospectiveColumnData.CreateItem("Item 2", column.Id, position: 1);
+        var column = RetrospectiveColumnFactory.Create();
+        var item1 = RetrospectiveColumnFactory.CreateItem("Item 1", column.Id, position: 0);
+        var item2 = RetrospectiveColumnFactory.CreateItem("Item 2", column.Id, position: 1);
         column.Items.AddRange([item1, item2]);
 
         // Act
@@ -77,7 +77,7 @@ public class RetrospectiveColumnTests
     public void RemoveItem_WhenNotFound_ShouldReturnError()
     {
         // Arrange
-        var column = RetrospectiveColumnData.Create();
+        var column = RetrospectiveColumnFactory.Create();
 
         // Act
         var result = column.RemoveItem(Guid.NewGuid());
@@ -91,7 +91,7 @@ public class RetrospectiveColumnTests
     public void UpdatePosition_ShouldChangePosition()
     {
         // Arrange
-        var column = RetrospectiveColumnData.Create();
+        var column = RetrospectiveColumnFactory.Create();
 
         // Act
         column.UpdatePosition(3);
