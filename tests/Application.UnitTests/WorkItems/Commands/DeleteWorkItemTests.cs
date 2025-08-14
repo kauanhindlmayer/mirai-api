@@ -21,11 +21,15 @@ public class DeleteWorkItemTests
     public async Task Handle_WhenWorkItemDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _workItemRepository.GetByIdAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
+        _workItemRepository.GetByIdAsync(
+            Command.WorkItemId,
+            TestContext.Current.CancellationToken)
             .Returns(null as WorkItem);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().BeOfType<ErrorOr<Success>>();
@@ -37,11 +41,15 @@ public class DeleteWorkItemTests
     {
         // Arrange
         var workItem = new WorkItem(Guid.NewGuid(), 1, "Title", WorkItemType.UserStory);
-        _workItemRepository.GetByIdAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
+        _workItemRepository.GetByIdAsync(
+            Command.WorkItemId,
+            TestContext.Current.CancellationToken)
             .Returns(workItem);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().BeOfType<ErrorOr<Success>>();

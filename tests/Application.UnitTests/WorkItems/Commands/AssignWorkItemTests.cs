@@ -28,11 +28,15 @@ public class AssignWorkItemTests
     public async Task Handle_WhenWorkItemDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _workItemRepository.GetByIdAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
+        _workItemRepository.GetByIdAsync(
+            Command.WorkItemId,
+            TestContext.Current.CancellationToken)
             .Returns(null as WorkItem);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().BeOfType<ErrorOr<Success>>();
@@ -44,13 +48,19 @@ public class AssignWorkItemTests
     {
         // Arrange
         var workItem = new WorkItem(Guid.NewGuid(), 1, "Title", WorkItemType.UserStory);
-        _workItemRepository.GetByIdAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
+        _workItemRepository.GetByIdAsync(
+            Command.WorkItemId,
+            TestContext.Current.CancellationToken)
             .Returns(workItem);
-        _userRepository.GetByIdAsync(Command.AssigneeId, TestContext.Current.CancellationToken)
+        _userRepository.GetByIdAsync(
+            Command.AssigneeId,
+            TestContext.Current.CancellationToken)
             .Returns(null as User);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().BeOfType<ErrorOr<Success>>();
@@ -62,14 +72,20 @@ public class AssignWorkItemTests
     {
         // Arrange
         var workItem = new WorkItem(Guid.NewGuid(), 1, "Title", WorkItemType.UserStory);
-        var assignee = new User("John", "Doe", "john.doe@email.com");
-        _workItemRepository.GetByIdAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
+        var assignee = new User("John", "Doe", "john.doe@mirai.com");
+        _workItemRepository.GetByIdAsync(
+            Command.WorkItemId,
+            TestContext.Current.CancellationToken)
             .Returns(workItem);
-        _userRepository.GetByIdAsync(Command.AssigneeId, TestContext.Current.CancellationToken)
+        _userRepository.GetByIdAsync(
+            Command.AssigneeId,
+            TestContext.Current.CancellationToken)
             .Returns(assignee);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().BeOfType<ErrorOr<Success>>();
@@ -82,14 +98,20 @@ public class AssignWorkItemTests
     {
         // Arrange
         var workItem = new WorkItem(Guid.NewGuid(), 1, "Title", WorkItemType.UserStory);
-        var assignee = new User("John", "Doe", "john.doe@email.com");
-        _workItemRepository.GetByIdAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
+        var assignee = new User("John", "Doe", "john.doe@mirai.com");
+        _workItemRepository.GetByIdAsync(
+            Command.WorkItemId,
+            TestContext.Current.CancellationToken)
             .Returns(workItem);
-        _userRepository.GetByIdAsync(Command.AssigneeId, TestContext.Current.CancellationToken)
+        _userRepository.GetByIdAsync(
+            Command.AssigneeId,
+            TestContext.Current.CancellationToken)
             .Returns(assignee);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().BeOfType<ErrorOr<Success>>();

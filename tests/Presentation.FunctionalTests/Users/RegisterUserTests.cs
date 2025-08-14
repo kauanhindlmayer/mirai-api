@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
+using Presentation.Controllers.Users;
 using Presentation.FunctionalTests.Infrastructure;
 
 namespace Presentation.FunctionalTests.Users;
@@ -21,11 +22,7 @@ public class RegisterUserTests : BaseFunctionalTest
         string lastName)
     {
         // Arrange
-        var request = UserRequestFactory.CreateRegisterUserRequest(
-            email,
-            password,
-            firstName,
-            lastName);
+        var request = new RegisterUserRequest(email, password, firstName, lastName);
 
         // Act
         var response = await _httpClient.PostAsJsonAsync(
@@ -41,7 +38,11 @@ public class RegisterUserTests : BaseFunctionalTest
     public async Task RegisterUser_WhenRequestIsValid_ShouldReturnOk()
     {
         // Arrange
-        var request = UserRequestFactory.CreateRegisterUserRequest(email: "johndoe@email.com");
+        var request = new RegisterUserRequest(
+            $"john.doe{Random.Shared.Next(1, 100)}@mirai.com",
+            "password123",
+            "John",
+            "Doe");
 
         // Act
         var response = await _httpClient.PostAsJsonAsync(

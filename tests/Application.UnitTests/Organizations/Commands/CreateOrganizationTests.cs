@@ -22,11 +22,15 @@ public class CreateOrganizationTests
     public async Task Handle_WhenOrganizationExists_ShouldReturnError()
     {
         // Arrange
-        _mockOrganizationRepository.ExistsByNameAsync(Command.Name, TestContext.Current.CancellationToken)
+        _mockOrganizationRepository.ExistsByNameAsync(
+            Command.Name,
+            TestContext.Current.CancellationToken)
             .Returns(true);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().BeOfType<ErrorOr<Guid>>();
@@ -37,11 +41,15 @@ public class CreateOrganizationTests
     public async Task Handle_WhenOrganizationDoesNotExist_ShouldReturnOrganizationId()
     {
         // Arrange
-        _mockOrganizationRepository.ExistsByNameAsync(Command.Name, TestContext.Current.CancellationToken)
+        _mockOrganizationRepository.ExistsByNameAsync(
+            Command.Name,
+            TestContext.Current.CancellationToken)
             .Returns(false);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().BeOfType<ErrorOr<Guid>>();

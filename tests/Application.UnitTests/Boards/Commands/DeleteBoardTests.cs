@@ -20,11 +20,15 @@ public class DeleteBoardTests
     public async Task Handle_WhenBoardDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _boardRepository.GetByIdAsync(Guid.NewGuid(), TestContext.Current.CancellationToken)
+        _boardRepository.GetByIdAsync(
+            Guid.NewGuid(),
+            TestContext.Current.CancellationToken)
             .Returns(null as Board);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -36,11 +40,15 @@ public class DeleteBoardTests
     {
         // Arrange
         var board = new Board(Guid.NewGuid(), "Board");
-        _boardRepository.GetByIdAsync(Command.BoardId, TestContext.Current.CancellationToken)
+        _boardRepository.GetByIdAsync(
+            Command.BoardId,
+            TestContext.Current.CancellationToken)
             .Returns(board);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeFalse();

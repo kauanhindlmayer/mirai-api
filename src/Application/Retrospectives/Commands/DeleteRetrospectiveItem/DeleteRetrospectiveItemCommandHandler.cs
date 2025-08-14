@@ -28,7 +28,7 @@ internal sealed class DeleteRetrospectiveItemCommandHandler
             return RetrospectiveErrors.NotFound;
         }
 
-        var result = retrospective.RemoveItem(command.ItemId);
+        var result = retrospective.RemoveItem(command.ColumnId, command.ItemId);
         if (result.IsError)
         {
             return result.Errors;

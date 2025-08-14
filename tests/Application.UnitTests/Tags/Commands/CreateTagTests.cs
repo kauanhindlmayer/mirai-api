@@ -25,11 +25,15 @@ public class CreateTagTests
     public async Task Handle_WhenProjectDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _projectRepository.GetByIdWithTagsAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _projectRepository.GetByIdWithTagsAsync(
+            Command.ProjectId,
+            TestContext.Current.CancellationToken)
             .Returns(null as Project);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -43,11 +47,15 @@ public class CreateTagTests
         var project = new Project("Test Project", "Test Description", Guid.NewGuid());
         var tag = new Tag("Test Tag", "Test Description", "#FFFFFF");
         project.AddTag(tag);
-        _projectRepository.GetByIdWithTagsAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _projectRepository.GetByIdWithTagsAsync(
+            Command.ProjectId,
+            TestContext.Current.CancellationToken)
             .Returns(project);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -59,11 +67,15 @@ public class CreateTagTests
     {
         // Arrange
         var project = new Project("Test Project", "Test Description", Guid.NewGuid());
-        _projectRepository.GetByIdWithTagsAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _projectRepository.GetByIdWithTagsAsync(
+            Command.ProjectId,
+            TestContext.Current.CancellationToken)
             .Returns(project);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeFalse();

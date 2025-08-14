@@ -29,7 +29,9 @@ public class DeleteRetrospectiveItemTests
             .Returns(null as Retrospective);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -40,14 +42,16 @@ public class DeleteRetrospectiveItemTests
     public async Task Handle_WhenColumnDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        var retrospective = new Retrospective("Test Retrospective", Guid.NewGuid(), 5, null);
+        var retrospective = new Retrospective("Test Retrospective", Guid.NewGuid());
         _retrospectiveRepository.GetByIdWithColumnsAsync(
             Command.RetrospectiveId,
             TestContext.Current.CancellationToken)
             .Returns(retrospective);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -58,17 +62,21 @@ public class DeleteRetrospectiveItemTests
     public async Task Handle_WhenItemDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        var retrospective = new Retrospective("Test Retrospective", Guid.NewGuid(), 5, null);
-        var column = new RetrospectiveColumn("Test Column", Command.RetrospectiveId);
+        var retrospective = new Retrospective("Test Retrospective", Guid.NewGuid());
+        var column = new RetrospectiveColumn("Test Column", retrospective.Id);
         retrospective.AddColumn(column);
         _retrospectiveRepository.GetByIdWithColumnsAsync(
-            Command.RetrospectiveId,
+            retrospective.Id,
             TestContext.Current.CancellationToken)
             .Returns(retrospective);
 
         // Act
         var result = await _handler.Handle(
-            Command with { ColumnId = column.Id },
+            Command with
+            {
+                RetrospectiveId = retrospective.Id,
+                ColumnId = column.Id,
+            },
             TestContext.Current.CancellationToken);
 
         // Assert
@@ -80,7 +88,7 @@ public class DeleteRetrospectiveItemTests
     public async Task Handle_WhenCommandIsValid_ShouldDeleteItem()
     {
         // Arrange
-        var retrospective = new Retrospective("Test Retrospective", Guid.NewGuid(), 5, null);
+        var retrospective = new Retrospective("Test Retrospective", Guid.NewGuid());
         var column = new RetrospectiveColumn("Test Column", Command.RetrospectiveId);
         var item = new RetrospectiveItem("Test content", column.Id, Command.ItemId);
         column.AddItem(item);

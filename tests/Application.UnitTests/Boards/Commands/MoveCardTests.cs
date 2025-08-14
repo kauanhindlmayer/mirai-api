@@ -27,11 +27,15 @@ public class MoveCardTests
     public async Task Handle_WhenBoardDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _boardRepository.GetByIdWithCardsAsync(Command.BoardId, TestContext.Current.CancellationToken)
+        _boardRepository.GetByIdWithCardsAsync(
+            Command.BoardId,
+            TestContext.Current.CancellationToken)
             .Returns(null as Board);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -43,11 +47,15 @@ public class MoveCardTests
     {
         // Arrange
         var board = new Board(Guid.NewGuid(), "Board");
-        _boardRepository.GetByIdWithCardsAsync(Command.BoardId, TestContext.Current.CancellationToken)
+        _boardRepository.GetByIdWithCardsAsync(
+            Command.BoardId,
+            TestContext.Current.CancellationToken)
             .Returns(board);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -63,7 +71,9 @@ public class MoveCardTests
         var targetColumn = new BoardColumn(board.Id, "TargetColumn");
         board.AddColumn(column);
         board.AddColumn(targetColumn);
-        _boardRepository.GetByIdWithCardsAsync(Command.BoardId, TestContext.Current.CancellationToken)
+        _boardRepository.GetByIdWithCardsAsync(
+            Command.BoardId,
+            TestContext.Current.CancellationToken)
             .Returns(board);
 
         // Act
@@ -86,7 +96,9 @@ public class MoveCardTests
         var card = new BoardCard(column.Id, workItem.Id, 0);
         column.AddCard(card);
         board.AddColumn(column);
-        _boardRepository.GetByIdWithCardsAsync(Command.BoardId, TestContext.Current.CancellationToken)
+        _boardRepository.GetByIdWithCardsAsync(
+            Command.BoardId,
+            TestContext.Current.CancellationToken)
             .Returns(board);
 
         // Act
@@ -111,7 +123,9 @@ public class MoveCardTests
         var workItem = new WorkItem(Guid.NewGuid(), 1, "Title", WorkItemType.UserStory);
         var card = new BoardCard(column.Id, workItem.Id, 0);
         column.AddCard(card);
-        _boardRepository.GetByIdWithCardsAsync(board.Id, TestContext.Current.CancellationToken)
+        _boardRepository.GetByIdWithCardsAsync(
+            board.Id,
+            TestContext.Current.CancellationToken)
             .Returns(board);
         var command = new MoveCardCommand(
             board.Id,
@@ -121,7 +135,9 @@ public class MoveCardTests
             TargetPosition: -1);
 
         // Act
-        var result = await _handler.Handle(command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -141,7 +157,9 @@ public class MoveCardTests
         var card = new BoardCard(column.Id, workItem.Id, 0);
         column.AddCard(card);
         targetColumn.AddCard(card);
-        _boardRepository.GetByIdWithCardsAsync(board.Id, TestContext.Current.CancellationToken)
+        _boardRepository.GetByIdWithCardsAsync(
+            board.Id,
+            TestContext.Current.CancellationToken)
             .Returns(board);
         var command = new MoveCardCommand(
             board.Id,
@@ -151,7 +169,9 @@ public class MoveCardTests
             0);
 
         // Act
-        var result = await _handler.Handle(command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -170,7 +190,9 @@ public class MoveCardTests
         column.AddCard(card);
         board.AddColumn(column);
         board.AddColumn(targetColumn);
-        _boardRepository.GetByIdWithCardsAsync(board.Id, TestContext.Current.CancellationToken)
+        _boardRepository.GetByIdWithCardsAsync(
+            board.Id,
+            TestContext.Current.CancellationToken)
             .Returns(board);
         var command = new MoveCardCommand(
             board.Id,
@@ -180,7 +202,9 @@ public class MoveCardTests
             0);
 
         // Act
-        var result = await _handler.Handle(command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeFalse();

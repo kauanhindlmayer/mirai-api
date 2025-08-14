@@ -24,11 +24,15 @@ public class RemoveTagTests
     public async Task Handle_WhenWorkItemDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _workItemRepository.GetByIdWithTagsAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
+        _workItemRepository.GetByIdWithTagsAsync(
+            Command.WorkItemId,
+            TestContext.Current.CancellationToken)
             .Returns(null as WorkItem);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().BeOfType<ErrorOr<Success>>();
@@ -40,11 +44,15 @@ public class RemoveTagTests
     {
         // Arrange
         var workItem = new WorkItem(Guid.NewGuid(), 1, "Title", WorkItemType.UserStory);
-        _workItemRepository.GetByIdWithTagsAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
+        _workItemRepository.GetByIdWithTagsAsync(
+            Command.WorkItemId,
+            TestContext.Current.CancellationToken)
             .Returns(workItem);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().BeOfType<ErrorOr<Success>>();
@@ -58,11 +66,15 @@ public class RemoveTagTests
         var workItem = new WorkItem(Guid.NewGuid(), 1, "Title", WorkItemType.UserStory);
         var tag = new Tag("Tag Name", string.Empty, string.Empty);
         workItem.AddTag(tag);
-        _workItemRepository.GetByIdWithTagsAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
+        _workItemRepository.GetByIdWithTagsAsync(
+            Command.WorkItemId,
+            TestContext.Current.CancellationToken)
             .Returns(workItem);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().BeOfType<ErrorOr<Success>>();
@@ -77,11 +89,15 @@ public class RemoveTagTests
         var workItem = new WorkItem(Guid.NewGuid(), 1, "Title", WorkItemType.UserStory);
         var tag = new Tag("Tag Name", string.Empty, string.Empty);
         workItem.AddTag(tag);
-        _workItemRepository.GetByIdWithTagsAsync(Command.WorkItemId, TestContext.Current.CancellationToken)
+        _workItemRepository.GetByIdWithTagsAsync(
+            Command.WorkItemId,
+            TestContext.Current.CancellationToken)
             .Returns(workItem);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().BeOfType<ErrorOr<Success>>();

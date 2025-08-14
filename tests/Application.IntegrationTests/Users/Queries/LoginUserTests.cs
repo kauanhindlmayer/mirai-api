@@ -14,13 +14,15 @@ public class LoginUserTests : BaseIntegrationTest
     }
 
     [Fact]
-    public async Task Handle_WhenUserDoesNotExist_ReturnsNotFoundError()
+    public async Task Handle_WhenUserDoesNotExist_ShouldReturnError()
     {
         // Arrange
         var command = new LoginUserQuery("test@test.com", "password");
 
         // Act
-        var result = await _sender.Send(command, TestContext.Current.CancellationToken);
+        var result = await _sender.Send(
+            command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -29,19 +31,21 @@ public class LoginUserTests : BaseIntegrationTest
     }
 
     [Fact]
-    public async Task Handle_WhenUserExistsAndPasswordMatches_ReturnsValidAccessTokenResponse()
+    public async Task Handle_WhenUserExistsAndPasswordMatches_ShouldReturnAccessToken()
     {
         // Arrange
         var registerCommand = new RegisterUserCommand(
-            "john.doe3@email.com",
+            "john.doe3@mirai.com",
             "vXJu9zCgjOV2dW3",
             "John",
             "Doe");
         await _sender.Send(registerCommand, TestContext.Current.CancellationToken);
-        var command = new LoginUserQuery("john.doe3@email.com", "vXJu9zCgjOV2dW3");
+        var command = new LoginUserQuery("john.doe3@mirai.com", "vXJu9zCgjOV2dW3");
 
         // Act
-        var result = await _sender.Send(command, TestContext.Current.CancellationToken);
+        var result = await _sender.Send(
+            command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeFalse();
@@ -49,18 +53,20 @@ public class LoginUserTests : BaseIntegrationTest
     }
 
     [Fact]
-    public async Task Handle_WhenUserExistsAndPasswordDoesNotMatch_ReturnsAuthenticationFailedError()
+    public async Task Handle_WhenUserExistsAndPasswordDoesNotMatch_ShouldReturnError()
     {
         var registerCommand = new RegisterUserCommand(
-            "john.doe4@email.com",
+            "john.doe4@mirai.com",
             "vXJu9zCgjOV2dW3",
             "John",
             "Doe");
         await _sender.Send(registerCommand, TestContext.Current.CancellationToken);
-        var command = new LoginUserQuery("john.doe4@email.com", "wrong_password");
+        var command = new LoginUserQuery("john.doe4@mirai.com", "wrong_password");
 
         // Act
-        var result = await _sender.Send(command, TestContext.Current.CancellationToken);
+        var result = await _sender.Send(
+            command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();

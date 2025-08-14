@@ -35,11 +35,15 @@ public class CreateWikiPageTests
     public async Task Handle_WhenProjectDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _projectRepository.GetByIdWithWikiPagesAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _projectRepository.GetByIdWithWikiPagesAsync(
+            Command.ProjectId,
+            TestContext.Current.CancellationToken)
             .Returns(null as Project);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -51,7 +55,9 @@ public class CreateWikiPageTests
     {
         // Arrange
         var project = new Project("Project", "Description", Guid.NewGuid());
-        _projectRepository.GetByIdWithWikiPagesAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _projectRepository.GetByIdWithWikiPagesAsync(
+            Command.ProjectId,
+            TestContext.Current.CancellationToken)
             .Returns(project);
 
         // Act
@@ -69,13 +75,21 @@ public class CreateWikiPageTests
     {
         // Arrange
         var project = new Project("Project", "Description", Guid.NewGuid());
-        var wikiPage = new WikiPage(Guid.NewGuid(), Command.Title, Command.Content, Guid.NewGuid(), null);
+        var wikiPage = new WikiPage(
+            Guid.NewGuid(),
+            Command.Title,
+            Command.Content,
+            Guid.NewGuid());
         project.AddWikiPage(wikiPage);
-        _projectRepository.GetByIdWithWikiPagesAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _projectRepository.GetByIdWithWikiPagesAsync(
+            Command.ProjectId,
+            TestContext.Current.CancellationToken)
             .Returns(project);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -87,15 +101,20 @@ public class CreateWikiPageTests
     {
         // Arrange
         var project = new Project("Project", "Description", Guid.NewGuid());
-        _projectRepository.GetByIdWithWikiPagesAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _projectRepository.GetByIdWithWikiPagesAsync(
+            Command.ProjectId,
+            TestContext.Current.CancellationToken)
             .Returns(project);
         _htmlSanitizerService.Sanitize(Command.Content).Returns(Command.Content);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeFalse();
-        project.WikiPages.Should().ContainSingle().Which.Title.Should().Be(Command.Title);
+        project.WikiPages.Should().ContainSingle()
+            .Which.Title.Should().Be(Command.Title);
     }
 }

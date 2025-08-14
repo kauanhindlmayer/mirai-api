@@ -21,11 +21,15 @@ public class DeleteWikiPageTests
     public async Task Handle_WhenWikiPageDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _wikiPageRepository.GetByIdAsync(Command.WikiPageId, TestContext.Current.CancellationToken)
+        _wikiPageRepository.GetByIdAsync(
+            Command.WikiPageId,
+            TestContext.Current.CancellationToken)
             .Returns(null as WikiPage);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -45,7 +49,9 @@ public class DeleteWikiPageTests
             Guid.NewGuid(),
             parentWikiPage.Id);
         parentWikiPage.InsertSubWikiPage(wikiPage.SubWikiPages.Count, wikiPage);
-        _wikiPageRepository.GetByIdWithSubWikiPagesAsync(parentWikiPage.Id, TestContext.Current.CancellationToken)
+        _wikiPageRepository.GetByIdWithSubWikiPagesAsync(
+            parentWikiPage.Id,
+            TestContext.Current.CancellationToken)
             .Returns(parentWikiPage);
 
         // Act
@@ -69,7 +75,9 @@ public class DeleteWikiPageTests
             .Returns(wikiPage);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeFalse();

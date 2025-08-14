@@ -20,6 +20,7 @@ public class CreateWorkItemTests
     private readonly IProjectRepository _projectRepository;
     private readonly IWorkItemRepository _workItemRepository;
     private readonly IEmbeddingGenerator<string, Embedding<float>> _embeddingGenerator;
+    private static readonly float[] Vector = [0.1f, 0.2f, 0.3f];
 
     public CreateWorkItemTests()
     {
@@ -36,11 +37,15 @@ public class CreateWorkItemTests
     public async Task Handle_WhenProjectDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _projectRepository.GetByIdAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _projectRepository.GetByIdAsync(
+            Command.ProjectId,
+            TestContext.Current.CancellationToken)
             .Returns(null as Project);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -56,10 +61,15 @@ public class CreateWorkItemTests
         var board = new Board(team.Id, "Board");
         project.AddTeam(team);
         team.AddBoard(board);
-        _projectRepository.GetByIdWithTeamsAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _projectRepository.GetByIdWithTeamsAsync(
+            Command.ProjectId,
+            TestContext.Current.CancellationToken)
             .Returns(project);
-        _workItemRepository.GetNextWorkItemCodeAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _workItemRepository.GetNextWorkItemCodeAsync(
+            Command.ProjectId,
+            TestContext.Current.CancellationToken)
             .Returns(1);
+        SetupEmbeddingGeneratorMock();
 
         // Act
         var result = await _handler.Handle(
@@ -80,10 +90,15 @@ public class CreateWorkItemTests
         var board = new Board(team.Id, "Board");
         project.AddTeam(team);
         team.AddBoard(board);
-        _projectRepository.GetByIdWithTeamsAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _projectRepository.GetByIdWithTeamsAsync(
+            Command.ProjectId,
+            TestContext.Current.CancellationToken)
             .Returns(project);
-        _workItemRepository.GetNextWorkItemCodeAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _workItemRepository.GetNextWorkItemCodeAsync(
+            Command.ProjectId,
+            TestContext.Current.CancellationToken)
             .Returns(1);
+        SetupEmbeddingGeneratorMock();
 
         // Act
         await _handler.Handle(
@@ -92,5 +107,16 @@ public class CreateWorkItemTests
 
         // Assert
         _projectRepository.Received().Update(project);
+    }
+
+    private void SetupEmbeddingGeneratorMock()
+    {
+        var embedding = new GeneratedEmbeddings<Embedding<float>>([new(Vector)]);
+        _embeddingGenerator
+            .GenerateAsync(
+                Arg.Any<IEnumerable<string>>(),
+                Arg.Any<EmbeddingGenerationOptions?>(),
+                TestContext.Current.CancellationToken)
+            .Returns(embedding);
     }
 }

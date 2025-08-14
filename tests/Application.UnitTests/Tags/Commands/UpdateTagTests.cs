@@ -26,11 +26,15 @@ public class UpdateTagTests
     public async Task Handle_WhenProjectDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _projectRepository.GetByIdWithTagsAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _projectRepository.GetByIdWithTagsAsync(
+            Command.ProjectId,
+            TestContext.Current.CancellationToken)
             .Returns(null as Project);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -42,11 +46,15 @@ public class UpdateTagTests
     {
         // Arrange
         var project = new Project("Project", "Description", Guid.NewGuid());
-        _projectRepository.GetByIdWithTagsAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _projectRepository.GetByIdWithTagsAsync(
+            Command.ProjectId,
+            TestContext.Current.CancellationToken)
             .Returns(project);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -60,7 +68,9 @@ public class UpdateTagTests
         var project = new Project("Project", "Description", Command.ProjectId);
         var tag = new Tag("Name", "Description", "Color");
         project.AddTag(tag);
-        _projectRepository.GetByIdWithTagsAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _projectRepository.GetByIdWithTagsAsync(
+            Command.ProjectId,
+            TestContext.Current.CancellationToken)
             .Returns(project);
 
         // Act

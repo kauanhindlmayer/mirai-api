@@ -7,19 +7,19 @@ namespace Application.UnitTests.Users.Queries;
 public class LoginUserTests
 {
     private static readonly LoginUserQuery Query = new(
-        "john.doe@email.com",
+        "john.doe@mirai.com",
         "password");
 
     private readonly LoginUserQueryHandler _handler;
-    private readonly IUserRepository _mockuserRepository;
+    private readonly IUserRepository _mockUserRepository;
     private readonly IJwtService _mockJwtService;
 
     public LoginUserTests()
     {
-        _mockuserRepository = Substitute.For<IUserRepository>();
+        _mockUserRepository = Substitute.For<IUserRepository>();
         _mockJwtService = Substitute.For<IJwtService>();
         _handler = new LoginUserQueryHandler(
-            _mockuserRepository,
+            _mockUserRepository,
             _mockJwtService);
     }
 
@@ -27,11 +27,15 @@ public class LoginUserTests
     public async Task Handle_WhenUserDoesNotExist_ReturnsNotFoundError()
     {
         // Arrange
-        _mockuserRepository.GetByEmailAsync(Query.Email, TestContext.Current.CancellationToken)
+        _mockUserRepository.GetByEmailAsync(
+            Query.Email,
+            TestContext.Current.CancellationToken)
             .Returns(null as User);
 
         // Act
-        var result = await _handler.Handle(Query, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Query,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -42,10 +46,11 @@ public class LoginUserTests
     public async Task Handle_WhenUserExistsAndPasswordMatches_ReturnsValidAccessTokenResponse()
     {
         // Arrange
-        var user = new User("John", "Doe", "john.doe@email.com");
-        _mockuserRepository.GetByEmailAsync(Query.Email, TestContext.Current.CancellationToken)
+        var user = new User("John", "Doe", "john.doe@mirai.com");
+        _mockUserRepository.GetByEmailAsync(
+            Query.Email,
+            TestContext.Current.CancellationToken)
             .Returns(user);
-
         var accessTokenResponse = new AccessTokenResponse("access_token");
         _mockJwtService.GetAccessTokenAsync(
             Query.Email,
@@ -54,11 +59,13 @@ public class LoginUserTests
             .Returns(accessTokenResponse.AccessToken);
 
         // Act
-        var result = await _handler.Handle(Query, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Query,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.Value.Should().BeEquivalentTo(accessTokenResponse);
-        await _mockuserRepository.Received(1).GetByEmailAsync(
+        await _mockUserRepository.Received(1).GetByEmailAsync(
             Query.Email,
             TestContext.Current.CancellationToken);
         await _mockJwtService.Received(1).GetAccessTokenAsync(
@@ -71,10 +78,11 @@ public class LoginUserTests
     public async Task Handle_WhenUserExistsAndPasswordDoesNotMatch_ReturnsAuthenticationFailedError()
     {
         // Arrange
-        var user = new User("John", "Doe", "john.doe@email.com");
-        _mockuserRepository.GetByEmailAsync(Query.Email, TestContext.Current.CancellationToken)
+        var user = new User("John", "Doe", "john.doe@mirai.com");
+        _mockUserRepository.GetByEmailAsync(
+            Query.Email,
+            TestContext.Current.CancellationToken)
             .Returns(user);
-
         _mockJwtService.GetAccessTokenAsync(
             Query.Email,
             Query.Password,
@@ -82,7 +90,9 @@ public class LoginUserTests
             .Returns(UserErrors.InvalidCredentials);
 
         // Act
-        var result = await _handler.Handle(Query, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Query,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.FirstError.Should().BeEquivalentTo(UserErrors.InvalidCredentials);

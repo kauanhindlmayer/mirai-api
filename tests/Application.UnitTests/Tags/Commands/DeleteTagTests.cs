@@ -30,11 +30,15 @@ public class DeleteTagTests
     public async Task Handle_WhenProjectDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _projectRepository.GetByIdWithTagsAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _projectRepository.GetByIdWithTagsAsync(
+            Command.ProjectId,
+            TestContext.Current.CancellationToken)
             .Returns(null as Project);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -46,11 +50,15 @@ public class DeleteTagTests
     {
         // Arrange
         var project = new Project("Project", "Description", Guid.NewGuid());
-        _projectRepository.GetByIdWithTagsAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _projectRepository.GetByIdWithTagsAsync(
+            Command.ProjectId,
+            TestContext.Current.CancellationToken)
             .Returns(project);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -67,7 +75,9 @@ public class DeleteTagTests
         tag.WorkItems.Add(workItem);
         workItem.AddTag(tag);
         project.Tags.Add(tag);
-        _projectRepository.GetByIdWithTagsAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _projectRepository.GetByIdWithTagsAsync(
+            Command.ProjectId,
+            TestContext.Current.CancellationToken)
             .Returns(project);
 
         // Act
@@ -87,14 +97,15 @@ public class DeleteTagTests
         var project = new Project("Project", "Description", Guid.NewGuid());
         var tag = new Tag("Tag", "Description", "#FFFFFF");
         project.AddTag(tag);
-
-        _projectRepository.GetByIdWithTagsAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _projectRepository.GetByIdWithTagsAsync(
+            Command.ProjectId,
+            TestContext.Current.CancellationToken)
             .Returns(project);
 
         // Act
         var result = await _handler.Handle(
-                    Command with { TagId = tag.Id },
-                    TestContext.Current.CancellationToken);
+            Command with { TagId = tag.Id },
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeFalse();

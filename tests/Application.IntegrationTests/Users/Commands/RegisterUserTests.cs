@@ -7,25 +7,27 @@ namespace Application.IntegrationTests.Users.Commands;
 
 public class RegisterUserTests : BaseIntegrationTest
 {
+    private static readonly RegisterUserCommand Command = new(
+        "john.doe@mirai.com",
+        "vXJu9zCgjOV2dW3",
+        "John",
+        "Doe");
+
     public RegisterUserTests(IntegrationTestWebAppFactory factory)
         : base(factory)
     {
     }
 
-    private static readonly RegisterUserCommand Command = new(
-        "john.doe@email.com",
-        "vXJu9zCgjOV2dW3",
-        "John",
-        "Doe");
-
     [Fact]
-    public async Task Handle_WhenUserExists_ReturnsAlreadyExistsError()
+    public async Task Handle_WhenUserExists_ShouldReturnError()
     {
         // Arrange
         await _sender.Send(Command, TestContext.Current.CancellationToken);
 
         // Act
-        var result = await _sender.Send(Command, TestContext.Current.CancellationToken);
+        var result = await _sender.Send(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -34,13 +36,15 @@ public class RegisterUserTests : BaseIntegrationTest
     }
 
     [Fact]
-    public async Task Handle_WhenUserDoesNotExist_ReturnsUserId()
+    public async Task Handle_WhenUserDoesNotExist_ShouldReturnUserId()
     {
         // Arrange
-        var command = Command with { Email = "john.doe2@gmail.com" };
+        var command = Command with { Email = "john.doe2@mirai.com" };
 
         // Act
-        var result = await _sender.Send(command, TestContext.Current.CancellationToken);
+        var result = await _sender.Send(
+            command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeFalse();

@@ -24,11 +24,15 @@ public class UpdateOrganizationTests
     {
         // Arrange
         var organization = new Organization("Test Organization", "Test Description");
-        _mockOrganizationRepository.GetByIdAsync(Command.Id, TestContext.Current.CancellationToken)
+        _mockOrganizationRepository.GetByIdAsync(
+            Command.Id,
+            TestContext.Current.CancellationToken)
             .Returns(organization);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeFalse();
@@ -40,11 +44,15 @@ public class UpdateOrganizationTests
     public async Task Handle_WhenOrganizationDoesNotExist_ReturnsError()
     {
         // Arrange
-        _mockOrganizationRepository.GetByIdAsync(Command.Id, TestContext.Current.CancellationToken)
+        _mockOrganizationRepository.GetByIdAsync(
+            Command.Id,
+            TestContext.Current.CancellationToken)
             .Returns(null as Organization);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();

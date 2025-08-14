@@ -4,33 +4,30 @@ namespace Presentation.FunctionalTests.Users;
 
 public static class UserRequestFactory
 {
-    public const string Email = "john.doe@email.com";
+    public const string Email = "john.doe@mirai.com";
     public const string Password = "vXJu9zCgjOV2dW3";
     public const string FirstName = "John";
     public const string LastName = "Doe";
-    public const string NewFirstName = "Jane";
-    public const string NewLastName = "Smith";
 
     public static LoginUserRequest CreateLoginUserRequest(
-        string email = Email,
-        string password = Password)
+        string? email = null,
+        string? password = null)
     {
-        return new LoginUserRequest(email, password);
+        return new LoginUserRequest(
+            email ?? Email,
+            password ?? Password);
     }
 
     public static RegisterUserRequest CreateRegisterUserRequest(
-        string email = Email,
-        string password = Password,
-        string firstName = FirstName,
-        string lastName = LastName)
+        string? email = null,
+        string? password = null,
+        string? firstName = null,
+        string? lastName = null)
     {
-        return new RegisterUserRequest(email, password, firstName, lastName);
-    }
-
-    internal static object CreateUpdateUserProfileRequest(
-        string firstName = NewFirstName,
-        string lastName = NewLastName)
-    {
-        return new UpdateUserProfileRequest(firstName, lastName);
+        return new RegisterUserRequest(
+            email ?? Email,
+            password ?? Password,
+            firstName ?? FirstName,
+            lastName ?? LastName);
     }
 }

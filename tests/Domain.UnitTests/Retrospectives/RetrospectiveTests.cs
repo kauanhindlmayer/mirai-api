@@ -155,7 +155,7 @@ public class RetrospectiveTests
         retrospective.AddItem(item);
 
         // Act
-        var result = retrospective.RemoveItem(item.Id);
+        var result = retrospective.RemoveItem(column.Id, item.Id);
 
         // Assert
         result.IsError.Should().BeFalse();
@@ -167,9 +167,11 @@ public class RetrospectiveTests
     {
         // Arrange
         var retrospective = RetrospectiveFactory.Create();
+        var column = RetrospectiveColumnFactory.Create();
+        retrospective.AddColumn(column);
 
         // Act
-        var result = retrospective.RemoveItem(Guid.NewGuid());
+        var result = retrospective.RemoveItem(column.Id, Guid.NewGuid());
 
         // Assert
         result.IsError.Should().BeTrue();

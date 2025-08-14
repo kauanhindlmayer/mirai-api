@@ -31,7 +31,9 @@ public class MoveWikiPageTests
             .Returns(null as Project);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.FirstError.Should().Be(ProjectErrors.NotFound);
@@ -48,7 +50,9 @@ public class MoveWikiPageTests
             .Returns(project);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.FirstError.Should().Be(WikiPageErrors.NotFound);
@@ -67,7 +71,9 @@ public class MoveWikiPageTests
             .Returns(project);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.FirstError.Should().Be(WikiPageErrors.NotFound);
@@ -116,7 +122,11 @@ public class MoveWikiPageTests
 
         // Act
         var result = await _handler.Handle(
-            Command with { WikiPageId = wikiPage.Id, TargetParentId = parentWikiPage.Id },
+            Command with
+            {
+                WikiPageId = wikiPage.Id,
+                TargetParentId = parentWikiPage.Id,
+            },
             TestContext.Current.CancellationToken);
 
         // Assert

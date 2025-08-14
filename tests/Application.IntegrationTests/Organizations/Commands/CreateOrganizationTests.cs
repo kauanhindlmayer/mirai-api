@@ -16,10 +16,14 @@ public class CreateOrganizationTests : BaseIntegrationTest
     public async Task CreateOrganization_WhenValidCommand_ShouldCreateOrganization()
     {
         // Arrange
-        var command = new CreateOrganizationCommand("Test Organization", "Test Description");
+        var command = new CreateOrganizationCommand(
+            "Test Organization",
+            "Test Description");
 
         // Act
-        var result = await _sender.Send(command, TestContext.Current.CancellationToken);
+        var result = await _sender.Send(
+            command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeFalse();
@@ -30,11 +34,15 @@ public class CreateOrganizationTests : BaseIntegrationTest
     public async Task CreateOrganization_WhenOrganizationExists_ShouldReturnError()
     {
         // Arrange
-        var command = new CreateOrganizationCommand("Test Organization 2", "Test Description 2");
+        var command = new CreateOrganizationCommand(
+            "Test Organization 2",
+            "Test Description 2");
         await _sender.Send(command, TestContext.Current.CancellationToken);
 
         // Act
-        var result = await _sender.Send(command, TestContext.Current.CancellationToken);
+        var result = await _sender.Send(
+            command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();

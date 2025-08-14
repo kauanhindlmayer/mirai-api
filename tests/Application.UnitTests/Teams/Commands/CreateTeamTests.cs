@@ -24,11 +24,15 @@ public class CreateTeamTests
     public async Task Handle_WhenProjectDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _projectRepository.GetByIdAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _projectRepository.GetByIdAsync(
+            Command.ProjectId,
+            TestContext.Current.CancellationToken)
             .Returns(null as Project);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -41,11 +45,15 @@ public class CreateTeamTests
         // Arrange
         var project = new Project("Name", "Description", Guid.NewGuid());
         project.AddTeam(new Team(project.Id, Command.Name, Command.Description));
-        _projectRepository.GetByIdAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _projectRepository.GetByIdAsync(
+            Command.ProjectId,
+            TestContext.Current.CancellationToken)
             .Returns(project);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -57,11 +65,15 @@ public class CreateTeamTests
     {
         // Arrange
         var project = new Project("Name", "Description", Guid.NewGuid());
-        _projectRepository.GetByIdAsync(Command.ProjectId, TestContext.Current.CancellationToken)
+        _projectRepository.GetByIdAsync(
+            Command.ProjectId,
+            TestContext.Current.CancellationToken)
             .Returns(project);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeFalse();

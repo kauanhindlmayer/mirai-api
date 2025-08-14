@@ -24,11 +24,15 @@ public class DeleteColumnTests
     public async Task Handle_WhenBoardDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _boardRepository.GetByIdWithColumnsAsync(Command.BoardId, TestContext.Current.CancellationToken)
+        _boardRepository.GetByIdWithColumnsAsync(
+            Command.BoardId,
+            TestContext.Current.CancellationToken)
             .Returns(null as Board);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -40,11 +44,15 @@ public class DeleteColumnTests
     {
         // Arrange
         var board = new Board(Guid.NewGuid(), "Board");
-        _boardRepository.GetByIdWithColumnsAsync(Command.BoardId, TestContext.Current.CancellationToken)
+        _boardRepository.GetByIdWithColumnsAsync(
+            Command.BoardId,
+            TestContext.Current.CancellationToken)
             .Returns(board);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -57,11 +65,17 @@ public class DeleteColumnTests
         // Arrange
         var board = new Board(Guid.NewGuid(), "Board");
         var column = new BoardColumn(board.Id, "Column");
-        var workItem = new WorkItem(Guid.NewGuid(), 1, "Title", WorkItemType.UserStory);
+        var workItem = new WorkItem(
+            Guid.NewGuid(),
+            1,
+            "Title",
+            WorkItemType.UserStory);
         var card = new BoardCard(column.Id, workItem.Id, 0);
         column.AddCard(card);
         board.AddColumn(column);
-        _boardRepository.GetByIdWithColumnsAsync(Command.BoardId, TestContext.Current.CancellationToken)
+        _boardRepository.GetByIdWithColumnsAsync(
+            Command.BoardId,
+            TestContext.Current.CancellationToken)
             .Returns(board);
 
         // Act
@@ -81,7 +95,9 @@ public class DeleteColumnTests
         var board = new Board(Guid.NewGuid(), "Board");
         var column = new BoardColumn(board.Id, "Column");
         board.AddColumn(column);
-        _boardRepository.GetByIdWithColumnsAsync(Command.BoardId, TestContext.Current.CancellationToken)
+        _boardRepository.GetByIdWithColumnsAsync(
+            Command.BoardId,
+            TestContext.Current.CancellationToken)
             .Returns(board);
 
         // Act

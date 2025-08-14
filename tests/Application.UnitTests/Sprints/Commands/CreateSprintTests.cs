@@ -25,11 +25,15 @@ public class CreateSprintTests
     public async Task Handle_WhenTeamDoesNotExists_ShouldReturnError()
     {
         // Arrange
-        _teamRepository.GetByIdAsync(Command.TeamId, TestContext.Current.CancellationToken)
+        _teamRepository.GetByIdAsync(
+            Command.TeamId,
+            TestContext.Current.CancellationToken)
             .Returns(null as Team);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -47,7 +51,9 @@ public class CreateSprintTests
             DateOnly.FromDateTime(DateTime.UtcNow),
             DateOnly.FromDateTime(DateTime.UtcNow.AddDays(14)));
         team.AddSprint(sprint);
-        _teamRepository.GetByIdAsync(Command.TeamId, TestContext.Current.CancellationToken)
+        _teamRepository.GetByIdAsync(
+            Command.TeamId,
+            TestContext.Current.CancellationToken)
             .Returns(team);
 
         // Act

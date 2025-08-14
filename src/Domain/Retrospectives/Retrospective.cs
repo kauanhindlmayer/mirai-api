@@ -74,16 +74,15 @@ public sealed class Retrospective : AggregateRoot
             return RetrospectiveErrors.ColumnNotFound;
         }
 
-        column.AddItem(item);
-        return Result.Success;
+        return column.AddItem(item);
     }
 
-    public ErrorOr<Success> RemoveItem(Guid itemId)
+    public ErrorOr<Success> RemoveItem(Guid columnId, Guid itemId)
     {
-        var column = Columns.FirstOrDefault(c => c.Items.Any(i => i.Id == itemId));
+        var column = Columns.FirstOrDefault(c => c.Id == columnId);
         if (column is null)
         {
-            return RetrospectiveErrors.ItemNotFound;
+            return RetrospectiveErrors.ColumnNotFound;
         }
 
         return column.RemoveItem(itemId);
