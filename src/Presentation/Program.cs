@@ -8,6 +8,12 @@ using ServiceDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.UseSentry(o =>
+{
+    o.Dsn = builder.Configuration["Sentry:Dsn"];
+    o.Debug = builder.Environment.IsDevelopment();
+});
+
 builder.AddServiceDefaults();
 builder.AddOllamaServices();
 
@@ -24,6 +30,8 @@ var app = builder.Build();
 app.UseExceptionHandler();
 app.UsePresentation();
 app.UseInfrastructure();
+
+app.UseSentryTracing();
 
 if (app.Environment.IsDevelopment())
 {
