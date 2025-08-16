@@ -1,59 +1,48 @@
-using System.Buffers;
 using System.Text.Json;
 using Application.Abstractions.Caching;
-using Microsoft.Extensions.Caching.Distributed;
+using StackExchange.Redis;
 
 namespace Infrastructure.Caching;
 
 internal sealed class CacheService : ICacheService
 {
-    private readonly IDistributedCache _cache;
+    private readonly IDatabase _db;
     private readonly JsonSerializerOptions _jsonOptions;
 
-    public CacheService(IDistributedCache cache)
+    public CacheService(IConnectionMultiplexer connection)
     {
+        _db = connection.GetDatabase();
         _jsonOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
         _jsonOptions.Converters.Add(new ErrorOrJsonConverterFactory());
-        _cache = cache;
     }
 
     public async Task<T?> GetAsync<T>(
         string key,
         CancellationToken cancellationToken = default)
     {
-        var bytes = await _cache.GetAsync(key, cancellationToken);
-        return bytes is null
-            ? default
-            : JsonSerializer.Deserialize<T>(bytes, _jsonOptions);
+        var value = await _db.StringGetAsync(key);
+        if (value.IsNullOrEmpty)
+        {
+            return default;
+        }
+
+        return JsonSerializer.Deserialize<T>(value.ToString(), _jsonOptions);
     }
 
-    public Task SetAsync<T>(
+    public async Task SetAsync<T>(
         string key,
         T value,
         TimeSpan? expiration = null,
         CancellationToken cancellationToken = default)
     {
-        byte[] bytes = Serialize(value);
-
-        return _cache.SetAsync(
-            key,
-            bytes,
-            CacheOptions.Create(expiration),
-            cancellationToken);
+        string json = JsonSerializer.Serialize(value, _jsonOptions);
+        await _db.StringSetAsync(key, json, expiration);
     }
 
     public Task RemoveAsync(
         string key,
         CancellationToken cancellationToken = default)
     {
-        return _cache.RemoveAsync(key, cancellationToken);
-    }
-
-    private static byte[] Serialize<T>(T value)
-    {
-        var buffer = new ArrayBufferWriter<byte>();
-        using var writer = new Utf8JsonWriter(buffer);
-        JsonSerializer.Serialize(writer, value);
-        return buffer.WrittenSpan.ToArray();
+        return _db.KeyDeleteAsync(key);
     }
 }

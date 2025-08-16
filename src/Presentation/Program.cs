@@ -9,15 +9,15 @@ using ServiceDefaults;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
-builder.AddOllamaServices();
 
 builder.Services.AddSerilog(config =>
     config.ReadFrom.Configuration(builder.Configuration));
 
 builder.Services
     .AddPresentation()
-    .AddApplication()
-    .AddInfrastructure(builder.Configuration);
+    .AddApplication();
+
+builder.AddInfrastructure();
 
 var app = builder.Build();
 

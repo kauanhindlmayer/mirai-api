@@ -45,22 +45,24 @@ namespace Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddInfrastructure(
-        this IServiceCollection services,
-        IConfiguration configuration)
+    public static WebApplicationBuilder AddInfrastructure(
+        this WebApplicationBuilder builder)
     {
-        services
+        builder.Services
             .AddHttpContextAccessor()
-            .AddServices(configuration)
+            .AddServices(builder.Configuration)
             .AddAuthorization()
-            .AddAuthentication(configuration)
-            .AddPersistence(configuration)
+            .AddAuthentication(builder.Configuration)
+            .AddPersistence(builder.Configuration)
             .AddApiVersioning()
-            .AddCorsPolicy(configuration)
-            .AddCaching(configuration)
+            .AddCorsPolicy(builder.Configuration)
+            .AddCaching(builder.Configuration)
             .AddBackgroundJobs();
 
-        return services;
+        builder.AddOllamaServices();
+        builder.AddRedisClient("redis");
+
+        return builder;
     }
 
     public static WebApplicationBuilder AddOllamaServices(
@@ -199,8 +201,8 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("redis");
-        services.AddStackExchangeRedisCache(options => options.Configuration = connectionString);
+        // var connectionString = configuration.GetConnectionString("redis");
+        // services.AddStackExchangeRedisCache(options => options.Configuration = connectionString);
         services.AddSingleton<ICacheService, CacheService>();
 
         return services;
