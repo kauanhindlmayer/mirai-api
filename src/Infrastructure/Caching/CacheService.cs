@@ -8,9 +8,12 @@ namespace Infrastructure.Caching;
 internal sealed class CacheService : ICacheService
 {
     private readonly IDistributedCache _cache;
+    private readonly JsonSerializerOptions _jsonOptions;
 
     public CacheService(IDistributedCache cache)
     {
+        _jsonOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+        _jsonOptions.Converters.Add(new ErrorOrJsonConverterFactory());
         _cache = cache;
     }
 
@@ -19,7 +22,9 @@ internal sealed class CacheService : ICacheService
         CancellationToken cancellationToken = default)
     {
         var bytes = await _cache.GetAsync(key, cancellationToken);
-        return bytes is null ? default : Deserialize<T>(bytes);
+        return bytes is null
+            ? default
+            : JsonSerializer.Deserialize<T>(bytes, _jsonOptions);
     }
 
     public Task SetAsync<T>(
@@ -42,12 +47,6 @@ internal sealed class CacheService : ICacheService
         CancellationToken cancellationToken = default)
     {
         return _cache.RemoveAsync(key, cancellationToken);
-    }
-
-    private static T Deserialize<T>(byte[] bytes)
-    {
-        var result = JsonSerializer.Deserialize<T>(bytes);
-        return result!;
     }
 
     private static byte[] Serialize<T>(T value)

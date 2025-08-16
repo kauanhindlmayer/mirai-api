@@ -8,7 +8,8 @@ var postgres = builder.AddPostgres("postgres")
 
 var database = postgres.AddDatabase("mirai-db");
 
-var redis = builder.AddRedis("redis");
+var redis = builder.AddRedis("redis")
+    .WithRedisInsight();
 
 var keycloak = builder.AddKeycloak("keycloak", port: 8080)
     .WithImageTag("26.2")
