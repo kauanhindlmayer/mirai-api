@@ -190,7 +190,8 @@ public static class DependencyInjection
         services.AddCors(options => options.AddPolicy(CorsOptions.PolicyName, policy => policy
             .WithOrigins(corsOptions.AllowedOrigins)
             .AllowAnyMethod()
-            .AllowAnyHeader()));
+            .AllowAnyHeader()
+            .AllowCredentials()));
 
         return services;
     }

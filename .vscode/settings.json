@@ -1,4 +1,4 @@
 {
-  "cSpell.words": ["disableable", "minilm", "ollama"],
+  "cSpell.words": ["disableable", "minilm", "ollama", "pgvector"],
   "dotnet.defaultSolution": "Mirai.slnx"
 }
