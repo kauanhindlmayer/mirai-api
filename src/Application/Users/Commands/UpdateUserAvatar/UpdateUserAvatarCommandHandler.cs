@@ -4,16 +4,16 @@ using Domain.Users;
 using ErrorOr;
 using MediatR;
 
-namespace Application.Users.Commands.UpdateUserProfilePicture;
+namespace Application.Users.Commands.UpdateUserAvatar;
 
-internal sealed class UpdateUserProfilePictureCommandHandler
-    : IRequestHandler<UpdateUserProfilePictureCommand, ErrorOr<Success>>
+internal sealed class UpdateUserAvatarCommandHandler
+    : IRequestHandler<UpdateUserAvatarCommand, ErrorOr<Success>>
 {
     private readonly IUserRepository _userRepository;
     private readonly IUserContext _userContext;
     private readonly IBlobService _blobService;
 
-    public UpdateUserProfilePictureCommandHandler(
+    public UpdateUserAvatarCommandHandler(
         IUserRepository userRepository,
         IUserContext userContext,
         IBlobService blobService)
@@ -24,7 +24,7 @@ internal sealed class UpdateUserProfilePictureCommandHandler
     }
 
     public async Task<ErrorOr<Success>> Handle(
-        UpdateUserProfilePictureCommand command,
+        UpdateUserAvatarCommand command,
         CancellationToken cancellationToken)
     {
         var user = await _userRepository.GetByIdAsync(

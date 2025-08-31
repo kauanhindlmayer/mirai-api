@@ -49,16 +49,10 @@ Key changes include:
 - **Pros**: Production-grade orchestration, scalability
 - **Cons**: Higher complexity for local development; Aspire provides a smoother developer experience while still being Kubernetes-compatible
 
-### Use plain containers + manual orchestration
-
-- **Pros**: Maximum flexibility
-- **Cons**: Higher operational burden, no alignment with modern .NET ecosystem
-
 ## Consequences
 
 ### Positive
 
-- **Better Developer Experience**: Integrated with Visual Studio/VS Code
 - **Simplified Configuration**: Type-safe C# configuration instead of YAML
 - **Service Discovery**: Built-in service discovery and communication
 - **Health Checks**: Automatic health monitoring and dashboards

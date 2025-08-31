@@ -1,8 +1,8 @@
 using System.Net.Mime;
 using Application.Abstractions;
 using Application.Users.Commands.RegisterUser;
+using Application.Users.Commands.UpdateUserAvatar;
 using Application.Users.Commands.UpdateUserProfile;
-using Application.Users.Commands.UpdateUserProfilePicture;
 using Application.Users.Queries.GetCurrentUser;
 using Application.Users.Queries.LoginUser;
 using Asp.Versioning;
@@ -134,16 +134,16 @@ public sealed class UsersController : ApiController
     }
 
     /// <summary>
-    /// Update the profile picture of the current user.
+    /// Update the avatar of the current user.
     /// </summary>
-    [HttpPatch("profile/picture")]
+    [HttpPatch("avatar")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> UpdateProfilePicture(
-        [FromForm] UpdateProfilePictureRequest request,
+    public async Task<ActionResult> UpdateAvatar(
+        [FromForm] UpdateAvatarRequest request,
         CancellationToken cancellationToken)
     {
-        var command = new UpdateUserProfilePictureCommand(request.File);
+        var command = new UpdateUserAvatarCommand(request.File);
 
         var result = await _sender.Send(command, cancellationToken);
 
@@ -158,7 +158,7 @@ public sealed class UsersController : ApiController
         [
             _linkService.Create(nameof(GetCurrentUser), "self", HttpMethods.Get),
             _linkService.Create(nameof(UpdateUserProfile), "update-profile", HttpMethods.Put),
-            _linkService.Create(nameof(UpdateProfilePicture), "update-profile-picture", HttpMethods.Patch),
+            _linkService.Create(nameof(UpdateAvatar), "update-avatar", HttpMethods.Patch),
         ];
 
         return links;
