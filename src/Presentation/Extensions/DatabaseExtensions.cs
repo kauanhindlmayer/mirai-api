@@ -2,6 +2,7 @@ using Bogus;
 using Domain.Boards;
 using Domain.Organizations;
 using Domain.Projects;
+using Domain.Shared;
 using Domain.Sprints;
 using Domain.Teams;
 using Domain.Users;
@@ -66,22 +67,15 @@ public static class DatabaseExtensions
                 faker.Lorem.Sentence());
             await context.Teams.AddAsync(team);
 
-            var startDate = faker.Date.Recent().ToUniversalTime();
-            var sprint = new Sprint(
-                team.Id,
-                "Sprint 1",
-                DateOnly.FromDateTime(startDate),
-                DateOnly.FromDateTime(startDate.AddDays(14)));
-            await context.Sprints.AddAsync(sprint);
-
             var board = new Board(
                 team.Id,
                 team.Name);
             await context.Boards.AddAsync(board);
 
+            var sprints = await SeedSprints(context, team);
             var users = await SeedUsers(context, organization, project);
             await SeedWikiPages(faker, context, project, users);
-            await SeedWorkItems(faker, context, project, team, sprint, board);
+            await SeedWorkItems(faker, context, project, team, sprints, board);
 
             context.SaveChanges();
             app.Logger.LogInformation("Database seeding completed successfully");
@@ -100,9 +94,27 @@ public static class DatabaseExtensions
     {
         var seedUserData = new[]
         {
-            new { FirstName = "John", LastName = "Doe", Email = "john.doe@mirai.com", IdentityId = "user-1-12345-67890-abcdef" },
-            new { FirstName = "Jane", LastName = "Smith", Email = "jane.smith@mirai.com", IdentityId = "user-2-23456-78901-bcdefg" },
-            new { FirstName = "Bob", LastName = "Johnson", Email = "bob.johnson@mirai.com", IdentityId = "user-3-34567-89012-cdefgh" },
+            new
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                Email = "john.doe@mirai.com",
+                IdentityId = "user-1-12345-67890-abcdef",
+            },
+            new
+            {
+                FirstName = "Jane",
+                LastName = "Smith",
+                Email = "jane.smith@mirai.com",
+                IdentityId = "user-2-23456-78901-bcdefg",
+            },
+            new
+            {
+                FirstName = "Bob",
+                LastName = "Johnson",
+                Email = "bob.johnson@mirai.com",
+                IdentityId = "user-3-34567-89012-cdefgh",
+            },
         };
 
         var users = new List<User>();
@@ -119,6 +131,32 @@ public static class DatabaseExtensions
         await context.AddRangeAsync(users);
 
         return users;
+    }
+
+    private static async Task<List<Sprint>> SeedSprints(
+        ApplicationDbContext context,
+        Team team,
+        int sprintCount = 5)
+    {
+        var sprints = new List<Sprint>();
+        var baseDate = DateTime.UtcNow.AddMonths(-4);
+
+        for (int i = 0; i < sprintCount; i++)
+        {
+            var startDate = baseDate.AddDays(i * 14);
+            var endDate = startDate.AddDays(14);
+
+            var sprint = new Sprint(
+                team.Id,
+                $"Sprint {i + 1}",
+                DateOnly.FromDateTime(startDate),
+                DateOnly.FromDateTime(endDate));
+
+            sprints.Add(sprint);
+            await context.Sprints.AddAsync(sprint);
+        }
+
+        return sprints;
     }
 
     private static async Task SeedWikiPages(
@@ -170,59 +208,108 @@ public static class DatabaseExtensions
         ApplicationDbContext context,
         Project project,
         Team team,
-        Sprint sprint,
+        List<Sprint> sprints,
         Board board,
-        int featureCount = 5,
-        int storiesPerFeature = 3)
+        int epicCount = 2,
+        int featuresPerEpic = 3,
+        int storiesPerFeature = 4,
+        int bugsCount = 8)
     {
         var workItemCode = 1;
-
         var columns = board.Columns.ToList();
-        var columnCount = columns.Count;
-
         var columnPositions = new Dictionary<Guid, int>();
+
         foreach (var column in columns)
         {
             columnPositions[column.Id] = 0;
         }
 
-        for (int i = 0; i < featureCount; i++)
+        var orderedSprints = sprints.OrderBy(s => s.StartDate).ToList();
+        var baseDate = DateTime.UtcNow.AddMonths(-6);
+
+        var epics = new List<WorkItem>();
+        for (int i = 0; i < epicCount; i++)
         {
-            var feature = new WorkItem(
+            var epic = new WorkItem(
                 project.Id,
                 workItemCode++,
                 faker.Lorem.Sentence(),
-                WorkItemType.Feature,
+                WorkItemType.Epic,
                 team.Id,
-                sprint.Id);
+                null);
 
-            feature.Update(description: faker.Lorem.Paragraph());
+            epic.Update(description: faker.Lorem.Paragraphs(2));
+            SetWorkItemDates(epic, baseDate.AddDays(i * 10), faker, 0.9);
 
-            await context.WorkItems.AddAsync(feature);
+            await context.WorkItems.AddAsync(epic);
+            epics.Add(epic);
 
-            var featureColumnId = columns[i % columnCount].Id;
-            var featureCard = new BoardCard(
-                featureColumnId,
-                feature.Id,
-                columnPositions[featureColumnId]++);
-            await context.BoardCards.AddAsync(featureCard);
+            var epicColumnId = GetColumnForStatus(columns, epic.Status).Id;
+            var epicCard = new BoardCard(
+                epicColumnId,
+                epic.Id,
+                columnPositions[epicColumnId]++);
+            await context.BoardCards.AddAsync(epicCard);
+        }
 
-            for (int j = 0; j < storiesPerFeature; j++)
+        var features = new List<WorkItem>();
+        foreach (var epic in epics)
+        {
+            for (int i = 0; i < featuresPerEpic; i++)
             {
+                var sprintIndex = faker.Random.Int(0, Math.Min(orderedSprints.Count - 1, 3));
+                var feature = new WorkItem(
+                    project.Id,
+                    workItemCode++,
+                    faker.Lorem.Sentence(),
+                    WorkItemType.Feature,
+                    team.Id,
+                    orderedSprints[sprintIndex].Id,
+                    epic.Id);
+
+                feature.Update(description: faker.Lorem.Paragraph());
+                SetWorkItemDates(
+                    feature,
+                    baseDate.AddDays(((epics.IndexOf(epic) * featuresPerEpic) + i) * 7),
+                    faker,
+                    0.8);
+
+                await context.WorkItems.AddAsync(feature);
+                features.Add(feature);
+
+                var featureColumnId = GetColumnForStatus(columns, feature.Status).Id;
+                var featureCard = new BoardCard(
+                    featureColumnId,
+                    feature.Id,
+                    columnPositions[featureColumnId]++);
+                await context.BoardCards.AddAsync(featureCard);
+            }
+        }
+
+        foreach (var feature in features)
+        {
+            for (int i = 0; i < storiesPerFeature; i++)
+            {
+                var sprintIndex = faker.Random.Int(0, orderedSprints.Count - 1);
                 var userStory = new WorkItem(
                     project.Id,
                     workItemCode++,
                     faker.Lorem.Sentence(),
                     WorkItemType.UserStory,
                     team.Id,
-                    sprint.Id,
+                    orderedSprints[sprintIndex].Id,
                     feature.Id);
 
                 userStory.Update(description: faker.Lorem.Paragraph());
+                SetWorkItemDates(
+                    userStory,
+                    baseDate.AddDays(((features.IndexOf(feature) * storiesPerFeature) + i) * 3),
+                    faker,
+                    0.75);
 
                 await context.WorkItems.AddAsync(userStory);
 
-                var userStoryColumnId = columns[((i * storiesPerFeature) + j) % columnCount].Id;
+                var userStoryColumnId = GetColumnForStatus(columns, userStory.Status).Id;
                 var userStoryCard = new BoardCard(
                     userStoryColumnId,
                     userStory.Id,
@@ -230,5 +317,90 @@ public static class DatabaseExtensions
                 await context.BoardCards.AddAsync(userStoryCard);
             }
         }
+
+        for (int i = 0; i < bugsCount; i++)
+        {
+            var workItemType = faker.Random.Bool() ? WorkItemType.Bug : WorkItemType.Defect;
+            var sprintIndex = faker.Random.Int(1, orderedSprints.Count - 1);
+
+            var bug = new WorkItem(
+                project.Id,
+                workItemCode++,
+                faker.Lorem.Sentence(),
+                workItemType,
+                team.Id,
+                orderedSprints[sprintIndex].Id);
+
+            bug.Update(description: faker.Lorem.Paragraph());
+            SetWorkItemDates(
+                bug,
+                baseDate.AddDays(60 + (i * 5)),
+                faker,
+                0.85);
+
+            await context.WorkItems.AddAsync(bug);
+
+            var bugColumnId = GetColumnForStatus(columns, bug.Status).Id;
+            var bugCard = new BoardCard(
+                bugColumnId,
+                bug.Id,
+                columnPositions[bugColumnId]++);
+            await context.BoardCards.AddAsync(bugCard);
+        }
+    }
+
+    private static void SetWorkItemDates(
+        WorkItem workItem,
+        DateTime baseCreationDate,
+        Faker faker,
+        double completionProbability)
+    {
+        var createdAtProperty = typeof(AggregateRoot).GetProperty("CreatedAtUtc");
+        var creationDate = baseCreationDate.AddHours(faker.Random.Double() * 24);
+        createdAtProperty?.SetValue(workItem, creationDate);
+
+        var daysSinceCreation = (DateTime.UtcNow - creationDate).TotalDays;
+        var shouldComplete = faker.Random.Double() < completionProbability && daysSinceCreation > 7;
+
+        if (shouldComplete)
+        {
+            var completedStatuses = new[] { WorkItemStatus.Closed, WorkItemStatus.Resolved };
+            var completedStatus = faker.PickRandom(completedStatuses);
+
+            var minCompletionDays = Math.Max(1, daysSinceCreation * 0.3);
+            var maxCompletionDays = Math.Min(daysSinceCreation * 0.9, 30);
+            var completionDate = creationDate.AddDays(faker.Random.Double(minCompletionDays, maxCompletionDays));
+
+            workItem.Update(status: completedStatus);
+
+            var completedAtProperty = typeof(WorkItem).GetProperty("CompletedAtUtc");
+            completedAtProperty?.SetValue(workItem, completionDate);
+        }
+        else
+        {
+            var inProgressStatuses = new[] { WorkItemStatus.New, WorkItemStatus.InProgress, WorkItemStatus.Reopened };
+            var activeStatus = daysSinceCreation > 3 ? WorkItemStatus.InProgress : faker.PickRandom(inProgressStatuses);
+            workItem.Update(status: activeStatus);
+        }
+    }
+
+    private static BoardColumn GetColumnForStatus(List<BoardColumn> columns, WorkItemStatus status)
+    {
+        var orderedColumns = columns.OrderBy(c => c.Position).ToList();
+
+        return status switch
+        {
+            WorkItemStatus.New => orderedColumns.First(),
+            WorkItemStatus.InProgress => orderedColumns.Count > 1
+                ? orderedColumns[1]
+                : orderedColumns.First(),
+            WorkItemStatus.Resolved => orderedColumns.Count > 2
+                ? orderedColumns[^2]
+                : orderedColumns.Last(),
+            WorkItemStatus.Closed => orderedColumns.Last(),
+            WorkItemStatus.Reopened => orderedColumns.First(),
+            WorkItemStatus.Removed => orderedColumns.Last(),
+            _ => orderedColumns.First(),
+        };
     }
 }

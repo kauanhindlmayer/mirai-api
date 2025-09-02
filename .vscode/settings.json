@@ -5,7 +5,9 @@
     "ollama",
     "pgvector",
     "mediatr",
-    "serilog"
+    "serilog",
+    "burnup",
+    "burndown"
   ],
   "dotnet.defaultSolution": "Mirai.slnx"
 }

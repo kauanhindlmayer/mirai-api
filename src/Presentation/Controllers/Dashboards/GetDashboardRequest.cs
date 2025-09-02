@@ -10,5 +10,5 @@ namespace Presentation.Controllers.Dashboards;
 /// The end date for filtering. If not provided, the default is the current date plus 14 days.
 /// </param>
 public sealed record GetDashboardRequest(
-    DateTime StartDate,
-    DateTime EndDate);
+    DateTime? StartDate,
+    DateTime? EndDate);
