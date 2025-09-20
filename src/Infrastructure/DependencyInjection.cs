@@ -22,6 +22,7 @@ using Infrastructure;
 using Infrastructure.Authentication;
 using Infrastructure.Authorization;
 using Infrastructure.Caching;
+using Infrastructure.Dashboards;
 using Infrastructure.Email;
 using Infrastructure.Jobs;
 using Infrastructure.Persistence;
@@ -85,6 +86,7 @@ public static class DependencyInjection
         services.AddTransient<LinkService>();
         services.AddTransient<IBackgroundJobScheduler, BackgroundJobScheduler>();
         services.AddScoped<IEmailService, EmailService>();
+        services.AddScoped<IDashboardChartService, DashboardChartService>();
         services.AddSingleton<IBlobService, BlobService>();
         services.AddSingleton(_ => new BlobServiceClient(configuration["Azure:BlobStorage:ConnectionString"]!));
         services.Configure<BlobStorageOptions>(configuration.GetSection(BlobStorageOptions.SectionName));

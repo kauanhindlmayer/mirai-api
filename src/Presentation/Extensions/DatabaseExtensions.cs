@@ -136,10 +136,10 @@ public static class DatabaseExtensions
     private static async Task<List<Sprint>> SeedSprints(
         ApplicationDbContext context,
         Team team,
-        int sprintCount = 5)
+        int sprintCount = 8)
     {
         var sprints = new List<Sprint>();
-        var baseDate = DateTime.UtcNow.AddMonths(-4);
+        var baseDate = DateTime.UtcNow.AddDays(-60);
 
         for (int i = 0; i < sprintCount; i++)
         {
@@ -210,10 +210,10 @@ public static class DatabaseExtensions
         Team team,
         List<Sprint> sprints,
         Board board,
-        int epicCount = 2,
-        int featuresPerEpic = 3,
-        int storiesPerFeature = 4,
-        int bugsCount = 8)
+        int epicCount = 3,
+        int featuresPerEpic = 5,
+        int storiesPerFeature = 6,
+        int bugsCount = 15)
     {
         var workItemCode = 1;
         var columns = board.Columns.ToList();
@@ -225,7 +225,7 @@ public static class DatabaseExtensions
         }
 
         var orderedSprints = sprints.OrderBy(s => s.StartDate).ToList();
-        var baseDate = DateTime.UtcNow.AddMonths(-6);
+        var baseDate = DateTime.UtcNow.AddDays(-20);
 
         var epics = new List<WorkItem>();
         for (int i = 0; i < epicCount; i++)
@@ -347,6 +347,81 @@ public static class DatabaseExtensions
                 columnPositions[bugColumnId]++);
             await context.BoardCards.AddAsync(bugCard);
         }
+
+        await SeedRecentWorkItems(
+            faker,
+            context,
+            project,
+            team,
+            orderedSprints.Last(),
+            board,
+            columnPositions,
+            workItemCode);
+    }
+
+    private static async Task SeedRecentWorkItems(
+        Faker faker,
+        ApplicationDbContext context,
+        Project project,
+        Team team,
+        Sprint currentSprint,
+        Board board,
+        Dictionary<Guid, int> columnPositions,
+        int startingWorkItemCode,
+        int recentItemCount = 20)
+    {
+        var workItemCode = startingWorkItemCode;
+        var columns = board.Columns.ToList();
+        var recentBaseDate = DateTime.UtcNow.AddDays(-10);
+
+        for (int i = 0; i < recentItemCount; i++)
+        {
+            var workItemType = faker.PickRandom(new[] { WorkItemType.UserStory, WorkItemType.Bug });
+
+            var recentWorkItem = new WorkItem(
+                project.Id,
+                workItemCode++,
+                faker.Lorem.Sentence(),
+                workItemType,
+                team.Id,
+                currentSprint.Id);
+
+            recentWorkItem.Update(description: faker.Lorem.Paragraph());
+
+            var creationDate = recentBaseDate.AddDays(faker.Random.Double() * 10);
+            var createdAtProperty = typeof(AggregateRoot).GetProperty("CreatedAtUtc");
+            createdAtProperty?.SetValue(recentWorkItem, creationDate);
+
+            if (faker.Random.Double() < 0.9)
+            {
+                var completedStatus = faker.PickRandom(new[] { WorkItemStatus.Closed, WorkItemStatus.Resolved });
+                recentWorkItem.Update(status: completedStatus);
+
+                var maxDaysBack = Math.Min(7, (DateTime.UtcNow - creationDate).TotalDays - 0.1);
+                var completionDate = DateTime.UtcNow.AddDays(-faker.Random.Double() * Math.Max(0.1, maxDaysBack));
+
+                if (completionDate <= creationDate)
+                {
+                    completionDate = creationDate.AddHours(faker.Random.Double(1, 24));
+                }
+
+                var completedAtProperty = typeof(WorkItem).GetProperty("CompletedAtUtc");
+                completedAtProperty?.SetValue(recentWorkItem, completionDate);
+            }
+            else
+            {
+                recentWorkItem.Update(status: WorkItemStatus.InProgress);
+            }
+
+            await context.WorkItems.AddAsync(recentWorkItem);
+
+            var columnId = GetColumnForStatus(columns, recentWorkItem.Status).Id;
+            var card = new BoardCard(
+                columnId,
+                recentWorkItem.Id,
+                columnPositions[columnId]++);
+            await context.BoardCards.AddAsync(card);
+        }
     }
 
     private static void SetWorkItemDates(
@@ -360,16 +435,26 @@ public static class DatabaseExtensions
         createdAtProperty?.SetValue(workItem, creationDate);
 
         var daysSinceCreation = (DateTime.UtcNow - creationDate).TotalDays;
-        var shouldComplete = faker.Random.Double() < completionProbability && daysSinceCreation > 7;
+        var shouldComplete = faker.Random.Double() < completionProbability && daysSinceCreation > 1;
 
         if (shouldComplete)
         {
             var completedStatuses = new[] { WorkItemStatus.Closed, WorkItemStatus.Resolved };
             var completedStatus = faker.PickRandom(completedStatuses);
 
-            var minCompletionDays = Math.Max(1, daysSinceCreation * 0.3);
-            var maxCompletionDays = Math.Min(daysSinceCreation * 0.9, 30);
+            var minCompletionDays = Math.Max(0.1, daysSinceCreation * 0.2);
+            var maxCompletionDays = Math.Min(daysSinceCreation * 0.95, 15);
             var completionDate = creationDate.AddDays(faker.Random.Double(minCompletionDays, maxCompletionDays));
+
+            if (completionDate <= creationDate)
+            {
+                completionDate = creationDate.AddHours(faker.Random.Double(1, 24));
+            }
+
+            if (completionDate > DateTime.UtcNow)
+            {
+                completionDate = DateTime.UtcNow.AddHours(-faker.Random.Double(1, 12));
+            }
 
             workItem.Update(status: completedStatus);
 
