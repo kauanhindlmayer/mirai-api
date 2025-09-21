@@ -395,7 +395,6 @@ public static class DatabaseExtensions
             if (faker.Random.Double() < 0.9)
             {
                 var completedStatus = faker.PickRandom(new[] { WorkItemStatus.Closed, WorkItemStatus.Resolved });
-                recentWorkItem.Update(status: completedStatus);
 
                 var maxDaysBack = Math.Min(7, (DateTime.UtcNow - creationDate).TotalDays - 0.1);
                 var completionDate = DateTime.UtcNow.AddDays(-faker.Random.Double() * Math.Max(0.1, maxDaysBack));
@@ -405,12 +404,32 @@ public static class DatabaseExtensions
                     completionDate = creationDate.AddHours(faker.Random.Double(1, 24));
                 }
 
+                var startWorkDelay = faker.Random.Double(0.1, 0.4);
+                var startedDate = creationDate.AddTicks((long)((completionDate - creationDate).Ticks * startWorkDelay));
+
+                var startedAtProperty = typeof(WorkItem).GetProperty("StartedAtUtc");
+                startedAtProperty?.SetValue(recentWorkItem, startedDate);
+
+                recentWorkItem.Update(status: completedStatus);
+
                 var completedAtProperty = typeof(WorkItem).GetProperty("CompletedAtUtc");
                 completedAtProperty?.SetValue(recentWorkItem, completionDate);
             }
             else
             {
-                recentWorkItem.Update(status: WorkItemStatus.InProgress);
+                var daysSinceCreation = (DateTime.UtcNow - creationDate).TotalDays;
+                var startWorkDelay = faker.Random.Double(0.1, 0.8);
+                var startedDate = creationDate.AddDays(daysSinceCreation * startWorkDelay);
+
+                if (startedDate > DateTime.UtcNow)
+                {
+                    startedDate = DateTime.UtcNow.AddHours(-faker.Random.Double(1, 12));
+                }
+
+                var startedAtProperty = typeof(WorkItem).GetProperty("StartedAtUtc");
+                startedAtProperty?.SetValue(recentWorkItem, startedDate);
+
+                recentWorkItem.Update(status: WorkItemStatus.Active);
             }
 
             await context.WorkItems.AddAsync(recentWorkItem);
@@ -456,6 +475,12 @@ public static class DatabaseExtensions
                 completionDate = DateTime.UtcNow.AddHours(-faker.Random.Double(1, 12));
             }
 
+            var startWorkDelay = faker.Random.Double(0.1, 0.4);
+            var startedDate = creationDate.AddTicks((long)((completionDate - creationDate).Ticks * startWorkDelay));
+
+            var startedAtProperty = typeof(WorkItem).GetProperty("StartedAtUtc");
+            startedAtProperty?.SetValue(workItem, startedDate);
+
             workItem.Update(status: completedStatus);
 
             var completedAtProperty = typeof(WorkItem).GetProperty("CompletedAtUtc");
@@ -463,8 +488,23 @@ public static class DatabaseExtensions
         }
         else
         {
-            var inProgressStatuses = new[] { WorkItemStatus.New, WorkItemStatus.InProgress, WorkItemStatus.Reopened };
-            var activeStatus = daysSinceCreation > 3 ? WorkItemStatus.InProgress : faker.PickRandom(inProgressStatuses);
+            var activeStatuses = new[] { WorkItemStatus.New, WorkItemStatus.Active };
+            var activeStatus = daysSinceCreation > 3 ? WorkItemStatus.Active : faker.PickRandom(activeStatuses);
+
+            if (activeStatus == WorkItemStatus.Active)
+            {
+                var startWorkDelay = faker.Random.Double(0.1, 0.8);
+                var startedDate = creationDate.AddDays(daysSinceCreation * startWorkDelay);
+
+                if (startedDate > DateTime.UtcNow)
+                {
+                    startedDate = DateTime.UtcNow.AddHours(-faker.Random.Double(1, 12));
+                }
+
+                var startedAtProperty = typeof(WorkItem).GetProperty("StartedAtUtc");
+                startedAtProperty?.SetValue(workItem, startedDate);
+            }
+
             workItem.Update(status: activeStatus);
         }
     }
@@ -476,14 +516,13 @@ public static class DatabaseExtensions
         return status switch
         {
             WorkItemStatus.New => orderedColumns.First(),
-            WorkItemStatus.InProgress => orderedColumns.Count > 1
+            WorkItemStatus.Active => orderedColumns.Count > 1
                 ? orderedColumns[1]
                 : orderedColumns.First(),
             WorkItemStatus.Resolved => orderedColumns.Count > 2
                 ? orderedColumns[^2]
                 : orderedColumns.Last(),
             WorkItemStatus.Closed => orderedColumns.Last(),
-            WorkItemStatus.Reopened => orderedColumns.First(),
             WorkItemStatus.Removed => orderedColumns.Last(),
             _ => orderedColumns.First(),
         };

@@ -33,6 +33,7 @@ public sealed class WorkItem : AggregateRoot
     public ICollection<WorkItem> ChildWorkItems { get; private set; } = [];
     public ICollection<Tag> Tags { get; private set; } = [];
     public ICollection<WorkItemComment> Comments { get; private set; } = [];
+    public DateTime? StartedAtUtc { get; private set; }
     public DateTime? CompletedAtUtc { get; private set; }
     public Guid? SprintId { get; private set; }
     public Sprint? Sprint { get; private set; }
@@ -68,6 +69,7 @@ public sealed class WorkItem : AggregateRoot
     public void Close()
     {
         Status = WorkItemStatus.Closed;
+        CompletedAtUtc ??= DateTime.UtcNow;
     }
 
     public void Update(
@@ -83,6 +85,8 @@ public sealed class WorkItem : AggregateRoot
         Planning? planning = null,
         Classification? classification = null)
     {
+        var oldStatus = Status;
+
         Type = type ?? Type;
         Title = title ?? Title;
         Description = description ?? Description;
@@ -94,6 +98,21 @@ public sealed class WorkItem : AggregateRoot
         ParentWorkItemId = parentWorkItemId ?? ParentWorkItemId;
         Planning = planning ?? Planning;
         Classification = classification ?? Classification;
+
+        if (IsTransitioningToActive(oldStatus) && StartedAtUtc is null)
+        {
+            StartedAtUtc = DateTime.UtcNow;
+        }
+
+        if (IsCompletedStatus(Status) && CompletedAtUtc is null)
+        {
+            CompletedAtUtc = DateTime.UtcNow;
+        }
+
+        if (IsActiveStatus(Status))
+        {
+            CompletedAtUtc = null;
+        }
     }
 
     public ErrorOr<Success> AddComment(WorkItemComment comment)
@@ -162,4 +181,13 @@ public sealed class WorkItem : AggregateRoot
 
         return string.Join("\n", parts);
     }
+
+    private bool IsTransitioningToActive(WorkItemStatus oldStatus) =>
+        oldStatus != WorkItemStatus.Active && Status == WorkItemStatus.Active;
+
+    private static bool IsCompletedStatus(WorkItemStatus status) =>
+        status is WorkItemStatus.Closed;
+
+    private static bool IsActiveStatus(WorkItemStatus status) =>
+        status is WorkItemStatus.New or WorkItemStatus.Active;
 }

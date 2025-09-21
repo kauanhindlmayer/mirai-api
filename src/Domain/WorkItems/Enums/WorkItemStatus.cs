@@ -3,9 +3,8 @@ namespace Domain.WorkItems.Enums;
 public enum WorkItemStatus
 {
     New = 1,
-    InProgress = 2,
-    Closed = 3,
-    Resolved = 4,
-    Reopened = 5,
-    Removed = 6,
+    Active = 2,        // Renamed from InProgress to match Azure DevOps
+    Resolved = 3,      // Moved before Closed to match workflow order
+    Closed = 4,
+    Removed = 5,       // Removed Reopened - use Active instead
 }

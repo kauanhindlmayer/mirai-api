@@ -9,5 +9,15 @@
     "burnup",
     "burndown"
   ],
-  "dotnet.defaultSolution": "Mirai.slnx"
+  "dotnet.defaultSolution": "Mirai.slnx",
+  "github.copilot.chat.commitMessageGeneration.instructions": [
+    { "text": "Use conventional commit format: type(scope): description" },
+    { "text": "Use imperative mood: 'Add feature' not 'Added feature'" },
+    { "text": "Keep subject line under 50 characters" },
+    {
+      "text": "Use types: feat, fix, docs, style, refactor, perf, test, chore, ci"
+    },
+    { "text": "Include scope when relevant (e.g., api, ui, auth)" },
+    { "text": "Do not include a commit body, only generate the subject line" }
+  ]
 }

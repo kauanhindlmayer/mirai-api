@@ -32,34 +32,27 @@ internal class GetDashboardQueryHandler
         var endDate = query.EndDate ?? DateTime.UtcNow;
         var startDate = query.StartDate ?? endDate.AddDays(-14);
 
-        var burnChartTask = _chartService.GenerateBurnChartDataAsync(
+        var (burnupData, burndownData) = await _chartService.GenerateBurnChartDataAsync(
             query.TeamId,
             startDate,
             endDate,
             cancellationToken);
 
-        var leadTimeTask = _chartService.GenerateLeadTimeDataPointsAsync(
+        var leadTimeData = await _chartService.GenerateLeadTimeDataPointsAsync(
             query.TeamId,
             startDate,
             endDate,
             cancellationToken);
 
-        var cycleTimeTask = _chartService.GenerateCycleTimeDataPointsAsync(
+        var cycleTimeData = await _chartService.GenerateCycleTimeDataPointsAsync(
             query.TeamId,
             startDate,
             endDate,
             cancellationToken);
 
-        var velocityTask = _chartService.GenerateVelocityDataPointsAsync(
+        var velocityData = await _chartService.GenerateVelocityDataPointsAsync(
             query.TeamId,
             cancellationToken);
-
-        await Task.WhenAll(burnChartTask, leadTimeTask, cycleTimeTask, velocityTask);
-
-        var (burnupData, burndownData) = await burnChartTask;
-        var leadTimeData = await leadTimeTask;
-        var cycleTimeData = await cycleTimeTask;
-        var velocityData = await velocityTask;
 
         return new DashboardResponse(
             burnupData,

@@ -103,6 +103,7 @@ internal sealed class DashboardChartService : IDashboardChartService
             .Select(wi => new
             {
                 wi.CompletedAtUtc,
+                wi.StartedAtUtc,
                 wi.CreatedAtUtc,
                 wi.Title,
                 WorkItemType = wi.Type.ToString(),
@@ -114,9 +115,7 @@ internal sealed class DashboardChartService : IDashboardChartService
             .Select(wi => new
             {
                 wi,
-                // Note: Using CreatedAtUtc as approximation since we don't track when work actually started
-                // Ideally this should be when status changed from New to InProgress
-                CycleTimeDays = (int)(wi.CompletedAtUtc!.Value - wi.CreatedAtUtc).TotalDays,
+                CycleTimeDays = (int)(wi.CompletedAtUtc!.Value - (wi.StartedAtUtc ?? wi.CreatedAtUtc)).TotalDays,
             })
             .Where(x => x.CycleTimeDays >= 0)
             .Select(x => new CycleTimePoint(
