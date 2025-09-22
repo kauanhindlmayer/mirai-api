@@ -64,6 +64,8 @@ public sealed class ApplicationDbContext(
     public async override Task<int> SaveChangesAsync(
         CancellationToken cancellationToken = default)
     {
+        UpdateTimestamps();
+
         var domainEvents = ChangeTracker.Entries<Entity>()
            .SelectMany(entry =>
             {
@@ -82,6 +84,20 @@ public sealed class ApplicationDbContext(
         modelBuilder.HasPostgresExtension(PostgresVectorExtension);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
         base.OnModelCreating(modelBuilder);
+    }
+
+    private void UpdateTimestamps()
+    {
+        var entities = ChangeTracker.Entries<Entity>()
+            .Where(e => e.State == EntityState.Modified)
+            .Select(e => e.Entity);
+
+        foreach (var entity in entities)
+        {
+            typeof(Entity)
+                .GetProperty(nameof(Entity.UpdatedAtUtc))!
+                .SetValue(entity, DateTime.UtcNow);
+        }
     }
 
     private async Task PublishDomainEvents(List<IDomainEvent> domainEvents)
