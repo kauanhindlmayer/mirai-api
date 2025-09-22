@@ -1,13 +1,14 @@
 {
   "cSpell.words": [
+    "burndown",
+    "burnup",
     "disableable",
+    "hateoas",
+    "mediatr",
     "minilm",
     "ollama",
     "pgvector",
-    "mediatr",
-    "serilog",
-    "burnup",
-    "burndown"
+    "serilog"
   ],
   "dotnet.defaultSolution": "Mirai.slnx",
   "github.copilot.chat.commitMessageGeneration.instructions": [

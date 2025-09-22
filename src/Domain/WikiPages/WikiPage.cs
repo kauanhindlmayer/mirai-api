@@ -66,6 +66,18 @@ public sealed class WikiPage : AggregateRoot
         return Result.Success;
     }
 
+    public ErrorOr<Success> UpdateComment(Guid commentId, string content)
+    {
+        var comment = Comments.FirstOrDefault(c => c.Id == commentId);
+        if (comment is null)
+        {
+            return WikiPageErrors.CommentNotFound;
+        }
+
+        comment.UpdateContent(content);
+        return Result.Success;
+    }
+
     public ErrorOr<Success> InsertSubWikiPage(int position, WikiPage subWikiPage)
     {
         if (position < 0 || position > SubWikiPages.Count)

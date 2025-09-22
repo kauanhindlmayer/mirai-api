@@ -90,6 +90,37 @@ public class WikiPageTests
     }
 
     [Fact]
+    public void UpdateComment_WhenCommentExists_ShouldUpdateComment()
+    {
+        // Arrange
+        var wikiPage = WikiPageFactory.Create();
+        var comment = new WikiPageComment(wikiPage.Id, Guid.NewGuid(), "Original content");
+        wikiPage.AddComment(comment);
+        var newContent = "Updated content";
+
+        // Act
+        var result = wikiPage.UpdateComment(comment.Id, newContent);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        comment.Content.Should().Be(newContent);
+    }
+
+    [Fact]
+    public void UpdateComment_WhenCommentDoesNotExist_ShouldReturnCommentNotFound()
+    {
+        // Arrange
+        var wikiPage = WikiPageFactory.Create();
+        var commentId = Guid.NewGuid();
+
+        // Act
+        var result = wikiPage.UpdateComment(commentId, "Updated content");
+
+        // Assert
+        result.FirstError.Should().Be(WikiPageErrors.CommentNotFound);
+    }
+
+    [Fact]
     public void InsertSubWikiPage_WhenPositionIsInvalid_ShouldReturnError()
     {
         // Arrange

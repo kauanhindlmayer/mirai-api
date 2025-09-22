@@ -80,7 +80,7 @@ public class WorkItemTests
         var workItem = WorkItemFactory.Create();
         var newTitle = "Updated Title";
         var newDescription = "Updated Description";
-        var newStatus = WorkItemStatus.InProgress;
+        var newStatus = WorkItemStatus.Active;
         var newAssigneeId = Guid.NewGuid();
 
         // Act

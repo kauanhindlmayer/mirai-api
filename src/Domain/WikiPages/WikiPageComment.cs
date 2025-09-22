@@ -21,4 +21,9 @@ public sealed class WikiPageComment : Entity
     private WikiPageComment()
     {
     }
+
+    public void UpdateContent(string content)
+    {
+        Content = content;
+    }
 }

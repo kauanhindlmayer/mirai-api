@@ -4,6 +4,7 @@ using Application.WikiPages.Commands.CreateWikiPage;
 using Application.WikiPages.Commands.DeleteComment;
 using Application.WikiPages.Commands.DeleteWikiPage;
 using Application.WikiPages.Commands.MoveWikiPage;
+using Application.WikiPages.Commands.UpdateComment;
 using Application.WikiPages.Commands.UpdateWikiPage;
 using Application.WikiPages.Queries.GetWikiPage;
 using Application.WikiPages.Queries.GetWikiPageStats;
@@ -159,6 +160,30 @@ public sealed class WikiPagesController : ApiController
         CancellationToken cancellationToken)
     {
         var command = new DeleteCommentCommand(wikiPageId, commentId);
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        return result.Match(
+            _ => NoContent(),
+            Problem);
+    }
+
+    /// <summary>
+    /// Update a comment on a wiki page.
+    /// </summary>
+    /// <param name="wikiPageId">The wiki page's unique identifier.</param>
+    /// <param name="commentId">The comment's unique identifier.</param>
+    [HttpPut("{wikiPageId:guid}/comments/{commentId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> UpdateComment(
+        Guid wikiPageId,
+        Guid commentId,
+        UpdateCommentRequest request,
+        CancellationToken cancellationToken)
+    {
+        var command = new UpdateCommentCommand(wikiPageId, commentId, request.Content);
 
         var result = await _sender.Send(command, cancellationToken);
 
