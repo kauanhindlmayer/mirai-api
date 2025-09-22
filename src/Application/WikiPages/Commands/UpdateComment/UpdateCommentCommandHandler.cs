@@ -1,3 +1,4 @@
+using Application.Abstractions.Authentication;
 using Domain.WikiPages;
 using ErrorOr;
 using MediatR;
@@ -8,10 +9,14 @@ internal sealed class UpdateCommentCommandHandler
     : IRequestHandler<UpdateCommentCommand, ErrorOr<Success>>
 {
     private readonly IWikiPageRepository _wikiPageRepository;
+    private readonly IUserContext _userContext;
 
-    public UpdateCommentCommandHandler(IWikiPageRepository wikiPageRepository)
+    public UpdateCommentCommandHandler(
+        IWikiPageRepository wikiPageRepository,
+        IUserContext userContext)
     {
         _wikiPageRepository = wikiPageRepository;
+        _userContext = userContext;
     }
 
     public async Task<ErrorOr<Success>> Handle(
@@ -27,7 +32,11 @@ internal sealed class UpdateCommentCommandHandler
             return WikiPageErrors.NotFound;
         }
 
-        var result = wikiPage.UpdateComment(command.CommentId, command.Content);
+        var result = wikiPage.UpdateComment(
+            command.CommentId,
+            command.Content,
+            _userContext.UserId);
+
         if (result.IsError)
         {
             return result;

@@ -20,6 +20,10 @@ public static class WikiPageErrors
         code: "WikiPage.CommentNotFound",
         description: "Comment not found.");
 
+    public static readonly Error CommentNotOwned = Error.Unauthorized(
+        code: "WikiPage.CommentNotOwned",
+        description: "You are not authorized to update this comment.");
+
     public static readonly Error InvalidPosition = Error.Validation(
         code: "WikiPage.InvalidPosition",
         description: "Position must be greater than or equal to 0 and less than or equal to the number of sub wiki pages.");

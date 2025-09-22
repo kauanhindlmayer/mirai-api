@@ -66,12 +66,17 @@ public sealed class WikiPage : AggregateRoot
         return Result.Success;
     }
 
-    public ErrorOr<Success> UpdateComment(Guid commentId, string content)
+    public ErrorOr<Success> UpdateComment(Guid commentId, string content, Guid userId)
     {
         var comment = Comments.FirstOrDefault(c => c.Id == commentId);
         if (comment is null)
         {
             return WikiPageErrors.CommentNotFound;
+        }
+
+        if (comment.AuthorId != userId)
+        {
+            return WikiPageErrors.CommentNotOwned;
         }
 
         comment.UpdateContent(content);
