@@ -138,6 +138,23 @@ public sealed class WorkItem : AggregateRoot
         return Result.Success;
     }
 
+    public ErrorOr<Success> UpdateComment(Guid commentId, string content, Guid userId)
+    {
+        var comment = Comments.FirstOrDefault(c => c.Id == commentId);
+        if (comment is null)
+        {
+            return WorkItemErrors.CommentNotFound;
+        }
+
+        if (comment.AuthorId != userId)
+        {
+            return WorkItemErrors.CommentNotOwned;
+        }
+
+        comment.UpdateContent(content);
+        return Result.Success;
+    }
+
     public void AddTag(Tag tag)
     {
         Tags.Add(tag);

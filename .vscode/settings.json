@@ -18,7 +18,6 @@
     {
       "text": "Use types: feat, fix, docs, style, refactor, perf, test, chore, ci"
     },
-    { "text": "Include scope when relevant (e.g., api, ui, auth)" },
     { "text": "Do not include a commit body, only generate the subject line" }
   ]
 }

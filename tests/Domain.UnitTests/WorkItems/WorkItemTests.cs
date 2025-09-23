@@ -179,6 +179,56 @@ public class WorkItemTests
     }
 
     [Fact]
+    public void UpdateComment_WithValidCommentAndAuthor_ShouldUpdateSuccessfully()
+    {
+        // Arrange
+        var workItem = WorkItemFactory.Create();
+        var comment = WorkItemCommentFactory.Create(workItem.Id);
+        workItem.AddComment(comment);
+        var newContent = "Updated content";
+
+        // Act
+        var result = workItem.UpdateComment(comment.Id, newContent, comment.AuthorId);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        comment.Content.Should().Be(newContent);
+    }
+
+    [Fact]
+    public void UpdateComment_WithNonExistentComment_ShouldReturnCommentNotFound()
+    {
+        // Arrange
+        var workItem = WorkItemFactory.Create();
+        var commentId = Guid.NewGuid();
+
+        // Act
+        var result = workItem.UpdateComment(commentId, "Updated content", Guid.NewGuid());
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(WorkItemErrors.CommentNotFound);
+    }
+
+    [Fact]
+    public void UpdateComment_WithWrongAuthor_ShouldReturnCommentNotOwned()
+    {
+        // Arrange
+        var workItem = WorkItemFactory.Create();
+        var comment = WorkItemCommentFactory.Create(workItem.Id);
+        workItem.AddComment(comment);
+        var wrongUserId = Guid.NewGuid();
+
+        // Act
+        var result = workItem.UpdateComment(comment.Id, "Updated content", wrongUserId);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(WorkItemErrors.CommentNotOwned);
+        comment.Content.Should().NotBe("Updated content");
+    }
+
+    [Fact]
     public void AddTag_WithValidTag_ShouldAddTag()
     {
         // Arrange

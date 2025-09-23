@@ -99,7 +99,7 @@ public class WikiPageTests
         var newContent = "Updated content";
 
         // Act
-        var result = wikiPage.UpdateComment(comment.Id, newContent);
+        var result = wikiPage.UpdateComment(comment.Id, newContent, comment.AuthorId);
 
         // Assert
         result.IsError.Should().BeFalse();
@@ -114,7 +114,7 @@ public class WikiPageTests
         var commentId = Guid.NewGuid();
 
         // Act
-        var result = wikiPage.UpdateComment(commentId, "Updated content");
+        var result = wikiPage.UpdateComment(commentId, "Updated content", Guid.NewGuid());
 
         // Assert
         result.FirstError.Should().Be(WikiPageErrors.CommentNotFound);

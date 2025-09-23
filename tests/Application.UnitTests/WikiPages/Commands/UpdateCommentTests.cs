@@ -1,3 +1,4 @@
+using Application.Abstractions.Authentication;
 using Application.WikiPages.Commands.UpdateComment;
 using Domain.WikiPages;
 
@@ -12,18 +13,20 @@ public class UpdateCommentTests
 
     private readonly UpdateCommentCommandHandler _handler;
     private readonly IWikiPageRepository _wikiPageRepository;
+    private readonly IUserContext _userContext;
 
     public UpdateCommentTests()
     {
         _wikiPageRepository = Substitute.For<IWikiPageRepository>();
-        _handler = new UpdateCommentCommandHandler(_wikiPageRepository);
+        _userContext = Substitute.For<IUserContext>();
+        _handler = new UpdateCommentCommandHandler(_wikiPageRepository, _userContext);
     }
 
     [Fact]
     public async Task Handle_WhenWikiPageDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _wikiPageRepository.GetByIdAsync(
+        _wikiPageRepository.GetByIdWithCommentsAsync(
             Command.WikiPageId,
             TestContext.Current.CancellationToken)
             .Returns(null as WikiPage);
@@ -47,7 +50,7 @@ public class UpdateCommentTests
             "Title",
             "Content",
             Guid.NewGuid());
-        _wikiPageRepository.GetByIdAsync(
+        _wikiPageRepository.GetByIdWithCommentsAsync(
             Command.WikiPageId,
             TestContext.Current.CancellationToken)
             .Returns(wikiPage);
@@ -66,6 +69,7 @@ public class UpdateCommentTests
     public async Task Handle_WhenCommentExists_ShouldUpdateComment()
     {
         // Arrange
+        var userId = Guid.NewGuid();
         var wikiPage = new WikiPage(
             Guid.NewGuid(),
             "Title",
@@ -73,11 +77,12 @@ public class UpdateCommentTests
             Guid.NewGuid());
         var comment = new WikiPageComment(
             wikiPage.Id,
-            Guid.NewGuid(),
+            userId,
             "Original content");
         wikiPage.AddComment(comment);
+        _userContext.UserId.Returns(userId);
 
-        _wikiPageRepository.GetByIdAsync(
+        _wikiPageRepository.GetByIdWithCommentsAsync(
             Command.WikiPageId,
             TestContext.Current.CancellationToken)
             .Returns(wikiPage);
