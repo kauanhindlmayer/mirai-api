@@ -77,6 +77,7 @@ internal static class WorkItemQueries
                 Id = comment.Id,
                 Author = new AuthorResponse
                 {
+                    Id = comment.Author.Id,
                     Name = comment.Author.FullName,
                     ImageUrl = comment.Author.ImageUrl,
                 },

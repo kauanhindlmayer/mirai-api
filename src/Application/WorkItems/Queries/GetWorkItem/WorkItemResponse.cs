@@ -53,6 +53,7 @@ public sealed class WorkItemCommentResponse
 
 public sealed class AuthorResponse
 {
+    public Guid Id { get; init; }
     public required string Name { get; init; }
     public string? ImageUrl { get; init; }
 }
