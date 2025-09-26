@@ -8,19 +8,19 @@ namespace Application.Projects.Commands.CreateProject;
 internal sealed class CreateProjectCommandHandler
     : IRequestHandler<CreateProjectCommand, ErrorOr<Guid>>
 {
-    private readonly IOrganizationsRepository _organizationsRepository;
+    private readonly IOrganizationRepository _organizationRepository;
 
     public CreateProjectCommandHandler(
-        IOrganizationsRepository organizationsRepository)
+        IOrganizationRepository organizationRepository)
     {
-        _organizationsRepository = organizationsRepository;
+        _organizationRepository = organizationRepository;
     }
 
     public async Task<ErrorOr<Guid>> Handle(
         CreateProjectCommand command,
         CancellationToken cancellationToken)
     {
-        var organization = await _organizationsRepository.GetByIdWithProjectsAsync(
+        var organization = await _organizationRepository.GetByIdWithProjectsAsync(
             command.OrganizationId,
             cancellationToken);
 
@@ -40,7 +40,7 @@ internal sealed class CreateProjectCommandHandler
             return result.Errors;
         }
 
-        _organizationsRepository.Update(organization);
+        _organizationRepository.Update(organization);
 
         return project.Id;
     }

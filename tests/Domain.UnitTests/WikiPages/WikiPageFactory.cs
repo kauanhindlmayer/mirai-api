@@ -2,23 +2,25 @@ using Domain.WikiPages;
 
 namespace Domain.UnitTests.WikiPages;
 
-public static class WikiPageFactory
+internal static class WikiPageFactory
 {
     public const string Title = "Title";
     public const string Content = "Content";
+    public static readonly Guid ProjectId = Guid.NewGuid();
+    public static readonly Guid AuthorId = Guid.NewGuid();
 
-    public static WikiPage CreateWikiPage(
+    public static WikiPage Create(
         Guid? projectId = null,
-        string title = Title,
-        string content = Content,
+        string? title = null,
+        string? content = null,
         Guid? authorId = null,
         Guid? parentWikiPageId = null)
     {
         return new(
-            projectId ?? Guid.NewGuid(),
-            title,
-            content,
-            authorId ?? Guid.NewGuid(),
+            projectId ?? ProjectId,
+            title ?? Title,
+            content ?? Content,
+            authorId ?? AuthorId,
             parentWikiPageId);
     }
 }

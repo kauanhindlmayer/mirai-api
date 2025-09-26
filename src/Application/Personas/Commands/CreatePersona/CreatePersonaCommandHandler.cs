@@ -9,14 +9,14 @@ namespace Application.Personas.Commands.CreatePersona;
 internal sealed class CreatePersonaCommandHandler
     : IRequestHandler<CreatePersonaCommand, ErrorOr<Guid>>
 {
-    private readonly IProjectsRepository _projectsRepository;
+    private readonly IProjectRepository _projectRepository;
     private readonly IBlobService _blobService;
 
     public CreatePersonaCommandHandler(
-        IProjectsRepository projectsRepository,
+        IProjectRepository projectRepository,
         IBlobService blobService)
     {
-        _projectsRepository = projectsRepository;
+        _projectRepository = projectRepository;
         _blobService = blobService;
     }
 
@@ -24,7 +24,7 @@ internal sealed class CreatePersonaCommandHandler
         CreatePersonaCommand command,
         CancellationToken cancellationToken)
     {
-        var project = await _projectsRepository.GetByIdWithPersonasAsync(
+        var project = await _projectRepository.GetByIdWithPersonasAsync(
             command.ProjectId,
             cancellationToken);
 
@@ -57,7 +57,7 @@ internal sealed class CreatePersonaCommandHandler
                 uploadResponse.FileId);
         }
 
-        _projectsRepository.Update(project);
+        _projectRepository.Update(project);
 
         return persona.Id;
     }

@@ -40,7 +40,7 @@ internal sealed class ListWorkItemsQueryHandler
             .Where(wi => query.SearchTerm == null || wi.Title.ToLower().Contains(query.SearchTerm))
             .Where(wi => query.Type == null || wi.Type == query.Type)
             .Where(wi => query.Status == null || wi.Status == query.Status)
-            .Where(wi => query.AssigneeId == null || wi.AssigneeId == query.AssigneeId)
+            .Where(wi => query.AssigneeId == null || wi.AssignedUserId == query.AssigneeId)
             .ApplySorting(query.Sort, sortMappings)
             .Select(WorkItemQueries.ProjectToBriefDto())
             .PaginatedListAsync(query.Page, query.PageSize, cancellationToken);

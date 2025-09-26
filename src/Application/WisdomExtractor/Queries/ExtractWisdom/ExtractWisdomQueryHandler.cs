@@ -8,6 +8,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Pgvector;
 
 namespace Application.WisdomExtractor.Queries.ExtractWisdom;
@@ -17,15 +18,18 @@ internal sealed partial class ExtractWisdomQueryHandler
 {
     private const double MaxDistance = 0.6;
     private const int MaxItems = 4;
+    private readonly ILogger<ExtractWisdomQueryHandler> _logger;
     private readonly IChatClient _chatClient;
     private readonly IEmbeddingGenerator<string, Embedding<float>> _embeddingGenerator;
     private readonly IApplicationDbContext _context;
 
     public ExtractWisdomQueryHandler(
+        ILogger<ExtractWisdomQueryHandler> logger,
         [FromKeyedServices(ServiceKeys.Chat)] IChatClient chatClient,
         [FromKeyedServices(ServiceKeys.Embedding)] IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator,
         IApplicationDbContext context)
     {
+        _logger = logger;
         _chatClient = chatClient;
         _embeddingGenerator = embeddingGenerator;
         _context = context;
@@ -80,7 +84,10 @@ internal sealed partial class ExtractWisdomQueryHandler
         }
         catch (Exception ex)
         {
-            return Error.Failure("WisdomExtractor.Failed", $"Failed to extract wisdom: {ex.Message}");
+            _logger.LogError(ex, "An error occurred while extracting wisdom");
+            return Error.Failure(
+                "WisdomExtractor.Failed",
+                "An error occurred while extracting wisdom.");
         }
     }
 

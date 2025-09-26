@@ -8,12 +8,12 @@ namespace Application.Tags.Commands.MergeTags;
 internal sealed class MergeTagsCommandHandler
     : IRequestHandler<MergeTagsCommand, ErrorOr<Success>>
 {
-    private readonly ITagsRepository _tagRepository;
-    private readonly IWorkItemsRepository _workItemRepository;
+    private readonly ITagRepository _tagRepository;
+    private readonly IWorkItemRepository _workItemRepository;
 
     public MergeTagsCommandHandler(
-        ITagsRepository tagRepository,
-        IWorkItemsRepository workItemRepository)
+        ITagRepository tagRepository,
+        IWorkItemRepository workItemRepository)
     {
         _tagRepository = tagRepository;
         _workItemRepository = workItemRepository;

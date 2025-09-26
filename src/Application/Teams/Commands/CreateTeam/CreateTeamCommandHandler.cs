@@ -8,19 +8,19 @@ namespace Application.Teams.Commands.CreateTeam;
 internal sealed class CreateTeamCommandHandler
     : IRequestHandler<CreateTeamCommand, ErrorOr<Guid>>
 {
-    private readonly IProjectsRepository _projectsRepository;
+    private readonly IProjectRepository _projectRepository;
 
     public CreateTeamCommandHandler(
-        IProjectsRepository projectsRepository)
+        IProjectRepository projectRepository)
     {
-        _projectsRepository = projectsRepository;
+        _projectRepository = projectRepository;
     }
 
     public async Task<ErrorOr<Guid>> Handle(
         CreateTeamCommand command,
         CancellationToken cancellationToken)
     {
-        var project = await _projectsRepository.GetByIdAsync(
+        var project = await _projectRepository.GetByIdAsync(
             command.ProjectId,
             cancellationToken);
 
@@ -41,7 +41,7 @@ internal sealed class CreateTeamCommandHandler
             return result.Errors;
         }
 
-        _projectsRepository.Update(project);
+        _projectRepository.Update(project);
 
         return team.Id;
     }

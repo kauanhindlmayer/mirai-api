@@ -10,23 +10,27 @@ public class CreateOrganizationTests
         "Test Description");
 
     private readonly CreateOrganizationCommandHandler _handler;
-    private readonly IOrganizationsRepository _mockOrganizationsRepository;
+    private readonly IOrganizationRepository _mockOrganizationRepository;
 
     public CreateOrganizationTests()
     {
-        _mockOrganizationsRepository = Substitute.For<IOrganizationsRepository>();
-        _handler = new CreateOrganizationCommandHandler(_mockOrganizationsRepository);
+        _mockOrganizationRepository = Substitute.For<IOrganizationRepository>();
+        _handler = new CreateOrganizationCommandHandler(_mockOrganizationRepository);
     }
 
     [Fact]
     public async Task Handle_WhenOrganizationExists_ShouldReturnError()
     {
         // Arrange
-        _mockOrganizationsRepository.ExistsByNameAsync(Command.Name, TestContext.Current.CancellationToken)
+        _mockOrganizationRepository.ExistsByNameAsync(
+            Command.Name,
+            TestContext.Current.CancellationToken)
             .Returns(true);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().BeOfType<ErrorOr<Guid>>();
@@ -37,11 +41,15 @@ public class CreateOrganizationTests
     public async Task Handle_WhenOrganizationDoesNotExist_ShouldReturnOrganizationId()
     {
         // Arrange
-        _mockOrganizationsRepository.ExistsByNameAsync(Command.Name, TestContext.Current.CancellationToken)
+        _mockOrganizationRepository.ExistsByNameAsync(
+            Command.Name,
+            TestContext.Current.CancellationToken)
             .Returns(false);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().BeOfType<ErrorOr<Guid>>();

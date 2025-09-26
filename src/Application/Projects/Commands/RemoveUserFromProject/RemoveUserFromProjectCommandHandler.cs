@@ -7,19 +7,19 @@ namespace Application.Projects.Commands.RemoveUserFromProject;
 internal sealed class RemoveUserFromProjectCommandHandler
     : IRequestHandler<RemoveUserFromProjectCommand, ErrorOr<Success>>
 {
-    private readonly IProjectsRepository _projectsRepository;
+    private readonly IProjectRepository _projectRepository;
 
     public RemoveUserFromProjectCommandHandler(
-        IProjectsRepository projectsRepository)
+        IProjectRepository projectRepository)
     {
-        _projectsRepository = projectsRepository;
+        _projectRepository = projectRepository;
     }
 
     public async Task<ErrorOr<Success>> Handle(
         RemoveUserFromProjectCommand command,
         CancellationToken cancellationToken)
     {
-        var project = await _projectsRepository.GetByIdWithUsersAndTeamsAsync(
+        var project = await _projectRepository.GetByIdWithUsersAndTeamsAsync(
             command.ProjectId,
             cancellationToken);
 
@@ -34,7 +34,7 @@ internal sealed class RemoveUserFromProjectCommandHandler
             return result.Errors;
         }
 
-        _projectsRepository.Update(project);
+        _projectRepository.Update(project);
 
         return Result.Success;
     }

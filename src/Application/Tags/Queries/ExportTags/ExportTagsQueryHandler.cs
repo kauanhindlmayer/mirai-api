@@ -8,9 +8,9 @@ namespace Application.Tags.Queries.ExportTags;
 internal sealed class ExportTagsQueryHandler
     : IRequestHandler<ExportTagsQuery, ErrorOr<byte[]>>
 {
-    private readonly ITagsRepository _tagRepository;
+    private readonly ITagRepository _tagRepository;
 
-    public ExportTagsQueryHandler(ITagsRepository tagRepository)
+    public ExportTagsQueryHandler(ITagRepository tagRepository)
     {
         _tagRepository = tagRepository;
     }

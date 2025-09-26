@@ -92,7 +92,12 @@ namespace Infrastructure.Persistence.Migrations
                         .HasDatabaseName("ix_board_cards_board_column_id");
 
                     b.HasIndex("WorkItemId")
+                        .IsUnique()
                         .HasDatabaseName("ix_board_cards_work_item_id");
+
+                    b.HasIndex("BoardColumnId", "Position")
+                        .IsUnique()
+                        .HasDatabaseName("ix_board_cards_board_column_id_position");
 
                     b.ToTable("board_cards", (string)null);
                 });
@@ -139,6 +144,10 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("BoardId")
                         .HasDatabaseName("ix_board_columns_board_id");
+
+                    b.HasIndex("BoardId", "Position")
+                        .IsUnique()
+                        .HasDatabaseName("ix_board_columns_board_id_position");
 
                     b.ToTable("board_columns", (string)null);
                 });
@@ -570,6 +579,10 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasIndex("ProjectId")
                         .HasDatabaseName("ix_teams_project_id");
 
+                    b.HasIndex("ProjectId", "Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_teams_project_id_name");
+
                     b.ToTable("teams", (string)null);
                 });
 
@@ -615,10 +628,6 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("last_name");
 
-                    b.Property<Guid?>("TeamId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("team_id");
-
                     b.Property<DateTime?>("UpdatedAtUtc")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at_utc");
@@ -633,9 +642,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasIndex("IdentityId")
                         .IsUnique()
                         .HasDatabaseName("ix_users_identity_id");
-
-                    b.HasIndex("TeamId")
-                        .HasDatabaseName("ix_users_team_id");
 
                     b.ToTable("users", (string)null);
                 });
@@ -756,6 +762,9 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasKey("Id")
                         .HasName("pk_wiki_page_views");
 
+                    b.HasIndex("ViewerId")
+                        .HasDatabaseName("ix_wiki_page_views_viewer_id");
+
                     b.HasIndex("WikiPageId")
                         .HasDatabaseName("ix_wiki_page_views_wiki_page_id");
 
@@ -769,7 +778,6 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnName("id");
 
                     b.Property<string>("AcceptanceCriteria")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("acceptance_criteria");
 
@@ -777,9 +785,9 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("assigned_team_id");
 
-                    b.Property<Guid?>("AssigneeId")
+                    b.Property<Guid?>("AssignedUserId")
                         .HasColumnType("uuid")
-                        .HasColumnName("assignee_id");
+                        .HasColumnName("assigned_user_id");
 
                     b.Property<int>("Code")
                         .HasColumnType("integer")
@@ -813,6 +821,10 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<Guid?>("SprintId")
                         .HasColumnType("uuid")
                         .HasColumnName("sprint_id");
+
+                    b.Property<DateTime?>("StartedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("started_at_utc");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -863,14 +875,20 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasIndex("AssignedTeamId")
                         .HasDatabaseName("ix_work_items_assigned_team_id");
 
-                    b.HasIndex("AssigneeId")
-                        .HasDatabaseName("ix_work_items_assignee_id");
+                    b.HasIndex("AssignedUserId")
+                        .HasDatabaseName("ix_work_items_assigned_user_id");
 
                     b.HasIndex("ParentWorkItemId")
                         .HasDatabaseName("ix_work_items_parent_work_item_id");
 
                     b.HasIndex("SprintId")
                         .HasDatabaseName("ix_work_items_sprint_id");
+
+                    b.HasIndex("Status")
+                        .HasDatabaseName("ix_work_items_status");
+
+                    b.HasIndex("Type")
+                        .HasDatabaseName("ix_work_items_type");
 
                     b.HasIndex("ProjectId", "Code")
                         .IsUnique()
@@ -918,44 +936,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("work_item_comments", (string)null);
                 });
 
-            modelBuilder.Entity("OrganizationUsers", b =>
-                {
-                    b.Property<Guid>("OrganizationId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("organization_id");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("OrganizationId", "UserId")
-                        .HasName("pk_organization_users");
-
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("ix_organization_users_user_id");
-
-                    b.ToTable("organization_users", (string)null);
-                });
-
-            modelBuilder.Entity("ProjectUsers", b =>
-                {
-                    b.Property<Guid>("ProjectId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("project_id");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("ProjectId", "UserId")
-                        .HasName("pk_project_users");
-
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("ix_project_users_user_id");
-
-                    b.ToTable("project_users", (string)null);
-                });
-
             modelBuilder.Entity("TagWorkItem", b =>
                 {
                     b.Property<Guid>("TagsId")
@@ -973,6 +953,72 @@ namespace Infrastructure.Persistence.Migrations
                         .HasDatabaseName("ix_work_item_tags_work_items_id");
 
                     b.ToTable("work_item_tags", (string)null);
+                });
+
+            modelBuilder.Entity("organization_users", b =>
+                {
+                    b.Property<Guid>("organization_id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("organization_id");
+
+                    b.Property<Guid>("user_id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("organization_id", "user_id")
+                        .HasName("pk_organization_users");
+
+                    b.HasIndex("organization_id")
+                        .HasDatabaseName("ix_organization_users_organization_id");
+
+                    b.HasIndex("user_id")
+                        .HasDatabaseName("ix_organization_users_user_id");
+
+                    b.ToTable("organization_users", (string)null);
+                });
+
+            modelBuilder.Entity("project_users", b =>
+                {
+                    b.Property<Guid>("project_id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("project_id");
+
+                    b.Property<Guid>("user_id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("project_id", "user_id")
+                        .HasName("pk_project_users");
+
+                    b.HasIndex("project_id")
+                        .HasDatabaseName("ix_project_users_project_id");
+
+                    b.HasIndex("user_id")
+                        .HasDatabaseName("ix_project_users_user_id");
+
+                    b.ToTable("project_users", (string)null);
+                });
+
+            modelBuilder.Entity("team_users", b =>
+                {
+                    b.Property<Guid>("team_id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("team_id");
+
+                    b.Property<Guid>("user_id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("team_id", "user_id")
+                        .HasName("pk_team_users");
+
+                    b.HasIndex("team_id")
+                        .HasDatabaseName("ix_team_users_team_id");
+
+                    b.HasIndex("user_id")
+                        .HasDatabaseName("ix_team_users_user_id");
+
+                    b.ToTable("team_users", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Boards.Board", b =>
@@ -1125,14 +1171,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Project");
                 });
 
-            modelBuilder.Entity("Domain.Users.User", b =>
-                {
-                    b.HasOne("Domain.Teams.Team", null)
-                        .WithMany("Members")
-                        .HasForeignKey("TeamId")
-                        .HasConstraintName("fk_users_teams_team_id");
-                });
-
             modelBuilder.Entity("Domain.WikiPages.WikiPage", b =>
                 {
                     b.HasOne("Domain.Users.User", "Author")
@@ -1167,7 +1205,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasOne("Domain.Users.User", "Author")
                         .WithMany()
                         .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("fk_wiki_page_comments_users_author_id");
 
@@ -1185,12 +1223,21 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.WikiPages.WikiPageView", b =>
                 {
+                    b.HasOne("Domain.Users.User", "Viewer")
+                        .WithMany()
+                        .HasForeignKey("ViewerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_wiki_page_views_users_viewer_id");
+
                     b.HasOne("Domain.WikiPages.WikiPage", "WikiPage")
                         .WithMany("Views")
                         .HasForeignKey("WikiPageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_wiki_page_views_wiki_pages_wiki_page_id");
+
+                    b.Navigation("Viewer");
 
                     b.Navigation("WikiPage");
                 });
@@ -1200,13 +1247,14 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasOne("Domain.Teams.Team", "AssignedTeam")
                         .WithMany("WorkItems")
                         .HasForeignKey("AssignedTeamId")
+                        .OnDelete(DeleteBehavior.SetNull)
                         .HasConstraintName("fk_work_items_teams_assigned_team_id");
 
-                    b.HasOne("Domain.Users.User", "Assignee")
+                    b.HasOne("Domain.Users.User", "AssignedUser")
                         .WithMany("WorkItems")
-                        .HasForeignKey("AssigneeId")
+                        .HasForeignKey("AssignedUserId")
                         .OnDelete(DeleteBehavior.SetNull)
-                        .HasConstraintName("fk_work_items_users_assignee_id");
+                        .HasConstraintName("fk_work_items_users_assigned_user_id");
 
                     b.HasOne("Domain.WorkItems.WorkItem", "ParentWorkItem")
                         .WithMany("ChildWorkItems")
@@ -1228,7 +1276,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.Navigation("AssignedTeam");
 
-                    b.Navigation("Assignee");
+                    b.Navigation("AssignedUser");
 
                     b.Navigation("ParentWorkItem");
 
@@ -1258,40 +1306,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("WorkItem");
                 });
 
-            modelBuilder.Entity("OrganizationUsers", b =>
-                {
-                    b.HasOne("Domain.Organizations.Organization", null)
-                        .WithMany()
-                        .HasForeignKey("OrganizationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_organization_users_organizations_organization_id");
-
-                    b.HasOne("Domain.Users.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_organization_users_users_user_id");
-                });
-
-            modelBuilder.Entity("ProjectUsers", b =>
-                {
-                    b.HasOne("Domain.Projects.Project", null)
-                        .WithMany()
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_project_users_projects_project_id");
-
-                    b.HasOne("Domain.Users.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_project_users_users_user_id");
-                });
-
             modelBuilder.Entity("TagWorkItem", b =>
                 {
                     b.HasOne("Domain.Tags.Tag", null)
@@ -1307,6 +1321,57 @@ namespace Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_work_item_tags_work_items_work_items_id");
+                });
+
+            modelBuilder.Entity("organization_users", b =>
+                {
+                    b.HasOne("Domain.Organizations.Organization", null)
+                        .WithMany()
+                        .HasForeignKey("organization_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_organization_users_organizations_organization_id");
+
+                    b.HasOne("Domain.Users.User", null)
+                        .WithMany()
+                        .HasForeignKey("user_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_organization_users_users_user_id");
+                });
+
+            modelBuilder.Entity("project_users", b =>
+                {
+                    b.HasOne("Domain.Projects.Project", null)
+                        .WithMany()
+                        .HasForeignKey("project_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_project_users_projects_project_id");
+
+                    b.HasOne("Domain.Users.User", null)
+                        .WithMany()
+                        .HasForeignKey("user_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_project_users_users_user_id");
+                });
+
+            modelBuilder.Entity("team_users", b =>
+                {
+                    b.HasOne("Domain.Teams.Team", null)
+                        .WithMany()
+                        .HasForeignKey("team_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_team_users_teams_team_id");
+
+                    b.HasOne("Domain.Users.User", null)
+                        .WithMany()
+                        .HasForeignKey("user_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_team_users_users_user_id");
                 });
 
             modelBuilder.Entity("Domain.Boards.Board", b =>
@@ -1356,8 +1421,6 @@ namespace Infrastructure.Persistence.Migrations
                 {
                     b.Navigation("Board")
                         .IsRequired();
-
-                    b.Navigation("Members");
 
                     b.Navigation("Retrospectives");
 

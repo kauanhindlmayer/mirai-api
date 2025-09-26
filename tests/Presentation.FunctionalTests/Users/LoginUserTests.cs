@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using Application.Users.Queries.LoginUser;
 using FluentAssertions;
+using Presentation.Controllers.Users;
 using Presentation.FunctionalTests.Infrastructure;
 
 namespace Presentation.FunctionalTests.Users;
@@ -17,7 +18,9 @@ public class LoginUserTests : BaseFunctionalTest
     public async Task LoginUser_WhenRequestIsValid_ShouldReturnOk()
     {
         // Arrange
-        var request = UserRequestFactory.CreateLoginUserRequest();
+        var request = new LoginUserRequest(
+            $"john.doe{Random.Shared.Next(1, 100)}@mirai.com",
+            "password123");
 
         // Act
         var response = await _httpClient.PostAsJsonAsync(
@@ -37,7 +40,7 @@ public class LoginUserTests : BaseFunctionalTest
     public async Task LoginUser_WhenRequestIsInvalid_ShouldReturnUnauthorized()
     {
         // Arrange
-        var request = UserRequestFactory.CreateLoginUserRequest("invalid-email");
+        var request = new LoginUserRequest("invalid-email", "password123");
 
         // Act
         var response = await _httpClient.PostAsJsonAsync(

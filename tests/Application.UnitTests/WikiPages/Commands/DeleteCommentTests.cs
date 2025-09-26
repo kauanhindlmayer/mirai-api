@@ -10,23 +10,27 @@ public class DeleteCommentTests
         Guid.NewGuid());
 
     private readonly DeleteCommentCommandHandler _handler;
-    private readonly IWikiPagesRepository _wikiPagesRepository;
+    private readonly IWikiPageRepository _wikiPageRepository;
 
     public DeleteCommentTests()
     {
-        _wikiPagesRepository = Substitute.For<IWikiPagesRepository>();
-        _handler = new DeleteCommentCommandHandler(_wikiPagesRepository);
+        _wikiPageRepository = Substitute.For<IWikiPageRepository>();
+        _handler = new DeleteCommentCommandHandler(_wikiPageRepository);
     }
 
     [Fact]
     public async Task Handle_WhenWikiPageDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _wikiPagesRepository.GetByIdWithCommentsAsync(Command.WikiPageId, TestContext.Current.CancellationToken)
+        _wikiPageRepository.GetByIdWithCommentsAsync(
+            Command.WikiPageId,
+            TestContext.Current.CancellationToken)
             .Returns(null as WikiPage);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -42,11 +46,15 @@ public class DeleteCommentTests
             "Title",
             "Content",
             Guid.NewGuid());
-        _wikiPagesRepository.GetByIdWithCommentsAsync(Command.WikiPageId, TestContext.Current.CancellationToken)
+        _wikiPageRepository.GetByIdWithCommentsAsync(
+            Command.WikiPageId,
+            TestContext.Current.CancellationToken)
             .Returns(wikiPage);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -67,7 +75,9 @@ public class DeleteCommentTests
             Guid.NewGuid(),
             "Content");
         wikiPage.AddComment(comment);
-        _wikiPagesRepository.GetByIdWithCommentsAsync(Command.WikiPageId, TestContext.Current.CancellationToken)
+        _wikiPageRepository.GetByIdWithCommentsAsync(
+            Command.WikiPageId,
+            TestContext.Current.CancellationToken)
             .Returns(wikiPage);
 
         // Act
@@ -79,6 +89,6 @@ public class DeleteCommentTests
         result.IsError.Should().BeFalse();
         result.Should().BeOfType<ErrorOr<Success>>();
         wikiPage.Comments.Should().BeEmpty();
-        _wikiPagesRepository.Received().Update(wikiPage);
+        _wikiPageRepository.Received().Update(wikiPage);
     }
 }

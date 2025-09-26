@@ -20,14 +20,6 @@ public sealed class Board : AggregateRoot
         InitializeDefaultColumns(ProcessTemplate.Agile);
     }
 
-    public Board(Team team, string name)
-    {
-        Team = team;
-        TeamId = team.Id;
-        Name = name;
-        InitializeDefaultColumns(ProcessTemplate.Agile);
-    }
-
     private Board()
     {
     }
@@ -44,7 +36,9 @@ public sealed class Board : AggregateRoot
         return column;
     }
 
-    public ErrorOr<BoardColumn> AddColumnAtPosition(BoardColumn column, int position)
+    public ErrorOr<BoardColumn> AddColumnAtPosition(
+        BoardColumn column,
+        int position)
     {
         if (position < 0 || position > Columns.Count)
         {
@@ -92,16 +86,16 @@ public sealed class Board : AggregateRoot
             return BoardErrors.ColumnNotFound;
         }
 
-        var card = sourceColumn.RemoveCard(cardId);
-        if (card.IsError)
-        {
-            return card.Errors;
-        }
-
         var targetColumn = Columns.FirstOrDefault(c => c.Id == targetColumnId);
         if (targetColumn is null)
         {
             return BoardErrors.ColumnNotFound;
+        }
+
+        var card = sourceColumn.RemoveCard(cardId);
+        if (card.IsError)
+        {
+            return card.Errors;
         }
 
         return targetColumn.AddCardAtPosition(card.Value, targetPosition);

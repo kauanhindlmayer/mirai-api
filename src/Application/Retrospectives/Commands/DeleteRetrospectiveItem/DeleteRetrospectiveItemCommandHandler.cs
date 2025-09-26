@@ -7,19 +7,19 @@ namespace Application.Retrospectives.Commands.DeleteRetrospectiveItem;
 internal sealed class DeleteRetrospectiveItemCommandHandler
     : IRequestHandler<DeleteRetrospectiveItemCommand, ErrorOr<Success>>
 {
-    private readonly IRetrospectivesRepository _retrospectivesRepository;
+    private readonly IRetrospectiveRepository _retrospectiveRepository;
 
     public DeleteRetrospectiveItemCommandHandler(
-        IRetrospectivesRepository retrospectivesRepository)
+        IRetrospectiveRepository retrospectiveRepository)
     {
-        _retrospectivesRepository = retrospectivesRepository;
+        _retrospectiveRepository = retrospectiveRepository;
     }
 
     public async Task<ErrorOr<Success>> Handle(
         DeleteRetrospectiveItemCommand command,
         CancellationToken cancellationToken)
     {
-        var retrospective = await _retrospectivesRepository.GetByIdWithColumnsAsync(
+        var retrospective = await _retrospectiveRepository.GetByIdWithColumnsAsync(
             command.RetrospectiveId,
             cancellationToken);
 
@@ -28,19 +28,13 @@ internal sealed class DeleteRetrospectiveItemCommandHandler
             return RetrospectiveErrors.NotFound;
         }
 
-        var column = retrospective.Columns.FirstOrDefault(c => c.Id == command.ColumnId);
-        if (column is null)
-        {
-            return RetrospectiveErrors.ColumnNotFound;
-        }
-
-        var result = column.RemoveItem(command.ItemId);
+        var result = retrospective.RemoveItem(command.ColumnId, command.ItemId);
         if (result.IsError)
         {
             return result.Errors;
         }
 
-        _retrospectivesRepository.Update(retrospective);
+        _retrospectiveRepository.Update(retrospective);
 
         return Result.Success;
     }

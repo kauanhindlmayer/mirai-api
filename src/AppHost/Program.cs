@@ -6,7 +6,10 @@ var postgres = builder.AddPostgres("postgres")
     .WithDataVolume()
     .WithPgAdmin();
 
-var redis = builder.AddRedis("redis");
+var database = postgres.AddDatabase("mirai-db");
+
+var redis = builder.AddRedis("redis")
+    .WithRedisInsight();
 
 var keycloak = builder.AddKeycloak("keycloak", port: 8080)
     .WithImageTag("26.2")
@@ -21,10 +24,11 @@ var llama = ollama.AddModel("chat", "llama3.2:1b");
 var minilm = ollama.AddModel("embedding", "all-minilm");
 
 var miraiApi = builder.AddProject<Projects.Presentation>("mirai-api")
-    .WithReference(postgres)
-    .WaitFor(postgres)
+    .WithReference(database)
+    .WaitFor(database)
     .WithReference(redis)
     .WithReference(keycloak)
+    .WaitFor(keycloak)
     .WithReference(llama)
     .WithReference(minilm)
     .WithExternalHttpEndpoints();

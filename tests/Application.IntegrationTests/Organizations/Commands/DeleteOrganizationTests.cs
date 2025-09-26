@@ -33,13 +33,19 @@ public class DeleteOrganizationTests : BaseIntegrationTest
     public async Task DeleteOrganization_WhenValidCommand_ShouldDeleteOrganization()
     {
         // Arrange
-        var createCommand = new CreateOrganizationCommand("Test Organization 3", "Test Description");
-        var createOrganizationResult = await _sender.Send(createCommand, TestContext.Current.CancellationToken);
+        var createCommand = new CreateOrganizationCommand(
+            "Test Organization 3",
+            "Test Description");
+        var createOrganizationResult = await _sender.Send(
+            createCommand,
+            TestContext.Current.CancellationToken);
         var organizationId = createOrganizationResult.Value;
+        var deleteCommand = new DeleteOrganizationCommand(organizationId);
 
         // Act
-        var deleteCommand = new DeleteOrganizationCommand(organizationId);
-        var result = await _sender.Send(deleteCommand, TestContext.Current.CancellationToken);
+        var result = await _sender.Send(
+            deleteCommand,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeFalse();

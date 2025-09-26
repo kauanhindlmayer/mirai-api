@@ -13,25 +13,27 @@ public class MoveWikiPageTests
         0);
 
     private readonly MoveWikiPageCommandHandler _handler;
-    private readonly IProjectsRepository _projectsRepository;
+    private readonly IProjectRepository _projectRepository;
 
     public MoveWikiPageTests()
     {
-        _projectsRepository = Substitute.For<IProjectsRepository>();
-        _handler = new MoveWikiPageCommandHandler(_projectsRepository);
+        _projectRepository = Substitute.For<IProjectRepository>();
+        _handler = new MoveWikiPageCommandHandler(_projectRepository);
     }
 
     [Fact]
     public async Task Handle_WhenProjectDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _projectsRepository.GetByIdWithWikiPagesAsync(
+        _projectRepository.GetByIdWithWikiPagesAsync(
             Command.ProjectId,
             TestContext.Current.CancellationToken)
             .Returns(null as Project);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.FirstError.Should().Be(ProjectErrors.NotFound);
@@ -42,13 +44,15 @@ public class MoveWikiPageTests
     {
         // Arrange
         var project = new Project("Project", "Description", Guid.NewGuid());
-        _projectsRepository.GetByIdWithWikiPagesAsync(
+        _projectRepository.GetByIdWithWikiPagesAsync(
             Command.ProjectId,
             TestContext.Current.CancellationToken)
             .Returns(project);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.FirstError.Should().Be(WikiPageErrors.NotFound);
@@ -61,13 +65,15 @@ public class MoveWikiPageTests
         var project = new Project("Project", "Description", Guid.NewGuid());
         var wikiPage = new WikiPage(project.Id, "WikiPage", "Content", Guid.NewGuid());
         project.AddWikiPage(wikiPage);
-        _projectsRepository.GetByIdWithWikiPagesAsync(
+        _projectRepository.GetByIdWithWikiPagesAsync(
             Command.ProjectId,
             TestContext.Current.CancellationToken)
             .Returns(project);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.FirstError.Should().Be(WikiPageErrors.NotFound);
@@ -82,7 +88,7 @@ public class MoveWikiPageTests
         var wikiPage2 = new WikiPage(project.Id, "WikiPage 2", "Content", Guid.NewGuid());
         project.AddWikiPage(wikiPage1);
         project.AddWikiPage(wikiPage2);
-        _projectsRepository.GetByIdWithWikiPagesAsync(
+        _projectRepository.GetByIdWithWikiPagesAsync(
             Command.ProjectId,
             TestContext.Current.CancellationToken)
             .Returns(project);
@@ -97,7 +103,7 @@ public class MoveWikiPageTests
         project.WikiPages.Should().HaveCount(2);
         wikiPage1.Position.Should().Be(1);
         wikiPage2.Position.Should().Be(0);
-        _projectsRepository.Received().Update(project);
+        _projectRepository.Received().Update(project);
     }
 
     [Fact]
@@ -109,14 +115,18 @@ public class MoveWikiPageTests
         var wikiPage = new WikiPage(project.Id, "WikiPage", "Content", Guid.NewGuid());
         project.AddWikiPage(parentWikiPage);
         project.AddWikiPage(wikiPage);
-        _projectsRepository.GetByIdWithWikiPagesAsync(
+        _projectRepository.GetByIdWithWikiPagesAsync(
             Command.ProjectId,
             TestContext.Current.CancellationToken)
             .Returns(project);
 
         // Act
         var result = await _handler.Handle(
-            Command with { WikiPageId = wikiPage.Id, TargetParentId = parentWikiPage.Id },
+            Command with
+            {
+                WikiPageId = wikiPage.Id,
+                TargetParentId = parentWikiPage.Id,
+            },
             TestContext.Current.CancellationToken);
 
         // Assert
@@ -125,7 +135,7 @@ public class MoveWikiPageTests
         project.WikiPages.First().Should().Be(parentWikiPage);
         parentWikiPage.SubWikiPages.Should().HaveCount(1);
         parentWikiPage.SubWikiPages.First().Should().Be(wikiPage);
-        _projectsRepository.Received().Update(project);
+        _projectRepository.Received().Update(project);
     }
 
     [Fact]
@@ -135,7 +145,7 @@ public class MoveWikiPageTests
         var project = new Project("Project", "Description", Guid.NewGuid());
         var wikiPage = new WikiPage(project.Id, "WikiPage", "Content", Guid.NewGuid());
         project.AddWikiPage(wikiPage);
-        _projectsRepository.GetByIdWithWikiPagesAsync(
+        _projectRepository.GetByIdWithWikiPagesAsync(
             Command.ProjectId,
             TestContext.Current.CancellationToken)
             .Returns(project);

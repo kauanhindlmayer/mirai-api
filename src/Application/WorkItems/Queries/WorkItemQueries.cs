@@ -60,7 +60,7 @@ internal static class WorkItemQueries
                     Title = wi.ParentWorkItem.Title,
                     Status = wi.ParentWorkItem.Status.ToString(),
                     Type = wi.ParentWorkItem.Type.ToString(),
-                    AssigneeId = wi.ParentWorkItem.AssigneeId,
+                    AssigneeId = wi.ParentWorkItem.AssignedUserId,
                 },
             ChildWorkItems = wi.ChildWorkItems.Select(cwi => new RelatedWorkItemResponse
             {
@@ -69,14 +69,15 @@ internal static class WorkItemQueries
                 Title = cwi.Title,
                 Status = cwi.Status.ToString(),
                 Type = cwi.Type.ToString(),
-                AssigneeId = cwi.AssigneeId,
+                AssigneeId = cwi.AssignedUserId,
             }),
-            AssigneeId = wi.AssigneeId,
+            AssigneeId = wi.AssignedUserId,
             Comments = wi.Comments.Select(comment => new WorkItemCommentResponse
             {
                 Id = comment.Id,
                 Author = new AuthorResponse
                 {
+                    Id = comment.Author.Id,
                     Name = comment.Author.FullName,
                     ImageUrl = comment.Author.ImageUrl,
                 },
@@ -104,6 +105,7 @@ internal static class WorkItemQueries
             Code = wi.Code,
             Title = wi.Title,
             Description = wi.Description,
+            AcceptanceCriteria = wi.AcceptanceCriteria,
             Type = wi.Type.ToString(),
             CreatedAtUtc = wi.CreatedAtUtc,
             UpdatedAtUtc = wi.UpdatedAtUtc,

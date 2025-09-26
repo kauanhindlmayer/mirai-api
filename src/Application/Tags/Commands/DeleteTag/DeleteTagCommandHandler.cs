@@ -8,14 +8,14 @@ namespace Application.Tags.Commands.DeleteTag;
 internal sealed class DeleteTagCommandHandler
     : IRequestHandler<DeleteTagCommand, ErrorOr<Success>>
 {
-    private readonly IProjectsRepository _projectsRepository;
-    private readonly ITagsRepository _tagsRepository;
+    private readonly IProjectRepository _projectRepository;
+    private readonly ITagRepository _tagsRepository;
 
     public DeleteTagCommandHandler(
-        IProjectsRepository projectsRepository,
-        ITagsRepository tagsRepository)
+        IProjectRepository projectRepository,
+        ITagRepository tagsRepository)
     {
-        _projectsRepository = projectsRepository;
+        _projectRepository = projectRepository;
         _tagsRepository = tagsRepository;
     }
 
@@ -23,28 +23,23 @@ internal sealed class DeleteTagCommandHandler
         DeleteTagCommand command,
         CancellationToken cancellationToken)
     {
-        var project = await _projectsRepository.GetByIdWithTagsAsync(
+        var project = await _projectRepository.GetByIdWithTagsAsync(
             command.ProjectId,
             cancellationToken);
+
         if (project is null)
         {
             return ProjectErrors.NotFound;
         }
 
-        var tag = project.Tags.FirstOrDefault(t => t.Id == command.TagId);
-        if (tag is null)
-        {
-            return TagErrors.NotFound;
-        }
-
-        var result = project.RemoveTag(tag);
+        var result = project.RemoveTag(command.TagId);
         if (result.IsError)
         {
             return result.Errors;
         }
 
-        _tagsRepository.Remove(tag);
-        _projectsRepository.Update(project);
+        _tagsRepository.Remove(result.Value);
+        _projectRepository.Update(project);
 
         return Result.Success;
     }

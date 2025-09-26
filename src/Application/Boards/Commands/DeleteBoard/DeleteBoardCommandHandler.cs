@@ -7,18 +7,18 @@ namespace Application.Boards.Commands.DeleteBoard;
 internal sealed class DeleteBoardCommandHandler
     : IRequestHandler<DeleteBoardCommand, ErrorOr<Success>>
 {
-    private readonly IBoardsRepository _boardsRepository;
+    private readonly IBoardRepository _boardRepository;
 
-    public DeleteBoardCommandHandler(IBoardsRepository boardsRepository)
+    public DeleteBoardCommandHandler(IBoardRepository boardRepository)
     {
-        _boardsRepository = boardsRepository;
+        _boardRepository = boardRepository;
     }
 
     public async Task<ErrorOr<Success>> Handle(
         DeleteBoardCommand command,
         CancellationToken cancellationToken)
     {
-        var board = await _boardsRepository.GetByIdAsync(
+        var board = await _boardRepository.GetByIdAsync(
             command.BoardId,
             cancellationToken);
 
@@ -27,7 +27,7 @@ internal sealed class DeleteBoardCommandHandler
             return BoardErrors.NotFound;
         }
 
-        _boardsRepository.Remove(board);
+        _boardRepository.Remove(board);
 
         return Result.Success;
     }

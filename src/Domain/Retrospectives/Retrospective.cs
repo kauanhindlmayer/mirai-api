@@ -1,3 +1,4 @@
+using System.Collections;
 using Domain.Retrospectives.Enums;
 using Domain.Shared;
 using Domain.Teams;
@@ -18,19 +19,35 @@ public sealed class Retrospective : AggregateRoot
 
     public Retrospective(
         string title,
-        int? maxVotesPerUser,
-        RetrospectiveTemplate? template,
-        Guid teamId)
+        Guid teamId,
+        int? maxVotesPerUser = null,
+        RetrospectiveTemplate? template = null)
     {
         Title = title;
-        MaxVotesPerUser = maxVotesPerUser.GetValueOrDefault(DefaultVotesPerUserLimit);
-        Template = template ?? RetrospectiveTemplate.Classic;
         TeamId = teamId;
+        MaxVotesPerUser = maxVotesPerUser ?? DefaultVotesPerUserLimit;
+        Template = template ?? RetrospectiveTemplate.Classic;
         InitializeDefaultColumns();
     }
 
     private Retrospective()
     {
+    }
+
+    public void Update(
+        string? title = null,
+        int? maxVotesPerUser = null,
+        RetrospectiveTemplate? template = null)
+    {
+        Title = title ?? Title;
+        MaxVotesPerUser = maxVotesPerUser ?? MaxVotesPerUser;
+
+        if (template.HasValue && template.Value != Template)
+        {
+            Template = template.Value;
+            Columns.Clear();
+            InitializeDefaultColumns();
+        }
     }
 
     public ErrorOr<Success> AddColumn(RetrospectiveColumn column)
@@ -50,20 +67,26 @@ public sealed class Retrospective : AggregateRoot
         return Result.Success;
     }
 
-    public void Update(
-        string? title = null,
-        int? maxVotesPerUser = null,
-        RetrospectiveTemplate? template = null)
+    public ErrorOr<Success> AddItem(RetrospectiveItem item)
     {
-        Title = title ?? Title;
-        MaxVotesPerUser = maxVotesPerUser ?? MaxVotesPerUser;
-
-        if (template.HasValue && template.Value != Template)
+        var column = Columns.FirstOrDefault(c => c.Id == item.RetrospectiveColumnId);
+        if (column is null)
         {
-            Template = template.Value;
-            Columns.Clear();
-            InitializeDefaultColumns();
+            return RetrospectiveErrors.ColumnNotFound;
         }
+
+        return column.AddItem(item);
+    }
+
+    public ErrorOr<Success> RemoveItem(Guid columnId, Guid itemId)
+    {
+        var column = Columns.FirstOrDefault(c => c.Id == columnId);
+        if (column is null)
+        {
+            return RetrospectiveErrors.ColumnNotFound;
+        }
+
+        return column.RemoveItem(itemId);
     }
 
     private void InitializeDefaultColumns()

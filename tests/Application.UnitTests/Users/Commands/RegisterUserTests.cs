@@ -7,21 +7,21 @@ namespace Application.UnitTests.Users.Commands;
 public class RegisterUserTests
 {
     private static readonly RegisterUserCommand Command = new(
-        "john.doe@email.com",
+        "john.doe@mirai.com",
         "password",
         "John",
         "Doe");
 
     private readonly RegisterUserCommandHandler _handler;
-    private readonly IUsersRepository _mockUsersRepository;
+    private readonly IUserRepository _mockUserRepository;
     private readonly IAuthenticationService _mockAuthenticationService;
 
     public RegisterUserTests()
     {
-        _mockUsersRepository = Substitute.For<IUsersRepository>();
+        _mockUserRepository = Substitute.For<IUserRepository>();
         _mockAuthenticationService = Substitute.For<IAuthenticationService>();
         _handler = new RegisterUserCommandHandler(
-            _mockUsersRepository,
+            _mockUserRepository,
             _mockAuthenticationService);
     }
 
@@ -29,11 +29,15 @@ public class RegisterUserTests
     public async Task Handle_WhenUserExists_ReturnsAlreadyExistsError()
     {
         // Arrange
-        _mockUsersRepository.ExistsByEmailAsync(Command.Email, TestContext.Current.CancellationToken)
+        _mockUserRepository.ExistsByEmailAsync(
+            Command.Email,
+            TestContext.Current.CancellationToken)
             .Returns(true);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -44,7 +48,9 @@ public class RegisterUserTests
     public async Task Handle_WhenUserDoesNotExist_ReturnsUserId()
     {
         // Arrange
-        _mockUsersRepository.ExistsByEmailAsync(Command.Email, TestContext.Current.CancellationToken)
+        _mockUserRepository.ExistsByEmailAsync(
+            Command.Email,
+            TestContext.Current.CancellationToken)
             .Returns(false);
         _mockAuthenticationService.RegisterAsync(
             Arg.Any<User>(),
@@ -53,7 +59,9 @@ public class RegisterUserTests
             .Returns(Guid.NewGuid().ToString());
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeFalse();

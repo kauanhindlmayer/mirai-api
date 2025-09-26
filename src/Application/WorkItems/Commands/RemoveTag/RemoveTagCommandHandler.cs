@@ -7,19 +7,19 @@ namespace Application.WorkItems.Commands.RemoveTag;
 internal sealed class RemoveTagCommandHandler
     : IRequestHandler<RemoveTagCommand, ErrorOr<Success>>
 {
-    private readonly IWorkItemsRepository _workItemsRepository;
+    private readonly IWorkItemRepository _workItemRepository;
 
     public RemoveTagCommandHandler(
-        IWorkItemsRepository workItemsRepository)
+        IWorkItemRepository workItemRepository)
     {
-        _workItemsRepository = workItemsRepository;
+        _workItemRepository = workItemRepository;
     }
 
     public async Task<ErrorOr<Success>> Handle(
         RemoveTagCommand command,
         CancellationToken cancellationToken)
     {
-        var workItem = await _workItemsRepository.GetByIdWithTagsAsync(
+        var workItem = await _workItemRepository.GetByIdWithTagsAsync(
             command.WorkItemId,
             cancellationToken);
 
@@ -34,7 +34,7 @@ internal sealed class RemoveTagCommandHandler
             return result.Errors;
         }
 
-        _workItemsRepository.Update(workItem);
+        _workItemRepository.Update(workItem);
 
         return Result.Success;
     }

@@ -8,18 +8,18 @@ namespace Application.Retrospectives.Commands.CreateRetrospective;
 internal sealed class CreateRetrospectiveCommandHandler
     : IRequestHandler<CreateRetrospectiveCommand, ErrorOr<Guid>>
 {
-    private readonly ITeamsRepository _teamsRepository;
+    private readonly ITeamRepository _teamRepository;
 
-    public CreateRetrospectiveCommandHandler(ITeamsRepository teamsRepository)
+    public CreateRetrospectiveCommandHandler(ITeamRepository teamRepository)
     {
-        _teamsRepository = teamsRepository;
+        _teamRepository = teamRepository;
     }
 
     public async Task<ErrorOr<Guid>> Handle(
         CreateRetrospectiveCommand command,
         CancellationToken cancellationToken)
     {
-        var team = await _teamsRepository.GetByIdAsync(
+        var team = await _teamRepository.GetByIdAsync(
             command.TeamId,
             cancellationToken);
 
@@ -30,9 +30,9 @@ internal sealed class CreateRetrospectiveCommandHandler
 
         var retrospective = new Retrospective(
             command.Title,
+            command.TeamId,
             command.MaxVotesPerUser,
-            command.Template,
-            command.TeamId);
+            command.Template);
 
         var result = team.AddRetrospective(retrospective);
         if (result.IsError)
@@ -40,7 +40,7 @@ internal sealed class CreateRetrospectiveCommandHandler
             return result.Errors;
         }
 
-        _teamsRepository.Update(team);
+        _teamRepository.Update(team);
 
         return retrospective.Id;
     }

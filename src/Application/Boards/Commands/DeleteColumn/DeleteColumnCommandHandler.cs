@@ -7,18 +7,18 @@ namespace Application.Boards.Commands.DeleteColumn;
 internal sealed class DeleteColumnCommandHandler
     : IRequestHandler<DeleteColumnCommand, ErrorOr<Success>>
 {
-    private readonly IBoardsRepository _boardsRepository;
+    private readonly IBoardRepository _boardRepository;
 
-    public DeleteColumnCommandHandler(IBoardsRepository boardsRepository)
+    public DeleteColumnCommandHandler(IBoardRepository boardRepository)
     {
-        _boardsRepository = boardsRepository;
+        _boardRepository = boardRepository;
     }
 
     public async Task<ErrorOr<Success>> Handle(
         DeleteColumnCommand command,
         CancellationToken cancellationToken)
     {
-        var board = await _boardsRepository.GetByIdWithColumnsAsync(
+        var board = await _boardRepository.GetByIdWithColumnsAsync(
             command.BoardId,
             cancellationToken);
 
@@ -33,7 +33,7 @@ internal sealed class DeleteColumnCommandHandler
             return result.Errors;
         }
 
-        _boardsRepository.Update(board);
+        _boardRepository.Update(board);
 
         return Result.Success;
     }

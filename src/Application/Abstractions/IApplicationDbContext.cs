@@ -25,6 +25,7 @@ public interface IApplicationDbContext
     DbSet<Team> Teams { get; }
     DbSet<User> Users { get; }
     DbSet<WikiPage> WikiPages { get; }
+    DbSet<WikiPageView> WikiPageViews { get; }
     DbSet<WorkItem> WorkItems { get; }
     DbSet<Sprint> Sprints { get; }
     DbSet<Persona> Personas { get; }

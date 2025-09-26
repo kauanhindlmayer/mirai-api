@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
+using Presentation.Controllers.Projects;
 using Presentation.FunctionalTests.Infrastructure;
 using Presentation.FunctionalTests.Organizations;
 
@@ -25,7 +26,9 @@ public class CreateProjectTests : BaseFunctionalTest
             cancellationToken: TestContext.Current.CancellationToken);
         var organizationId = await createOrganizationResponse.Content.ReadFromJsonAsync<Guid>(
             cancellationToken: TestContext.Current.CancellationToken);
-        var createProjectRequest = ProjectRequestFactory.CreateCreateProjectRequest();
+        var createProjectRequest = new CreateProjectRequest(
+            "Project Name",
+            "Project Description");
 
         // Act
         var createProjectResponse = await _httpClient.PostAsJsonAsync(

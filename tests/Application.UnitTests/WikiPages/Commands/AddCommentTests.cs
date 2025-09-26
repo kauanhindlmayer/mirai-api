@@ -11,15 +11,15 @@ public class AddCommentTests
         "Content");
 
     private readonly AddCommentCommandHandler _handler;
-    private readonly IWikiPagesRepository _wikiPagesRepository;
+    private readonly IWikiPageRepository _wikiPageRepository;
     private readonly IUserContext _userContext;
 
     public AddCommentTests()
     {
-        _wikiPagesRepository = Substitute.For<IWikiPagesRepository>();
+        _wikiPageRepository = Substitute.For<IWikiPageRepository>();
         _userContext = Substitute.For<IUserContext>();
         _handler = new AddCommentCommandHandler(
-            _wikiPagesRepository,
+            _wikiPageRepository,
             _userContext);
     }
 
@@ -27,11 +27,15 @@ public class AddCommentTests
     public async Task Handle_WhenWikiPageDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _wikiPagesRepository.GetByIdAsync(Command.WikiPageId, TestContext.Current.CancellationToken)
+        _wikiPageRepository.GetByIdAsync(
+            Command.WikiPageId,
+            TestContext.Current.CancellationToken)
             .Returns(null as WikiPage);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -47,12 +51,16 @@ public class AddCommentTests
             "Title",
             "Content",
             Guid.NewGuid());
-        _wikiPagesRepository.GetByIdAsync(Command.WikiPageId, TestContext.Current.CancellationToken)
+        _wikiPageRepository.GetByIdAsync(
+            Command.WikiPageId,
+            TestContext.Current.CancellationToken)
             .Returns(wikiPage);
         _userContext.UserId.Returns(Guid.NewGuid());
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeFalse();

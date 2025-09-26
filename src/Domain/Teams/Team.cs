@@ -14,10 +14,10 @@ public sealed class Team : AggregateRoot
 {
     public Guid ProjectId { get; private set; }
     public Project Project { get; private set; } = null!;
-    public string Name { get; private set; } = string.Empty;
+    public string Name { get; private set; } = null!;
     public string? Description { get; private set; }
     public Board Board { get; private set; } = null!;
-    public ICollection<User> Members { get; private set; } = [];
+    public ICollection<User> Users { get; private set; } = [];
     public ICollection<Retrospective> Retrospectives { get; private set; } = [];
     public ICollection<Sprint> Sprints { get; private set; } = [];
     public ICollection<WorkItem> WorkItems { get; private set; } = [];
@@ -27,32 +27,40 @@ public sealed class Team : AggregateRoot
         ProjectId = projectId;
         Name = name;
         Description = description;
-        AddDomainEvent(new TeamCreatedDomainEvent(this));
+        RaiseDomainEvent(new TeamCreatedDomainEvent(this));
     }
 
     private Team()
     {
     }
 
-    public ErrorOr<Success> AddMember(User user)
+    public ErrorOr<Success> AddUser(User user)
     {
-        if (Members.Contains(user))
+        if (Users.Contains(user))
         {
-            return TeamErrors.MemberAlreadyExists;
+            return TeamErrors.UserAlreadyExists;
         }
 
-        Members.Add(user);
+        Users.Add(user);
+        RaiseDomainEvent(new UserAddedToTeamDomainEvent(this, user));
         return Result.Success;
     }
 
-    public ErrorOr<Success> RemoveMember(User user)
+    public ErrorOr<Success> RemoveUser(Guid userId)
     {
-        if (!Members.Contains(user))
+        var user = Users.FirstOrDefault(u => u.Id == userId);
+        if (user is null)
         {
-            return TeamErrors.MemberNotFound;
+            return TeamErrors.UserNotFound;
         }
 
-        Members.Remove(user);
+        if (WorkItems.Any(wi => wi.AssignedUserId == userId))
+        {
+            return TeamErrors.UserHasAssignedWorkItems;
+        }
+
+        Users.Remove(user);
+        RaiseDomainEvent(new UserRemovedFromTeamDomainEvent(this, user));
         return Result.Success;
     }
 
@@ -87,10 +95,5 @@ public sealed class Team : AggregateRoot
 
         Board = board;
         return Result.Success;
-    }
-
-    public void SetBoard(Board board)
-    {
-        Board = board;
     }
 }

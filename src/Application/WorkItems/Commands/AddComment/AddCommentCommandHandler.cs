@@ -8,14 +8,14 @@ namespace Application.WorkItems.Commands.AddComment;
 internal sealed class AddCommentCommandHandler
     : IRequestHandler<AddCommentCommand, ErrorOr<Guid>>
 {
-    private readonly IWorkItemsRepository _workItemsRepository;
+    private readonly IWorkItemRepository _workItemRepository;
     private readonly IUserContext _userContext;
 
     public AddCommentCommandHandler(
-        IWorkItemsRepository workItemsRepository,
+        IWorkItemRepository workItemRepository,
         IUserContext userContext)
     {
-        _workItemsRepository = workItemsRepository;
+        _workItemRepository = workItemRepository;
         _userContext = userContext;
     }
 
@@ -23,7 +23,7 @@ internal sealed class AddCommentCommandHandler
         AddCommentCommand command,
         CancellationToken cancellationToken)
     {
-        var workItem = await _workItemsRepository.GetByIdWithCommentsAsync(
+        var workItem = await _workItemRepository.GetByIdWithCommentsAsync(
             command.WorkItemId,
             cancellationToken);
 
@@ -38,7 +38,7 @@ internal sealed class AddCommentCommandHandler
             command.Content);
 
         workItem.AddComment(comment);
-        _workItemsRepository.Update(workItem);
+        _workItemRepository.Update(workItem);
 
         return comment.Id;
     }

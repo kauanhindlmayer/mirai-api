@@ -8,14 +8,14 @@ namespace Application.Users.Queries.LoginUser;
 internal sealed class LoginUserQueryHandler
     : IRequestHandler<LoginUserQuery, ErrorOr<AccessTokenResponse>>
 {
-    private readonly IUsersRepository _usersRepository;
+    private readonly IUserRepository _userRepository;
     private readonly IJwtService _jwtService;
 
     public LoginUserQueryHandler(
-        IUsersRepository usersRepository,
+        IUserRepository userRepository,
         IJwtService jwtService)
     {
-        _usersRepository = usersRepository;
+        _userRepository = userRepository;
         _jwtService = jwtService;
     }
 
@@ -23,7 +23,7 @@ internal sealed class LoginUserQueryHandler
         LoginUserQuery query,
         CancellationToken cancellationToken)
     {
-        var user = await _usersRepository.GetByEmailAsync(
+        var user = await _userRepository.GetByEmailAsync(
             query.Email,
             cancellationToken);
 

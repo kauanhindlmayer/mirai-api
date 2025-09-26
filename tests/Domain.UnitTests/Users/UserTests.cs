@@ -1,62 +1,67 @@
-using Domain.UnitTests.Infrastructure;
-
 namespace Domain.UnitTests.Users;
 
-public class UserTests : BaseTest
+public class UserTests
 {
     [Fact]
-    public void CreateUser_ShouldSetProperties()
+    public void Constructor_ShouldSetProperties()
     {
         // Act
-        var user = UserFactory.CreateUser();
+        var user = UserFactory.Create();
 
         // Assert
-        user.Email.Should().Be(UserFactory.Email);
-        user.FirstName.Should().Be(UserFactory.FirstName);
-        user.LastName.Should().Be(UserFactory.LastName);
-        user.FullName.Should().Be(UserFactory.FullName);
+        Assert.Equal(UserFactory.FirstName, user.FirstName);
+        Assert.Equal(UserFactory.LastName, user.LastName);
+        Assert.Equal(UserFactory.Email, user.Email);
+        Assert.Equal($"{UserFactory.FirstName} {UserFactory.LastName}", user.FullName);
+        Assert.Empty(user.IdentityId);
+        Assert.Null(user.ImageUrl);
+        Assert.Null(user.ImageFileId);
     }
 
     [Fact]
-    public void SetIdentityId_ShouldSetIdentityId()
+    public void SetIdentityId_ShouldUpdateIdentityId()
     {
         // Arrange
-        var user = UserFactory.CreateUser();
+        var user = UserFactory.Create();
+        var identityId = Guid.NewGuid().ToString();
 
         // Act
-        user.SetIdentityId(UserFactory.IdentityId);
+        user.SetIdentityId(identityId);
 
         // Assert
-        user.IdentityId.Should().Be(UserFactory.IdentityId);
+        Assert.Equal(identityId, user.IdentityId);
     }
 
     [Fact]
-    public void SetImageUrl_ShouldSetImageUrl()
+    public void SetImage_ShouldUpdateImageProperties()
     {
         // Arrange
-        var user = UserFactory.CreateUser();
+        var user = UserFactory.Create();
+        var imageUrl = "https://example.com/avatar.png";
+        var imageFileId = Guid.NewGuid();
 
         // Act
-        user.SetImage(UserFactory.ImageUrl, UserFactory.ImageFileId);
+        user.SetImage(imageUrl, imageFileId);
 
         // Assert
-        user.ImageUrl.Should().Be(UserFactory.ImageUrl);
+        Assert.Equal(imageUrl, user.ImageUrl);
+        Assert.Equal(imageFileId, user.ImageFileId);
     }
 
     [Fact]
-    public void UpdateProfile_ShouldUpdateProfile()
+    public void UpdateProfile_ShouldUpdateFirstAndLastName()
     {
         // Arrange
-        var user = UserFactory.CreateUser();
-        var firstName = "Jane";
-        var lastName = "Smith";
+        var user = UserFactory.Create();
+        var newFirstName = "Jane";
+        var newLastName = "Smith";
 
         // Act
-        user.UpdateProfile(firstName, lastName);
+        user.UpdateProfile(newFirstName, newLastName);
 
         // Assert
-        user.FirstName.Should().Be(firstName);
-        user.LastName.Should().Be(lastName);
-        user.FullName.Should().Be($"{firstName} {lastName}");
+        Assert.Equal(newFirstName, user.FirstName);
+        Assert.Equal(newLastName, user.LastName);
+        Assert.Equal($"{newFirstName} {newLastName}", user.FullName);
     }
 }

@@ -7,19 +7,19 @@ namespace Application.WorkItems.Commands.DeleteWorkItem;
 internal sealed class DeleteWorkItemCommandHandler
     : IRequestHandler<DeleteWorkItemCommand, ErrorOr<Success>>
 {
-    private readonly IWorkItemsRepository _workItemsRepository;
+    private readonly IWorkItemRepository _workItemRepository;
 
     public DeleteWorkItemCommandHandler(
-        IWorkItemsRepository workItemsRepository)
+        IWorkItemRepository workItemRepository)
     {
-        _workItemsRepository = workItemsRepository;
+        _workItemRepository = workItemRepository;
     }
 
     public async Task<ErrorOr<Success>> Handle(
         DeleteWorkItemCommand command,
         CancellationToken cancellationToken)
     {
-        var workItem = await _workItemsRepository.GetByIdAsync(
+        var workItem = await _workItemRepository.GetByIdAsync(
             command.WorkItemId,
             cancellationToken);
 
@@ -28,7 +28,7 @@ internal sealed class DeleteWorkItemCommandHandler
             return WorkItemErrors.NotFound;
         }
 
-        _workItemsRepository.Remove(workItem);
+        _workItemRepository.Remove(workItem);
 
         return Result.Success;
     }

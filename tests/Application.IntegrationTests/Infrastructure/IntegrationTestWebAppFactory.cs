@@ -10,7 +10,7 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
 {
     private readonly PostgreSqlContainer _dbContainer = new PostgreSqlBuilder()
         .WithImage("ankane/pgvector:latest")
-        .WithDatabase("postgres")
+        .WithDatabase("mirai-db")
         .WithUsername("postgres")
         .WithPassword("postgres")
         .Build();

@@ -3,38 +3,23 @@ using Domain.Retrospectives.Enums;
 
 namespace Domain.UnitTests.Retrospectives;
 
-public static class RetrospectiveFactory
+internal static class RetrospectiveFactory
 {
-    public static Retrospective CreateRetrospective(
+    public static readonly string Title = $"Retrospective {DateTime.Now:MMM dd, yyyy}";
+    public static readonly Guid TeamId = Guid.NewGuid();
+    public static readonly int MaxVotesPerUser = 5;
+    public static readonly RetrospectiveTemplate Template = RetrospectiveTemplate.Classic;
+
+    public static Retrospective Create(
         string? title = null,
         int? maxVotesPerUser = null,
         RetrospectiveTemplate? template = null,
         Guid? teamId = null)
     {
-        return new(
-            title ?? $"Retrospective {DateTime.Now:MMM dd, yyyy}",
-            maxVotesPerUser,
-            template,
-            teamId ?? Guid.NewGuid());
-    }
-
-    public static RetrospectiveColumn CreateColumn(
-        string title = "Column",
-        Guid? retrospectiveId = null)
-    {
-        return new(
-            title,
-            retrospectiveId ?? Guid.NewGuid());
-    }
-
-    public static RetrospectiveItem CreateItem(
-        string content = "Item",
-        Guid? columnId = null,
-        Guid? authorId = null)
-    {
-        return new(
-            content,
-            columnId ?? Guid.NewGuid(),
-            authorId ?? Guid.NewGuid());
+        return new Retrospective(
+            title ?? Title,
+            teamId ?? TeamId,
+            maxVotesPerUser ?? MaxVotesPerUser,
+            template ?? Template);
     }
 }

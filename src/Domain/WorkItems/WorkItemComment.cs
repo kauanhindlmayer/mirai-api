@@ -21,4 +21,9 @@ public sealed class WorkItemComment : Entity
     private WorkItemComment()
     {
     }
+
+    public void UpdateContent(string content)
+    {
+        Content = content;
+    }
 }

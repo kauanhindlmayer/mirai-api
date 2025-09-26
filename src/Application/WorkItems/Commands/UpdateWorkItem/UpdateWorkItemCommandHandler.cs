@@ -10,14 +10,14 @@ namespace Application.WorkItems.Commands.UpdateWorkItem;
 internal sealed class UpdateWorkItemCommandHandler
     : IRequestHandler<UpdateWorkItemCommand, ErrorOr<Guid>>
 {
-    private readonly IWorkItemsRepository _workItemsRepository;
+    private readonly IWorkItemRepository _workItemRepository;
     private readonly IEmbeddingGenerator<string, Embedding<float>> _embeddingGenerator;
 
     public UpdateWorkItemCommandHandler(
-        IWorkItemsRepository workItemsRepository,
+        IWorkItemRepository workItemRepository,
         [FromKeyedServices(ServiceKeys.Embedding)] IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator)
     {
-        _workItemsRepository = workItemsRepository;
+        _workItemRepository = workItemRepository;
         _embeddingGenerator = embeddingGenerator;
     }
 
@@ -25,7 +25,7 @@ internal sealed class UpdateWorkItemCommandHandler
         UpdateWorkItemCommand command,
         CancellationToken cancellationToken)
     {
-        var workItem = await _workItemsRepository.GetByIdAsync(
+        var workItem = await _workItemRepository.GetByIdAsync(
             command.WorkItemId,
             cancellationToken);
 
@@ -56,7 +56,7 @@ internal sealed class UpdateWorkItemCommandHandler
             workItem.SetSearchVector(embedding.Vector.ToArray());
         }
 
-        _workItemsRepository.Update(workItem);
+        _workItemRepository.Update(workItem);
 
         return workItem.Id;
     }

@@ -8,14 +8,14 @@ namespace Application.Retrospectives.Commands.CreateRetrospectiveItem;
 internal sealed class CreateRetrospectiveItemCommandHandler
     : IRequestHandler<CreateRetrospectiveItemCommand, ErrorOr<RetrospectiveItem>>
 {
-    private readonly IRetrospectivesRepository _retrospectivesRepository;
+    private readonly IRetrospectiveRepository _retrospectiveRepository;
     private readonly IUserContext _userContext;
 
     public CreateRetrospectiveItemCommandHandler(
-        IRetrospectivesRepository retrospectivesRepository,
+        IRetrospectiveRepository retrospectiveRepository,
         IUserContext userContext)
     {
-        _retrospectivesRepository = retrospectivesRepository;
+        _retrospectiveRepository = retrospectiveRepository;
         _userContext = userContext;
     }
 
@@ -23,7 +23,7 @@ internal sealed class CreateRetrospectiveItemCommandHandler
         CreateRetrospectiveItemCommand command,
         CancellationToken cancellationToken)
     {
-        var retrospective = await _retrospectivesRepository.GetByIdWithColumnsAsync(
+        var retrospective = await _retrospectiveRepository.GetByIdWithColumnsAsync(
             command.RetrospectiveId,
             cancellationToken);
 
@@ -32,24 +32,18 @@ internal sealed class CreateRetrospectiveItemCommandHandler
             return RetrospectiveErrors.NotFound;
         }
 
-        var column = retrospective.Columns.FirstOrDefault(c => c.Id == command.ColumnId);
-        if (column is null)
-        {
-            return RetrospectiveErrors.ColumnNotFound;
-        }
-
         var retrospectiveItem = new RetrospectiveItem(
             command.Content,
             command.ColumnId,
             _userContext.UserId);
 
-        var result = column.AddItem(retrospectiveItem);
+        var result = retrospective.AddItem(retrospectiveItem);
         if (result.IsError)
         {
             return result.Errors;
         }
 
-        _retrospectivesRepository.Update(retrospective);
+        _retrospectiveRepository.Update(retrospective);
 
         return retrospectiveItem;
     }

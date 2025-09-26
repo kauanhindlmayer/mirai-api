@@ -9,11 +9,13 @@ internal sealed class UpdateUserProfileCommandValidator : AbstractValidator<Upda
         RuleFor(x => x.FirstName)
             .NotEmpty()
             .MaximumLength(50)
-            .Matches("^[a-zA-Z]+$").WithMessage("First name can only contain letters.");
+            .Matches(@"^[\p{L}\p{M}\s'-]+$")
+            .WithMessage("First name can only contain letters, spaces, hyphens, and apostrophes.");
 
         RuleFor(x => x.LastName)
             .NotEmpty()
             .MaximumLength(100)
-            .Matches("^[a-zA-Z]+$").WithMessage("Last name can only contain letters.");
+            .Matches(@"^[\p{L}\p{M}\s'-]+$")
+            .WithMessage("Last name can only contain letters, spaces, hyphens, and apostrophes.");
     }
 }

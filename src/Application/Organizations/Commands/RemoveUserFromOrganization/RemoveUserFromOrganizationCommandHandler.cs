@@ -7,19 +7,19 @@ namespace Application.Organizations.Commands.RemoveUserFromOrganization;
 internal sealed class RemoveUserFromOrganizationCommandHandler
     : IRequestHandler<RemoveUserFromOrganizationCommand, ErrorOr<Success>>
 {
-    private readonly IOrganizationsRepository _organizationsRepository;
+    private readonly IOrganizationRepository _organizationRepository;
 
     public RemoveUserFromOrganizationCommandHandler(
-        IOrganizationsRepository organizationsRepository)
+        IOrganizationRepository organizationRepository)
     {
-        _organizationsRepository = organizationsRepository;
+        _organizationRepository = organizationRepository;
     }
 
     public async Task<ErrorOr<Success>> Handle(
         RemoveUserFromOrganizationCommand command,
         CancellationToken cancellationToken)
     {
-        var organization = await _organizationsRepository.GetByIdWithProjectsAndUsersAsync(
+        var organization = await _organizationRepository.GetByIdWithProjectsAndUsersAsync(
             command.OrganizationId,
             cancellationToken);
 
@@ -34,7 +34,7 @@ internal sealed class RemoveUserFromOrganizationCommandHandler
             return result.Errors;
         }
 
-        _organizationsRepository.Update(organization);
+        _organizationRepository.Update(organization);
 
         return Result.Success;
     }

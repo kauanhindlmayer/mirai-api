@@ -47,7 +47,7 @@ internal sealed class WorkItemConfigurations :
             .HasColumnType("vector")
             .IsRequired();
 
-        builder.Property(wi => wi.AssigneeId);
+        builder.Property(wi => wi.AssignedUserId);
 
         builder.Property(wi => wi.ProjectId)
             .IsRequired();
@@ -55,9 +55,9 @@ internal sealed class WorkItemConfigurations :
         builder.Property(wi => wi.AssignedTeamId)
             .IsRequired(false);
 
-        builder.HasOne(wi => wi.Assignee)
+        builder.HasOne(wi => wi.AssignedUser)
             .WithMany(u => u.WorkItems)
-            .HasForeignKey(wi => wi.AssigneeId);
+            .HasForeignKey(wi => wi.AssignedUserId);
 
         builder.HasOne(wi => wi.Project)
             .WithMany(wi => wi.WorkItems)
@@ -88,6 +88,13 @@ internal sealed class WorkItemConfigurations :
         builder.HasOne(wi => wi.Sprint)
             .WithMany(s => s.WorkItems)
             .HasForeignKey(wi => wi.SprintId);
+
+        builder.HasIndex(wi => wi.AssignedUserId);
+        builder.HasIndex(wi => wi.AssignedTeamId);
+        builder.HasIndex(wi => wi.SprintId);
+        builder.HasIndex(wi => wi.ParentWorkItemId);
+        builder.HasIndex(wi => wi.Status);
+        builder.HasIndex(wi => wi.Type);
     }
 
     public void Configure(EntityTypeBuilder<WorkItemComment> builder)

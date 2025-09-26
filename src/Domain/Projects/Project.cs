@@ -30,7 +30,7 @@ public sealed class Project : AggregateRoot
         Name = name;
         Description = description;
         OrganizationId = organizationId;
-        AddDomainEvent(new ProjectCreatedDomainEvent(this));
+        RaiseDomainEvent(new ProjectCreatedDomainEvent(this));
     }
 
     private Project()
@@ -56,7 +56,7 @@ public sealed class Project : AggregateRoot
         }
 
         Users.Add(user);
-        AddDomainEvent(new UserAddedToProjectDomainEvent(this, user));
+        RaiseDomainEvent(new UserAddedToProjectDomainEvent(this, user));
         return Result.Success;
     }
 
@@ -68,18 +68,18 @@ public sealed class Project : AggregateRoot
             return UserErrors.NotFound;
         }
 
-        if (WorkItems.Any(wi => wi.AssigneeId == userId))
+        if (WorkItems.Any(wi => wi.AssignedUserId == userId))
         {
             return ProjectErrors.UserHasAssignedWorkItems;
         }
 
-        if (Teams.Any(t => t.Members.Any(m => m.Id == userId)))
+        if (Teams.Any(t => t.Users.Any(m => m.Id == userId)))
         {
             return ProjectErrors.UserIsInTeams;
         }
 
         Users.Remove(user);
-        AddDomainEvent(new UserRemovedFromProjectDomainEvent(this, user));
+        RaiseDomainEvent(new UserRemovedFromProjectDomainEvent(this, user));
         return Result.Success;
     }
 
@@ -183,15 +183,21 @@ public sealed class Project : AggregateRoot
         return Result.Success;
     }
 
-    public ErrorOr<Success> RemoveTag(Tag tag)
+    public ErrorOr<Tag> RemoveTag(Guid tagId)
     {
+        var tag = Tags.FirstOrDefault(t => t.Id == tagId);
+        if (tag is null)
+        {
+            return TagErrors.NotFound;
+        }
+
         if (tag.WorkItems.Count > 0)
         {
             return TagErrors.TagHasWorkItems;
         }
 
         Tags.Remove(tag);
-        return Result.Success;
+        return tag;
     }
 
     public ErrorOr<Success> AddPersona(Persona persona)
@@ -205,7 +211,7 @@ public sealed class Project : AggregateRoot
         return Result.Success;
     }
 
-    public ErrorOr<Success> RemovePersona(Guid personaId)
+    public ErrorOr<Persona> RemovePersona(Guid personaId)
     {
         var persona = Personas.FirstOrDefault(p => p.Id == personaId);
         if (persona is null)
@@ -214,7 +220,7 @@ public sealed class Project : AggregateRoot
         }
 
         Personas.Remove(persona);
-        return Result.Success;
+        return persona;
     }
 
     public void SetOrganization(Organization organization)

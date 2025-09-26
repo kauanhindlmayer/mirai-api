@@ -11,23 +11,27 @@ public class UpdateWikiPageTests
         "Content");
 
     private readonly UpdateWikiPageCommandHandler _handler;
-    private readonly IWikiPagesRepository _wikiPagesRepository;
+    private readonly IWikiPageRepository _wikiPageRepository;
 
     public UpdateWikiPageTests()
     {
-        _wikiPagesRepository = Substitute.For<IWikiPagesRepository>();
-        _handler = new UpdateWikiPageCommandHandler(_wikiPagesRepository);
+        _wikiPageRepository = Substitute.For<IWikiPageRepository>();
+        _handler = new UpdateWikiPageCommandHandler(_wikiPageRepository);
     }
 
     [Fact]
     public async Task Handle_WhenWikiPageDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _wikiPagesRepository.GetByIdAsync(Command.WikiPageId, TestContext.Current.CancellationToken)
+        _wikiPageRepository.GetByIdAsync(
+            Command.WikiPageId,
+            TestContext.Current.CancellationToken)
             .Returns(null as WikiPage);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -39,11 +43,15 @@ public class UpdateWikiPageTests
     {
         // Arrange
         var wikiPage = new WikiPage(Guid.NewGuid(), "Title", "Content", Guid.NewGuid());
-        _wikiPagesRepository.GetByIdAsync(Command.WikiPageId, TestContext.Current.CancellationToken)
+        _wikiPageRepository.GetByIdAsync(
+            Command.WikiPageId,
+            TestContext.Current.CancellationToken)
             .Returns(wikiPage);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeFalse();

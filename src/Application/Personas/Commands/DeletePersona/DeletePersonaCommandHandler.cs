@@ -7,18 +7,19 @@ namespace Application.Personas.Commands.DeletePersona;
 internal sealed class DeletePersonaCommandHandler
     : IRequestHandler<DeletePersonaCommand, ErrorOr<Success>>
 {
-    private readonly IProjectsRepository _projectsRepository;
+    private readonly IProjectRepository _projectRepository;
 
-    public DeletePersonaCommandHandler(IProjectsRepository projectsRepository)
+    public DeletePersonaCommandHandler(
+        IProjectRepository projectRepository)
     {
-        _projectsRepository = projectsRepository;
+        _projectRepository = projectRepository;
     }
 
     public async Task<ErrorOr<Success>> Handle(
         DeletePersonaCommand command,
         CancellationToken cancellationToken)
     {
-        var project = await _projectsRepository.GetByIdWithPersonasAsync(
+        var project = await _projectRepository.GetByIdWithPersonasAsync(
             command.ProjectId,
             cancellationToken);
 
@@ -33,7 +34,7 @@ internal sealed class DeletePersonaCommandHandler
             return result.Errors;
         }
 
-        _projectsRepository.Update(project);
+        _projectRepository.Update(project);
 
         return Result.Success;
     }

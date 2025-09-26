@@ -7,19 +7,19 @@ namespace Application.WikiPages.Commands.DeleteWikiPage;
 internal sealed class DeleteWikiPageCommandHandler
     : IRequestHandler<DeleteWikiPageCommand, ErrorOr<Success>>
 {
-    private readonly IWikiPagesRepository _wikiPagesRepository;
+    private readonly IWikiPageRepository _wikiPageRepository;
 
     public DeleteWikiPageCommandHandler(
-        IWikiPagesRepository wikiPagesRepository)
+        IWikiPageRepository wikiPageRepository)
     {
-        _wikiPagesRepository = wikiPagesRepository;
+        _wikiPageRepository = wikiPageRepository;
     }
 
     public async Task<ErrorOr<Success>> Handle(
         DeleteWikiPageCommand command,
         CancellationToken cancellationToken)
     {
-        var wikiPage = await _wikiPagesRepository.GetByIdWithSubWikiPagesAsync(
+        var wikiPage = await _wikiPageRepository.GetByIdWithSubWikiPagesAsync(
             command.WikiPageId,
             cancellationToken);
 
@@ -33,7 +33,7 @@ internal sealed class DeleteWikiPageCommandHandler
             return WikiPageErrors.HasSubWikiPages;
         }
 
-        _wikiPagesRepository.Remove(wikiPage);
+        _wikiPageRepository.Remove(wikiPage);
 
         return Result.Success;
     }

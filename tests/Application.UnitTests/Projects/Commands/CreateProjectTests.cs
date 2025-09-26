@@ -12,23 +12,27 @@ public class CreateProjectTests
         Guid.NewGuid());
 
     private readonly CreateProjectCommandHandler _handler;
-    private readonly IOrganizationsRepository _mockOrganizationsRepository;
+    private readonly IOrganizationRepository _mockOrganizationRepository;
 
     public CreateProjectTests()
     {
-        _mockOrganizationsRepository = Substitute.For<IOrganizationsRepository>();
-        _handler = new CreateProjectCommandHandler(_mockOrganizationsRepository);
+        _mockOrganizationRepository = Substitute.For<IOrganizationRepository>();
+        _handler = new CreateProjectCommandHandler(_mockOrganizationRepository);
     }
 
     [Fact]
     public async Task Handle_WhenOrganizationDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _mockOrganizationsRepository.GetByIdWithProjectsAsync(Command.OrganizationId, TestContext.Current.CancellationToken)
+        _mockOrganizationRepository.GetByIdWithProjectsAsync(
+            Command.OrganizationId,
+            TestContext.Current.CancellationToken)
             .Returns(null as Organization);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().BeOfType<ErrorOr<Guid>>();
@@ -40,11 +44,15 @@ public class CreateProjectTests
     {
         // Arrange
         var organization = new Organization("Test Organization", "Test Description");
-        _mockOrganizationsRepository.GetByIdWithProjectsAsync(Command.OrganizationId, TestContext.Current.CancellationToken)
+        _mockOrganizationRepository.GetByIdWithProjectsAsync(
+            Command.OrganizationId,
+            TestContext.Current.CancellationToken)
             .Returns(organization);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().BeOfType<ErrorOr<Guid>>();
@@ -58,11 +66,15 @@ public class CreateProjectTests
         var organization = new Organization("Test Organization", "Test Description");
         var project = new Project("Test Project", "Test Description", organization.Id);
         organization.AddProject(project);
-        _mockOrganizationsRepository.GetByIdWithProjectsAsync(Command.OrganizationId, TestContext.Current.CancellationToken)
+        _mockOrganizationRepository.GetByIdWithProjectsAsync(
+            Command.OrganizationId,
+            TestContext.Current.CancellationToken)
             .Returns(organization);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().BeOfType<ErrorOr<Guid>>();

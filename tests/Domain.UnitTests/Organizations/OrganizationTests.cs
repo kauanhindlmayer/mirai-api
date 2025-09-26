@@ -14,7 +14,7 @@ public class OrganizationTests : BaseTest
     public void CreateOrganization_ShouldRaiseOrganizationCreatedDomainEvent()
     {
         // Act
-        var organization = OrganizationFactory.CreateOrganization();
+        var organization = OrganizationFactory.Create();
 
         // Assert
         var domainEvent = AssertDomainEventWasPublished<OrganizationCreatedDomainEvent>(organization);
@@ -25,7 +25,7 @@ public class OrganizationTests : BaseTest
     public void CreateOrganization_ShouldSetProperties()
     {
         // Act
-        var organization = OrganizationFactory.CreateOrganization();
+        var organization = OrganizationFactory.Create();
 
         // Assert
         organization.Name.Should().Be(OrganizationFactory.Name);
@@ -36,7 +36,7 @@ public class OrganizationTests : BaseTest
     public void UpdateOrganization_ShouldRaiseOrganizationUpdatedDomainEvent()
     {
         // Arrange
-        var organization = OrganizationFactory.CreateOrganization();
+        var organization = OrganizationFactory.Create();
 
         // Act
         organization.Update("New Name", "New Description");
@@ -50,21 +50,23 @@ public class OrganizationTests : BaseTest
     public void UpdateOrganization_ShouldUpdateProperties()
     {
         // Arrange
-        var organization = OrganizationFactory.CreateOrganization();
+        var organization = OrganizationFactory.Create();
+        var newName = "New Name";
+        var newDescription = "New Description";
 
         // Act
-        organization.Update("New Name", "New Description");
+        organization.Update(newName, newDescription);
 
         // Assert
-        organization.Name.Should().Be("New Name");
-        organization.Description.Should().Be("New Description");
+        organization.Name.Should().Be(newName);
+        organization.Description.Should().Be(newDescription);
     }
 
     [Fact]
     public void DeleteOrganization_ShouldRaiseOrganizationDeletedDomainEvent()
     {
         // Arrange
-        var organization = OrganizationFactory.CreateOrganization();
+        var organization = OrganizationFactory.Create();
 
         // Act
         organization.Delete();
@@ -78,8 +80,8 @@ public class OrganizationTests : BaseTest
     public void AddProject_WhenProjectWithSameNameAlreadyExists_ShouldReturnError()
     {
         // Arrange
-        var organization = OrganizationFactory.CreateOrganization();
-        var project = ProjectFactory.CreateProject();
+        var organization = OrganizationFactory.Create();
+        var project = ProjectFactory.Create();
         organization.AddProject(project);
 
         // Act
@@ -95,8 +97,8 @@ public class OrganizationTests : BaseTest
     public void AddProject_WhenProjectWithSameNameDoesNotExists_ShouldAddProject()
     {
         // Arrange
-        var organization = OrganizationFactory.CreateOrganization();
-        var project = ProjectFactory.CreateProject();
+        var organization = OrganizationFactory.Create();
+        var project = ProjectFactory.Create();
 
         // Act
         var result = organization.AddProject(project);
@@ -111,11 +113,11 @@ public class OrganizationTests : BaseTest
     public void RemoveProject_WhenProjectDoesNotExists_ShouldReturnError()
     {
         // Arrange
-        var organization = OrganizationFactory.CreateOrganization();
-        var project = ProjectFactory.CreateProject();
+        var organization = OrganizationFactory.Create();
+        var project = ProjectFactory.Create();
 
         // Act
-        var result = organization.RemoveProject(project);
+        var result = organization.RemoveProject(project.Id);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -127,12 +129,12 @@ public class OrganizationTests : BaseTest
     public void RemoveProject_WhenProjectExists_ShouldRemoveProject()
     {
         // Arrange
-        var organization = OrganizationFactory.CreateOrganization();
-        var project = ProjectFactory.CreateProject();
+        var organization = OrganizationFactory.Create();
+        var project = ProjectFactory.Create();
         organization.AddProject(project);
 
         // Act
-        var result = organization.RemoveProject(project);
+        var result = organization.RemoveProject(project.Id);
 
         // Assert
         result.IsError.Should().BeFalse();
@@ -143,8 +145,8 @@ public class OrganizationTests : BaseTest
     public void AddUser_WhenUserDoesNotExist_ShouldAddUser()
     {
         // Arrange
-        var organization = OrganizationFactory.CreateOrganization();
-        var user = UserFactory.CreateUser();
+        var organization = OrganizationFactory.Create();
+        var user = UserFactory.Create();
 
         // Act
         var result = organization.AddUser(user);
@@ -159,8 +161,8 @@ public class OrganizationTests : BaseTest
     public void AddUser_WhenUserDoesNotExist_ShouldRaiseUserAddedToOrganizationDomainEvent()
     {
         // Arrange
-        var organization = OrganizationFactory.CreateOrganization();
-        var user = UserFactory.CreateUser();
+        var organization = OrganizationFactory.Create();
+        var user = UserFactory.Create();
 
         // Act
         organization.AddUser(user);
@@ -175,8 +177,8 @@ public class OrganizationTests : BaseTest
     public void AddUser_WhenUserAlreadyExists_ShouldReturnError()
     {
         // Arrange
-        var organization = OrganizationFactory.CreateOrganization();
-        var user = UserFactory.CreateUser();
+        var organization = OrganizationFactory.Create();
+        var user = UserFactory.Create();
         organization.AddUser(user);
 
         // Act
@@ -192,7 +194,7 @@ public class OrganizationTests : BaseTest
     public void RemoveUser_WhenUserDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        var organization = OrganizationFactory.CreateOrganization();
+        var organization = OrganizationFactory.Create();
         var userId = Guid.NewGuid();
 
         // Act
@@ -207,8 +209,8 @@ public class OrganizationTests : BaseTest
     public void RemoveUser_WhenUserExists_ShouldRemoveUser()
     {
         // Arrange
-        var organization = OrganizationFactory.CreateOrganization();
-        var user = UserFactory.CreateUser();
+        var organization = OrganizationFactory.Create();
+        var user = UserFactory.Create();
         organization.AddUser(user);
 
         // Act
@@ -223,8 +225,8 @@ public class OrganizationTests : BaseTest
     public void RemoveUser_WhenUserExists_ShouldRaiseUserRemovedFromOrganizationDomainEvent()
     {
         // Arrange
-        var organization = OrganizationFactory.CreateOrganization();
-        var user = UserFactory.CreateUser();
+        var organization = OrganizationFactory.Create();
+        var user = UserFactory.Create();
         organization.AddUser(user);
 
         // Act
@@ -240,9 +242,9 @@ public class OrganizationTests : BaseTest
     public void RemoveUser_WhenUserHasProjects_ShouldReturnError()
     {
         // Arrange
-        var organization = OrganizationFactory.CreateOrganization();
-        var user = UserFactory.CreateUser();
-        var project = ProjectFactory.CreateProject();
+        var organization = OrganizationFactory.Create();
+        var user = UserFactory.Create();
+        var project = ProjectFactory.Create();
         organization.AddUser(user);
         organization.AddProject(project);
         project.SetOrganization(organization);

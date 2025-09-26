@@ -12,6 +12,10 @@ public static class WorkItemErrors
         code: "WorkItem.CommentNotFound",
         description: "Work Item Comment not found.");
 
+    public static readonly Error CommentNotOwned = Error.Unauthorized(
+        code: "WorkItem.CommentNotOwned",
+        description: "You are not authorized to update this comment.");
+
     public static readonly Error AssigneeNotFound = Error.NotFound(
         code: "WorkItem.AssigneeNotFound",
         description: "Assignee not found.");

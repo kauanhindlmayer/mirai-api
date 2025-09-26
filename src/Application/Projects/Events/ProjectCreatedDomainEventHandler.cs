@@ -13,27 +13,27 @@ namespace Application.Projects.Events;
 internal sealed class ProjectCreatedDomainEventHandler
     : INotificationHandler<ProjectCreatedDomainEvent>
 {
-    private readonly ITeamsRepository _teamsRepository;
-    private readonly IWikiPagesRepository _wikiPagesRepository;
+    private readonly ITeamRepository _teamRepository;
+    private readonly IWikiPageRepository _wikiPageRepository;
     private readonly IUserContext _userContext;
-    private readonly ISprintsRepository _sprintsRepository;
+    private readonly ISprintRepository _sprintRepository;
     private readonly IDateTimeProvider _dateTimeProvider;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<ProjectCreatedDomainEventHandler> _logger;
 
     public ProjectCreatedDomainEventHandler(
-        ITeamsRepository teamsRepository,
-        IWikiPagesRepository wikiPagesRepository,
+        ITeamRepository teamRepository,
+        IWikiPageRepository wikiPageRepository,
         IUserContext userContext,
-        ISprintsRepository sprintsRepository,
+        ISprintRepository sprintRepository,
         IDateTimeProvider dateTimeProvider,
         IUnitOfWork unitOfWork,
         ILogger<ProjectCreatedDomainEventHandler> logger)
     {
-        _teamsRepository = teamsRepository;
-        _wikiPagesRepository = wikiPagesRepository;
+        _teamRepository = teamRepository;
+        _wikiPageRepository = wikiPageRepository;
         _userContext = userContext;
-        _sprintsRepository = sprintsRepository;
+        _sprintRepository = sprintRepository;
         _dateTimeProvider = dateTimeProvider;
         _unitOfWork = unitOfWork;
         _logger = logger;
@@ -47,21 +47,21 @@ internal sealed class ProjectCreatedDomainEventHandler
                 notification.Project.Id,
                 notification.Project.Name,
                 "The default project team.");
-            await _teamsRepository.AddAsync(team, cancellationToken);
+            await _teamRepository.AddAsync(team, cancellationToken);
 
             var wikiPage = new WikiPage(
                 notification.Project.Id,
                 "Home",
                 "Welcome to the project wiki!",
                 _userContext.UserId);
-            await _wikiPagesRepository.AddAsync(wikiPage, cancellationToken);
+            await _wikiPageRepository.AddAsync(wikiPage, cancellationToken);
 
             var sprint = new Sprint(
                 team.Id,
                 "Sprint 1",
                 DateOnly.FromDateTime(_dateTimeProvider.UtcNow),
                 DateOnly.FromDateTime(_dateTimeProvider.UtcNow.AddDays(14)));
-            await _sprintsRepository.AddAsync(sprint, cancellationToken);
+            await _sprintRepository.AddAsync(sprint, cancellationToken);
 
             _logger.LogInformation(
                 "Default team, wiki page, and sprint created for project {ProjectName}.",

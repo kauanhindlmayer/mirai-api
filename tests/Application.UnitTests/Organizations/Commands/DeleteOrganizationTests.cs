@@ -11,12 +11,12 @@ public class DeleteOrganizationTests
         "Test Description");
 
     private readonly DeleteOrganizationCommandHandler _handler;
-    private readonly IOrganizationsRepository _mockOrganizationsRepository;
+    private readonly IOrganizationRepository _mockOrganizationRepository;
 
     public DeleteOrganizationTests()
     {
-        _mockOrganizationsRepository = Substitute.For<IOrganizationsRepository>();
-        _handler = new DeleteOrganizationCommandHandler(_mockOrganizationsRepository);
+        _mockOrganizationRepository = Substitute.For<IOrganizationRepository>();
+        _handler = new DeleteOrganizationCommandHandler(_mockOrganizationRepository);
     }
 
     [Fact]
@@ -24,12 +24,16 @@ public class DeleteOrganizationTests
     {
         // Arrange
         var organization = new Organization(Command.Name, Command.Description);
-        _mockOrganizationsRepository.GetByIdAsync(organization.Id, TestContext.Current.CancellationToken)
+        _mockOrganizationRepository.GetByIdAsync(
+            organization.Id,
+            TestContext.Current.CancellationToken)
             .Returns(organization);
         var command = new DeleteOrganizationCommand(organization.Id);
 
         // Act
-        var result = await _handler.Handle(command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeFalse();
@@ -39,12 +43,16 @@ public class DeleteOrganizationTests
     public async Task Handle_WhenOrganizationDoesNotExist_ShouldReturnNotFound()
     {
         // Arrange
-        _mockOrganizationsRepository.GetByIdAsync(Arg.Any<Guid>(), TestContext.Current.CancellationToken)
+        _mockOrganizationRepository.GetByIdAsync(
+            Arg.Any<Guid>(),
+            TestContext.Current.CancellationToken)
             .Returns(null as Organization);
         var command = new DeleteOrganizationCommand(Guid.NewGuid());
 
         // Act
-        var result = await _handler.Handle(command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();

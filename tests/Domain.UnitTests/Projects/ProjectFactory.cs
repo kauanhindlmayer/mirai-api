@@ -8,14 +8,14 @@ public static class ProjectFactory
     public const string Description = "Test Description";
     public static readonly Guid OrganizationId = Guid.NewGuid();
 
-    public static Project CreateProject(
+    public static Project Create(
         Guid? organizationId = null,
-        string name = Name,
-        string description = Description)
+        string? name = null,
+        string? description = null)
     {
         return new(
-            name,
-            description,
+            name ?? Name,
+            description ?? Description,
             organizationId ?? OrganizationId);
     }
 }

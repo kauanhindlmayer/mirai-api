@@ -9,23 +9,27 @@ public class DeleteWikiPageTests
     private static readonly DeleteWikiPageCommand Command = new(Guid.NewGuid());
 
     private readonly DeleteWikiPageCommandHandler _handler;
-    private readonly IWikiPagesRepository _wikiPagesRepository;
+    private readonly IWikiPageRepository _wikiPageRepository;
 
     public DeleteWikiPageTests()
     {
-        _wikiPagesRepository = Substitute.For<IWikiPagesRepository>();
-        _handler = new DeleteWikiPageCommandHandler(_wikiPagesRepository);
+        _wikiPageRepository = Substitute.For<IWikiPageRepository>();
+        _handler = new DeleteWikiPageCommandHandler(_wikiPageRepository);
     }
 
     [Fact]
     public async Task Handle_WhenWikiPageDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _wikiPagesRepository.GetByIdAsync(Command.WikiPageId, TestContext.Current.CancellationToken)
+        _wikiPageRepository.GetByIdAsync(
+            Command.WikiPageId,
+            TestContext.Current.CancellationToken)
             .Returns(null as WikiPage);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -45,7 +49,9 @@ public class DeleteWikiPageTests
             Guid.NewGuid(),
             parentWikiPage.Id);
         parentWikiPage.InsertSubWikiPage(wikiPage.SubWikiPages.Count, wikiPage);
-        _wikiPagesRepository.GetByIdWithSubWikiPagesAsync(parentWikiPage.Id, TestContext.Current.CancellationToken)
+        _wikiPageRepository.GetByIdWithSubWikiPagesAsync(
+            parentWikiPage.Id,
+            TestContext.Current.CancellationToken)
             .Returns(parentWikiPage);
 
         // Act
@@ -63,17 +69,19 @@ public class DeleteWikiPageTests
     {
         // Arrange
         var wikiPage = new WikiPage(Guid.NewGuid(), "Title", "Content", Guid.NewGuid());
-        _wikiPagesRepository.GetByIdWithSubWikiPagesAsync(
+        _wikiPageRepository.GetByIdWithSubWikiPagesAsync(
             Command.WikiPageId,
             TestContext.Current.CancellationToken)
             .Returns(wikiPage);
 
         // Act
-        var result = await _handler.Handle(Command, TestContext.Current.CancellationToken);
+        var result = await _handler.Handle(
+            Command,
+            TestContext.Current.CancellationToken);
 
         // Assert
         result.IsError.Should().BeFalse();
         result.Value.Should().BeEquivalentTo(Result.Success);
-        _wikiPagesRepository.Received().Remove(wikiPage);
+        _wikiPageRepository.Received().Remove(wikiPage);
     }
 }

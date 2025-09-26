@@ -37,12 +37,24 @@ internal sealed class ProjectConfigurations : IEntityTypeConfiguration<Project>
             .HasForeignKey(t => t.ProjectId);
 
         builder.HasMany(p => p.Users)
-            .WithMany()
-            .UsingEntity(
-                "ProjectUsers",
-                l => l.HasOne(typeof(User)).WithMany().HasForeignKey("UserId"),
-                r => r.HasOne(typeof(Project)).WithMany().HasForeignKey("ProjectId"),
-                j => j.HasKey("ProjectId", "UserId"));
+            .WithMany(u => u.Projects)
+            .UsingEntity<Dictionary<string, object>>(
+                "project_users",
+                j => j.HasOne<User>()
+                    .WithMany()
+                    .HasForeignKey("user_id")
+                    .OnDelete(DeleteBehavior.Cascade),
+                j => j.HasOne<Project>()
+                    .WithMany()
+                    .HasForeignKey("project_id")
+                    .OnDelete(DeleteBehavior.Cascade),
+                j =>
+                {
+                    j.HasKey("project_id", "user_id");
+                    j.ToTable("project_users");
+                    j.HasIndex("user_id");
+                    j.HasIndex("project_id");
+                });
 
         builder.HasMany(p => p.Tags)
             .WithOne(t => t.Project)

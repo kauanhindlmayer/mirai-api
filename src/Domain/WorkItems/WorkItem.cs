@@ -14,16 +14,16 @@ namespace Domain.WorkItems;
 public sealed class WorkItem : AggregateRoot
 {
     public int Code { get; private set; }
-    public string Title { get; private set; } = string.Empty;
+    public string Title { get; private set; } = null!;
     public string? Description { get; private set; }
-    public string AcceptanceCriteria { get; private set; } = string.Empty;
+    public string? AcceptanceCriteria { get; private set; }
     public WorkItemType Type { get; private set; }
     public WorkItemStatus Status { get; private set; }
     public Planning Planning { get; private set; } = new();
     public Classification Classification { get; private set; } = new();
     public Vector SearchVector { get; private set; } = new(new float[384]);
-    public Guid? AssigneeId { get; private set; }
-    public User? Assignee { get; private set; }
+    public Guid? AssignedUserId { get; private set; }
+    public User? AssignedUser { get; private set; }
     public Guid ProjectId { get; private set; }
     public Project Project { get; private set; } = null!;
     public Guid? AssignedTeamId { get; private set; }
@@ -33,6 +33,7 @@ public sealed class WorkItem : AggregateRoot
     public ICollection<WorkItem> ChildWorkItems { get; private set; } = [];
     public ICollection<Tag> Tags { get; private set; } = [];
     public ICollection<WorkItemComment> Comments { get; private set; } = [];
+    public DateTime? StartedAtUtc { get; private set; }
     public DateTime? CompletedAtUtc { get; private set; }
     public Guid? SprintId { get; private set; }
     public Sprint? Sprint { get; private set; }
@@ -60,19 +61,15 @@ public sealed class WorkItem : AggregateRoot
     {
     }
 
-    public void Assign(Guid assigneeId)
+    public void Assign(Guid userId)
     {
-        AssigneeId = assigneeId;
+        AssignedUserId = userId;
     }
 
     public void Close()
     {
         Status = WorkItemStatus.Closed;
-    }
-
-    public string GetEmbeddingContent()
-    {
-        return $"{Title} {Description} {AcceptanceCriteria}";
+        CompletedAtUtc ??= DateTime.UtcNow;
     }
 
     public void Update(
@@ -88,17 +85,34 @@ public sealed class WorkItem : AggregateRoot
         Planning? planning = null,
         Classification? classification = null)
     {
+        var oldStatus = Status;
+
         Type = type ?? Type;
         Title = title ?? Title;
         Description = description ?? Description;
         AcceptanceCriteria = acceptanceCriteria ?? AcceptanceCriteria;
         Status = status ?? Status;
-        AssigneeId = assigneeId ?? AssigneeId;
+        AssignedUserId = assigneeId ?? AssignedUserId;
         AssignedTeamId = assignedTeamId ?? AssignedTeamId;
         SprintId = sprintId ?? SprintId;
         ParentWorkItemId = parentWorkItemId ?? ParentWorkItemId;
         Planning = planning ?? Planning;
         Classification = classification ?? Classification;
+
+        if (IsTransitioningToActive(oldStatus) && StartedAtUtc is null)
+        {
+            StartedAtUtc = DateTime.UtcNow;
+        }
+
+        if (IsCompletedStatus(Status) && CompletedAtUtc is null)
+        {
+            CompletedAtUtc = DateTime.UtcNow;
+        }
+
+        if (IsActiveStatus(Status))
+        {
+            CompletedAtUtc = null;
+        }
     }
 
     public ErrorOr<Success> AddComment(WorkItemComment comment)
@@ -124,6 +138,23 @@ public sealed class WorkItem : AggregateRoot
         return Result.Success;
     }
 
+    public ErrorOr<Success> UpdateComment(Guid commentId, string content, Guid userId)
+    {
+        var comment = Comments.FirstOrDefault(c => c.Id == commentId);
+        if (comment is null)
+        {
+            return WorkItemErrors.CommentNotFound;
+        }
+
+        if (comment.AuthorId != userId)
+        {
+            return WorkItemErrors.CommentNotOwned;
+        }
+
+        comment.UpdateContent(content);
+        return Result.Success;
+    }
+
     public void AddTag(Tag tag)
     {
         Tags.Add(tag);
@@ -145,4 +176,35 @@ public sealed class WorkItem : AggregateRoot
     {
         SearchVector = new Vector(embedding);
     }
+
+    public string GetEmbeddingContent()
+    {
+        var parts = new List<string>
+        {
+            $"Title: {Title}",
+            $"Type: {Type}",
+            $"Status: {Status}",
+        };
+
+        if (!string.IsNullOrWhiteSpace(Description))
+        {
+            parts.Add($"Description: {Description}");
+        }
+
+        if (!string.IsNullOrWhiteSpace(AcceptanceCriteria))
+        {
+            parts.Add($"Acceptance Criteria: {AcceptanceCriteria}");
+        }
+
+        return string.Join("\n", parts);
+    }
+
+    private bool IsTransitioningToActive(WorkItemStatus oldStatus) =>
+        oldStatus != WorkItemStatus.Active && Status == WorkItemStatus.Active;
+
+    private static bool IsCompletedStatus(WorkItemStatus status) =>
+        status is WorkItemStatus.Closed;
+
+    private static bool IsActiveStatus(WorkItemStatus status) =>
+        status is WorkItemStatus.New or WorkItemStatus.Active;
 }

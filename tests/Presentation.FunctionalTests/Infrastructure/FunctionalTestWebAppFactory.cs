@@ -1,7 +1,6 @@
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.Logging;
 using Presentation.FunctionalTests.Users;
 using Testcontainers.Keycloak;
 using Testcontainers.PostgreSql;
@@ -13,7 +12,7 @@ public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyn
 {
     private readonly PostgreSqlContainer _dbContainer = new PostgreSqlBuilder()
         .WithImage("ankane/pgvector:latest")
-        .WithDatabase("postgres")
+        .WithDatabase("mirai-db")
         .WithUsername("postgres")
         .WithPassword("postgres")
         .Build();

@@ -6,6 +6,7 @@ using Application.WorkItems.Commands.AssignWorkItem;
 using Application.WorkItems.Commands.CreateWorkItem;
 using Application.WorkItems.Commands.DeleteWorkItem;
 using Application.WorkItems.Commands.RemoveTag;
+using Application.WorkItems.Commands.UpdateComment;
 using Application.WorkItems.Queries.GetWorkItem;
 using Application.WorkItems.Queries.GetWorkItemsStats;
 using Application.WorkItems.Queries.ListWorkItems;
@@ -123,6 +124,30 @@ public sealed class WorkItemsController : ApiController
                 nameof(GetWorkItem),
                 new { projectId, workItemId },
                 commentId),
+            Problem);
+    }
+
+    /// <summary>
+    /// Update a comment on a work item.
+    /// </summary>
+    /// <param name="workItemId">The work item's unique identifier.</param>
+    /// <param name="commentId">The comment's unique identifier.</param>
+    [HttpPut("{workItemId:guid}/comments/{commentId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> UpdateComment(
+        Guid workItemId,
+        Guid commentId,
+        UpdateCommentRequest request,
+        CancellationToken cancellationToken)
+    {
+        var command = new UpdateCommentCommand(workItemId, commentId, request.Content);
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        return result.Match(
+            _ => NoContent(),
             Problem);
     }
 

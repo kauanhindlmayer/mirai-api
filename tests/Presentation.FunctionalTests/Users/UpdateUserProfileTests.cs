@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
+using Presentation.Controllers.Users;
 using Presentation.FunctionalTests.Infrastructure;
 
 namespace Presentation.FunctionalTests.Users;
@@ -17,7 +18,7 @@ public class UpdateUserProfileTests : BaseFunctionalTest
     {
         // Arrange
         await SetAuthorizationHeaderAsync();
-        var request = UserRequestFactory.CreateUpdateUserProfileRequest();
+        var request = new UpdateUserProfileRequest("Jane", "Smith");
 
         // Act
         var response = await _httpClient.PutAsJsonAsync(

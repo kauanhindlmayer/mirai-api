@@ -8,7 +8,7 @@ public class WikiPageTests
     public void CreateWikiPage_ShouldSetProperties()
     {
         // Act
-        var wikiPage = WikiPageFactory.CreateWikiPage();
+        var wikiPage = WikiPageFactory.Create();
 
         // Assert
         wikiPage.Title.Should().Be(WikiPageFactory.Title);
@@ -19,7 +19,7 @@ public class WikiPageTests
     public void Update_ShouldUpdateProperties()
     {
         // Arrange
-        var wikiPage = WikiPageFactory.CreateWikiPage();
+        var wikiPage = WikiPageFactory.Create();
         var title = "New Title";
         var content = "New Content";
 
@@ -35,7 +35,7 @@ public class WikiPageTests
     public void UpdatePosition_ShouldUpdatePosition()
     {
         // Arrange
-        var wikiPage = WikiPageFactory.CreateWikiPage();
+        var wikiPage = WikiPageFactory.Create();
         var position = 1;
 
         // Act
@@ -49,7 +49,7 @@ public class WikiPageTests
     public void AddComment_ShouldAddComment()
     {
         // Arrange
-        var wikiPage = WikiPageFactory.CreateWikiPage();
+        var wikiPage = WikiPageFactory.Create();
         var comment = new WikiPageComment(wikiPage.Id, Guid.NewGuid(), "Content");
 
         // Act
@@ -63,7 +63,7 @@ public class WikiPageTests
     public void RemoveComment_WhenCommentExists_ShouldRemoveComment()
     {
         // Arrange
-        var wikiPage = WikiPageFactory.CreateWikiPage();
+        var wikiPage = WikiPageFactory.Create();
         var comment = new WikiPageComment(wikiPage.Id, Guid.NewGuid(), "Content");
         wikiPage.AddComment(comment);
 
@@ -79,7 +79,7 @@ public class WikiPageTests
     public void RemoveComment_WhenCommentDoesNotExist_ShouldReturnCommentNotFound()
     {
         // Arrange
-        var wikiPage = WikiPageFactory.CreateWikiPage();
+        var wikiPage = WikiPageFactory.Create();
         var comment = new WikiPageComment(wikiPage.Id, Guid.NewGuid(), "Content");
 
         // Act
@@ -90,11 +90,42 @@ public class WikiPageTests
     }
 
     [Fact]
+    public void UpdateComment_WhenCommentExists_ShouldUpdateComment()
+    {
+        // Arrange
+        var wikiPage = WikiPageFactory.Create();
+        var comment = new WikiPageComment(wikiPage.Id, Guid.NewGuid(), "Original content");
+        wikiPage.AddComment(comment);
+        var newContent = "Updated content";
+
+        // Act
+        var result = wikiPage.UpdateComment(comment.Id, newContent, comment.AuthorId);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        comment.Content.Should().Be(newContent);
+    }
+
+    [Fact]
+    public void UpdateComment_WhenCommentDoesNotExist_ShouldReturnCommentNotFound()
+    {
+        // Arrange
+        var wikiPage = WikiPageFactory.Create();
+        var commentId = Guid.NewGuid();
+
+        // Act
+        var result = wikiPage.UpdateComment(commentId, "Updated content", Guid.NewGuid());
+
+        // Assert
+        result.FirstError.Should().Be(WikiPageErrors.CommentNotFound);
+    }
+
+    [Fact]
     public void InsertSubWikiPage_WhenPositionIsInvalid_ShouldReturnError()
     {
         // Arrange
-        var wikiPage = WikiPageFactory.CreateWikiPage();
-        var subWikiPage = WikiPageFactory.CreateWikiPage();
+        var wikiPage = WikiPageFactory.Create();
+        var subWikiPage = WikiPageFactory.Create();
 
         // Act
         var result = wikiPage.InsertSubWikiPage(-1, subWikiPage);
@@ -107,8 +138,8 @@ public class WikiPageTests
     public void InsertSubWikiPage_WhenPositionIsValid_ShouldInsertSubWikiPage()
     {
         // Arrange
-        var wikiPage = WikiPageFactory.CreateWikiPage();
-        var subWikiPage = WikiPageFactory.CreateWikiPage();
+        var wikiPage = WikiPageFactory.Create();
+        var subWikiPage = WikiPageFactory.Create();
 
         // Act
         var result = wikiPage.InsertSubWikiPage(0, subWikiPage);
@@ -122,8 +153,8 @@ public class WikiPageTests
     public void RemoveParent_ShouldRemoveParent()
     {
         // Arrange
-        var parentWikiPage = WikiPageFactory.CreateWikiPage();
-        var wikiPage = WikiPageFactory.CreateWikiPage(parentWikiPageId: parentWikiPage.Id);
+        var parentWikiPage = WikiPageFactory.Create();
+        var wikiPage = WikiPageFactory.Create(parentWikiPageId: parentWikiPage.Id);
 
         // Act
         wikiPage.RemoveParent();

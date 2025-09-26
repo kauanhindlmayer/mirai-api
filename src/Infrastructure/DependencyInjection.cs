@@ -22,6 +22,7 @@ using Infrastructure;
 using Infrastructure.Authentication;
 using Infrastructure.Authorization;
 using Infrastructure.Caching;
+using Infrastructure.Dashboards;
 using Infrastructure.Email;
 using Infrastructure.Jobs;
 using Infrastructure.Persistence;
@@ -85,6 +86,7 @@ public static class DependencyInjection
         services.AddTransient<LinkService>();
         services.AddTransient<IBackgroundJobScheduler, BackgroundJobScheduler>();
         services.AddScoped<IEmailService, EmailService>();
+        services.AddScoped<IDashboardChartService, DashboardChartService>();
         services.AddSingleton<IBlobService, BlobService>();
         services.AddSingleton(_ => new BlobServiceClient(configuration["Azure:BlobStorage:ConnectionString"]!));
         services.Configure<BlobStorageOptions>(configuration.GetSection(BlobStorageOptions.SectionName));
@@ -96,22 +98,22 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("postgres");
+        var connectionString = configuration.GetConnectionString("mirai-db");
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(connectionString, npgsqlOptions => npgsqlOptions.UseVector())
                 .UseSnakeCaseNamingConvention());
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
-        services.AddScoped<IOrganizationsRepository, OrganizationsRepository>();
-        services.AddScoped<IProjectsRepository, ProjectsRepository>();
-        services.AddScoped<IWorkItemsRepository, WorkItemsRepository>();
-        services.AddScoped<IWikiPagesRepository, WikiPagesRepository>();
-        services.AddScoped<IRetrospectivesRepository, RetrospectivesRepository>();
-        services.AddScoped<ITeamsRepository, TeamsRepository>();
-        services.AddScoped<IUsersRepository, UsersRepository>();
-        services.AddScoped<ITagsRepository, TagsRepository>();
-        services.AddScoped<IBoardsRepository, BoardsRepository>();
-        services.AddScoped<ISprintsRepository, SprintsRepository>();
+        services.AddScoped<IOrganizationRepository, OrganizationRepository>();
+        services.AddScoped<IProjectRepository, ProjectRepository>();
+        services.AddScoped<IWorkItemRepository, WorkItemRepository>();
+        services.AddScoped<IWikiPageRepository, WikiPageRepository>();
+        services.AddScoped<IRetrospectiveRepository, RetrospectiveRepository>();
+        services.AddScoped<ITeamRepository, TeamRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<ITagRepository, TagRepository>();
+        services.AddScoped<IBoardRepository, BoardRepository>();
+        services.AddScoped<ISprintRepository, SprintRepository>();
 
         services.AddScoped<IApplicationDbContext>(sp =>
             sp.GetRequiredService<ApplicationDbContext>());
@@ -190,7 +192,8 @@ public static class DependencyInjection
         services.AddCors(options => options.AddPolicy(CorsOptions.PolicyName, policy => policy
             .WithOrigins(corsOptions.AllowedOrigins)
             .AllowAnyMethod()
-            .AllowAnyHeader()));
+            .AllowAnyHeader()
+            .AllowCredentials()));
 
         return services;
     }
@@ -202,6 +205,7 @@ public static class DependencyInjection
         var connectionString = configuration.GetConnectionString("redis");
         services.AddStackExchangeRedisCache(options => options.Configuration = connectionString);
         services.AddSingleton<ICacheService, CacheService>();
+
         return services;
     }
 

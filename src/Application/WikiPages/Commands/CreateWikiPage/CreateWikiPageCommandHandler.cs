@@ -10,16 +10,16 @@ namespace Application.WikiPages.Commands.CreateWikiPage;
 internal sealed class CreateWikiPageCommandHandler
     : IRequestHandler<CreateWikiPageCommand, ErrorOr<Guid>>
 {
-    private readonly IProjectsRepository _projectsRepository;
+    private readonly IProjectRepository _projectRepository;
     private readonly IUserContext _userContext;
     private readonly IHtmlSanitizerService _htmlSanitizerService;
 
     public CreateWikiPageCommandHandler(
-        IProjectsRepository projectsRepository,
+        IProjectRepository projectRepository,
         IUserContext userContext,
         IHtmlSanitizerService htmlSanitizerService)
     {
-        _projectsRepository = projectsRepository;
+        _projectRepository = projectRepository;
         _userContext = userContext;
         _htmlSanitizerService = htmlSanitizerService;
     }
@@ -28,7 +28,7 @@ internal sealed class CreateWikiPageCommandHandler
         CreateWikiPageCommand command,
         CancellationToken cancellationToken)
     {
-        var project = await _projectsRepository.GetByIdWithWikiPagesAsync(
+        var project = await _projectRepository.GetByIdWithWikiPagesAsync(
             command.ProjectId,
             cancellationToken);
 
@@ -52,7 +52,7 @@ internal sealed class CreateWikiPageCommandHandler
             return result.Errors;
         }
 
-        _projectsRepository.Update(project);
+        _projectRepository.Update(project);
 
         return wikiPage.Id;
     }

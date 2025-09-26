@@ -7,7 +7,7 @@ namespace Domain.WikiPages;
 
 public sealed class WikiPage : AggregateRoot
 {
-    public string Title { get; private set; } = string.Empty;
+    public string Title { get; private set; } = null!;
     public string Content { get; private set; } = string.Empty;
     public int Position { get; private set; }
     public Guid AuthorId { get; private set; }
@@ -63,6 +63,23 @@ public sealed class WikiPage : AggregateRoot
         }
 
         Comments.Remove(comment);
+        return Result.Success;
+    }
+
+    public ErrorOr<Success> UpdateComment(Guid commentId, string content, Guid userId)
+    {
+        var comment = Comments.FirstOrDefault(c => c.Id == commentId);
+        if (comment is null)
+        {
+            return WikiPageErrors.CommentNotFound;
+        }
+
+        if (comment.AuthorId != userId)
+        {
+            return WikiPageErrors.CommentNotOwned;
+        }
+
+        comment.UpdateContent(content);
         return Result.Success;
     }
 
