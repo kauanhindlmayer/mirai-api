@@ -73,9 +73,9 @@ public static class DatabaseExtensions
             await context.Boards.AddAsync(board);
 
             var sprints = await SeedSprints(context, team);
-            var users = await SeedUsers(context, organization, project);
+            var users = await SeedUsers(context, organization, project, team);
             await SeedWikiPages(faker, context, project, users);
-            await SeedWorkItems(faker, context, project, team, sprints, board);
+            await SeedWorkItems(faker, context, project, team, sprints, board, users);
 
             context.SaveChanges();
             app.Logger.LogInformation("Database seeding completed successfully");
@@ -90,7 +90,8 @@ public static class DatabaseExtensions
     private static async Task<List<User>> SeedUsers(
         ApplicationDbContext context,
         Organization organization,
-        Project project)
+        Project project,
+        Team team)
     {
         var seedUserData = new[]
         {
@@ -126,6 +127,7 @@ public static class DatabaseExtensions
             users.Add(user);
             organization.AddUser(user);
             project.AddUser(user);
+            team.AddUser(user);
         }
 
         await context.AddRangeAsync(users);
@@ -210,6 +212,7 @@ public static class DatabaseExtensions
         Team team,
         List<Sprint> sprints,
         Board board,
+        List<User> users,
         int epicCount = 3,
         int featuresPerEpic = 5,
         int storiesPerFeature = 6,
@@ -240,6 +243,12 @@ public static class DatabaseExtensions
 
             epic.Update(description: faker.Lorem.Paragraphs(2));
             SetWorkItemDates(epic, baseDate.AddDays(i * 10), faker, 0.9);
+
+            // Assign user to epic (70% chance)
+            if (faker.Random.Bool(0.7f))
+            {
+                epic.UpdateAssignment(faker.PickRandom(users).Id);
+            }
 
             await context.WorkItems.AddAsync(epic);
             epics.Add(epic);
@@ -274,6 +283,12 @@ public static class DatabaseExtensions
                     faker,
                     0.8);
 
+                // Assign user to feature (80% chance)
+                if (faker.Random.Bool(0.8f))
+                {
+                    feature.UpdateAssignment(faker.PickRandom(users).Id);
+                }
+
                 await context.WorkItems.AddAsync(feature);
                 features.Add(feature);
 
@@ -306,6 +321,12 @@ public static class DatabaseExtensions
                     baseDate.AddDays(((features.IndexOf(feature) * storiesPerFeature) + i) * 3),
                     faker,
                     0.75);
+
+                // Assign user to user story (90% chance)
+                if (faker.Random.Bool(0.9f))
+                {
+                    userStory.UpdateAssignment(faker.PickRandom(users).Id);
+                }
 
                 await context.WorkItems.AddAsync(userStory);
 
@@ -341,6 +362,12 @@ public static class DatabaseExtensions
                 faker,
                 0.85);
 
+            // Assign user to bug (85% chance)
+            if (faker.Random.Bool(0.85f))
+            {
+                bug.UpdateAssignment(faker.PickRandom(users).Id);
+            }
+
             await context.WorkItems.AddAsync(bug);
 
             var bugColumnId = GetColumnForStatus(columns, bug.Status).Id;
@@ -360,7 +387,8 @@ public static class DatabaseExtensions
             board,
             columnPositions,
             workItemCode,
-            features);
+            features,
+            users);
     }
 
     private static async Task SeedRecentWorkItems(
@@ -373,6 +401,7 @@ public static class DatabaseExtensions
         Dictionary<Guid, int> columnPositions,
         int startingWorkItemCode,
         List<WorkItem> features,
+        List<User> users,
         int recentItemCount = 20)
     {
         var workItemCode = startingWorkItemCode;
@@ -395,6 +424,12 @@ public static class DatabaseExtensions
                 parentFeatureId);
 
             recentWorkItem.Update(description: faker.Lorem.Paragraph());
+
+            // Assign user to recent work item (95% chance)
+            if (faker.Random.Bool(0.95f))
+            {
+                recentWorkItem.UpdateAssignment(faker.PickRandom(users).Id);
+            }
 
             var creationDate = recentBaseDate.AddDays(faker.Random.Double() * 10);
             var createdAtProperty = typeof(AggregateRoot).GetProperty("CreatedAtUtc");

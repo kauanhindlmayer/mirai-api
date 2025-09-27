@@ -4,6 +4,7 @@ using Application.Projects.Commands.CreateProject;
 using Application.Projects.Commands.RemoveUserFromProject;
 using Application.Projects.Commands.UpdateProject;
 using Application.Projects.Queries.GetProject;
+using Application.Projects.Queries.GetProjectUsers;
 using Application.Projects.Queries.ListProjects;
 using Asp.Versioning;
 using MediatR;
@@ -168,5 +169,25 @@ public sealed class ProjectsController : ApiController
         return result.Match(
             _ => NoContent(),
             Problem);
+    }
+
+    /// <summary>
+    /// Get users that belong to a project.
+    /// </summary>
+    /// <param name="projectId">The project's unique identifier.</param>
+    /// <param name="search">Optional search term to filter users by name or email.</param>
+    [HttpGet("{projectId:guid}/users")]
+    [ProducesResponseType(typeof(List<ProjectUserResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<List<ProjectUserResponse>>> GetProjectUsers(
+        Guid projectId,
+        [FromQuery] string? search = null,
+        CancellationToken cancellationToken = default)
+    {
+        var query = new GetProjectUsersQuery(projectId, search);
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(Ok, Problem);
     }
 }

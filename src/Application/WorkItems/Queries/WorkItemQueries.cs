@@ -61,6 +61,15 @@ internal static class WorkItemQueries
                     Status = wi.ParentWorkItem.Status.ToString(),
                     Type = wi.ParentWorkItem.Type.ToString(),
                     AssigneeId = wi.ParentWorkItem.AssignedUserId,
+                    Assignee = wi.ParentWorkItem.AssignedUser == null
+                        ? null
+                        : new AssigneeResponse
+                        {
+                            Id = wi.ParentWorkItem.AssignedUser.Id,
+                            FullName = wi.ParentWorkItem.AssignedUser.FullName,
+                            Email = wi.ParentWorkItem.AssignedUser.Email,
+                            ImageUrl = wi.ParentWorkItem.AssignedUser.ImageUrl,
+                        },
                 },
             ChildWorkItems = wi.ChildWorkItems.Select(cwi => new RelatedWorkItemResponse
             {
@@ -70,8 +79,26 @@ internal static class WorkItemQueries
                 Status = cwi.Status.ToString(),
                 Type = cwi.Type.ToString(),
                 AssigneeId = cwi.AssignedUserId,
+                Assignee = cwi.AssignedUser == null
+                    ? null
+                    : new AssigneeResponse
+                    {
+                        Id = cwi.AssignedUser.Id,
+                        FullName = cwi.AssignedUser.FullName,
+                        Email = cwi.AssignedUser.Email,
+                        ImageUrl = cwi.AssignedUser.ImageUrl,
+                    },
             }),
             AssigneeId = wi.AssignedUserId,
+            Assignee = wi.AssignedUser == null
+                ? null
+                : new AssigneeResponse
+                {
+                    Id = wi.AssignedUser.Id,
+                    FullName = wi.AssignedUser.FullName,
+                    Email = wi.AssignedUser.Email,
+                    ImageUrl = wi.AssignedUser.ImageUrl,
+                },
             Comments = wi.Comments.Select(comment => new WorkItemCommentResponse
             {
                 Id = comment.Id,

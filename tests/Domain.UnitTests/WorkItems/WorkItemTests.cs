@@ -37,7 +37,7 @@ public class WorkItemTests
         var userId = Guid.NewGuid();
 
         // Act
-        workItem.Assign(userId);
+        workItem.UpdateAssignment(userId);
 
         // Assert
         workItem.AssignedUserId.Should().Be(userId);
@@ -87,8 +87,8 @@ public class WorkItemTests
         workItem.Update(
             title: newTitle,
             description: newDescription,
-            status: newStatus,
-            assigneeId: newAssigneeId);
+            status: newStatus);
+        workItem.UpdateAssignment(newAssigneeId);
 
         // Assert
         workItem.Title.Should().Be(newTitle);

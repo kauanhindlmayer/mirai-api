@@ -92,7 +92,7 @@ public class TeamTests : BaseTest
         var team = TeamFactory.Create();
         var user = UserFactory.Create();
         var workItem = WorkItemFactory.Create(assignedTeamId: team.Id);
-        workItem.Assign(user.Id);
+        workItem.UpdateAssignment(user.Id);
         team.AddUser(user);
         team.WorkItems.Add(workItem);
 

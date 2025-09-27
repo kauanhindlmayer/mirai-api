@@ -15,6 +15,7 @@ public sealed class WorkItemResponse
     public RelatedWorkItemResponse? ParentWorkItem { get; init; }
     public IEnumerable<RelatedWorkItemResponse> ChildWorkItems { get; init; } = [];
     public Guid? AssigneeId { get; init; }
+    public AssigneeResponse? Assignee { get; init; }
     public IEnumerable<WorkItemCommentResponse> Comments { get; init; } = [];
     public IEnumerable<TagResponse> Tags { get; init; } = [];
     public DateTime CreatedAtUtc { get; init; }
@@ -29,6 +30,15 @@ public sealed class RelatedWorkItemResponse
     public required string Status { get; init; }
     public required string Type { get; init; }
     public Guid? AssigneeId { get; init; }
+    public AssigneeResponse? Assignee { get; init; }
+}
+
+public sealed class AssigneeResponse
+{
+    public Guid Id { get; init; }
+    public required string FullName { get; init; }
+    public required string Email { get; init; }
+    public string? ImageUrl { get; init; }
 }
 
 public sealed class PlanningResponse

@@ -41,7 +41,7 @@ internal sealed class AssignWorkItemCommandHandler
             return WorkItemErrors.AssigneeNotFound;
         }
 
-        workItem.Assign(command.AssigneeId);
+        workItem.UpdateAssignment(command.AssigneeId);
         _workItemRepository.Update(workItem);
 
         return Result.Success;

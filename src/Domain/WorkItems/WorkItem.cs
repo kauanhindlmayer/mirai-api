@@ -61,7 +61,7 @@ public sealed class WorkItem : AggregateRoot
     {
     }
 
-    public void Assign(Guid userId)
+    public void UpdateAssignment(Guid? userId)
     {
         AssignedUserId = userId;
     }
@@ -78,7 +78,6 @@ public sealed class WorkItem : AggregateRoot
         string? description = null,
         string? acceptanceCriteria = null,
         WorkItemStatus? status = null,
-        Guid? assigneeId = null,
         Guid? assignedTeamId = null,
         Guid? sprintId = null,
         Guid? parentWorkItemId = null,
@@ -92,7 +91,6 @@ public sealed class WorkItem : AggregateRoot
         Description = description ?? Description;
         AcceptanceCriteria = acceptanceCriteria ?? AcceptanceCriteria;
         Status = status ?? Status;
-        AssignedUserId = assigneeId ?? AssignedUserId;
         AssignedTeamId = assignedTeamId ?? AssignedTeamId;
         SprintId = sprintId ?? SprintId;
         ParentWorkItemId = parentWorkItemId ?? ParentWorkItemId;
