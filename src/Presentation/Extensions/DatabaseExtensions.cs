@@ -323,13 +323,16 @@ public static class DatabaseExtensions
             var workItemType = faker.Random.Bool() ? WorkItemType.Bug : WorkItemType.Defect;
             var sprintIndex = faker.Random.Int(1, orderedSprints.Count - 1);
 
+            var parentFeatureId = faker.Random.Bool(0.7f) ? faker.PickRandom(features).Id : (Guid?)null;
+
             var bug = new WorkItem(
                 project.Id,
                 workItemCode++,
                 faker.Lorem.Sentence(),
                 workItemType,
                 team.Id,
-                orderedSprints[sprintIndex].Id);
+                orderedSprints[sprintIndex].Id,
+                parentFeatureId);
 
             bug.Update(description: faker.Lorem.Paragraph());
             SetWorkItemDates(
@@ -356,7 +359,8 @@ public static class DatabaseExtensions
             orderedSprints.Last(),
             board,
             columnPositions,
-            workItemCode);
+            workItemCode,
+            features);
     }
 
     private static async Task SeedRecentWorkItems(
@@ -368,6 +372,7 @@ public static class DatabaseExtensions
         Board board,
         Dictionary<Guid, int> columnPositions,
         int startingWorkItemCode,
+        List<WorkItem> features,
         int recentItemCount = 20)
     {
         var workItemCode = startingWorkItemCode;
@@ -378,13 +383,16 @@ public static class DatabaseExtensions
         {
             var workItemType = faker.PickRandom(new[] { WorkItemType.UserStory, WorkItemType.Bug });
 
+            var parentFeatureId = faker.Random.Bool(0.8f) ? faker.PickRandom(features).Id : (Guid?)null;
+
             var recentWorkItem = new WorkItem(
                 project.Id,
                 workItemCode++,
                 faker.Lorem.Sentence(),
                 workItemType,
                 team.Id,
-                currentSprint.Id);
+                currentSprint.Id,
+                parentFeatureId);
 
             recentWorkItem.Update(description: faker.Lorem.Paragraph());
 
