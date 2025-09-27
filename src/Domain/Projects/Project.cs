@@ -168,6 +168,11 @@ public sealed class Project : AggregateRoot
             return ProjectErrors.TeamWithSameNameAlreadyExists;
         }
 
+        if (Teams.Count == 0)
+        {
+            team.SetAsDefault();
+        }
+
         Teams.Add(team);
         return Result.Success;
     }

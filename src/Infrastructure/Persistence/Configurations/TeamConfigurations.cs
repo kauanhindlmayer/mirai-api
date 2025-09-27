@@ -25,6 +25,10 @@ internal sealed class TeamConfigurations : IEntityTypeConfiguration<Team>
         builder.Property(t => t.ProjectId)
             .IsRequired();
 
+        builder.Property(t => t.IsDefault)
+            .IsRequired()
+            .HasDefaultValue(false);
+
         builder.HasOne(t => t.Project)
             .WithMany(p => p.Teams)
             .HasForeignKey(t => t.ProjectId)
