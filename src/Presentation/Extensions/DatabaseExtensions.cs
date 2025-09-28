@@ -116,6 +116,195 @@ public static class DatabaseExtensions
                 Email = "bob.johnson@mirai.com",
                 IdentityId = "user-3-34567-89012-cdefgh",
             },
+            new
+            {
+                FirstName = "Alice",
+                LastName = "Anderson",
+                Email = "alice.anderson@mirai.com",
+                IdentityId = "user-4-45678-90123-defghi",
+            },
+            new
+            {
+                FirstName = "Michael",
+                LastName = "Brown",
+                Email = "michael.brown@mirai.com",
+                IdentityId = "user-5-56789-01234-efghij",
+            },
+            new
+            {
+                FirstName = "Sarah",
+                LastName = "Wilson",
+                Email = "sarah.wilson@mirai.com",
+                IdentityId = "user-6-67890-12345-fghijk",
+            },
+            new
+            {
+                FirstName = "David",
+                LastName = "Miller",
+                Email = "david.miller@mirai.com",
+                IdentityId = "user-7-78901-23456-ghijkl",
+            },
+            new
+            {
+                FirstName = "Emma",
+                LastName = "Davis",
+                Email = "emma.davis@mirai.com",
+                IdentityId = "user-8-89012-34567-hijklm",
+            },
+            new
+            {
+                FirstName = "James",
+                LastName = "Garcia",
+                Email = "james.garcia@mirai.com",
+                IdentityId = "user-9-90123-45678-ijklmn",
+            },
+            new
+            {
+                FirstName = "Olivia",
+                LastName = "Martinez",
+                Email = "olivia.martinez@mirai.com",
+                IdentityId = "user-10-01234-56789-jklmno",
+            },
+            new
+            {
+                FirstName = "William",
+                LastName = "Rodriguez",
+                Email = "william.rodriguez@mirai.com",
+                IdentityId = "user-11-12345-67890-klmnop",
+            },
+            new
+            {
+                FirstName = "Sophia",
+                LastName = "Hernandez",
+                Email = "sophia.hernandez@mirai.com",
+                IdentityId = "user-12-23456-78901-lmnopq",
+            },
+            new
+            {
+                FirstName = "Benjamin",
+                LastName = "Lopez",
+                Email = "benjamin.lopez@mirai.com",
+                IdentityId = "user-13-34567-89012-mnopqr",
+            },
+            new
+            {
+                FirstName = "Isabella",
+                LastName = "Gonzalez",
+                Email = "isabella.gonzalez@mirai.com",
+                IdentityId = "user-14-45678-90123-nopqrs",
+            },
+            new
+            {
+                FirstName = "Lucas",
+                LastName = "Lee",
+                Email = "lucas.lee@mirai.com",
+                IdentityId = "user-15-56789-01234-opqrst",
+            },
+            new
+            {
+                FirstName = "Mia",
+                LastName = "Taylor",
+                Email = "mia.taylor@mirai.com",
+                IdentityId = "user-16-67890-12345-pqrstu",
+            },
+            new
+            {
+                FirstName = "Henry",
+                LastName = "Thomas",
+                Email = "henry.thomas@mirai.com",
+                IdentityId = "user-17-78901-23456-qrstuv",
+            },
+            new
+            {
+                FirstName = "Charlotte",
+                LastName = "Jackson",
+                Email = "charlotte.jackson@mirai.com",
+                IdentityId = "user-18-89012-34567-rstuvw",
+            },
+            new
+            {
+                FirstName = "Alexander",
+                LastName = "White",
+                Email = "alexander.white@mirai.com",
+                IdentityId = "user-19-90123-45678-stuvwx",
+            },
+            new
+            {
+                FirstName = "Amelia",
+                LastName = "Harris",
+                Email = "amelia.harris@mirai.com",
+                IdentityId = "user-20-01234-56789-tuvwxy",
+            },
+            new
+            {
+                FirstName = "Daniel",
+                LastName = "Clark",
+                Email = "daniel.clark@mirai.com",
+                IdentityId = "user-21-12345-67890-uvwxyz",
+            },
+            new
+            {
+                FirstName = "Harper",
+                LastName = "Lewis",
+                Email = "harper.lewis@mirai.com",
+                IdentityId = "user-22-23456-78901-vwxyza",
+            },
+            new
+            {
+                FirstName = "Matthew",
+                LastName = "Robinson",
+                Email = "matthew.robinson@mirai.com",
+                IdentityId = "user-23-34567-89012-wxyzab",
+            },
+            new
+            {
+                FirstName = "Evelyn",
+                LastName = "Walker",
+                Email = "evelyn.walker@mirai.com",
+                IdentityId = "user-24-45678-90123-xyzabc",
+            },
+            new
+            {
+                FirstName = "Anthony",
+                LastName = "Hall",
+                Email = "anthony.hall@mirai.com",
+                IdentityId = "user-25-56789-01234-yzabcd",
+            },
+            new
+            {
+                FirstName = "Abigail",
+                LastName = "Allen",
+                Email = "abigail.allen@mirai.com",
+                IdentityId = "user-26-67890-12345-zabcde",
+            },
+            new
+            {
+                FirstName = "Christopher",
+                LastName = "Young",
+                Email = "christopher.young@mirai.com",
+                IdentityId = "user-27-78901-23456-abcdef",
+            },
+            new
+            {
+                FirstName = "Emily",
+                LastName = "King",
+                Email = "emily.king@mirai.com",
+                IdentityId = "user-28-89012-34567-bcdefg",
+            },
+            new
+            {
+                FirstName = "Joshua",
+                LastName = "Wright",
+                Email = "joshua.wright@mirai.com",
+                IdentityId = "user-29-90123-45678-cdefgh",
+            },
+            new
+            {
+                FirstName = "Elizabeth",
+                LastName = "Scott",
+                Email = "elizabeth.scott@mirai.com",
+                IdentityId = "user-30-01234-56789-defghi",
+            },
         };
 
         var users = new List<User>();

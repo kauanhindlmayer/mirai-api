@@ -1,4 +1,5 @@
 using Application.Abstractions;
+using Application.Abstractions.Mappings;
 using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -6,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Application.Projects.Queries.GetProjectUsers;
 
 internal sealed class GetProjectUsersQueryHandler
-    : IRequestHandler<GetProjectUsersQuery, ErrorOr<List<ProjectUserResponse>>>
+    : IRequestHandler<GetProjectUsersQuery, ErrorOr<PaginatedList<ProjectUserResponse>>>
 {
     private readonly IApplicationDbContext _context;
 
@@ -15,7 +16,7 @@ internal sealed class GetProjectUsersQueryHandler
         _context = context;
     }
 
-    public async Task<ErrorOr<List<ProjectUserResponse>>> Handle(
+    public async Task<ErrorOr<PaginatedList<ProjectUserResponse>>> Handle(
         GetProjectUsersQuery request,
         CancellationToken cancellationToken)
     {
@@ -32,7 +33,7 @@ internal sealed class GetProjectUsersQueryHandler
                 EF.Functions.Like(u.Email.ToLower(), $"%{searchTerm}%"));
         }
 
-        var users = await query
+        return await query
             .OrderBy(u => u.FirstName)
             .ThenBy(u => u.LastName)
             .Select(u => new ProjectUserResponse(
@@ -40,8 +41,9 @@ internal sealed class GetProjectUsersQueryHandler
                 u.FullName,
                 u.Email,
                 u.ImageUrl))
-            .ToListAsync(cancellationToken);
-
-        return users;
+            .PaginatedListAsync(
+                request.Page,
+                request.PageSize,
+                cancellationToken);
     }
 }

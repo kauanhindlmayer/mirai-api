@@ -1,3 +1,4 @@
+using Application.Abstractions;
 using ErrorOr;
 using MediatR;
 
@@ -5,4 +6,6 @@ namespace Application.Projects.Queries.GetProjectUsers;
 
 public sealed record GetProjectUsersQuery(
     Guid ProjectId,
-    string? SearchTerm = null) : IRequest<ErrorOr<List<ProjectUserResponse>>>;
+    int Page = 1,
+    int PageSize = 10,
+    string? SearchTerm = null) : IRequest<ErrorOr<PaginatedList<ProjectUserResponse>>>;
