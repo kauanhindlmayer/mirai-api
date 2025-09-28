@@ -38,4 +38,15 @@ internal sealed class OrganizationRepository : Repository<Organization>,
             .AsNoTracking()
             .AnyAsync(o => o.Name == name, cancellationToken);
     }
+
+    public Task<bool> IsUserInOrganizationAsync(
+        Guid organizationId,
+        Guid userId,
+        CancellationToken cancellationToken = default)
+    {
+        return _dbContext.Organizations
+            .AsNoTracking()
+            .Where(o => o.Id == organizationId)
+            .AnyAsync(o => o.Users.Any(u => u.Id == userId), cancellationToken);
+    }
 }

@@ -45,11 +45,6 @@ public sealed class Project : AggregateRoot
 
     public ErrorOr<Success> AddUser(User user)
     {
-        if (!Organization.Users.Any(u => u.Id == user.Id))
-        {
-            return ProjectErrors.UserNotInOrganization;
-        }
-
         if (Users.Any(u => u.Id == user.Id))
         {
             return ProjectErrors.UserAlreadyExists;
