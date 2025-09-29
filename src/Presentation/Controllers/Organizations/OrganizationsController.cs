@@ -6,6 +6,7 @@ using Application.Organizations.Commands.DeleteOrganization;
 using Application.Organizations.Commands.RemoveUserFromOrganization;
 using Application.Organizations.Commands.UpdateOrganization;
 using Application.Organizations.Queries.GetOrganization;
+using Application.Organizations.Queries.GetOrganizationUsers;
 using Application.Organizations.Queries.ListOrganizations;
 using Asp.Versioning;
 using Infrastructure;
@@ -162,6 +163,34 @@ public sealed class OrganizationsController : ApiController
         return result.Match(
             _ => NoContent(),
             Problem);
+    }
+
+    /// <summary>
+    /// Retrieve organization users.
+    /// </summary>
+    /// <param name="organizationId">The organization's unique identifier.</param>
+    /// <param name="page">The page number (default is 1).</param>
+    /// <param name="pageSize">The number of users per page (default is 10).</param>
+    /// <param name="searchTerm">Optional search term to filter users by name or email.</param>
+    [HttpGet("{organizationId:guid}/users")]
+    [ProducesResponseType(typeof(PaginatedList<OrganizationUserResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<PaginatedList<OrganizationUserResponse>>> GetOrganizationUsers(
+        Guid organizationId,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10,
+        [FromQuery(Name = "q")] string? searchTerm = null,
+        CancellationToken cancellationToken = default)
+    {
+        var query = new GetOrganizationUsersQuery(
+            organizationId,
+            page,
+            pageSize,
+            searchTerm);
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(Ok, Problem);
     }
 
     /// <summary>
