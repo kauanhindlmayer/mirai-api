@@ -176,24 +176,21 @@ public sealed class ProjectsController : ApiController
     /// Get users that belong to a project.
     /// </summary>
     /// <param name="projectId">The project's unique identifier.</param>
-    /// <param name="page">The page number to retrieve (default is 1).</param>
-    /// <param name="pageSize">The number of users per page (default is 10).</param>
-    /// <param name="searchTerm">Optional search term to filter users by name or email.</param>
+    /// <param name="pageRequest">Pagination and sorting parameters.</param>
     [HttpGet("{projectId:guid}/users")]
     [ProducesResponseType(typeof(PaginatedList<ProjectUserResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<PaginatedList<ProjectUserResponse>>> GetProjectUsers(
         Guid projectId,
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 10,
-        [FromQuery(Name = "q")] string? searchTerm = null,
+        [FromQuery] PageRequest pageRequest,
         CancellationToken cancellationToken = default)
     {
         var query = new GetProjectUsersQuery(
             projectId,
-            page,
-            pageSize,
-            searchTerm);
+            pageRequest.Page,
+            pageRequest.PageSize,
+            pageRequest.Sort,
+            pageRequest.SearchTerm);
 
         var result = await _sender.Send(query, cancellationToken);
 
