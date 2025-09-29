@@ -40,7 +40,8 @@ internal sealed class GetOrganizationUsersQueryHandler
                 u.Id,
                 u.FullName,
                 u.Email,
-                u.ImageUrl))
+                u.ImageUrl,
+                u.LastActiveAtUtc))
             .PaginatedListAsync(
                 request.Page,
                 request.PageSize,

@@ -4,4 +4,5 @@ public sealed record OrganizationUserResponse(
     Guid Id,
     string FullName,
     string Email,
-    string? ImageUrl);
+    string? ImageUrl,
+    DateTime? LastActiveAtUtc);

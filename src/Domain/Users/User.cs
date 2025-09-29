@@ -19,6 +19,7 @@ public sealed class User : Entity
     public string IdentityId { get; private set; } = string.Empty;
     public string? ImageUrl { get; private set; }
     public Guid? ImageFileId { get; private set; }
+    public DateTime? LastActiveAtUtc { get; private set; }
     public ICollection<WorkItem> WorkItems { get; private set; } = [];
     public ICollection<Organization> Organizations { get; private set; } = [];
     public ICollection<Project> Projects { get; private set; } = [];
@@ -50,5 +51,10 @@ public sealed class User : Entity
     {
         FirstName = firstName;
         LastName = lastName;
+    }
+
+    public void UpdateLastActive()
+    {
+        LastActiveAtUtc = DateTime.UtcNow;
     }
 }

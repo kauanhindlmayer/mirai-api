@@ -42,6 +42,9 @@ internal sealed class LoginUserQueryHandler
             return result.Errors;
         }
 
+        user.UpdateLastActive();
+        _userRepository.Update(user);
+
         return new AccessTokenResponse(result.Value);
     }
 }
