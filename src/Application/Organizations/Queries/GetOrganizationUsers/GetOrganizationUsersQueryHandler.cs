@@ -1,5 +1,7 @@
 using Application.Abstractions;
 using Application.Abstractions.Mappings;
+using Application.Abstractions.Sorting;
+using Domain.Users;
 using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -10,10 +12,14 @@ internal sealed class GetOrganizationUsersQueryHandler
     : IRequestHandler<GetOrganizationUsersQuery, ErrorOr<PaginatedList<OrganizationUserResponse>>>
 {
     private readonly IApplicationDbContext _context;
+    private readonly SortMappingProvider _sortMappingProvider;
 
-    public GetOrganizationUsersQueryHandler(IApplicationDbContext context)
+    public GetOrganizationUsersQueryHandler(
+        IApplicationDbContext context,
+        SortMappingProvider sortMappingProvider)
     {
         _context = context;
+        _sortMappingProvider = sortMappingProvider;
     }
 
     public async Task<ErrorOr<PaginatedList<OrganizationUserResponse>>> Handle(
@@ -33,9 +39,10 @@ internal sealed class GetOrganizationUsersQueryHandler
                 EF.Functions.Like(u.Email.ToLower(), $"%{searchTerm}%"));
         }
 
+        var sortMappings = _sortMappingProvider.GetMappings<OrganizationUserResponse, User>();
+
         return await query
-            .OrderBy(u => u.FirstName)
-            .ThenBy(u => u.LastName)
+            .ApplySorting(request.Sort, sortMappings, nameof(User.FirstName))
             .Select(u => new OrganizationUserResponse(
                 u.Id,
                 u.FullName,

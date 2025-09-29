@@ -1,4 +1,5 @@
 using Application.Abstractions.Authentication;
+using Domain.Shared;
 using Domain.Users;
 using ErrorOr;
 using MediatR;
@@ -10,13 +11,16 @@ internal sealed class LoginUserQueryHandler
 {
     private readonly IUserRepository _userRepository;
     private readonly IJwtService _jwtService;
+    private readonly IUnitOfWork _unitOfWork;
 
     public LoginUserQueryHandler(
         IUserRepository userRepository,
-        IJwtService jwtService)
+        IJwtService jwtService,
+        IUnitOfWork unitOfWork)
     {
         _userRepository = userRepository;
         _jwtService = jwtService;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ErrorOr<AccessTokenResponse>> Handle(
@@ -44,6 +48,7 @@ internal sealed class LoginUserQueryHandler
 
         user.UpdateLastActive();
         _userRepository.Update(user);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return new AccessTokenResponse(result.Value);
     }

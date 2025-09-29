@@ -1,9 +1,11 @@
 using Application.Abstractions.Behaviors;
 using Application.Abstractions.Mappings;
 using Application.Abstractions.Sorting;
+using Application.Organizations.Queries.GetOrganizationUsers;
 using Application.Tags.Queries.ListTags;
 using Application.WorkItems.Queries.ListWorkItems;
 using Domain.Tags;
+using Domain.Users;
 using Domain.WorkItems;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,6 +33,8 @@ public static class DependencyInjection
             WorkItemMappings.SortMapping);
         services.AddSingleton<ISortMappingDefinition, SortMappingDefinition<TagResponse, Tag>>(_ =>
             TagMappings.SortMapping);
+        services.AddSingleton<ISortMappingDefinition, SortMappingDefinition<OrganizationUserResponse, User>>(_ =>
+            OrganizationUserMappings.SortMapping);
 
         return services;
     }

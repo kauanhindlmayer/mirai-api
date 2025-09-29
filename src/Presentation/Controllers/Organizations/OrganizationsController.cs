@@ -13,6 +13,7 @@ using Infrastructure;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Constants;
+using Presentation.Controllers;
 
 namespace Presentation.Controllers.Organizations;
 
@@ -169,24 +170,21 @@ public sealed class OrganizationsController : ApiController
     /// Retrieve organization users.
     /// </summary>
     /// <param name="organizationId">The organization's unique identifier.</param>
-    /// <param name="page">The page number (default is 1).</param>
-    /// <param name="pageSize">The number of users per page (default is 10).</param>
-    /// <param name="searchTerm">Optional search term to filter users by name or email.</param>
+    /// <param name="pageRequest">Pagination and sorting parameters.</param>
     [HttpGet("{organizationId:guid}/users")]
     [ProducesResponseType(typeof(PaginatedList<OrganizationUserResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<PaginatedList<OrganizationUserResponse>>> GetOrganizationUsers(
         Guid organizationId,
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 10,
-        [FromQuery(Name = "q")] string? searchTerm = null,
+        [FromQuery] PageRequest pageRequest,
         CancellationToken cancellationToken = default)
     {
         var query = new GetOrganizationUsersQuery(
             organizationId,
-            page,
-            pageSize,
-            searchTerm);
+            pageRequest.Page,
+            pageRequest.PageSize,
+            pageRequest.Sort,
+            pageRequest.SearchTerm);
 
         var result = await _sender.Send(query, cancellationToken);
 
