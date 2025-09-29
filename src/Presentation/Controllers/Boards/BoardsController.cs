@@ -29,15 +29,17 @@ public sealed class BoardsController : ApiController
     /// </summary>
     /// <param name="teamId">The team's unique identifier.</param>
     /// <param name="boardId">The board's unique identifier.</param>
+    /// <param name="request">Optional filters for the board.</param>
     [HttpGet("{boardId:guid}")]
     [ProducesResponseType(typeof(BoardResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<BoardResponse>> GetBoard(
         Guid teamId,
         Guid boardId,
+        [FromQuery] GetBoardRequest request,
         CancellationToken cancellationToken)
     {
-        var query = new GetBoardQuery(teamId, boardId);
+        var query = new GetBoardQuery(teamId, boardId, request.BacklogLevel);
 
         var result = await _sender.Send(query, cancellationToken);
 

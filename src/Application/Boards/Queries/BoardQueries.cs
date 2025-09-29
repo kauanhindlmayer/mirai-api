@@ -1,7 +1,9 @@
 using System.Linq.Expressions;
 using Application.Boards.Queries.GetBoard;
 using Application.Boards.Queries.ListBoards;
+using Domain.Backlogs;
 using Domain.Boards;
+using Domain.WorkItems.Enums;
 
 namespace Application.Boards.Queries;
 
@@ -9,7 +11,8 @@ internal static class BoardQueries
 {
     private const int MaxCardsPerColumn = 20;
 
-    public static Expression<Func<Board, BoardResponse>> ProjectToDto()
+    public static Expression<Func<Board, BoardResponse>> ProjectToDto(
+        BacklogLevel? backlogLevel)
     {
         return b => new BoardResponse
         {
@@ -27,6 +30,11 @@ internal static class BoardQueries
                     WipLimit = column.WipLimit,
                     DefinitionOfDone = column.DefinitionOfDone,
                     Cards = column.Cards
+                        .Where(card =>
+                            !backlogLevel.HasValue ||
+                            (backlogLevel == BacklogLevel.Epic && card.WorkItem.Type == WorkItemType.Epic && !card.WorkItem.ParentWorkItemId.HasValue) ||
+                            (backlogLevel == BacklogLevel.Feature && card.WorkItem.Type == WorkItemType.Feature) ||
+                            (backlogLevel == BacklogLevel.UserStory && card.WorkItem.Type == WorkItemType.UserStory))
                         .OrderBy(card => card.Position)
                         .Take(MaxCardsPerColumn)
                         .Select(card => new BoardCardResponse

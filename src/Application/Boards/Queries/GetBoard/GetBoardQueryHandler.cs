@@ -16,7 +16,7 @@ internal sealed class GetBoardQueryHandler(IApplicationDbContext dbContext)
         var board = await dbContext.Boards
             .AsNoTracking()
             .Where(b => b.Id == query.BoardId)
-            .Select(BoardQueries.ProjectToDto())
+            .Select(BoardQueries.ProjectToDto(query.BacklogLevel))
             .FirstOrDefaultAsync(cancellationToken);
 
         if (board is null)
