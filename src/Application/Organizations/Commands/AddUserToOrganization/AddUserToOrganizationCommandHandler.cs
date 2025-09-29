@@ -32,8 +32,8 @@ internal sealed class AddUserToOrganizationCommandHandler
             return OrganizationErrors.NotFound;
         }
 
-        var user = await _userRepository.GetByIdAsync(
-            command.UserId,
+        var user = await _userRepository.GetByEmailAsync(
+            command.Email,
             cancellationToken);
 
         if (user is null)

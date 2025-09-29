@@ -205,7 +205,7 @@ public sealed class OrganizationsController : ApiController
     {
         var command = new AddUserToOrganizationCommand(
             organizationId,
-            request.UserId);
+            request.Email);
 
         var result = await _sender.Send(command, cancellationToken);
 
