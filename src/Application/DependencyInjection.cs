@@ -2,6 +2,7 @@ using Application.Abstractions.Behaviors;
 using Application.Abstractions.Mappings;
 using Application.Abstractions.Sorting;
 using Application.Organizations.Queries.GetOrganizationUsers;
+using Application.Projects.Queries.GetProjectUsers;
 using Application.Tags.Queries.ListTags;
 using Application.WorkItems.Queries.ListWorkItems;
 using Domain.Tags;
@@ -35,6 +36,8 @@ public static class DependencyInjection
             TagMappings.SortMapping);
         services.AddSingleton<ISortMappingDefinition, SortMappingDefinition<OrganizationUserResponse, User>>(_ =>
             OrganizationUserMappings.SortMapping);
+        services.AddSingleton<ISortMappingDefinition, SortMappingDefinition<ProjectUserResponse, User>>(_ =>
+            ProjectUserMappings.SortMapping);
 
         return services;
     }

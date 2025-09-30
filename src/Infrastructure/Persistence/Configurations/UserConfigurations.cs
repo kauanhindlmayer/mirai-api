@@ -38,8 +38,8 @@ internal sealed class UserConfigurations : IEntityTypeConfiguration<User>
             .IsUnique();
 
         builder.HasMany(u => u.WorkItems)
-            .WithOne(w => w.AssignedUser)
-            .HasForeignKey(w => w.AssignedUserId)
+            .WithOne(w => w.Assignee)
+            .HasForeignKey(w => w.AssigneeId)
             .OnDelete(DeleteBehavior.SetNull);
     }
 }

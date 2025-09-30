@@ -23,14 +23,14 @@ public class WorkItemTests
         workItem.AssignedTeamId.Should().Be(WorkItemFactory.AssignedTeamId);
         workItem.SprintId.Should().Be(WorkItemFactory.SprintId);
         workItem.ParentWorkItemId.Should().Be(WorkItemFactory.ParentWorkItemId);
-        workItem.AssignedUserId.Should().BeNull();
+        workItem.AssigneeId.Should().BeNull();
         workItem.Description.Should().BeNull();
         workItem.AcceptanceCriteria.Should().BeNull();
         workItem.CompletedAtUtc.Should().BeNull();
     }
 
     [Fact]
-    public void Assign_WithValidUserId_ShouldSetAssignedUserId()
+    public void Assign_WithValidUserId_ShouldSetAssigneeId()
     {
         // Arrange
         var workItem = WorkItemFactory.Create();
@@ -40,7 +40,7 @@ public class WorkItemTests
         workItem.UpdateAssignment(userId);
 
         // Assert
-        workItem.AssignedUserId.Should().Be(userId);
+        workItem.AssigneeId.Should().Be(userId);
     }
 
     [Fact]
@@ -94,7 +94,7 @@ public class WorkItemTests
         workItem.Title.Should().Be(newTitle);
         workItem.Description.Should().Be(newDescription);
         workItem.Status.Should().Be(newStatus);
-        workItem.AssignedUserId.Should().Be(newAssigneeId);
+        workItem.AssigneeId.Should().Be(newAssigneeId);
     }
 
     [Fact]

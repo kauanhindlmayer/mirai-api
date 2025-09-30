@@ -56,7 +56,7 @@ public sealed class Team : AggregateRoot
             return TeamErrors.UserNotFound;
         }
 
-        if (WorkItems.Any(wi => wi.AssignedUserId == userId))
+        if (WorkItems.Any(wi => wi.AssigneeId == userId))
         {
             return TeamErrors.UserHasAssignedWorkItems;
         }

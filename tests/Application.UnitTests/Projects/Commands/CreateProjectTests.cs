@@ -1,6 +1,8 @@
+using Application.Abstractions.Authentication;
 using Application.Projects.Commands.CreateProject;
 using Domain.Organizations;
 using Domain.Projects;
+using Domain.Users;
 
 namespace Application.UnitTests.Projects.Commands;
 
@@ -13,11 +15,18 @@ public class CreateProjectTests
 
     private readonly CreateProjectCommandHandler _handler;
     private readonly IOrganizationRepository _mockOrganizationRepository;
+    private readonly IUserRepository _mockUserRepository;
+    private readonly IUserContext _mockUserContext;
 
     public CreateProjectTests()
     {
         _mockOrganizationRepository = Substitute.For<IOrganizationRepository>();
-        _handler = new CreateProjectCommandHandler(_mockOrganizationRepository);
+        _mockUserRepository = Substitute.For<IUserRepository>();
+        _mockUserContext = Substitute.For<IUserContext>();
+        _handler = new CreateProjectCommandHandler(
+            _mockOrganizationRepository,
+            _mockUserRepository,
+            _mockUserContext);
     }
 
     [Fact]
