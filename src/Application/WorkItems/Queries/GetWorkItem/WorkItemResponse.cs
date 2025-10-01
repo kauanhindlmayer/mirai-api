@@ -14,7 +14,6 @@ public sealed class WorkItemResponse
     public ClassificationResponse? Classification { get; init; }
     public RelatedWorkItemResponse? ParentWorkItem { get; init; }
     public IEnumerable<RelatedWorkItemResponse> ChildWorkItems { get; init; } = [];
-    public Guid? AssigneeId { get; init; }
     public AssigneeResponse? Assignee { get; init; }
     public IEnumerable<WorkItemCommentResponse> Comments { get; init; } = [];
     public IEnumerable<TagResponse> Tags { get; init; } = [];
@@ -29,7 +28,6 @@ public sealed class RelatedWorkItemResponse
     public required string Title { get; init; }
     public required string Status { get; init; }
     public required string Type { get; init; }
-    public Guid? AssigneeId { get; init; }
     public AssigneeResponse? Assignee { get; init; }
 }
 

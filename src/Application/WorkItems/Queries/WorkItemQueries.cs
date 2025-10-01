@@ -1,8 +1,8 @@
 using System.Linq.Expressions;
+using Application.WorkItems.Queries.GetWorkItem;
 using Domain.WorkItems;
 using Pgvector;
 using Pgvector.EntityFrameworkCore;
-using GetWorkItemAssigneeResponse = Application.WorkItems.Queries.GetWorkItem.AssigneeResponse;
 
 namespace Application.WorkItems.Queries;
 
@@ -36,9 +36,9 @@ internal static class WorkItemQueries
         };
     }
 
-    public static Expression<Func<WorkItem, GetWorkItem.WorkItemResponse>> ProjectToDto()
+    public static Expression<Func<WorkItem, WorkItemResponse>> ProjectToDto()
     {
-        return wi => new GetWorkItem.WorkItemResponse
+        return wi => new WorkItemResponse
         {
             Id = wi.Id,
             ProjectId = wi.ProjectId,
@@ -48,28 +48,27 @@ internal static class WorkItemQueries
             AcceptanceCriteria = wi.AcceptanceCriteria,
             Status = wi.Status.ToString(),
             Type = wi.Type.ToString(),
-            Planning = new GetWorkItem.PlanningResponse
+            Planning = new PlanningResponse
             {
                 StoryPoints = wi.Planning.StoryPoints,
                 Priority = wi.Planning.Priority,
             },
-            Classification = new GetWorkItem.ClassificationResponse
+            Classification = new ClassificationResponse
             {
                 ValueArea = wi.Classification.ValueArea.ToString(),
             },
             ParentWorkItem = wi.ParentWorkItem == null
                 ? null
-                : new GetWorkItem.RelatedWorkItemResponse
+                : new RelatedWorkItemResponse
                 {
                     Id = wi.ParentWorkItem.Id,
                     Code = wi.ParentWorkItem.Code,
                     Title = wi.ParentWorkItem.Title,
                     Status = wi.ParentWorkItem.Status.ToString(),
                     Type = wi.ParentWorkItem.Type.ToString(),
-                    AssigneeId = wi.ParentWorkItem.AssigneeId,
                     Assignee = wi.ParentWorkItem.Assignee == null
                         ? null
-                        : new GetWorkItemAssigneeResponse
+                        : new AssigneeResponse
                         {
                             Id = wi.ParentWorkItem.Assignee.Id,
                             FullName = wi.ParentWorkItem.Assignee.FullName,
@@ -77,17 +76,16 @@ internal static class WorkItemQueries
                             ImageUrl = wi.ParentWorkItem.Assignee.ImageUrl,
                         },
                 },
-            ChildWorkItems = wi.ChildWorkItems.Select(cwi => new GetWorkItem.RelatedWorkItemResponse
+            ChildWorkItems = wi.ChildWorkItems.Select(cwi => new RelatedWorkItemResponse
             {
                 Id = cwi.Id,
                 Code = cwi.Code,
                 Title = cwi.Title,
                 Status = cwi.Status.ToString(),
                 Type = cwi.Type.ToString(),
-                AssigneeId = cwi.AssigneeId,
                 Assignee = cwi.Assignee == null
                     ? null
-                    : new GetWorkItemAssigneeResponse
+                    : new AssigneeResponse
                     {
                         Id = cwi.Assignee.Id,
                         FullName = cwi.Assignee.FullName,
@@ -95,20 +93,19 @@ internal static class WorkItemQueries
                         ImageUrl = cwi.Assignee.ImageUrl,
                     },
             }),
-            AssigneeId = wi.AssigneeId,
             Assignee = wi.Assignee == null
                 ? null
-                : new GetWorkItemAssigneeResponse
+                : new AssigneeResponse
                 {
                     Id = wi.Assignee.Id,
                     FullName = wi.Assignee.FullName,
                     Email = wi.Assignee.Email,
                     ImageUrl = wi.Assignee.ImageUrl,
                 },
-            Comments = wi.Comments.Select(comment => new GetWorkItem.WorkItemCommentResponse
+            Comments = wi.Comments.Select(comment => new WorkItemCommentResponse
             {
                 Id = comment.Id,
-                Author = new GetWorkItem.AuthorResponse
+                Author = new AuthorResponse
                 {
                     Id = comment.Author.Id,
                     Name = comment.Author.FullName,
@@ -118,7 +115,7 @@ internal static class WorkItemQueries
                 CreatedAtUtc = comment.CreatedAtUtc,
                 UpdatedAtUtc = comment.UpdatedAtUtc,
             }),
-            Tags = wi.Tags.Select(t => new GetWorkItem.TagResponse
+            Tags = wi.Tags.Select(t => new TagResponse
             {
                 Id = t.Id,
                 Name = t.Name,
