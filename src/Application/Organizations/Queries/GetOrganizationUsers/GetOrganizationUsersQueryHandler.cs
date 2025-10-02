@@ -23,16 +23,22 @@ internal sealed class GetOrganizationUsersQueryHandler
     }
 
     public async Task<ErrorOr<PaginatedList<OrganizationUserResponse>>> Handle(
-        GetOrganizationUsersQuery request,
+        GetOrganizationUsersQuery query,
         CancellationToken cancellationToken)
     {
-        var query = _context.Users
-            .Where(u => u.Organizations.Any(o => o.Id == request.OrganizationId));
+        var usersQuery = _context.Users
+            .Where(u => u.Organizations.Any(o => o.Id == query.OrganizationId));
 
-        if (!string.IsNullOrWhiteSpace(request.SearchTerm))
+        if (query.ExcludeProjectId.HasValue)
         {
-            var searchTerm = request.SearchTerm.Trim().ToLower();
-            query = query.Where(u =>
+            usersQuery = usersQuery.Where(u =>
+                !u.Projects.Any(p => p.Id == query.ExcludeProjectId.Value));
+        }
+
+        if (!string.IsNullOrWhiteSpace(query.SearchTerm))
+        {
+            var searchTerm = query.SearchTerm.Trim().ToLower();
+            usersQuery = usersQuery.Where(u =>
                 EF.Functions.Like(u.FirstName.ToLower(), $"%{searchTerm}%") ||
                 EF.Functions.Like(u.LastName.ToLower(), $"%{searchTerm}%") ||
                 EF.Functions.Like((u.FirstName + " " + u.LastName).ToLower(), $"%{searchTerm}%") ||
@@ -41,8 +47,8 @@ internal sealed class GetOrganizationUsersQueryHandler
 
         var sortMappings = _sortMappingProvider.GetMappings<OrganizationUserResponse, User>();
 
-        return await query
-            .ApplySorting(request.Sort, sortMappings, nameof(User.FirstName))
+        return await usersQuery
+            .ApplySorting(query.Sort, sortMappings, nameof(User.FirstName))
             .Select(u => new OrganizationUserResponse(
                 u.Id,
                 u.FullName,
@@ -50,8 +56,8 @@ internal sealed class GetOrganizationUsersQueryHandler
                 u.ImageUrl,
                 u.LastActiveAtUtc))
             .PaginatedListAsync(
-                request.Page,
-                request.PageSize,
+                query.Page,
+                query.PageSize,
                 cancellationToken);
     }
 }

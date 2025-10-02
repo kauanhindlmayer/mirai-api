@@ -9,4 +9,5 @@ public sealed record GetOrganizationUsersQuery(
     int Page = 1,
     int PageSize = 10,
     string? Sort = null,
-    string? SearchTerm = null) : IRequest<ErrorOr<PaginatedList<OrganizationUserResponse>>>;
+    string? SearchTerm = null,
+    Guid? ExcludeProjectId = null) : IRequest<ErrorOr<PaginatedList<OrganizationUserResponse>>>;
