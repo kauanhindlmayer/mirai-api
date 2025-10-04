@@ -204,6 +204,8 @@ public static class DependencyInjection
     {
         var connectionString = configuration.GetConnectionString("redis");
         services.AddStackExchangeRedisCache(options => options.Configuration = connectionString);
+        services.AddSingleton<StackExchange.Redis.IConnectionMultiplexer>(_ =>
+            StackExchange.Redis.ConnectionMultiplexer.Connect(connectionString!));
         services.AddSingleton<ICacheService, CacheService>();
 
         return services;

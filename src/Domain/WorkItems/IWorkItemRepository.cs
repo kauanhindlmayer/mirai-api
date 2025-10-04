@@ -12,6 +12,10 @@ public interface IWorkItemRepository : IRepository<WorkItem>
         Guid id,
         CancellationToken cancellationToken = default);
 
+    Task<WorkItem?> GetByIdWithLinksAsync(
+        Guid id,
+        CancellationToken cancellationToken = default);
+
     Task<int> GetNextWorkItemCodeAsync(
         Guid projectId,
         CancellationToken cancellationToken = default);

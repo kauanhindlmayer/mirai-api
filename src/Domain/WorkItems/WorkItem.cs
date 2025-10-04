@@ -33,6 +33,8 @@ public sealed class WorkItem : AggregateRoot
     public ICollection<WorkItem> ChildWorkItems { get; private set; } = [];
     public ICollection<Tag> Tags { get; private set; } = [];
     public ICollection<WorkItemComment> Comments { get; private set; } = [];
+    public ICollection<WorkItemLink> OutgoingLinks { get; private set; } = [];
+    public ICollection<WorkItemLink> IncomingLinks { get; private set; } = [];
     public DateTime? StartedAtUtc { get; private set; }
     public DateTime? CompletedAtUtc { get; private set; }
     public Guid? SprintId { get; private set; }
@@ -167,6 +169,36 @@ public sealed class WorkItem : AggregateRoot
         }
 
         Tags.Remove(tag);
+        return Result.Success;
+    }
+
+    public ErrorOr<Success> AddLink(WorkItemLink link)
+    {
+        if (link.SourceWorkItemId == link.TargetWorkItemId)
+        {
+            return WorkItemErrors.CannotLinkToSelf;
+        }
+
+        if (OutgoingLinks.Any(l =>
+            l.TargetWorkItemId == link.TargetWorkItemId &&
+            l.LinkType == link.LinkType))
+        {
+            return WorkItemErrors.LinkAlreadyExists;
+        }
+
+        OutgoingLinks.Add(link);
+        return Result.Success;
+    }
+
+    public ErrorOr<Success> RemoveLink(Guid linkId)
+    {
+        var link = OutgoingLinks.FirstOrDefault(l => l.Id == linkId);
+        if (link is null)
+        {
+            return WorkItemErrors.LinkNotFound;
+        }
+
+        OutgoingLinks.Remove(link);
         return Result.Success;
     }
 

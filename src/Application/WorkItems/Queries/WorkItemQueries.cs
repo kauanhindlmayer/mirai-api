@@ -121,6 +121,29 @@ internal static class WorkItemQueries
                 Name = t.Name,
                 Color = t.Color,
             }),
+            Links = wi.OutgoingLinks.Select(l => new WorkItemLinkResponse
+            {
+                Id = l.Id,
+                TargetWorkItem = new RelatedWorkItemResponse
+                {
+                    Id = l.TargetWorkItem.Id,
+                    Code = l.TargetWorkItem.Code,
+                    Title = l.TargetWorkItem.Title,
+                    Status = l.TargetWorkItem.Status.ToString(),
+                    Type = l.TargetWorkItem.Type.ToString(),
+                    Assignee = l.TargetWorkItem.Assignee == null
+                        ? null
+                        : new AssigneeResponse
+                        {
+                            Id = l.TargetWorkItem.Assignee.Id,
+                            FullName = l.TargetWorkItem.Assignee.FullName,
+                            Email = l.TargetWorkItem.Assignee.Email,
+                            ImageUrl = l.TargetWorkItem.Assignee.ImageUrl,
+                        },
+                },
+                LinkType = l.LinkType.ToString(),
+                Comment = l.Comment,
+            }),
             CreatedAtUtc = wi.CreatedAtUtc,
             UpdatedAtUtc = wi.UpdatedAtUtc,
         };

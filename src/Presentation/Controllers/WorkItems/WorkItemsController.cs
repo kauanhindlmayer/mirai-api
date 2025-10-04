@@ -5,7 +5,9 @@ using Application.WorkItems.Commands.AddTag;
 using Application.WorkItems.Commands.AssignWorkItem;
 using Application.WorkItems.Commands.CreateWorkItem;
 using Application.WorkItems.Commands.DeleteWorkItem;
+using Application.WorkItems.Commands.LinkWorkItems;
 using Application.WorkItems.Commands.RemoveTag;
+using Application.WorkItems.Commands.UnlinkWorkItems;
 using Application.WorkItems.Commands.UpdateComment;
 using Application.WorkItems.Queries.GetWorkItem;
 using Application.WorkItems.Queries.GetWorkItemsStats;
@@ -309,6 +311,57 @@ public sealed class WorkItemsController : ApiController
         CancellationToken cancellationToken)
     {
         var command = new DeleteWorkItemCommand(workItemId);
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        return result.Match(
+            _ => NoContent(),
+            Problem);
+    }
+
+    /// <summary>
+    /// Link two work items with a specific relationship type.
+    /// </summary>
+    /// <param name="projectId">The project's unique identifier.</param>
+    /// <param name="workItemId">The source work item's unique identifier.</param>
+    /// <param name="request">The link request containing target work item and link type.</param>
+    [HttpPost("{workItemId:guid}/links")]
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<Guid>> LinkWorkItems(
+        Guid projectId,
+        Guid workItemId,
+        LinkWorkItemRequest request,
+        CancellationToken cancellationToken)
+    {
+        var command = new LinkWorkItemsCommand(
+            workItemId,
+            request.TargetWorkItemId,
+            request.LinkType,
+            request.Comment);
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        return result.Match(
+            linkId => CreatedAtAction(nameof(GetWorkItem), new { projectId, workItemId }, linkId),
+            Problem);
+    }
+
+    /// <summary>
+    /// Remove a link between work items.
+    /// </summary>
+    /// <param name="workItemId">The source work item's unique identifier.</param>
+    /// <param name="linkId">The link's unique identifier.</param>
+    [HttpDelete("{workItemId:guid}/links/{linkId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> UnlinkWorkItems(
+        Guid workItemId,
+        Guid linkId,
+        CancellationToken cancellationToken)
+    {
+        var command = new UnlinkWorkItemsCommand(workItemId, linkId);
 
         var result = await _sender.Send(command, cancellationToken);
 

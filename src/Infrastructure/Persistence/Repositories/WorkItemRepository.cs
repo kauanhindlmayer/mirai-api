@@ -28,6 +28,15 @@ internal sealed class WorkItemRepository : Repository<WorkItem>, IWorkItemReposi
             .FirstOrDefaultAsync(wi => wi.Id == id, cancellationToken);
     }
 
+    public async Task<WorkItem?> GetByIdWithLinksAsync(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.WorkItems
+            .Include(wi => wi.OutgoingLinks)
+            .FirstOrDefaultAsync(wi => wi.Id == id, cancellationToken);
+    }
+
     public async Task<int> GetNextWorkItemCodeAsync(
         Guid projectId,
         CancellationToken cancellationToken = default)

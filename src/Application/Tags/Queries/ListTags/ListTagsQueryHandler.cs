@@ -32,7 +32,7 @@ internal sealed class ListTagsQueryHandler
         }
 
         var tagsQuery = _context.Tags.Where(t => t.ProjectId == query.ProjectId);
-        query.SearchTerm ??= query.SearchTerm?.Trim().ToLower();
+        query.SearchTerm = query.SearchTerm?.Trim().ToLower();
 
         var sortMappings = _sortMappingProvider.GetMappings<TagResponse, Tag>();
 

@@ -6,7 +6,8 @@ namespace Infrastructure.Persistence.Configurations;
 
 internal sealed class WorkItemConfigurations :
     IEntityTypeConfiguration<WorkItem>,
-    IEntityTypeConfiguration<WorkItemComment>
+    IEntityTypeConfiguration<WorkItemComment>,
+    IEntityTypeConfiguration<WorkItemLink>
 {
     public void Configure(EntityTypeBuilder<WorkItem> builder)
     {
@@ -83,6 +84,16 @@ internal sealed class WorkItemConfigurations :
             .WithMany(t => t.WorkItems)
             .UsingEntity(j => j.ToTable("work_item_tags"));
 
+        builder.HasMany(wi => wi.OutgoingLinks)
+            .WithOne(wil => wil.SourceWorkItem)
+            .HasForeignKey(wil => wil.SourceWorkItemId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(wi => wi.IncomingLinks)
+            .WithOne(wil => wil.TargetWorkItem)
+            .HasForeignKey(wil => wil.TargetWorkItemId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         builder.Property(wi => wi.CompletedAtUtc);
 
         builder.HasOne(wi => wi.Sprint)
@@ -117,5 +128,34 @@ internal sealed class WorkItemConfigurations :
             .WithMany()
             .HasForeignKey(p => p.AuthorId)
             .OnDelete(DeleteBehavior.Restrict);
+    }
+
+    public void Configure(EntityTypeBuilder<WorkItemLink> builder)
+    {
+        builder.HasKey(wil => wil.Id);
+
+        builder.Property(wil => wil.Id)
+            .ValueGeneratedNever();
+
+        builder.Property(wil => wil.SourceWorkItemId)
+            .IsRequired();
+
+        builder.Property(wil => wil.TargetWorkItemId)
+            .IsRequired();
+
+        builder.Property(wil => wil.LinkType)
+            .HasConversion<string>()
+            .IsRequired();
+
+        builder.Property(wil => wil.Comment)
+            .HasMaxLength(500);
+
+        builder.HasIndex(wil => wil.SourceWorkItemId);
+        builder.HasIndex(wil => wil.TargetWorkItemId);
+        builder.HasIndex(wil => wil.LinkType);
+
+        // Prevent duplicate links
+        builder.HasIndex(wil => new { wil.SourceWorkItemId, wil.TargetWorkItemId, wil.LinkType })
+            .IsUnique();
     }
 }

@@ -17,6 +17,7 @@ public sealed class WorkItemResponse
     public AssigneeResponse? Assignee { get; init; }
     public IEnumerable<WorkItemCommentResponse> Comments { get; init; } = [];
     public IEnumerable<TagResponse> Tags { get; init; } = [];
+    public IEnumerable<WorkItemLinkResponse> Links { get; init; } = [];
     public DateTime CreatedAtUtc { get; init; }
     public DateTime? UpdatedAtUtc { get; init; }
 }
@@ -71,5 +72,13 @@ public sealed class TagResponse
     public Guid Id { get; init; }
     public required string Name { get; init; }
     public required string Color { get; init; }
+}
+
+public sealed class WorkItemLinkResponse
+{
+    public Guid Id { get; init; }
+    public RelatedWorkItemResponse TargetWorkItem { get; init; } = null!;
+    public required string LinkType { get; init; }
+    public string? Comment { get; init; }
 }
 

@@ -32,7 +32,7 @@ internal sealed class ListWorkItemsQueryHandler
         }
 
         var workItemsQuery = _context.WorkItems.Where(wi => wi.ProjectId == query.ProjectId);
-        query.SearchTerm ??= query.SearchTerm?.Trim().ToLower();
+        query.SearchTerm = query.SearchTerm?.Trim().ToLower();
 
         var sortMappings = _sortMappingProvider.GetMappings<WorkItemBriefResponse, WorkItem>();
 
