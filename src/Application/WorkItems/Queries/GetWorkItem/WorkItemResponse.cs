@@ -16,6 +16,7 @@ public sealed class WorkItemResponse
     public IEnumerable<RelatedWorkItemResponse> ChildWorkItems { get; init; } = [];
     public AssigneeResponse? Assignee { get; init; }
     public IEnumerable<WorkItemCommentResponse> Comments { get; init; } = [];
+    public IEnumerable<WorkItemAttachmentResponse> Attachments { get; init; } = [];
     public IEnumerable<TagResponse> Tags { get; init; } = [];
     public IEnumerable<WorkItemLinkResponse> OutgoingLinks { get; init; } = [];
     public IEnumerable<WorkItemLinkResponse> IncomingLinks { get; init; } = [];
@@ -81,5 +82,15 @@ public sealed class WorkItemLinkResponse
     public RelatedWorkItemResponse TargetWorkItem { get; init; } = null!;
     public required string LinkType { get; init; }
     public string? Comment { get; init; }
+}
+
+public sealed class WorkItemAttachmentResponse
+{
+    public Guid Id { get; init; }
+    public required string FileName { get; init; }
+    public required string ContentType { get; init; }
+    public long FileSizeBytes { get; init; }
+    public Guid AuthorId { get; init; }
+    public DateTime CreatedAtUtc { get; init; }
 }
 

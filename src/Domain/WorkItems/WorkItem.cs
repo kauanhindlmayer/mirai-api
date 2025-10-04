@@ -33,6 +33,7 @@ public sealed class WorkItem : AggregateRoot
     public ICollection<WorkItem> ChildWorkItems { get; private set; } = [];
     public ICollection<Tag> Tags { get; private set; } = [];
     public ICollection<WorkItemComment> Comments { get; private set; } = [];
+    public ICollection<WorkItemAttachment> Attachments { get; private set; } = [];
     public ICollection<WorkItemLink> OutgoingLinks { get; private set; } = [];
     public ICollection<WorkItemLink> IncomingLinks { get; private set; } = [];
     public DateTime? StartedAtUtc { get; private set; }
@@ -200,6 +201,23 @@ public sealed class WorkItem : AggregateRoot
 
         OutgoingLinks.Remove(link);
         return Result.Success;
+    }
+
+    public void AddAttachment(WorkItemAttachment attachment)
+    {
+        Attachments.Add(attachment);
+    }
+
+    public ErrorOr<WorkItemAttachment> RemoveAttachment(Guid attachmentId)
+    {
+        var attachment = Attachments.FirstOrDefault(a => a.Id == attachmentId);
+        if (attachment is null)
+        {
+            return WorkItemErrors.AttachmentNotFound;
+        }
+
+        Attachments.Remove(attachment);
+        return attachment;
     }
 
     public void SetSearchVector(float[] embedding)

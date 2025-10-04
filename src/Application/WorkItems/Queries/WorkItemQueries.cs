@@ -116,6 +116,15 @@ internal static class WorkItemQueries
                 CreatedAtUtc = comment.CreatedAtUtc,
                 UpdatedAtUtc = comment.UpdatedAtUtc,
             }),
+            Attachments = wi.Attachments.Select(a => new WorkItemAttachmentResponse
+            {
+                Id = a.Id,
+                FileName = a.FileName,
+                ContentType = a.ContentType,
+                FileSizeBytes = a.FileSizeBytes,
+                AuthorId = a.AuthorId,
+                CreatedAtUtc = a.CreatedAtUtc,
+            }),
             Tags = wi.Tags.Select(t => new TagResponse
             {
                 Id = t.Id,

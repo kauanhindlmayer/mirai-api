@@ -43,4 +43,8 @@ public static class WorkItemErrors
     public static readonly Error TargetWorkItemNotFound = Error.NotFound(
         code: "WorkItem.TargetWorkItemNotFound",
         description: "Target work item not found");
+
+    public static readonly Error AttachmentNotFound = Error.NotFound(
+        code: "WorkItem.AttachmentNotFound",
+        description: "Attachment not found");
 }

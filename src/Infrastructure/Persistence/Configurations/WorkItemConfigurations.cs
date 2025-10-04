@@ -7,6 +7,7 @@ namespace Infrastructure.Persistence.Configurations;
 internal sealed class WorkItemConfigurations :
     IEntityTypeConfiguration<WorkItem>,
     IEntityTypeConfiguration<WorkItemComment>,
+    IEntityTypeConfiguration<WorkItemAttachment>,
     IEntityTypeConfiguration<WorkItemLink>
 {
     public void Configure(EntityTypeBuilder<WorkItem> builder)
@@ -80,6 +81,10 @@ internal sealed class WorkItemConfigurations :
             .WithOne(c => c.WorkItem)
             .HasForeignKey(c => c.WorkItemId);
 
+        builder.HasMany(wi => wi.Attachments)
+            .WithOne(a => a.WorkItem)
+            .HasForeignKey(a => a.WorkItemId);
+
         builder.HasMany(wi => wi.Tags)
             .WithMany(t => t.WorkItems)
             .UsingEntity(j => j.ToTable("work_item_tags"));
@@ -128,6 +133,37 @@ internal sealed class WorkItemConfigurations :
             .WithMany()
             .HasForeignKey(p => p.AuthorId)
             .OnDelete(DeleteBehavior.Restrict);
+    }
+
+    public void Configure(EntityTypeBuilder<WorkItemAttachment> builder)
+    {
+        builder.HasKey(wia => wia.Id);
+
+        builder.Property(wia => wia.Id)
+            .ValueGeneratedNever();
+
+        builder.Property(wia => wia.WorkItemId)
+            .IsRequired();
+
+        builder.Property(wia => wia.FileName)
+            .IsRequired()
+            .HasMaxLength(255);
+
+        builder.Property(wia => wia.BlobId)
+            .IsRequired();
+
+        builder.Property(wia => wia.ContentType)
+            .IsRequired()
+            .HasMaxLength(100);
+
+        builder.Property(wia => wia.FileSizeBytes)
+            .IsRequired();
+
+        builder.Property(wia => wia.AuthorId)
+            .IsRequired();
+
+        builder.HasIndex(wia => wia.WorkItemId);
+        builder.HasIndex(wia => wia.BlobId);
     }
 
     public void Configure(EntityTypeBuilder<WorkItemLink> builder)

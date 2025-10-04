@@ -4,11 +4,14 @@ using Application.WorkItems.Commands.AddComment;
 using Application.WorkItems.Commands.AddTag;
 using Application.WorkItems.Commands.AssignWorkItem;
 using Application.WorkItems.Commands.CreateWorkItem;
+using Application.WorkItems.Commands.DeleteAttachment;
 using Application.WorkItems.Commands.DeleteWorkItem;
 using Application.WorkItems.Commands.LinkWorkItems;
 using Application.WorkItems.Commands.RemoveTag;
 using Application.WorkItems.Commands.UnlinkWorkItems;
 using Application.WorkItems.Commands.UpdateComment;
+using Application.WorkItems.Commands.UploadAttachment;
+using Application.WorkItems.Queries.DownloadAttachment;
 using Application.WorkItems.Queries.GetWorkItem;
 using Application.WorkItems.Queries.GetWorkItemsStats;
 using Application.WorkItems.Queries.ListWorkItems;
@@ -362,6 +365,85 @@ public sealed class WorkItemsController : ApiController
         CancellationToken cancellationToken)
     {
         var command = new UnlinkWorkItemsCommand(workItemId, linkId);
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        return result.Match(
+            _ => NoContent(),
+            Problem);
+    }
+
+    /// <summary>
+    /// Upload an attachment to a work item.
+    /// </summary>
+    /// <param name="projectId">The project's unique identifier.</param>
+    /// <param name="workItemId">The work item's unique identifier.</param>
+    /// <param name="file">The file to upload.</param>
+    [HttpPost("{workItemId:guid}/attachments")]
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<Guid>> UploadAttachment(
+        Guid projectId,
+        Guid workItemId,
+        IFormFile file,
+        CancellationToken cancellationToken)
+    {
+        await using var stream = file.OpenReadStream();
+
+        var command = new UploadAttachmentCommand(
+            workItemId,
+            file.FileName,
+            file.ContentType,
+            file.Length,
+            stream);
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        return result.Match(
+            attachmentId => CreatedAtAction(
+                nameof(GetWorkItem),
+                new { projectId, workItemId },
+                attachmentId),
+            Problem);
+    }
+
+    /// <summary>
+    /// Download an attachment from a work item.
+    /// </summary>
+    /// <param name="workItemId">The work item's unique identifier.</param>
+    /// <param name="attachmentId">The attachment's unique identifier.</param>
+    [HttpGet("{workItemId:guid}/attachments/{attachmentId:guid}")]
+    [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> DownloadAttachment(
+        Guid workItemId,
+        Guid attachmentId,
+        CancellationToken cancellationToken)
+    {
+        var query = new DownloadAttachmentQuery(workItemId, attachmentId);
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(
+            file => File(file.Stream, file.ContentType, file.FileName),
+            Problem);
+    }
+
+    /// <summary>
+    /// Delete an attachment from a work item.
+    /// </summary>
+    /// <param name="workItemId">The work item's unique identifier.</param>
+    /// <param name="attachmentId">The attachment's unique identifier.</param>
+    [HttpDelete("{workItemId:guid}/attachments/{attachmentId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> DeleteAttachment(
+        Guid workItemId,
+        Guid attachmentId,
+        CancellationToken cancellationToken)
+    {
+        var command = new DeleteAttachmentCommand(workItemId, attachmentId);
 
         var result = await _sender.Send(command, cancellationToken);
 
