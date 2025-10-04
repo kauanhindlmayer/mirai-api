@@ -17,7 +17,8 @@ public sealed class WorkItemResponse
     public AssigneeResponse? Assignee { get; init; }
     public IEnumerable<WorkItemCommentResponse> Comments { get; init; } = [];
     public IEnumerable<TagResponse> Tags { get; init; } = [];
-    public IEnumerable<WorkItemLinkResponse> Links { get; init; } = [];
+    public IEnumerable<WorkItemLinkResponse> OutgoingLinks { get; init; } = [];
+    public IEnumerable<WorkItemLinkResponse> IncomingLinks { get; init; } = [];
     public DateTime CreatedAtUtc { get; init; }
     public DateTime? UpdatedAtUtc { get; init; }
 }

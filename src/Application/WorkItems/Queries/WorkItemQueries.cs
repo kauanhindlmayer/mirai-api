@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using Application.WorkItems.Queries.GetWorkItem;
 using Domain.WorkItems;
+using Domain.WorkItems.Enums;
 using Pgvector;
 using Pgvector.EntityFrameworkCore;
 
@@ -121,7 +122,7 @@ internal static class WorkItemQueries
                 Name = t.Name,
                 Color = t.Color,
             }),
-            Links = wi.OutgoingLinks.Select(l => new WorkItemLinkResponse
+            OutgoingLinks = wi.OutgoingLinks.Select(l => new WorkItemLinkResponse
             {
                 Id = l.Id,
                 TargetWorkItem = new RelatedWorkItemResponse
@@ -141,7 +142,30 @@ internal static class WorkItemQueries
                             ImageUrl = l.TargetWorkItem.Assignee.ImageUrl,
                         },
                 },
-                LinkType = l.LinkType.ToString(),
+                LinkType = l.LinkType.GetForwardName(),
+                Comment = l.Comment,
+            }),
+            IncomingLinks = wi.IncomingLinks.Select(l => new WorkItemLinkResponse
+            {
+                Id = l.Id,
+                TargetWorkItem = new RelatedWorkItemResponse
+                {
+                    Id = l.SourceWorkItem.Id,
+                    Code = l.SourceWorkItem.Code,
+                    Title = l.SourceWorkItem.Title,
+                    Status = l.SourceWorkItem.Status.ToString(),
+                    Type = l.SourceWorkItem.Type.ToString(),
+                    Assignee = l.SourceWorkItem.Assignee == null
+                        ? null
+                        : new AssigneeResponse
+                        {
+                            Id = l.SourceWorkItem.Assignee.Id,
+                            FullName = l.SourceWorkItem.Assignee.FullName,
+                            Email = l.SourceWorkItem.Assignee.Email,
+                            ImageUrl = l.SourceWorkItem.Assignee.ImageUrl,
+                        },
+                },
+                LinkType = l.LinkType.GetReverseName(),
                 Comment = l.Comment,
             }),
             CreatedAtUtc = wi.CreatedAtUtc,
