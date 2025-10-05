@@ -4,6 +4,7 @@ using Application.Boards.Commands.DeleteBoard;
 using Application.Boards.Commands.DeleteColumn;
 using Application.Boards.Commands.MoveCard;
 using Application.Boards.Queries.GetBoard;
+using Application.Boards.Queries.GetColumnCards;
 using Application.Boards.Queries.ListBoards;
 using Asp.Versioning;
 using MediatR;
@@ -37,7 +38,7 @@ public sealed class BoardsController : ApiController
         [FromQuery] GetBoardRequest request,
         CancellationToken cancellationToken)
     {
-        var query = new GetBoardQuery(boardId, request.BacklogLevel);
+        var query = new GetBoardQuery(boardId, request.BacklogLevel, request.PageSize);
 
         var result = await _sender.Send(query, cancellationToken);
 
@@ -167,5 +168,32 @@ public sealed class BoardsController : ApiController
         return result.Match(
             _ => NoContent(),
             Problem);
+    }
+
+    /// <summary>
+    /// Get cards for a specific column.
+    /// </summary>
+    /// <param name="boardId">The board's unique identifier.</param>
+    /// <param name="columnId">The column's unique identifier.</param>
+    /// <param name="request">Optional filters and pagination parameters.</param>
+    [HttpGet("{boardId:guid}/columns/{columnId:guid}/cards")]
+    [ProducesResponseType(typeof(ColumnCardsResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ColumnCardsResponse>> GetColumnCards(
+        Guid boardId,
+        Guid columnId,
+        [FromQuery] GetColumnCardsRequest request,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetColumnCardsQuery(
+            boardId,
+            columnId,
+            request.BacklogLevel,
+            request.PageSize,
+            request.Page);
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(Ok, Problem);
     }
 }

@@ -17,6 +17,8 @@ namespace Application.Abstractions;
 public interface IApplicationDbContext
 {
     DbSet<Board> Boards { get; }
+    DbSet<BoardColumn> BoardColumns { get; }
+    DbSet<BoardCard> BoardCards { get; }
     DbSet<Organization> Organizations { get; }
     DbSet<Project> Projects { get; }
     DbSet<Retrospective> Retrospectives { get; }

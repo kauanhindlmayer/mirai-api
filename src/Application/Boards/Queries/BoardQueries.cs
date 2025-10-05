@@ -10,7 +10,8 @@ namespace Application.Boards.Queries;
 internal static class BoardQueries
 {
     public static Expression<Func<Board, BoardResponse>> ProjectToDto(
-        BacklogLevel? backlogLevel)
+        BacklogLevel? backlogLevel,
+        int pageSize)
     {
         return b => new BoardResponse
         {
@@ -27,6 +28,18 @@ internal static class BoardQueries
                     IsDefault = column.IsDefault,
                     WipLimit = column.WipLimit,
                     DefinitionOfDone = column.DefinitionOfDone,
+                    TotalCardCount = column.Cards
+                        .Count(card =>
+                            !backlogLevel.HasValue ||
+                            (backlogLevel == BacklogLevel.Epic && card.WorkItem.Type == WorkItemType.Epic && !card.WorkItem.ParentWorkItemId.HasValue) ||
+                            (backlogLevel == BacklogLevel.Feature && card.WorkItem.Type == WorkItemType.Feature) ||
+                            (backlogLevel == BacklogLevel.UserStory && card.WorkItem.Type == WorkItemType.UserStory)),
+                    HasMoreCards = column.Cards
+                        .Count(card =>
+                            !backlogLevel.HasValue ||
+                            (backlogLevel == BacklogLevel.Epic && card.WorkItem.Type == WorkItemType.Epic && !card.WorkItem.ParentWorkItemId.HasValue) ||
+                            (backlogLevel == BacklogLevel.Feature && card.WorkItem.Type == WorkItemType.Feature) ||
+                            (backlogLevel == BacklogLevel.UserStory && card.WorkItem.Type == WorkItemType.UserStory)) > pageSize,
                     Cards = column.Cards
                         .Where(card =>
                             !backlogLevel.HasValue ||
@@ -34,6 +47,7 @@ internal static class BoardQueries
                             (backlogLevel == BacklogLevel.Feature && card.WorkItem.Type == WorkItemType.Feature) ||
                             (backlogLevel == BacklogLevel.UserStory && card.WorkItem.Type == WorkItemType.UserStory))
                         .OrderBy(card => card.Position)
+                        .Take(pageSize)
                         .Select(card => new BoardCardResponse
                         {
                             Id = card.Id,
