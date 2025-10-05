@@ -13,7 +13,7 @@ using Presentation.Constants;
 namespace Presentation.Controllers.Boards;
 
 [ApiVersion(ApiVersions.V1)]
-[Route("api/teams/{teamId:guid}/boards")]
+[Route("api/boards")]
 [Produces(MediaTypeNames.Application.Json, CustomMediaTypeNames.Application.JsonV1)]
 public sealed class BoardsController : ApiController
 {
@@ -27,19 +27,17 @@ public sealed class BoardsController : ApiController
     /// <summary>
     /// Retrieve a board.
     /// </summary>
-    /// <param name="teamId">The team's unique identifier.</param>
     /// <param name="boardId">The board's unique identifier.</param>
     /// <param name="request">Optional filters for the board.</param>
     [HttpGet("{boardId:guid}")]
     [ProducesResponseType(typeof(BoardResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<BoardResponse>> GetBoard(
-        Guid teamId,
         Guid boardId,
         [FromQuery] GetBoardRequest request,
         CancellationToken cancellationToken)
     {
-        var query = new GetBoardQuery(teamId, boardId, request.BacklogLevel);
+        var query = new GetBoardQuery(boardId, request.BacklogLevel);
 
         var result = await _sender.Send(query, cancellationToken);
 
@@ -90,7 +88,6 @@ public sealed class BoardsController : ApiController
     /// <summary>
     /// Create a column in the board.
     /// </summary>
-    /// <param name="teamId">The team's unique identifier.</param>
     /// <param name="boardId">The board's unique identifier.</param>
     /// <returns>The unique identifier of the created column.</returns>
     [HttpPost("{boardId:guid}/columns")]
@@ -98,7 +95,6 @@ public sealed class BoardsController : ApiController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> CreateColumn(
-        Guid teamId,
         Guid boardId,
         CreateColumnRequest request,
         CancellationToken cancellationToken)
@@ -113,10 +109,7 @@ public sealed class BoardsController : ApiController
         var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
-            columnId => CreatedAtAction(
-                nameof(GetBoard),
-                new { teamId, boardId },
-                columnId),
+            columnId => Ok(columnId),
             Problem);
     }
 

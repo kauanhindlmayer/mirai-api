@@ -5,7 +5,6 @@ using MediatR;
 namespace Application.Retrospectives.Commands.UpdateRetrospective;
 
 public sealed record UpdateRetrospectiveCommand(
-    Guid TeamId,
     Guid RetrospectiveId,
     string Title,
     int? MaxVotesPerUser,

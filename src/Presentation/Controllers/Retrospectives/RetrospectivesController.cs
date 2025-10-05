@@ -17,7 +17,7 @@ using Presentation.Hubs;
 namespace Presentation.Controllers.Retrospectives;
 
 [ApiVersion(ApiVersions.V1)]
-[Route("api/teams/{teamId:guid}/retrospectives")]
+[Route("api/retrospectives")]
 [Produces(MediaTypeNames.Application.Json, CustomMediaTypeNames.Application.JsonV1)]
 public sealed class RetrospectivesController : ApiController
 {
@@ -39,13 +39,11 @@ public sealed class RetrospectivesController : ApiController
     /// When a retrospective is created, default columns are initialized based
     /// on the chosen template.
     /// </remarks>
-    /// <param name="teamId">The team's unique identifier.</param>
     /// <returns>The unique identifier of the created retrospective.</returns>
     [HttpPost]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<Guid>> CreateRetrospective(
-        Guid teamId,
         CreateRetrospectiveRequest request,
         CancellationToken cancellationToken)
     {
@@ -53,14 +51,14 @@ public sealed class RetrospectivesController : ApiController
             request.Title,
             request.MaxVotesPerUser,
             request.Template,
-            teamId);
+            request.TeamId);
 
         var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(
             retrospectiveId => CreatedAtAction(
                 nameof(GetRetrospective),
-                new { teamId, retrospectiveId },
+                new { retrospectiveId },
                 retrospectiveId),
             Problem);
     }
@@ -86,14 +84,12 @@ public sealed class RetrospectivesController : ApiController
     /// <summary>
     /// Create a new column in a retrospective session.
     /// </summary>
-    /// <param name="teamId">The team's unique identifier.</param>
     /// <param name="retrospectiveId">The retrospective session's unique identifier.</param>
     /// <returns>The unique identifier of retrospective session.</returns>
     [HttpPost("{retrospectiveId:guid}/columns")]
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Guid>> CreateColumn(
-        Guid teamId,
         Guid retrospectiveId,
         CreateColumnRequest request,
         CancellationToken cancellationToken)
@@ -107,7 +103,7 @@ public sealed class RetrospectivesController : ApiController
         return result.Match(
             columnId => CreatedAtAction(
                 nameof(GetRetrospective),
-                new { teamId, retrospectiveId },
+                new { retrospectiveId },
                 columnId),
             Problem);
     }
@@ -115,7 +111,6 @@ public sealed class RetrospectivesController : ApiController
     /// <summary>
     /// Create a new retrospective item.
     /// </summary>
-    /// <param name="teamId">The team's unique identifier.</param>
     /// <param name="retrospectiveId">The retrospective session's unique identifier.</param>
     /// <param name="columnId">The column's unique identifier.</param>
     /// <returns>The unique identifier of the created item.</returns>
@@ -123,7 +118,6 @@ public sealed class RetrospectivesController : ApiController
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Guid>> CreateItem(
-        Guid teamId,
         Guid retrospectiveId,
         Guid columnId,
         CreateItemRequest request,
@@ -144,7 +138,7 @@ public sealed class RetrospectivesController : ApiController
         await _hubContext.Clients.All.SendRetrospectiveItem(result.Value);
         return CreatedAtAction(
             nameof(GetRetrospective),
-            new { teamId, retrospectiveId },
+            new { retrospectiveId },
             result.Value.Id);
     }
 
@@ -183,7 +177,7 @@ public sealed class RetrospectivesController : ApiController
     /// Retrieve all retrospective sessions for a team.
     /// </summary>
     /// <param name="teamId">The team's unique identifier.</param>
-    [HttpGet]
+    [HttpGet("/api/teams/{teamId:guid}/retrospectives")]
     [ProducesResponseType(typeof(IReadOnlyList<RetrospectiveResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IReadOnlyList<RetrospectiveResponse>>> ListRetrospectives(
@@ -200,7 +194,6 @@ public sealed class RetrospectivesController : ApiController
     /// <summary>
     /// Update a retrospective session.
     /// </summary>
-    /// <param name="teamId">The team's unique identifier.</param>
     /// <param name="retrospectiveId">The retrospective session's unique identifier.</param>
     /// <param name="request">The request containing the updated details.</param>
     /// <remarks>
@@ -210,13 +203,11 @@ public sealed class RetrospectivesController : ApiController
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Guid>> UpdateRetrospective(
-        Guid teamId,
         Guid retrospectiveId,
         UpdateRetrospectiveRequest request,
         CancellationToken cancellationToken)
     {
         var command = new UpdateRetrospectiveCommand(
-            teamId,
             retrospectiveId,
             request.Title,
             request.MaxVotesPerUser,
@@ -227,7 +218,7 @@ public sealed class RetrospectivesController : ApiController
         return result.Match(
             _ => CreatedAtAction(
                 nameof(GetRetrospective),
-                new { teamId, retrospectiveId },
+                new { retrospectiveId },
                 retrospectiveId),
             Problem);
     }
@@ -235,19 +226,15 @@ public sealed class RetrospectivesController : ApiController
     /// <summary>
     /// Delete a retrospective session.
     /// </summary>
-    /// <param name="teamId">The team's unique identifier.</param>
     /// <param name="retrospectiveId">The retrospective session's unique identifier.</param>
     [HttpDelete("{retrospectiveId:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> DeleteRetrospective(
-        Guid teamId,
         Guid retrospectiveId,
         CancellationToken cancellationToken)
     {
-        var command = new DeleteRetrospectiveCommand(
-            teamId,
-            retrospectiveId);
+        var command = new DeleteRetrospectiveCommand(retrospectiveId);
 
         var result = await _sender.Send(command, cancellationToken);
 

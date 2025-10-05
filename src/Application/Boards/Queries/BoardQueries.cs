@@ -9,8 +9,6 @@ namespace Application.Boards.Queries;
 
 internal static class BoardQueries
 {
-    private const int MaxCardsPerColumn = 20;
-
     public static Expression<Func<Board, BoardResponse>> ProjectToDto(
         BacklogLevel? backlogLevel)
     {
@@ -36,7 +34,6 @@ internal static class BoardQueries
                             (backlogLevel == BacklogLevel.Feature && card.WorkItem.Type == WorkItemType.Feature) ||
                             (backlogLevel == BacklogLevel.UserStory && card.WorkItem.Type == WorkItemType.UserStory))
                         .OrderBy(card => card.Position)
-                        .Take(MaxCardsPerColumn)
                         .Select(card => new BoardCardResponse
                         {
                             Id = card.Id,
