@@ -190,7 +190,6 @@ internal sealed class WorkItemConfigurations :
         builder.HasIndex(wil => wil.TargetWorkItemId);
         builder.HasIndex(wil => wil.LinkType);
 
-        // Prevent duplicate links
         builder.HasIndex(wil => new { wil.SourceWorkItemId, wil.TargetWorkItemId, wil.LinkType })
             .IsUnique();
     }

@@ -1,6 +1,7 @@
 using Application.Abstractions;
 using Application.Abstractions.Mappings;
 using Application.Abstractions.Sorting;
+using Domain.Shared;
 using Domain.Users;
 using ErrorOr;
 using MediatR;
@@ -26,6 +27,11 @@ internal sealed class GetOrganizationUsersQueryHandler
         GetOrganizationUsersQuery query,
         CancellationToken cancellationToken)
     {
+        if (!_sortMappingProvider.ValidateMappings<OrganizationUserResponse, User>(query.Sort))
+        {
+            return Errors.InvalidSort(query.Sort);
+        }
+
         var usersQuery = _context.Users
             .Where(u => u.Organizations.Any(o => o.Id == query.OrganizationId));
 

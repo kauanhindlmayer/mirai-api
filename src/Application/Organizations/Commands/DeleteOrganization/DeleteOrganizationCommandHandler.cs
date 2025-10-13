@@ -9,7 +9,8 @@ internal sealed class DeleteOrganizationCommandHandler
 {
     private readonly IOrganizationRepository _organizationRepository;
 
-    public DeleteOrganizationCommandHandler(IOrganizationRepository organizationRepository)
+    public DeleteOrganizationCommandHandler(
+        IOrganizationRepository organizationRepository)
     {
         _organizationRepository = organizationRepository;
     }

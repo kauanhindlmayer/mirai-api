@@ -433,7 +433,6 @@ public static class DatabaseExtensions
             epic.Update(description: faker.Lorem.Paragraphs(2));
             SetWorkItemDates(epic, baseDate.AddDays(i * 10), faker, 0.9);
 
-            // Assign user to epic (70% chance)
             if (faker.Random.Bool(0.7f))
             {
                 epic.UpdateAssignment(faker.PickRandom(users).Id);
@@ -472,7 +471,6 @@ public static class DatabaseExtensions
                     faker,
                     0.8);
 
-                // Assign user to feature (80% chance)
                 if (faker.Random.Bool(0.8f))
                 {
                     feature.UpdateAssignment(faker.PickRandom(users).Id);
@@ -511,7 +509,6 @@ public static class DatabaseExtensions
                     faker,
                     0.75);
 
-                // Assign user to user story (90% chance)
                 if (faker.Random.Bool(0.9f))
                 {
                     userStory.UpdateAssignment(faker.PickRandom(users).Id);
@@ -551,7 +548,6 @@ public static class DatabaseExtensions
                 faker,
                 0.85);
 
-            // Assign user to bug (85% chance)
             if (faker.Random.Bool(0.85f))
             {
                 bug.UpdateAssignment(faker.PickRandom(users).Id);
@@ -614,7 +610,6 @@ public static class DatabaseExtensions
 
             recentWorkItem.Update(description: faker.Lorem.Paragraph());
 
-            // Assign user to recent work item (95% chance)
             if (faker.Random.Bool(0.95f))
             {
                 recentWorkItem.UpdateAssignment(faker.PickRandom(users).Id);

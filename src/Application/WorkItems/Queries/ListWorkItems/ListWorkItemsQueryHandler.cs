@@ -33,11 +33,14 @@ internal sealed class ListWorkItemsQueryHandler
 
         var workItemsQuery = _context.WorkItems.Where(wi => wi.ProjectId == query.ProjectId);
         query.SearchTerm = query.SearchTerm?.Trim().ToLower();
+        bool isNumericSearch = int.TryParse(query.SearchTerm, out int searchCode);
 
         var sortMappings = _sortMappingProvider.GetMappings<WorkItemBriefResponse, WorkItem>();
 
         var workItems = await workItemsQuery
-            .Where(wi => query.SearchTerm == null || wi.Title.ToLower().Contains(query.SearchTerm))
+            .Where(wi => query.SearchTerm == null
+                         || wi.Title.ToLower().Contains(query.SearchTerm)
+                         || (isNumericSearch && wi.Code == searchCode))
             .Where(wi => query.Type == null || wi.Type == query.Type)
             .Where(wi => query.Status == null || wi.Status == query.Status)
             .Where(wi => query.AssigneeId == null || wi.AssigneeId == query.AssigneeId)

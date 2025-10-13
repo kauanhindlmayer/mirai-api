@@ -1,5 +1,5 @@
 using Application.Abstractions;
-using Application.Boards.Queries.GetBoard;
+using Domain.Backlogs;
 using Domain.Boards;
 using Domain.WorkItems.Enums;
 using ErrorOr;
@@ -11,18 +11,18 @@ namespace Application.Boards.Queries.GetColumnCards;
 internal sealed class GetColumnCardsQueryHandler
     : IRequestHandler<GetColumnCardsQuery, ErrorOr<ColumnCardsResponse>>
 {
-    private readonly IApplicationDbContext _dbContext;
+    private readonly IApplicationDbContext _context;
 
-    public GetColumnCardsQueryHandler(IApplicationDbContext dbContext)
+    public GetColumnCardsQueryHandler(IApplicationDbContext context)
     {
-        _dbContext = dbContext;
+        _context = context;
     }
 
     public async Task<ErrorOr<ColumnCardsResponse>> Handle(
         GetColumnCardsQuery query,
         CancellationToken cancellationToken)
     {
-        var column = await _dbContext.BoardColumns
+        var column = await _context.BoardColumns
             .AsNoTracking()
             .Where(c => c.BoardId == query.BoardId && c.Id == query.ColumnId)
             .FirstOrDefaultAsync(cancellationToken);
@@ -32,7 +32,7 @@ internal sealed class GetColumnCardsQueryHandler
             return BoardErrors.NotFound;
         }
 
-        var cardsQuery = _dbContext.BoardCards
+        var cardsQuery = _context.BoardCards
             .AsNoTracking()
             .Where(card => card.BoardColumnId == query.ColumnId);
 
@@ -40,12 +40,10 @@ internal sealed class GetColumnCardsQueryHandler
         {
             cardsQuery = query.BacklogLevel.Value switch
             {
-                Domain.Backlogs.BacklogLevel.Epic => cardsQuery.Where(card =>
+                BacklogLevel.Epic => cardsQuery.Where(card =>
                     card.WorkItem.Type == WorkItemType.Epic && !card.WorkItem.ParentWorkItemId.HasValue),
-                Domain.Backlogs.BacklogLevel.Feature => cardsQuery.Where(card =>
-                    card.WorkItem.Type == WorkItemType.Feature),
-                Domain.Backlogs.BacklogLevel.UserStory => cardsQuery.Where(card =>
-                    card.WorkItem.Type == WorkItemType.UserStory),
+                BacklogLevel.Feature => cardsQuery.Where(card => card.WorkItem.Type == WorkItemType.Feature),
+                BacklogLevel.UserStory => cardsQuery.Where(card => card.WorkItem.Type == WorkItemType.UserStory),
                 _ => cardsQuery,
             };
         }
@@ -58,32 +56,7 @@ internal sealed class GetColumnCardsQueryHandler
             .OrderBy(card => card.Position)
             .Skip(skip)
             .Take(query.PageSize)
-            .Select(card => new BoardCardResponse
-            {
-                Id = card.Id,
-                ColumnId = card.BoardColumnId,
-                Position = card.Position,
-                WorkItem = new WorkItemResponse
-                {
-                    Id = card.WorkItem.Id,
-                    Code = card.WorkItem.Code,
-                    Title = card.WorkItem.Title,
-                    StoryPoints = card.WorkItem.Planning.StoryPoints,
-                    Assignee = card.WorkItem.Assignee == null
-                        ? null
-                        : new AssigneeResponse
-                        {
-                            Id = card.WorkItem.Assignee.Id,
-                            Name = card.WorkItem.Assignee.FullName,
-                            ImageUrl = card.WorkItem.Assignee.ImageUrl,
-                        },
-                    Type = card.WorkItem.Type.ToString(),
-                    Status = card.WorkItem.Status.ToString(),
-                    Tags = card.WorkItem.Tags.Select(tag => tag.Name),
-                },
-                CreatedAtUtc = card.CreatedAtUtc,
-                UpdatedAtUtc = card.UpdatedAtUtc,
-            })
+            .Select(BoardQueries.ProjectToDto())
             .ToListAsync(cancellationToken);
 
         return new ColumnCardsResponse

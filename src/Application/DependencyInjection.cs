@@ -29,6 +29,13 @@ public static class DependencyInjection
             typeof(DependencyInjection),
             includeInternalTypes: true);
 
+        services.AddSortMappings();
+
+        return services;
+    }
+
+    private static IServiceCollection AddSortMappings(this IServiceCollection services)
+    {
         services.AddTransient<SortMappingProvider>();
         services.AddSingleton<ISortMappingDefinition, SortMappingDefinition<WorkItemBriefResponse, WorkItem>>(_ =>
             WorkItemMappings.SortMapping);

@@ -3,7 +3,8 @@ using ErrorOr;
 
 namespace Application.Organizations.Queries.ListOrganizations;
 
-public sealed record ListOrganizationsQuery(Guid UserId) : ICachedQuery<ErrorOr<IReadOnlyList<OrganizationBriefResponse>>>
+public sealed record ListOrganizationsQuery(Guid UserId)
+    : ICachedQuery<ErrorOr<IReadOnlyList<OrganizationBriefResponse>>>
 {
     public string CacheKey => CacheKeys.GetOrganizationsKey(UserId);
 
