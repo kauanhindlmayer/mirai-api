@@ -1,7 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-  <Sdk Name="Aspire.AppHost.Sdk" Version="9.5.0" /> 
-
+  <Sdk Name="Aspire.AppHost.Sdk" Version="9.5.1" />
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net9.0</TargetFramework>
@@ -10,25 +8,21 @@
     <IsAspireHost>true</IsAspireHost>
     <UserSecretsId>68c8b358-4552-4690-9677-ee80064b5867</UserSecretsId>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.AppHost" />
     <PackageReference Include="Aspire.Hosting.NodeJs" />
     <PackageReference Include="Aspire.Hosting.PostgreSQL" />
     <PackageReference Include="Aspire.Hosting.Redis" />
     <PackageReference Include="Aspire.Hosting.Keycloak" />
-    <PackageReference Include="CommunityToolkit.Aspire.Hosting.Ollama" />  
+    <PackageReference Include="CommunityToolkit.Aspire.Hosting.Ollama" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Presentation\Presentation.csproj" />
   </ItemGroup>
-
   <Target Name="RestoreNpm" BeforeTargets="Build" Condition=" '$(DesignTimeBuild)' != 'true' ">
     <ItemGroup>
       <PackageJsons Include="../../../mirai-app/package.json" />
     </ItemGroup>
-
     <!-- Install npm packages if node_modules is missing -->
     <Message Importance="Normal" Text="Installing npm packages for %(PackageJsons.RelativeDir)" Condition="!Exists('%(PackageJsons.RootDir)%(PackageJsons.Directory)/node_modules')" />
     <Exec Command="npm install" WorkingDirectory="%(PackageJsons.RootDir)%(PackageJsons.Directory)" Condition="!Exists('%(PackageJsons.RootDir)%(PackageJsons.Directory)/node_modules')" />

@@ -5,11 +5,11 @@
   <ItemGroup>
     <PackageVersion Include="Asp.Versioning.Mvc" Version="8.1.0" />
     <PackageVersion Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
-    <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.5.0" />
-    <PackageVersion Include="Aspire.Hosting.NodeJs" Version="9.5.0" />
-    <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="9.5.0" />
-    <PackageVersion Include="Aspire.Hosting.Redis" Version="9.5.0" />
-    <PackageVersion Include="Aspire.Hosting.Keycloak" Version="9.5.0-preview.1.25474.7" />
+    <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.5.1" />
+    <PackageVersion Include="Aspire.Hosting.NodeJs" Version="9.5.1" />
+    <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="9.5.1" />
+    <PackageVersion Include="Aspire.Hosting.Redis" Version="9.5.1" />
+    <PackageVersion Include="Aspire.Hosting.Keycloak" Version="9.5.1-preview.1.25502.11" />
     <PackageVersion Include="Azure.Storage.Blobs" Version="12.24.0" />
     <PackageVersion Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageVersion Include="Bogus" Version="35.6.3" />

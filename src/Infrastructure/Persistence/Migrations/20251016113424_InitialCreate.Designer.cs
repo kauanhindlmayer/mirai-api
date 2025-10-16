@@ -14,8 +14,8 @@ using Pgvector;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250929110723_RenameLastActiveUtcToLastActiveAtUtc")]
-    partial class RenameLastActiveUtcToLastActiveAtUtc
+    [Migration("20251016113424_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -798,9 +798,9 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("assigned_team_id");
 
-                    b.Property<Guid?>("AssignedUserId")
+                    b.Property<Guid?>("AssigneeId")
                         .HasColumnType("uuid")
-                        .HasColumnName("assigned_user_id");
+                        .HasColumnName("assignee_id");
 
                     b.Property<int>("Code")
                         .HasColumnType("integer")
@@ -888,8 +888,8 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasIndex("AssignedTeamId")
                         .HasDatabaseName("ix_work_items_assigned_team_id");
 
-                    b.HasIndex("AssignedUserId")
-                        .HasDatabaseName("ix_work_items_assigned_user_id");
+                    b.HasIndex("AssigneeId")
+                        .HasDatabaseName("ix_work_items_assignee_id");
 
                     b.HasIndex("ParentWorkItemId")
                         .HasDatabaseName("ix_work_items_parent_work_item_id");
@@ -908,6 +908,60 @@ namespace Infrastructure.Persistence.Migrations
                         .HasDatabaseName("ix_work_items_project_id_code");
 
                     b.ToTable("work_items", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.WorkItems.WorkItemAttachment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("AuthorId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("author_id");
+
+                    b.Property<Guid>("BlobId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("blob_id");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("content_type");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("file_name");
+
+                    b.Property<long>("FileSizeBytes")
+                        .HasColumnType("bigint")
+                        .HasColumnName("file_size_bytes");
+
+                    b.Property<DateTime?>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.Property<Guid>("WorkItemId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("work_item_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_work_item_attachment");
+
+                    b.HasIndex("BlobId")
+                        .HasDatabaseName("ix_work_item_attachment_blob_id");
+
+                    b.HasIndex("WorkItemId")
+                        .HasDatabaseName("ix_work_item_attachment_work_item_id");
+
+                    b.ToTable("work_item_attachment", (string)null);
                 });
 
             modelBuilder.Entity("Domain.WorkItems.WorkItemComment", b =>
@@ -947,6 +1001,57 @@ namespace Infrastructure.Persistence.Migrations
                         .HasDatabaseName("ix_work_item_comments_work_item_id");
 
                     b.ToTable("work_item_comments", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.WorkItems.WorkItemLink", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Comment")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("comment");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<string>("LinkType")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("link_type");
+
+                    b.Property<Guid>("SourceWorkItemId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("source_work_item_id");
+
+                    b.Property<Guid>("TargetWorkItemId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("target_work_item_id");
+
+                    b.Property<DateTime?>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.HasKey("Id")
+                        .HasName("pk_work_item_link");
+
+                    b.HasIndex("LinkType")
+                        .HasDatabaseName("ix_work_item_link_link_type");
+
+                    b.HasIndex("SourceWorkItemId")
+                        .HasDatabaseName("ix_work_item_link_source_work_item_id");
+
+                    b.HasIndex("TargetWorkItemId")
+                        .HasDatabaseName("ix_work_item_link_target_work_item_id");
+
+                    b.HasIndex("SourceWorkItemId", "TargetWorkItemId", "LinkType")
+                        .IsUnique()
+                        .HasDatabaseName("ix_work_item_link_source_work_item_id_target_work_item_id_link");
+
+                    b.ToTable("work_item_link", (string)null);
                 });
 
             modelBuilder.Entity("TagWorkItem", b =>
@@ -1263,11 +1368,11 @@ namespace Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.SetNull)
                         .HasConstraintName("fk_work_items_teams_assigned_team_id");
 
-                    b.HasOne("Domain.Users.User", "AssignedUser")
+                    b.HasOne("Domain.Users.User", "Assignee")
                         .WithMany("WorkItems")
-                        .HasForeignKey("AssignedUserId")
+                        .HasForeignKey("AssigneeId")
                         .OnDelete(DeleteBehavior.SetNull)
-                        .HasConstraintName("fk_work_items_users_assigned_user_id");
+                        .HasConstraintName("fk_work_items_users_assignee_id");
 
                     b.HasOne("Domain.WorkItems.WorkItem", "ParentWorkItem")
                         .WithMany("ChildWorkItems")
@@ -1289,13 +1394,25 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.Navigation("AssignedTeam");
 
-                    b.Navigation("AssignedUser");
+                    b.Navigation("Assignee");
 
                     b.Navigation("ParentWorkItem");
 
                     b.Navigation("Project");
 
                     b.Navigation("Sprint");
+                });
+
+            modelBuilder.Entity("Domain.WorkItems.WorkItemAttachment", b =>
+                {
+                    b.HasOne("Domain.WorkItems.WorkItem", "WorkItem")
+                        .WithMany("Attachments")
+                        .HasForeignKey("WorkItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_work_item_attachment_work_items_work_item_id");
+
+                    b.Navigation("WorkItem");
                 });
 
             modelBuilder.Entity("Domain.WorkItems.WorkItemComment", b =>
@@ -1317,6 +1434,27 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Author");
 
                     b.Navigation("WorkItem");
+                });
+
+            modelBuilder.Entity("Domain.WorkItems.WorkItemLink", b =>
+                {
+                    b.HasOne("Domain.WorkItems.WorkItem", "SourceWorkItem")
+                        .WithMany("OutgoingLinks")
+                        .HasForeignKey("SourceWorkItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_work_item_link_work_items_source_work_item_id");
+
+                    b.HasOne("Domain.WorkItems.WorkItem", "TargetWorkItem")
+                        .WithMany("IncomingLinks")
+                        .HasForeignKey("TargetWorkItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_work_item_link_work_items_target_work_item_id");
+
+                    b.Navigation("SourceWorkItem");
+
+                    b.Navigation("TargetWorkItem");
                 });
 
             modelBuilder.Entity("TagWorkItem", b =>
@@ -1458,9 +1596,15 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.WorkItems.WorkItem", b =>
                 {
+                    b.Navigation("Attachments");
+
                     b.Navigation("ChildWorkItems");
 
                     b.Navigation("Comments");
+
+                    b.Navigation("IncomingLinks");
+
+                    b.Navigation("OutgoingLinks");
                 });
 #pragma warning restore 612, 618
         }
