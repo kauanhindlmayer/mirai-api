@@ -9,7 +9,8 @@ internal sealed class UpdateOrganizationCommandHandler
 {
     private readonly IOrganizationRepository _organizationRepository;
 
-    public UpdateOrganizationCommandHandler(IOrganizationRepository organizationRepository)
+    public UpdateOrganizationCommandHandler(
+        IOrganizationRepository organizationRepository)
     {
         _organizationRepository = organizationRepository;
     }

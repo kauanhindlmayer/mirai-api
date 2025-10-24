@@ -34,13 +34,14 @@ internal sealed class UpdateWorkItemCommandHandler
             return WorkItemErrors.NotFound;
         }
 
+        workItem.UpdateAssignment(command.AssigneeId);
+
         workItem.Update(
             command.Type,
             command.Title,
             command.Description,
             command.AcceptanceCriteria,
             command.Status,
-            command.AssigneeId,
             command.AssignedTeamId,
             command.SprintId,
             command.ParentWorkItemId,

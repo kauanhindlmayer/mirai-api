@@ -23,4 +23,28 @@ public static class WorkItemErrors
     public static readonly Error CannotAddCommentToClosedWorkItem = Error.Validation(
         code: "WorkItem.CannotAddCommentToClosedWorkItem",
         description: "Cannot add comment to a closed work item");
+
+    public static readonly Error CannotLinkToSelf = Error.Validation(
+        code: "WorkItem.CannotLinkToSelf",
+        description: "A work item cannot be linked to itself");
+
+    public static readonly Error LinkAlreadyExists = Error.Conflict(
+        code: "WorkItem.LinkAlreadyExists",
+        description: "This link already exists");
+
+    public static readonly Error LinkNotFound = Error.NotFound(
+        code: "WorkItem.LinkNotFound",
+        description: "The specified link was not found");
+
+    public static readonly Error CircularDependency = Error.Validation(
+        code: "WorkItem.CircularDependency",
+        description: "This link would create a circular dependency");
+
+    public static readonly Error TargetWorkItemNotFound = Error.NotFound(
+        code: "WorkItem.TargetWorkItemNotFound",
+        description: "Target work item not found");
+
+    public static readonly Error AttachmentNotFound = Error.NotFound(
+        code: "WorkItem.AttachmentNotFound",
+        description: "Attachment not found");
 }

@@ -45,11 +45,6 @@ public sealed class Project : AggregateRoot
 
     public ErrorOr<Success> AddUser(User user)
     {
-        if (!Organization.Users.Any(u => u.Id == user.Id))
-        {
-            return ProjectErrors.UserNotInOrganization;
-        }
-
         if (Users.Any(u => u.Id == user.Id))
         {
             return ProjectErrors.UserAlreadyExists;
@@ -68,7 +63,7 @@ public sealed class Project : AggregateRoot
             return UserErrors.NotFound;
         }
 
-        if (WorkItems.Any(wi => wi.AssignedUserId == userId))
+        if (WorkItems.Any(wi => wi.AssigneeId == userId))
         {
             return ProjectErrors.UserHasAssignedWorkItems;
         }
@@ -166,6 +161,11 @@ public sealed class Project : AggregateRoot
         if (Teams.Any(t => t.Name == team.Name))
         {
             return ProjectErrors.TeamWithSameNameAlreadyExists;
+        }
+
+        if (Teams.Count == 0)
+        {
+            team.SetAsDefault();
         }
 
         Teams.Add(team);

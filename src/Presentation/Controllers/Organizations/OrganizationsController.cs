@@ -1,11 +1,13 @@
 using System.Net.Mime;
 using Application.Abstractions;
+using Application.Abstractions.Authentication;
 using Application.Organizations.Commands.AddUserToOrganization;
 using Application.Organizations.Commands.CreateOrganization;
 using Application.Organizations.Commands.DeleteOrganization;
 using Application.Organizations.Commands.RemoveUserFromOrganization;
 using Application.Organizations.Commands.UpdateOrganization;
 using Application.Organizations.Queries.GetOrganization;
+using Application.Organizations.Queries.GetOrganizationUsers;
 using Application.Organizations.Queries.ListOrganizations;
 using Asp.Versioning;
 using Infrastructure;
@@ -96,9 +98,10 @@ public sealed class OrganizationsController : ApiController
     [ProducesResponseType(typeof(IReadOnlyList<OrganizationBriefResponse>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IReadOnlyList<OrganizationBriefResponse>>> ListOrganizations(
         [FromHeader] AcceptHeaderRequest acceptHeader,
+        [FromServices] IUserContext userContext,
         CancellationToken cancellationToken)
     {
-        var query = new ListOrganizationsQuery();
+        var query = new ListOrganizationsQuery(userContext.UserId);
 
         var result = await _sender.Send(query, cancellationToken);
 
@@ -165,6 +168,34 @@ public sealed class OrganizationsController : ApiController
     }
 
     /// <summary>
+    /// Retrieve organization users.
+    /// </summary>
+    /// <param name="organizationId">The organization's unique identifier.</param>
+    /// <param name="pageRequest">Pagination and sorting parameters.</param>
+    /// <param name="excludeProjectId">Optional project ID to exclude users who are already members.</param>
+    [HttpGet("{organizationId:guid}/users")]
+    [ProducesResponseType(typeof(PaginatedList<OrganizationUserResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<PaginatedList<OrganizationUserResponse>>> GetOrganizationUsers(
+        Guid organizationId,
+        [FromQuery] PageRequest pageRequest,
+        [FromQuery] Guid? excludeProjectId = null,
+        CancellationToken cancellationToken = default)
+    {
+        var query = new GetOrganizationUsersQuery(
+            organizationId,
+            pageRequest.Page,
+            pageRequest.PageSize,
+            pageRequest.Sort,
+            pageRequest.SearchTerm,
+            excludeProjectId);
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(Ok, Problem);
+    }
+
+    /// <summary>
     /// Add a user to an organization.
     /// </summary>
     [HttpPost("{organizationId:guid}/users")]
@@ -178,7 +209,7 @@ public sealed class OrganizationsController : ApiController
     {
         var command = new AddUserToOrganizationCommand(
             organizationId,
-            request.UserId);
+            request.Email);
 
         var result = await _sender.Send(command, cancellationToken);
 

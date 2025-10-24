@@ -17,6 +17,8 @@ public sealed class BoardColumnResponse
     public int? WipLimit { get; init; }
     public string? DefinitionOfDone { get; init; }
     public IEnumerable<BoardCardResponse> Cards { get; init; } = [];
+    public bool HasMoreCards { get; init; }
+    public int TotalCardCount { get; init; }
 }
 
 public sealed class BoardCardResponse

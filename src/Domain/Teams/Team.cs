@@ -16,17 +16,19 @@ public sealed class Team : AggregateRoot
     public Project Project { get; private set; } = null!;
     public string Name { get; private set; } = null!;
     public string? Description { get; private set; }
+    public bool IsDefault { get; private set; }
     public Board Board { get; private set; } = null!;
     public ICollection<User> Users { get; private set; } = [];
     public ICollection<Retrospective> Retrospectives { get; private set; } = [];
     public ICollection<Sprint> Sprints { get; private set; } = [];
     public ICollection<WorkItem> WorkItems { get; private set; } = [];
 
-    public Team(Guid projectId, string name, string description)
+    public Team(Guid projectId, string name, string description, bool isDefault = false)
     {
         ProjectId = projectId;
         Name = name;
         Description = description;
+        IsDefault = isDefault;
         RaiseDomainEvent(new TeamCreatedDomainEvent(this));
     }
 
@@ -54,7 +56,7 @@ public sealed class Team : AggregateRoot
             return TeamErrors.UserNotFound;
         }
 
-        if (WorkItems.Any(wi => wi.AssignedUserId == userId))
+        if (WorkItems.Any(wi => wi.AssigneeId == userId))
         {
             return TeamErrors.UserHasAssignedWorkItems;
         }
@@ -95,5 +97,15 @@ public sealed class Team : AggregateRoot
 
         Board = board;
         return Result.Success;
+    }
+
+    public void SetAsDefault()
+    {
+        IsDefault = true;
+    }
+
+    public void UnsetAsDefault()
+    {
+        IsDefault = false;
     }
 }

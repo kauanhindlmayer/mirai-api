@@ -1,6 +1,7 @@
 using Application.Abstractions;
 using Domain.Backlogs;
 using Domain.WorkItems;
+using Domain.WorkItems.Enums;
 using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -27,8 +28,10 @@ internal sealed class GetBacklogQueryHandler
             .Where(wi =>
                 wi.AssignedTeamId == query.TeamId &&
                 (!query.SprintId.HasValue || wi.SprintId == query.SprintId) &&
-                (query.BacklogLevel == BacklogLevel.UserStory || !wi.ParentWorkItemId.HasValue) &&
-                (!query.BacklogLevel.HasValue || query.BacklogLevel.Value.ToString() == wi.Type.ToString()))
+                (!query.BacklogLevel.HasValue ||
+                 (query.BacklogLevel == BacklogLevel.Epic && wi.Type == WorkItemType.Epic && !wi.ParentWorkItemId.HasValue) ||
+                 (query.BacklogLevel == BacklogLevel.Feature && wi.Type == WorkItemType.Feature) ||
+                 (query.BacklogLevel == BacklogLevel.UserStory && wi.Type == WorkItemType.UserStory)))
             .Select(wi => ToDto(wi))
             .ToListAsync(cancellationToken);
 

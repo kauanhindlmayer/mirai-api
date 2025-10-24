@@ -14,6 +14,8 @@ internal static class TeamQueries
             Id = t.Id,
             ProjectId = t.ProjectId,
             Name = t.Name,
+            Description = t.Description,
+            IsDefault = t.IsDefault,
             Members = t.Users.Select(m => new MemberResponse
             {
                 Id = m.Id,
@@ -30,7 +32,10 @@ internal static class TeamQueries
         {
             Id = t.Id,
             Name = t.Name,
+            Description = t.Description,
             BoardId = t.Board.Id,
+            IsDefault = t.IsDefault,
+            MemberCount = t.Users.Count,
         };
     }
 }

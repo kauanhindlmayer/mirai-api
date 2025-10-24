@@ -15,4 +15,9 @@ public interface IOrganizationRepository : IRepository<Organization>
     Task<bool> ExistsByNameAsync(
         string name,
         CancellationToken cancellationToken = default);
+
+    Task<bool> IsUserInOrganizationAsync(
+        Guid organizationId,
+        Guid userId,
+        CancellationToken cancellationToken = default);
 }

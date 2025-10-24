@@ -73,9 +73,9 @@ public static class DatabaseExtensions
             await context.Boards.AddAsync(board);
 
             var sprints = await SeedSprints(context, team);
-            var users = await SeedUsers(context, organization, project);
+            var users = await SeedUsers(context, organization, project, team);
             await SeedWikiPages(faker, context, project, users);
-            await SeedWorkItems(faker, context, project, team, sprints, board);
+            await SeedWorkItems(faker, context, project, team, sprints, board, users);
 
             context.SaveChanges();
             app.Logger.LogInformation("Database seeding completed successfully");
@@ -90,7 +90,8 @@ public static class DatabaseExtensions
     private static async Task<List<User>> SeedUsers(
         ApplicationDbContext context,
         Organization organization,
-        Project project)
+        Project project,
+        Team team)
     {
         var seedUserData = new[]
         {
@@ -115,6 +116,195 @@ public static class DatabaseExtensions
                 Email = "bob.johnson@mirai.com",
                 IdentityId = "user-3-34567-89012-cdefgh",
             },
+            new
+            {
+                FirstName = "Alice",
+                LastName = "Anderson",
+                Email = "alice.anderson@mirai.com",
+                IdentityId = "user-4-45678-90123-defghi",
+            },
+            new
+            {
+                FirstName = "Michael",
+                LastName = "Brown",
+                Email = "michael.brown@mirai.com",
+                IdentityId = "user-5-56789-01234-efghij",
+            },
+            new
+            {
+                FirstName = "Sarah",
+                LastName = "Wilson",
+                Email = "sarah.wilson@mirai.com",
+                IdentityId = "user-6-67890-12345-fghijk",
+            },
+            new
+            {
+                FirstName = "David",
+                LastName = "Miller",
+                Email = "david.miller@mirai.com",
+                IdentityId = "user-7-78901-23456-ghijkl",
+            },
+            new
+            {
+                FirstName = "Emma",
+                LastName = "Davis",
+                Email = "emma.davis@mirai.com",
+                IdentityId = "user-8-89012-34567-hijklm",
+            },
+            new
+            {
+                FirstName = "James",
+                LastName = "Garcia",
+                Email = "james.garcia@mirai.com",
+                IdentityId = "user-9-90123-45678-ijklmn",
+            },
+            new
+            {
+                FirstName = "Olivia",
+                LastName = "Martinez",
+                Email = "olivia.martinez@mirai.com",
+                IdentityId = "user-10-01234-56789-jklmno",
+            },
+            new
+            {
+                FirstName = "William",
+                LastName = "Rodriguez",
+                Email = "william.rodriguez@mirai.com",
+                IdentityId = "user-11-12345-67890-klmnop",
+            },
+            new
+            {
+                FirstName = "Sophia",
+                LastName = "Hernandez",
+                Email = "sophia.hernandez@mirai.com",
+                IdentityId = "user-12-23456-78901-lmnopq",
+            },
+            new
+            {
+                FirstName = "Benjamin",
+                LastName = "Lopez",
+                Email = "benjamin.lopez@mirai.com",
+                IdentityId = "user-13-34567-89012-mnopqr",
+            },
+            new
+            {
+                FirstName = "Isabella",
+                LastName = "Gonzalez",
+                Email = "isabella.gonzalez@mirai.com",
+                IdentityId = "user-14-45678-90123-nopqrs",
+            },
+            new
+            {
+                FirstName = "Lucas",
+                LastName = "Lee",
+                Email = "lucas.lee@mirai.com",
+                IdentityId = "user-15-56789-01234-opqrst",
+            },
+            new
+            {
+                FirstName = "Mia",
+                LastName = "Taylor",
+                Email = "mia.taylor@mirai.com",
+                IdentityId = "user-16-67890-12345-pqrstu",
+            },
+            new
+            {
+                FirstName = "Henry",
+                LastName = "Thomas",
+                Email = "henry.thomas@mirai.com",
+                IdentityId = "user-17-78901-23456-qrstuv",
+            },
+            new
+            {
+                FirstName = "Charlotte",
+                LastName = "Jackson",
+                Email = "charlotte.jackson@mirai.com",
+                IdentityId = "user-18-89012-34567-rstuvw",
+            },
+            new
+            {
+                FirstName = "Alexander",
+                LastName = "White",
+                Email = "alexander.white@mirai.com",
+                IdentityId = "user-19-90123-45678-stuvwx",
+            },
+            new
+            {
+                FirstName = "Amelia",
+                LastName = "Harris",
+                Email = "amelia.harris@mirai.com",
+                IdentityId = "user-20-01234-56789-tuvwxy",
+            },
+            new
+            {
+                FirstName = "Daniel",
+                LastName = "Clark",
+                Email = "daniel.clark@mirai.com",
+                IdentityId = "user-21-12345-67890-uvwxyz",
+            },
+            new
+            {
+                FirstName = "Harper",
+                LastName = "Lewis",
+                Email = "harper.lewis@mirai.com",
+                IdentityId = "user-22-23456-78901-vwxyza",
+            },
+            new
+            {
+                FirstName = "Matthew",
+                LastName = "Robinson",
+                Email = "matthew.robinson@mirai.com",
+                IdentityId = "user-23-34567-89012-wxyzab",
+            },
+            new
+            {
+                FirstName = "Evelyn",
+                LastName = "Walker",
+                Email = "evelyn.walker@mirai.com",
+                IdentityId = "user-24-45678-90123-xyzabc",
+            },
+            new
+            {
+                FirstName = "Anthony",
+                LastName = "Hall",
+                Email = "anthony.hall@mirai.com",
+                IdentityId = "user-25-56789-01234-yzabcd",
+            },
+            new
+            {
+                FirstName = "Abigail",
+                LastName = "Allen",
+                Email = "abigail.allen@mirai.com",
+                IdentityId = "user-26-67890-12345-zabcde",
+            },
+            new
+            {
+                FirstName = "Christopher",
+                LastName = "Young",
+                Email = "christopher.young@mirai.com",
+                IdentityId = "user-27-78901-23456-abcdef",
+            },
+            new
+            {
+                FirstName = "Emily",
+                LastName = "King",
+                Email = "emily.king@mirai.com",
+                IdentityId = "user-28-89012-34567-bcdefg",
+            },
+            new
+            {
+                FirstName = "Joshua",
+                LastName = "Wright",
+                Email = "joshua.wright@mirai.com",
+                IdentityId = "user-29-90123-45678-cdefgh",
+            },
+            new
+            {
+                FirstName = "Elizabeth",
+                LastName = "Scott",
+                Email = "elizabeth.scott@mirai.com",
+                IdentityId = "user-30-01234-56789-defghi",
+            },
         };
 
         var users = new List<User>();
@@ -126,6 +316,7 @@ public static class DatabaseExtensions
             users.Add(user);
             organization.AddUser(user);
             project.AddUser(user);
+            team.AddUser(user);
         }
 
         await context.AddRangeAsync(users);
@@ -210,6 +401,7 @@ public static class DatabaseExtensions
         Team team,
         List<Sprint> sprints,
         Board board,
+        List<User> users,
         int epicCount = 3,
         int featuresPerEpic = 5,
         int storiesPerFeature = 6,
@@ -240,6 +432,11 @@ public static class DatabaseExtensions
 
             epic.Update(description: faker.Lorem.Paragraphs(2));
             SetWorkItemDates(epic, baseDate.AddDays(i * 10), faker, 0.9);
+
+            if (faker.Random.Bool(0.7f))
+            {
+                epic.UpdateAssignment(faker.PickRandom(users).Id);
+            }
 
             await context.WorkItems.AddAsync(epic);
             epics.Add(epic);
@@ -274,6 +471,11 @@ public static class DatabaseExtensions
                     faker,
                     0.8);
 
+                if (faker.Random.Bool(0.8f))
+                {
+                    feature.UpdateAssignment(faker.PickRandom(users).Id);
+                }
+
                 await context.WorkItems.AddAsync(feature);
                 features.Add(feature);
 
@@ -307,6 +509,11 @@ public static class DatabaseExtensions
                     faker,
                     0.75);
 
+                if (faker.Random.Bool(0.9f))
+                {
+                    userStory.UpdateAssignment(faker.PickRandom(users).Id);
+                }
+
                 await context.WorkItems.AddAsync(userStory);
 
                 var userStoryColumnId = GetColumnForStatus(columns, userStory.Status).Id;
@@ -323,13 +530,16 @@ public static class DatabaseExtensions
             var workItemType = faker.Random.Bool() ? WorkItemType.Bug : WorkItemType.Defect;
             var sprintIndex = faker.Random.Int(1, orderedSprints.Count - 1);
 
+            var parentFeatureId = faker.Random.Bool(0.7f) ? faker.PickRandom(features).Id : (Guid?)null;
+
             var bug = new WorkItem(
                 project.Id,
                 workItemCode++,
                 faker.Lorem.Sentence(),
                 workItemType,
                 team.Id,
-                orderedSprints[sprintIndex].Id);
+                orderedSprints[sprintIndex].Id,
+                parentFeatureId);
 
             bug.Update(description: faker.Lorem.Paragraph());
             SetWorkItemDates(
@@ -337,6 +547,11 @@ public static class DatabaseExtensions
                 baseDate.AddDays(60 + (i * 5)),
                 faker,
                 0.85);
+
+            if (faker.Random.Bool(0.85f))
+            {
+                bug.UpdateAssignment(faker.PickRandom(users).Id);
+            }
 
             await context.WorkItems.AddAsync(bug);
 
@@ -356,7 +571,9 @@ public static class DatabaseExtensions
             orderedSprints.Last(),
             board,
             columnPositions,
-            workItemCode);
+            workItemCode,
+            features,
+            users);
     }
 
     private static async Task SeedRecentWorkItems(
@@ -368,6 +585,8 @@ public static class DatabaseExtensions
         Board board,
         Dictionary<Guid, int> columnPositions,
         int startingWorkItemCode,
+        List<WorkItem> features,
+        List<User> users,
         int recentItemCount = 20)
     {
         var workItemCode = startingWorkItemCode;
@@ -378,15 +597,23 @@ public static class DatabaseExtensions
         {
             var workItemType = faker.PickRandom(new[] { WorkItemType.UserStory, WorkItemType.Bug });
 
+            var parentFeatureId = faker.Random.Bool(0.8f) ? faker.PickRandom(features).Id : (Guid?)null;
+
             var recentWorkItem = new WorkItem(
                 project.Id,
                 workItemCode++,
                 faker.Lorem.Sentence(),
                 workItemType,
                 team.Id,
-                currentSprint.Id);
+                currentSprint.Id,
+                parentFeatureId);
 
             recentWorkItem.Update(description: faker.Lorem.Paragraph());
+
+            if (faker.Random.Bool(0.95f))
+            {
+                recentWorkItem.UpdateAssignment(faker.PickRandom(users).Id);
+            }
 
             var creationDate = recentBaseDate.AddDays(faker.Random.Double() * 10);
             var createdAtProperty = typeof(AggregateRoot).GetProperty("CreatedAtUtc");

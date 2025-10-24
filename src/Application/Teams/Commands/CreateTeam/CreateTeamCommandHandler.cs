@@ -20,7 +20,7 @@ internal sealed class CreateTeamCommandHandler
         CreateTeamCommand command,
         CancellationToken cancellationToken)
     {
-        var project = await _projectRepository.GetByIdAsync(
+        var project = await _projectRepository.GetByIdWithTeamsAsync(
             command.ProjectId,
             cancellationToken);
 

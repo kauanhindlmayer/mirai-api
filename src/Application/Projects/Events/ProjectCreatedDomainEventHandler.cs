@@ -39,7 +39,9 @@ internal sealed class ProjectCreatedDomainEventHandler
         _logger = logger;
     }
 
-    public async Task Handle(ProjectCreatedDomainEvent notification, CancellationToken cancellationToken)
+    public async Task Handle(
+        ProjectCreatedDomainEvent notification,
+        CancellationToken cancellationToken)
     {
         try
         {

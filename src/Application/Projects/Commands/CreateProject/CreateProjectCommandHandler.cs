@@ -1,5 +1,7 @@
+using Application.Abstractions.Authentication;
 using Domain.Organizations;
 using Domain.Projects;
+using Domain.Users;
 using ErrorOr;
 using MediatR;
 
@@ -9,11 +11,17 @@ internal sealed class CreateProjectCommandHandler
     : IRequestHandler<CreateProjectCommand, ErrorOr<Guid>>
 {
     private readonly IOrganizationRepository _organizationRepository;
+    private readonly IUserRepository _userRepository;
+    private readonly IUserContext _userContext;
 
     public CreateProjectCommandHandler(
-        IOrganizationRepository organizationRepository)
+        IOrganizationRepository organizationRepository,
+        IUserRepository userRepository,
+        IUserContext userContext)
     {
         _organizationRepository = organizationRepository;
+        _userRepository = userRepository;
+        _userContext = userContext;
     }
 
     public async Task<ErrorOr<Guid>> Handle(
@@ -29,15 +37,38 @@ internal sealed class CreateProjectCommandHandler
             return OrganizationErrors.NotFound;
         }
 
+        var currentUser = await _userRepository.GetByIdAsync(
+            _userContext.UserId,
+            cancellationToken);
+
+        if (currentUser is null)
+        {
+            return UserErrors.NotFound;
+        }
+
+        if (!await _organizationRepository.IsUserInOrganizationAsync(
+            command.OrganizationId,
+            currentUser.Id,
+            cancellationToken))
+        {
+            return ProjectErrors.UserNotInOrganization;
+        }
+
         var project = new Project(
             command.Name,
             command.Description,
             command.OrganizationId);
 
-        var result = organization.AddProject(project);
-        if (result.IsError)
+        var addProjectResult = organization.AddProject(project);
+        if (addProjectResult.IsError)
         {
-            return result.Errors;
+            return addProjectResult.Errors;
+        }
+
+        var addUserResult = project.AddUser(currentUser);
+        if (addUserResult.IsError)
+        {
+            return addUserResult.Errors;
         }
 
         _organizationRepository.Update(organization);

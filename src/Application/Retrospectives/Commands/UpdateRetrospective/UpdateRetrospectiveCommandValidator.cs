@@ -6,9 +6,6 @@ internal sealed class UpdateRetrospectiveCommandValidator : AbstractValidator<Up
 {
     public UpdateRetrospectiveCommandValidator()
     {
-        RuleFor(x => x.TeamId)
-            .NotEmpty();
-
         RuleFor(x => x.RetrospectiveId)
             .NotEmpty();
 

@@ -1,8 +1,7 @@
 using System.Linq.Expressions;
 using Application.WorkItems.Queries.GetWorkItem;
-using Application.WorkItems.Queries.ListWorkItems;
-using Application.WorkItems.Queries.SearchWorkItems;
 using Domain.WorkItems;
+using Domain.WorkItems.Enums;
 using Pgvector;
 using Pgvector.EntityFrameworkCore;
 
@@ -10,16 +9,24 @@ namespace Application.WorkItems.Queries;
 
 internal static class WorkItemQueries
 {
-    public static Expression<Func<WorkItem, WorkItemBriefResponse>> ProjectToBriefDto()
+    public static Expression<Func<WorkItem, ListWorkItems.WorkItemBriefResponse>> ProjectToBriefDto()
     {
-        return wi => new WorkItemBriefResponse
+        return wi => new ListWorkItems.WorkItemBriefResponse
         {
             Id = wi.Id,
             Code = wi.Code,
             Title = wi.Title,
             Status = wi.Status.ToString(),
             Type = wi.Type.ToString(),
-            Tags = wi.Tags.Select(t => new TagBriefResponse
+            Assignee = wi.Assignee == null
+                ? null
+                : new ListWorkItems.AssigneeResponse
+                {
+                    Id = wi.Assignee.Id,
+                    Name = wi.Assignee.FullName,
+                    ImageUrl = wi.Assignee.ImageUrl,
+                },
+            Tags = wi.Tags.Select(t => new ListWorkItems.TagBriefResponse
             {
                 Id = t.Id,
                 Name = t.Name,
@@ -60,7 +67,15 @@ internal static class WorkItemQueries
                     Title = wi.ParentWorkItem.Title,
                     Status = wi.ParentWorkItem.Status.ToString(),
                     Type = wi.ParentWorkItem.Type.ToString(),
-                    AssigneeId = wi.ParentWorkItem.AssignedUserId,
+                    Assignee = wi.ParentWorkItem.Assignee == null
+                        ? null
+                        : new AssigneeResponse
+                        {
+                            Id = wi.ParentWorkItem.Assignee.Id,
+                            FullName = wi.ParentWorkItem.Assignee.FullName,
+                            Email = wi.ParentWorkItem.Assignee.Email,
+                            ImageUrl = wi.ParentWorkItem.Assignee.ImageUrl,
+                        },
                 },
             ChildWorkItems = wi.ChildWorkItems.Select(cwi => new RelatedWorkItemResponse
             {
@@ -69,9 +84,25 @@ internal static class WorkItemQueries
                 Title = cwi.Title,
                 Status = cwi.Status.ToString(),
                 Type = cwi.Type.ToString(),
-                AssigneeId = cwi.AssignedUserId,
+                Assignee = cwi.Assignee == null
+                    ? null
+                    : new AssigneeResponse
+                    {
+                        Id = cwi.Assignee.Id,
+                        FullName = cwi.Assignee.FullName,
+                        Email = cwi.Assignee.Email,
+                        ImageUrl = cwi.Assignee.ImageUrl,
+                    },
             }),
-            AssigneeId = wi.AssignedUserId,
+            Assignee = wi.Assignee == null
+                ? null
+                : new AssigneeResponse
+                {
+                    Id = wi.Assignee.Id,
+                    FullName = wi.Assignee.FullName,
+                    Email = wi.Assignee.Email,
+                    ImageUrl = wi.Assignee.ImageUrl,
+                },
             Comments = wi.Comments.Select(comment => new WorkItemCommentResponse
             {
                 Id = comment.Id,
@@ -85,21 +116,76 @@ internal static class WorkItemQueries
                 CreatedAtUtc = comment.CreatedAtUtc,
                 UpdatedAtUtc = comment.UpdatedAtUtc,
             }),
+            Attachments = wi.Attachments.Select(a => new WorkItemAttachmentResponse
+            {
+                Id = a.Id,
+                FileName = a.FileName,
+                ContentType = a.ContentType,
+                FileSizeBytes = a.FileSizeBytes,
+                AuthorId = a.AuthorId,
+                CreatedAtUtc = a.CreatedAtUtc,
+            }),
             Tags = wi.Tags.Select(t => new TagResponse
             {
                 Id = t.Id,
                 Name = t.Name,
                 Color = t.Color,
             }),
+            OutgoingLinks = wi.OutgoingLinks.Select(l => new WorkItemLinkResponse
+            {
+                Id = l.Id,
+                TargetWorkItem = new RelatedWorkItemResponse
+                {
+                    Id = l.TargetWorkItem.Id,
+                    Code = l.TargetWorkItem.Code,
+                    Title = l.TargetWorkItem.Title,
+                    Status = l.TargetWorkItem.Status.ToString(),
+                    Type = l.TargetWorkItem.Type.ToString(),
+                    Assignee = l.TargetWorkItem.Assignee == null
+                        ? null
+                        : new AssigneeResponse
+                        {
+                            Id = l.TargetWorkItem.Assignee.Id,
+                            FullName = l.TargetWorkItem.Assignee.FullName,
+                            Email = l.TargetWorkItem.Assignee.Email,
+                            ImageUrl = l.TargetWorkItem.Assignee.ImageUrl,
+                        },
+                },
+                LinkType = l.LinkType.GetForwardName(),
+                Comment = l.Comment,
+            }),
+            IncomingLinks = wi.IncomingLinks.Select(l => new WorkItemLinkResponse
+            {
+                Id = l.Id,
+                TargetWorkItem = new RelatedWorkItemResponse
+                {
+                    Id = l.SourceWorkItem.Id,
+                    Code = l.SourceWorkItem.Code,
+                    Title = l.SourceWorkItem.Title,
+                    Status = l.SourceWorkItem.Status.ToString(),
+                    Type = l.SourceWorkItem.Type.ToString(),
+                    Assignee = l.SourceWorkItem.Assignee == null
+                        ? null
+                        : new AssigneeResponse
+                        {
+                            Id = l.SourceWorkItem.Assignee.Id,
+                            FullName = l.SourceWorkItem.Assignee.FullName,
+                            Email = l.SourceWorkItem.Assignee.Email,
+                            ImageUrl = l.SourceWorkItem.Assignee.ImageUrl,
+                        },
+                },
+                LinkType = l.LinkType.GetReverseName(),
+                Comment = l.Comment,
+            }),
             CreatedAtUtc = wi.CreatedAtUtc,
             UpdatedAtUtc = wi.UpdatedAtUtc,
         };
     }
 
-    public static Expression<Func<WorkItem, WorkItemResponseWithDistance>> ProjectToDtoWithDistance(
+    public static Expression<Func<WorkItem, SearchWorkItems.WorkItemResponseWithDistance>> ProjectToDtoWithDistance(
         Vector vector)
     {
-        return (wi) => new WorkItemResponseWithDistance
+        return (wi) => new SearchWorkItems.WorkItemResponseWithDistance
         {
             Id = wi.Id,
             Code = wi.Code,

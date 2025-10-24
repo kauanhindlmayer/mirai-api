@@ -22,8 +22,8 @@ public sealed class WorkItem : AggregateRoot
     public Planning Planning { get; private set; } = new();
     public Classification Classification { get; private set; } = new();
     public Vector SearchVector { get; private set; } = new(new float[384]);
-    public Guid? AssignedUserId { get; private set; }
-    public User? AssignedUser { get; private set; }
+    public Guid? AssigneeId { get; private set; }
+    public User? Assignee { get; private set; }
     public Guid ProjectId { get; private set; }
     public Project Project { get; private set; } = null!;
     public Guid? AssignedTeamId { get; private set; }
@@ -33,6 +33,9 @@ public sealed class WorkItem : AggregateRoot
     public ICollection<WorkItem> ChildWorkItems { get; private set; } = [];
     public ICollection<Tag> Tags { get; private set; } = [];
     public ICollection<WorkItemComment> Comments { get; private set; } = [];
+    public ICollection<WorkItemAttachment> Attachments { get; private set; } = [];
+    public ICollection<WorkItemLink> OutgoingLinks { get; private set; } = [];
+    public ICollection<WorkItemLink> IncomingLinks { get; private set; } = [];
     public DateTime? StartedAtUtc { get; private set; }
     public DateTime? CompletedAtUtc { get; private set; }
     public Guid? SprintId { get; private set; }
@@ -61,9 +64,9 @@ public sealed class WorkItem : AggregateRoot
     {
     }
 
-    public void Assign(Guid userId)
+    public void UpdateAssignment(Guid? userId)
     {
-        AssignedUserId = userId;
+        AssigneeId = userId;
     }
 
     public void Close()
@@ -78,7 +81,6 @@ public sealed class WorkItem : AggregateRoot
         string? description = null,
         string? acceptanceCriteria = null,
         WorkItemStatus? status = null,
-        Guid? assigneeId = null,
         Guid? assignedTeamId = null,
         Guid? sprintId = null,
         Guid? parentWorkItemId = null,
@@ -92,7 +94,6 @@ public sealed class WorkItem : AggregateRoot
         Description = description ?? Description;
         AcceptanceCriteria = acceptanceCriteria ?? AcceptanceCriteria;
         Status = status ?? Status;
-        AssignedUserId = assigneeId ?? AssignedUserId;
         AssignedTeamId = assignedTeamId ?? AssignedTeamId;
         SprintId = sprintId ?? SprintId;
         ParentWorkItemId = parentWorkItemId ?? ParentWorkItemId;
@@ -170,6 +171,53 @@ public sealed class WorkItem : AggregateRoot
 
         Tags.Remove(tag);
         return Result.Success;
+    }
+
+    public ErrorOr<Success> AddLink(WorkItemLink link)
+    {
+        if (link.SourceWorkItemId == link.TargetWorkItemId)
+        {
+            return WorkItemErrors.CannotLinkToSelf;
+        }
+
+        if (OutgoingLinks.Any(l =>
+            l.TargetWorkItemId == link.TargetWorkItemId &&
+            l.LinkType == link.LinkType))
+        {
+            return WorkItemErrors.LinkAlreadyExists;
+        }
+
+        OutgoingLinks.Add(link);
+        return Result.Success;
+    }
+
+    public ErrorOr<Success> RemoveLink(Guid linkId)
+    {
+        var link = OutgoingLinks.FirstOrDefault(l => l.Id == linkId);
+        if (link is null)
+        {
+            return WorkItemErrors.LinkNotFound;
+        }
+
+        OutgoingLinks.Remove(link);
+        return Result.Success;
+    }
+
+    public void AddAttachment(WorkItemAttachment attachment)
+    {
+        Attachments.Add(attachment);
+    }
+
+    public ErrorOr<WorkItemAttachment> RemoveAttachment(Guid attachmentId)
+    {
+        var attachment = Attachments.FirstOrDefault(a => a.Id == attachmentId);
+        if (attachment is null)
+        {
+            return WorkItemErrors.AttachmentNotFound;
+        }
+
+        Attachments.Remove(attachment);
+        return attachment;
     }
 
     public void SetSearchVector(float[] embedding)

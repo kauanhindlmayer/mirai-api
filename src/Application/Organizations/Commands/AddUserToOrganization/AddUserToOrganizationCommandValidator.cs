@@ -10,7 +10,8 @@ internal sealed class AddUserToOrganizationCommandValidator
         RuleFor(x => x.OrganizationId)
             .NotEmpty();
 
-        RuleFor(x => x.UserId)
-            .NotEmpty();
+        RuleFor(x => x.Email)
+            .NotEmpty()
+            .EmailAddress();
     }
 }

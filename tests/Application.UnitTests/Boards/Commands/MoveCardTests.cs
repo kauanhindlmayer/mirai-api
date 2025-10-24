@@ -132,7 +132,7 @@ public class MoveCardTests
             column.Id,
             card.Id,
             targetColumn.Id,
-            TargetPosition: -1);
+            -1);
 
         // Act
         var result = await _handler.Handle(

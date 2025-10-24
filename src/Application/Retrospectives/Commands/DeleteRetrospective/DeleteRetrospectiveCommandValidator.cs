@@ -7,9 +7,6 @@ internal sealed class DeleteRetrospectiveCommandValidator
 {
     public DeleteRetrospectiveCommandValidator()
     {
-        RuleFor(x => x.TeamId)
-            .NotEmpty();
-
         RuleFor(x => x.RetrospectiveId)
             .NotEmpty();
     }

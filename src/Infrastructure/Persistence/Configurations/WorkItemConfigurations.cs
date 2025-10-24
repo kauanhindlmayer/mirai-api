@@ -6,7 +6,9 @@ namespace Infrastructure.Persistence.Configurations;
 
 internal sealed class WorkItemConfigurations :
     IEntityTypeConfiguration<WorkItem>,
-    IEntityTypeConfiguration<WorkItemComment>
+    IEntityTypeConfiguration<WorkItemComment>,
+    IEntityTypeConfiguration<WorkItemAttachment>,
+    IEntityTypeConfiguration<WorkItemLink>
 {
     public void Configure(EntityTypeBuilder<WorkItem> builder)
     {
@@ -47,7 +49,7 @@ internal sealed class WorkItemConfigurations :
             .HasColumnType("vector")
             .IsRequired();
 
-        builder.Property(wi => wi.AssignedUserId);
+        builder.Property(wi => wi.AssigneeId);
 
         builder.Property(wi => wi.ProjectId)
             .IsRequired();
@@ -55,9 +57,9 @@ internal sealed class WorkItemConfigurations :
         builder.Property(wi => wi.AssignedTeamId)
             .IsRequired(false);
 
-        builder.HasOne(wi => wi.AssignedUser)
+        builder.HasOne(wi => wi.Assignee)
             .WithMany(u => u.WorkItems)
-            .HasForeignKey(wi => wi.AssignedUserId);
+            .HasForeignKey(wi => wi.AssigneeId);
 
         builder.HasOne(wi => wi.Project)
             .WithMany(wi => wi.WorkItems)
@@ -79,9 +81,23 @@ internal sealed class WorkItemConfigurations :
             .WithOne(c => c.WorkItem)
             .HasForeignKey(c => c.WorkItemId);
 
+        builder.HasMany(wi => wi.Attachments)
+            .WithOne(a => a.WorkItem)
+            .HasForeignKey(a => a.WorkItemId);
+
         builder.HasMany(wi => wi.Tags)
             .WithMany(t => t.WorkItems)
             .UsingEntity(j => j.ToTable("work_item_tags"));
+
+        builder.HasMany(wi => wi.OutgoingLinks)
+            .WithOne(wil => wil.SourceWorkItem)
+            .HasForeignKey(wil => wil.SourceWorkItemId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(wi => wi.IncomingLinks)
+            .WithOne(wil => wil.TargetWorkItem)
+            .HasForeignKey(wil => wil.TargetWorkItemId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.Property(wi => wi.CompletedAtUtc);
 
@@ -89,7 +105,7 @@ internal sealed class WorkItemConfigurations :
             .WithMany(s => s.WorkItems)
             .HasForeignKey(wi => wi.SprintId);
 
-        builder.HasIndex(wi => wi.AssignedUserId);
+        builder.HasIndex(wi => wi.AssigneeId);
         builder.HasIndex(wi => wi.AssignedTeamId);
         builder.HasIndex(wi => wi.SprintId);
         builder.HasIndex(wi => wi.ParentWorkItemId);
@@ -117,5 +133,64 @@ internal sealed class WorkItemConfigurations :
             .WithMany()
             .HasForeignKey(p => p.AuthorId)
             .OnDelete(DeleteBehavior.Restrict);
+    }
+
+    public void Configure(EntityTypeBuilder<WorkItemAttachment> builder)
+    {
+        builder.HasKey(wia => wia.Id);
+
+        builder.Property(wia => wia.Id)
+            .ValueGeneratedNever();
+
+        builder.Property(wia => wia.WorkItemId)
+            .IsRequired();
+
+        builder.Property(wia => wia.FileName)
+            .IsRequired()
+            .HasMaxLength(255);
+
+        builder.Property(wia => wia.BlobId)
+            .IsRequired();
+
+        builder.Property(wia => wia.ContentType)
+            .IsRequired()
+            .HasMaxLength(100);
+
+        builder.Property(wia => wia.FileSizeBytes)
+            .IsRequired();
+
+        builder.Property(wia => wia.AuthorId)
+            .IsRequired();
+
+        builder.HasIndex(wia => wia.WorkItemId);
+        builder.HasIndex(wia => wia.BlobId);
+    }
+
+    public void Configure(EntityTypeBuilder<WorkItemLink> builder)
+    {
+        builder.HasKey(wil => wil.Id);
+
+        builder.Property(wil => wil.Id)
+            .ValueGeneratedNever();
+
+        builder.Property(wil => wil.SourceWorkItemId)
+            .IsRequired();
+
+        builder.Property(wil => wil.TargetWorkItemId)
+            .IsRequired();
+
+        builder.Property(wil => wil.LinkType)
+            .HasConversion<string>()
+            .IsRequired();
+
+        builder.Property(wil => wil.Comment)
+            .HasMaxLength(500);
+
+        builder.HasIndex(wil => wil.SourceWorkItemId);
+        builder.HasIndex(wil => wil.TargetWorkItemId);
+        builder.HasIndex(wil => wil.LinkType);
+
+        builder.HasIndex(wil => new { wil.SourceWorkItemId, wil.TargetWorkItemId, wil.LinkType })
+            .IsUnique();
     }
 }

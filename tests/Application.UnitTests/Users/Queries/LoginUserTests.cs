@@ -1,5 +1,6 @@
 using Application.Abstractions.Authentication;
 using Application.Users.Queries.LoginUser;
+using Domain.Shared;
 using Domain.Users;
 
 namespace Application.UnitTests.Users.Queries;
@@ -13,14 +14,17 @@ public class LoginUserTests
     private readonly LoginUserQueryHandler _handler;
     private readonly IUserRepository _mockUserRepository;
     private readonly IJwtService _mockJwtService;
+    private readonly IUnitOfWork _mockUnitOfWork;
 
     public LoginUserTests()
     {
         _mockUserRepository = Substitute.For<IUserRepository>();
         _mockJwtService = Substitute.For<IJwtService>();
+        _mockUnitOfWork = Substitute.For<IUnitOfWork>();
         _handler = new LoginUserQueryHandler(
             _mockUserRepository,
-            _mockJwtService);
+            _mockJwtService,
+            _mockUnitOfWork);
     }
 
     [Fact]

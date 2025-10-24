@@ -23,24 +23,24 @@ public class WorkItemTests
         workItem.AssignedTeamId.Should().Be(WorkItemFactory.AssignedTeamId);
         workItem.SprintId.Should().Be(WorkItemFactory.SprintId);
         workItem.ParentWorkItemId.Should().Be(WorkItemFactory.ParentWorkItemId);
-        workItem.AssignedUserId.Should().BeNull();
+        workItem.AssigneeId.Should().BeNull();
         workItem.Description.Should().BeNull();
         workItem.AcceptanceCriteria.Should().BeNull();
         workItem.CompletedAtUtc.Should().BeNull();
     }
 
     [Fact]
-    public void Assign_WithValidUserId_ShouldSetAssignedUserId()
+    public void Assign_WithValidUserId_ShouldSetAssigneeId()
     {
         // Arrange
         var workItem = WorkItemFactory.Create();
         var userId = Guid.NewGuid();
 
         // Act
-        workItem.Assign(userId);
+        workItem.UpdateAssignment(userId);
 
         // Assert
-        workItem.AssignedUserId.Should().Be(userId);
+        workItem.AssigneeId.Should().Be(userId);
     }
 
     [Fact]
@@ -87,14 +87,14 @@ public class WorkItemTests
         workItem.Update(
             title: newTitle,
             description: newDescription,
-            status: newStatus,
-            assigneeId: newAssigneeId);
+            status: newStatus);
+        workItem.UpdateAssignment(newAssigneeId);
 
         // Assert
         workItem.Title.Should().Be(newTitle);
         workItem.Description.Should().Be(newDescription);
         workItem.Status.Should().Be(newStatus);
-        workItem.AssignedUserId.Should().Be(newAssigneeId);
+        workItem.AssigneeId.Should().Be(newAssigneeId);
     }
 
     [Fact]
@@ -324,5 +324,130 @@ public class WorkItemTests
         content.Should().Contain("Status: New");
         content.Should().NotContain("Description:");
         content.Should().NotContain("Acceptance Criteria:");
+    }
+
+    [Fact]
+    public void AddLink_WithValidLink_ShouldAddLinkSuccessfully()
+    {
+        // Arrange
+        var workItem = WorkItemFactory.Create();
+        var targetWorkItemId = Guid.NewGuid();
+        var link = WorkItemLinkFactory.Create(
+            sourceWorkItemId: workItem.Id,
+            targetWorkItemId: targetWorkItemId);
+
+        // Act
+        var result = workItem.AddLink(link);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        workItem.OutgoingLinks.Should().Contain(link);
+        workItem.OutgoingLinks.Should().HaveCount(1);
+    }
+
+    [Fact]
+    public void AddLink_WithSelfLink_ShouldReturnError()
+    {
+        // Arrange
+        var workItem = WorkItemFactory.Create();
+        var link = WorkItemLinkFactory.Create(
+            sourceWorkItemId: workItem.Id,
+            targetWorkItemId: workItem.Id);
+
+        // Act
+        var result = workItem.AddLink(link);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(WorkItemErrors.CannotLinkToSelf);
+        workItem.OutgoingLinks.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void AddLink_WithDuplicateLink_ShouldReturnError()
+    {
+        // Arrange
+        var workItem = WorkItemFactory.Create();
+        var targetWorkItemId = Guid.NewGuid();
+        var link1 = WorkItemLinkFactory.Create(
+            sourceWorkItemId: workItem.Id,
+            targetWorkItemId: targetWorkItemId,
+            linkType: WorkItemLinkType.Related);
+        var link2 = WorkItemLinkFactory.Create(
+            sourceWorkItemId: workItem.Id,
+            targetWorkItemId: targetWorkItemId,
+            linkType: WorkItemLinkType.Related);
+
+        workItem.AddLink(link1);
+
+        // Act
+        var result = workItem.AddLink(link2);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(WorkItemErrors.LinkAlreadyExists);
+        workItem.OutgoingLinks.Should().HaveCount(1);
+    }
+
+    [Fact]
+    public void AddLink_WithSameTargetButDifferentLinkType_ShouldAddBothLinks()
+    {
+        // Arrange
+        var workItem = WorkItemFactory.Create();
+        var targetWorkItemId = Guid.NewGuid();
+        var link1 = WorkItemLinkFactory.Create(
+            sourceWorkItemId: workItem.Id,
+            targetWorkItemId: targetWorkItemId,
+            linkType: WorkItemLinkType.Related);
+        var link2 = WorkItemLinkFactory.Create(
+            sourceWorkItemId: workItem.Id,
+            targetWorkItemId: targetWorkItemId,
+            linkType: WorkItemLinkType.Duplicate);
+
+        // Act
+        var result1 = workItem.AddLink(link1);
+        var result2 = workItem.AddLink(link2);
+
+        // Assert
+        result1.IsError.Should().BeFalse();
+        result2.IsError.Should().BeFalse();
+        workItem.OutgoingLinks.Should().HaveCount(2);
+        workItem.OutgoingLinks.Should().Contain(link1);
+        workItem.OutgoingLinks.Should().Contain(link2);
+    }
+
+    [Fact]
+    public void RemoveLink_WithExistingLink_ShouldRemoveSuccessfully()
+    {
+        // Arrange
+        var workItem = WorkItemFactory.Create();
+        var targetWorkItemId = Guid.NewGuid();
+        var link = WorkItemLinkFactory.Create(
+            sourceWorkItemId: workItem.Id,
+            targetWorkItemId: targetWorkItemId);
+        workItem.AddLink(link);
+
+        // Act
+        var result = workItem.RemoveLink(link.Id);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        workItem.OutgoingLinks.Should().NotContain(link);
+        workItem.OutgoingLinks.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void RemoveLink_WithNonExistentLink_ShouldReturnError()
+    {
+        // Arrange
+        var workItem = WorkItemFactory.Create();
+        var nonExistentLinkId = Guid.NewGuid();
+
+        // Act
+        var result = workItem.RemoveLink(nonExistentLinkId);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(WorkItemErrors.LinkNotFound);
     }
 }

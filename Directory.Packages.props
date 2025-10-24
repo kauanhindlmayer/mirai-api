@@ -5,11 +5,11 @@
   <ItemGroup>
     <PackageVersion Include="Asp.Versioning.Mvc" Version="8.1.0" />
     <PackageVersion Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
-    <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.3.0" />
-    <PackageVersion Include="Aspire.Hosting.NodeJs" Version="9.3.1" />
-    <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="9.3.0" />
-    <PackageVersion Include="Aspire.Hosting.Redis" Version="9.3.0" />
-    <PackageVersion Include="Aspire.Hosting.Keycloak" Version="9.3.0-preview.1.25265.20" />
+    <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.5.1" />
+    <PackageVersion Include="Aspire.Hosting.NodeJs" Version="9.5.1" />
+    <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="9.5.1" />
+    <PackageVersion Include="Aspire.Hosting.Redis" Version="9.5.1" />
+    <PackageVersion Include="Aspire.Hosting.Keycloak" Version="9.5.1-preview.1.25502.11" />
     <PackageVersion Include="Azure.Storage.Blobs" Version="12.24.0" />
     <PackageVersion Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageVersion Include="Bogus" Version="35.6.3" />
@@ -43,7 +43,7 @@
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.5" />
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.5.0" />
     <PackageVersion Include="Microsoft.Extensions.Identity.Core" Version="9.0.5" />
-    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="8.2.2" />
+    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="9.5.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.0" />
     <PackageVersion Include="Npgsql.OpenTelemetry" Version="9.0.3" />
     <PackageVersion Include="NSubstitute" Version="5.3.0" />

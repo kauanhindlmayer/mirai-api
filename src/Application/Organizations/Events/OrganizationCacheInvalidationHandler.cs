@@ -1,4 +1,5 @@
 using Application.Abstractions.Caching;
+using Domain.Organizations;
 using Domain.Organizations.Events;
 using MediatR;
 
@@ -20,31 +21,29 @@ internal sealed class OrganizationCacheInvalidationHandler :
         OrganizationCreatedDomainEvent notification,
         CancellationToken cancellationToken)
     {
-        return InvalidateCache(notification.Organization.Id, cancellationToken);
+        return InvalidateCache(notification.Organization, cancellationToken);
     }
 
     public Task Handle(
         OrganizationUpdatedDomainEvent notification,
         CancellationToken cancellationToken)
     {
-        return InvalidateCache(notification.Organization.Id, cancellationToken);
+        return InvalidateCache(notification.Organization, cancellationToken);
     }
 
     public Task Handle(
         OrganizationDeletedDomainEvent notification,
         CancellationToken cancellationToken)
     {
-        return InvalidateCache(notification.Organization.Id, cancellationToken);
+        return InvalidateCache(notification.Organization, cancellationToken);
     }
 
     private async Task InvalidateCache(
-        Guid organizationId,
+        Organization organization,
         CancellationToken cancellationToken)
     {
-        var organizationKey = CacheKeys.GetOrganizationKey(organizationId);
+        var organizationKey = CacheKeys.GetOrganizationKey(organization.Id);
         await _cacheService.RemoveAsync(organizationKey, cancellationToken);
-
-        var organizationsKey = CacheKeys.GetOrganizationsKey();
-        await _cacheService.RemoveAsync(organizationsKey, cancellationToken);
+        await _cacheService.RemoveByPatternAsync("organizations:*", cancellationToken);
     }
 }

@@ -1,9 +1,12 @@
 using Application.Abstractions.Behaviors;
 using Application.Abstractions.Mappings;
 using Application.Abstractions.Sorting;
+using Application.Organizations.Queries.GetOrganizationUsers;
+using Application.Projects.Queries.GetProjectUsers;
 using Application.Tags.Queries.ListTags;
 using Application.WorkItems.Queries.ListWorkItems;
 using Domain.Tags;
+using Domain.Users;
 using Domain.WorkItems;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,11 +29,22 @@ public static class DependencyInjection
             typeof(DependencyInjection),
             includeInternalTypes: true);
 
+        services.AddSortMappings();
+
+        return services;
+    }
+
+    private static IServiceCollection AddSortMappings(this IServiceCollection services)
+    {
         services.AddTransient<SortMappingProvider>();
         services.AddSingleton<ISortMappingDefinition, SortMappingDefinition<WorkItemBriefResponse, WorkItem>>(_ =>
             WorkItemMappings.SortMapping);
         services.AddSingleton<ISortMappingDefinition, SortMappingDefinition<TagResponse, Tag>>(_ =>
             TagMappings.SortMapping);
+        services.AddSingleton<ISortMappingDefinition, SortMappingDefinition<OrganizationUserResponse, User>>(_ =>
+            OrganizationUserMappings.SortMapping);
+        services.AddSingleton<ISortMappingDefinition, SortMappingDefinition<ProjectUserResponse, User>>(_ =>
+            ProjectUserMappings.SortMapping);
 
         return services;
     }

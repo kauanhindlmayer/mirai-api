@@ -1,15 +1,17 @@
 using System.Linq.Expressions;
 using Application.Boards.Queries.GetBoard;
 using Application.Boards.Queries.ListBoards;
+using Domain.Backlogs;
 using Domain.Boards;
+using Domain.WorkItems.Enums;
 
 namespace Application.Boards.Queries;
 
 internal static class BoardQueries
 {
-    private const int MaxCardsPerColumn = 20;
-
-    public static Expression<Func<Board, BoardResponse>> ProjectToDto()
+    public static Expression<Func<Board, BoardResponse>> ProjectToDto(
+        BacklogLevel? backlogLevel,
+        int pageSize)
     {
         return b => new BoardResponse
         {
@@ -18,17 +20,29 @@ internal static class BoardQueries
             Name = b.Name,
             Columns = b.Columns
                 .OrderBy(column => column.Position)
-                .Select(column => new BoardColumnResponse
+                .Select(column => new
                 {
-                    Id = column.Id,
-                    Name = column.Name,
-                    Position = column.Position,
-                    IsDefault = column.IsDefault,
-                    WipLimit = column.WipLimit,
-                    DefinitionOfDone = column.DefinitionOfDone,
-                    Cards = column.Cards
+                    Column = column,
+                    FilteredCards = column.Cards
+                        .Where(card =>
+                            !backlogLevel.HasValue ||
+                            (backlogLevel == BacklogLevel.Epic && card.WorkItem.Type == WorkItemType.Epic && !card.WorkItem.ParentWorkItemId.HasValue) ||
+                            (backlogLevel == BacklogLevel.Feature && card.WorkItem.Type == WorkItemType.Feature) ||
+                            (backlogLevel == BacklogLevel.UserStory && card.WorkItem.Type == WorkItemType.UserStory)),
+                })
+                .Select(x => new BoardColumnResponse
+                {
+                    Id = x.Column.Id,
+                    Name = x.Column.Name,
+                    Position = x.Column.Position,
+                    IsDefault = x.Column.IsDefault,
+                    WipLimit = x.Column.WipLimit,
+                    DefinitionOfDone = x.Column.DefinitionOfDone,
+                    TotalCardCount = x.FilteredCards.Count(),
+                    HasMoreCards = x.FilteredCards.Count() > pageSize,
+                    Cards = x.FilteredCards
                         .OrderBy(card => card.Position)
-                        .Take(MaxCardsPerColumn)
+                        .Take(pageSize)
                         .Select(card => new BoardCardResponse
                         {
                             Id = card.Id,
@@ -40,13 +54,13 @@ internal static class BoardQueries
                                 Code = card.WorkItem.Code,
                                 Title = card.WorkItem.Title,
                                 StoryPoints = card.WorkItem.Planning.StoryPoints,
-                                Assignee = card.WorkItem.AssignedUser == null
+                                Assignee = card.WorkItem.Assignee == null
                                     ? null
                                     : new AssigneeResponse
                                     {
-                                        Id = card.WorkItem.AssignedUser.Id,
-                                        Name = card.WorkItem.AssignedUser.FullName,
-                                        ImageUrl = card.WorkItem.AssignedUser.ImageUrl,
+                                        Id = card.WorkItem.Assignee.Id,
+                                        Name = card.WorkItem.Assignee.FullName,
+                                        ImageUrl = card.WorkItem.Assignee.ImageUrl,
                                     },
                                 Type = card.WorkItem.Type.ToString(),
                                 Status = card.WorkItem.Status.ToString(),
@@ -66,6 +80,36 @@ internal static class BoardQueries
             Id = b.Id,
             TeamId = b.TeamId,
             Name = b.Name,
+        };
+    }
+
+    public static Expression<Func<BoardCard, BoardCardResponse>> ProjectToDto()
+    {
+        return card => new BoardCardResponse
+        {
+            Id = card.Id,
+            ColumnId = card.BoardColumnId,
+            Position = card.Position,
+            WorkItem = new WorkItemResponse
+            {
+                Id = card.WorkItem.Id,
+                Code = card.WorkItem.Code,
+                Title = card.WorkItem.Title,
+                StoryPoints = card.WorkItem.Planning.StoryPoints,
+                Assignee = card.WorkItem.Assignee == null
+                    ? null
+                    : new AssigneeResponse
+                    {
+                        Id = card.WorkItem.Assignee.Id,
+                        Name = card.WorkItem.Assignee.FullName,
+                        ImageUrl = card.WorkItem.Assignee.ImageUrl,
+                    },
+                Type = card.WorkItem.Type.ToString(),
+                Status = card.WorkItem.Status.ToString(),
+                Tags = card.WorkItem.Tags.Select(tag => tag.Name),
+            },
+            CreatedAtUtc = card.CreatedAtUtc,
+            UpdatedAtUtc = card.UpdatedAtUtc,
         };
     }
 }
