@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Application.IntegrationTests.Infrastructure;
 
 [Collection(nameof(IntegrationTestCollection))]
-public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppFactory>
+public abstract class BaseIntegrationTest
 {
     protected readonly ISender _sender;
     protected readonly ApplicationDbContext _dbContext;

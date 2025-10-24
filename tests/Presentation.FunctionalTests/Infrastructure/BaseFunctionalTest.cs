@@ -7,7 +7,7 @@ using Presentation.FunctionalTests.Users;
 namespace Presentation.FunctionalTests.Infrastructure;
 
 [Collection(nameof(FunctionalTestCollection))]
-public abstract class BaseFunctionalTest : IClassFixture<FunctionalTestWebAppFactory>
+public abstract class BaseFunctionalTest
 {
     protected readonly HttpClient _httpClient;
 

@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Presentation.Constants;
+using Presentation.Converters;
 using Presentation.Hubs;
 using Presentation.Middlewares;
 using Presentation.OpenApi;
@@ -14,7 +15,10 @@ public static class DependencyInjection
     {
         services.AddControllers(options => options.ReturnHttpNotAcceptable = true)
             .AddJsonOptions(options =>
-                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+            {
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
+            });
 
         services.ConfigureCustomMediaTypes();
 
