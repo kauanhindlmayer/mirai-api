@@ -37,6 +37,8 @@ using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using OpenAI.Chat;
+using OpenAI.Embeddings;
 using Quartz;
 using AuthenticationOptions = Infrastructure.Authentication.AuthenticationOptions;
 using AuthenticationService = Infrastructure.Authentication.AuthenticationService;
@@ -64,15 +66,16 @@ public static class DependencyInjection
         return services;
     }
 
-    public static WebApplicationBuilder AddOllamaServices(
+    public static WebApplicationBuilder AddOpenAIServices(
         this WebApplicationBuilder builder)
     {
         builder
-            .AddOllamaApiClient(ServiceKeys.Chat)
+            .AddOpenAIClient(ServiceKeys.Chat)
             .AddKeyedChatClient(ServiceKeys.Chat);
+
         builder
-            .AddOllamaApiClient(ServiceKeys.Embedding)
-            .AddKeyedEmbeddingGenerator(ServiceKeys.Embedding);
+            .AddOpenAIClient(ServiceKeys.Embeddings)
+            .AddKeyedEmbeddingGenerator(ServiceKeys.Embeddings);
 
         return builder;
     }

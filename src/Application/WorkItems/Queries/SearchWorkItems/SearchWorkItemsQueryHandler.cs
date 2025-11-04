@@ -18,7 +18,7 @@ internal sealed class SearchWorkItemsQueryHandler
     private readonly IApplicationDbContext _context;
 
     public SearchWorkItemsQueryHandler(
-        [FromKeyedServices(ServiceKeys.Embedding)] IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator,
+        [FromKeyedServices(ServiceKeys.Embeddings)] IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator,
         IApplicationDbContext context)
     {
         _embeddingGenerator = embeddingGenerator;

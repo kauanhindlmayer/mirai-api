@@ -27,7 +27,7 @@ The codebase follows Clean Architecture with clear separation of concerns:
 - **Redis** for caching
 - **Azure Blob Storage** for file storage
 - **Keycloak** for authentication
-- **Ollama** for AI integration
+- **OpenAI** for AI integration (chat and embeddings)
 - **.NET Aspire** for orchestration
 - **Quartz.NET** for background jobs
 
@@ -92,6 +92,28 @@ cd src/Presentation
 dotnet user-secrets set "Azure:BlobStorage:ConnectionString" "<value>"
 dotnet user-secrets set "Keycloak:AuthClientSecret" "<value>"
 ```
+
+### OpenAI Configuration
+
+The application uses OpenAI for AI features (chat and embeddings) through .NET Aspire integration.
+
+**Setup:**
+
+Set the OpenAI API key in AppHost user secrets or as an environment variable:
+
+```bash
+cd src/AppHost
+dotnet user-secrets set "Parameters:openai-openai-apikey" "sk-your-api-key-here"
+
+# Or set as environment variable:
+export OPENAI_API_KEY="sk-your-api-key-here"
+```
+
+**Default Models:**
+- Chat: `gpt-4o-mini`
+- Embeddings: `text-embedding-3-small`
+
+These models are configured in [AppHost/Program.cs:21-24](src/AppHost/Program.cs#L21-L24) and can be modified as needed.
 
 ## Code Standards
 

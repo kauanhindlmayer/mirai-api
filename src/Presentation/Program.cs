@@ -9,7 +9,7 @@ using ServiceDefaults;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
-builder.AddOllamaServices();
+builder.AddOpenAIServices();
 
 builder.Services.AddSerilog(config =>
     config.ReadFrom.Configuration(builder.Configuration));
