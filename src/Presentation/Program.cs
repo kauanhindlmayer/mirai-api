@@ -32,10 +32,10 @@ if (app.Environment.IsDevelopment())
 
     app.MapScalarApiReference(options =>
         options.WithOpenApiRoutePattern("/swagger/1.0/swagger.json"));
-
-    await app.ApplyMigrationsAsync();
-    await app.SeedDataAsync();
 }
+
+await app.ApplyMigrationsAsync();
+await app.SeedDataAsync();
 
 app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
