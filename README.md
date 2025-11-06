@@ -10,4 +10,4 @@ Mirai (Japanese word for "future") is a web-based project management tool that a
 
 ## Documentation
 
-Explore our comprehensive [documentation](https://miraihq.com/en) to help you get started with Mirai.
+Explore our comprehensive [documentation](http://docs.miraihq.com) to help you get started with Mirai.

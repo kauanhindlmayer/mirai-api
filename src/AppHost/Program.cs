@@ -107,7 +107,7 @@ var miraiApp = builder.AddNpmApp("mirai-app", "../../../mirai-app")
     .WithReference(miraiApi)
     .WaitFor(miraiApi)
     .WithHttpEndpoint(env: "PORT", port: builder.ExecutionContext.IsPublishMode ? 80 : 5173)
-    .WithEnvironment("MIRAI_API_URL", miraiApiUrl)
+    .WithEnvironment("VITE_API_URL", miraiApiUrl)
     .WithExternalHttpEndpoints()
     .PublishAsDockerFile();
 
