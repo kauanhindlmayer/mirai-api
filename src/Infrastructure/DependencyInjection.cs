@@ -60,7 +60,7 @@ public static class DependencyInjection
             .AddPersistence(configuration)
             .AddApiVersioning()
             .AddCorsPolicy(configuration)
-            .AddCaching(configuration)
+            .AddCaching()
             .AddBackgroundJobs();
 
         return services;
@@ -201,14 +201,10 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IServiceCollection AddCaching(
-        this IServiceCollection services,
-        IConfiguration configuration)
+    private static IServiceCollection AddCaching(this IServiceCollection services)
     {
-        var connectionString = configuration.GetConnectionString("redis");
-        services.AddStackExchangeRedisCache(options => options.Configuration = connectionString);
-        services.AddSingleton<StackExchange.Redis.IConnectionMultiplexer>(_ =>
-            StackExchange.Redis.ConnectionMultiplexer.Connect(connectionString!));
+        // Aspire handles Redis registration via builder.AddRedisClient() in Program.cs
+        // This registers IConnectionMultiplexer and IDistributedCache automatically
         services.AddSingleton<ICacheService, CacheService>();
 
         return services;

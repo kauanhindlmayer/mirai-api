@@ -1,5 +1,8 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
+var customDomain = builder.AddParameter("customDomain");
+var certificateName = builder.AddParameter("certificateName", value: string.Empty, publishValueAsDefault: true);
+
 builder.AddAzureContainerAppEnvironment("mirai-env");
 
 var postgres = builder.AddAzurePostgresFlexibleServer("postgres")
@@ -108,7 +111,11 @@ var miraiApp = builder.AddNpmApp("mirai-app", "../../../mirai-app")
     .WithHttpEndpoint(env: "PORT", port: 80)
     .WithEnvironment("MIRAI_API_URL", miraiApiUrl)
     .WithExternalHttpEndpoints()
-    .PublishAsDockerFile();
+    .PublishAsDockerFile()
+    .PublishAsAzureContainerApp((container, configure) =>
+    {
+        configure.ConfigureCustomDomain(customDomain, certificateName);
+    });
 
 if (builder.ExecutionContext.IsPublishMode)
 {

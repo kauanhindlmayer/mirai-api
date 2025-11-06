@@ -9,6 +9,8 @@ using ServiceDefaults;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
+builder.AddRedisClient(connectionName: "redis");
+builder.AddRedisDistributedCache(connectionName: "redis");
 builder.AddOpenAIServices();
 
 builder.Services.AddSerilog(config =>

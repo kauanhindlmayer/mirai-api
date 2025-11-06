@@ -193,6 +193,9 @@ dotnet_diagnostic.SA1512.severity = none
 # IDE0053: Use expression body for lambda expression
 dotnet_diagnostic.IDE0053.severity = none
 
+# ASPIREACADOMAINS001: Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+dotnet_diagnostic.ASPIREACADOMAINS001.severity = none
+
 [*.{cs,vb}]
 
 # Naming rules

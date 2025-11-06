@@ -17,6 +17,7 @@
     <PackageVersion Include="Aspire.Hosting.Keycloak" Version="9.5.1-preview.1.25502.11" />
     <PackageVersion Include="Aspire.OpenAI" Version="9.5.2-preview.1.25522.3" />
     <PackageVersion Include="Aspire.StackExchange.Redis" Version="9.5.2" />
+    <PackageVersion Include="Aspire.StackExchange.Redis.DistributedCaching" Version="9.5.2" />
     <PackageVersion Include="Azure.AI.OpenAI" Version="2.1.0" />
     <PackageVersion Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.3.0" />
     <PackageVersion Include="Azure.Storage.Blobs" Version="12.24.0" />
