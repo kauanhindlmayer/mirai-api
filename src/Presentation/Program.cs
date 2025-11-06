@@ -11,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
 builder.AddRedisClient(connectionName: "redis");
 builder.AddRedisDistributedCache(connectionName: "redis");
+builder.AddAzureBlobServiceClient(connectionName: "blobs");
 builder.AddOpenAIServices();
 
 builder.Services.AddSerilog(config =>

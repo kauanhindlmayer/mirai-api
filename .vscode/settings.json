@@ -11,7 +11,8 @@
     "pgvector",
     "provisionable",
     "serilog",
-    "xforwarded"
+    "xforwarded",
+    "npgsql"
   ],
   "dotnet.defaultSolution": "Mirai.slnx",
   "github.copilot.chat.commitMessageGeneration.instructions": [
