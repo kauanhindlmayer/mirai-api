@@ -37,9 +37,8 @@ var redis = builder.AddAzureRedis("redis")
 
 var keycloakPassword = builder.AddParameter("KeycloakPassword", secret: true);
 
-var keycloak = builder.AddKeycloak("keycloak", adminPassword: keycloakPassword)
-    .WithImageTag("26.2")
-    .WithLifetime(ContainerLifetime.Persistent);
+var keycloak = builder.AddKeycloak("keycloak", port: 18080, adminPassword: keycloakPassword)
+    .WithImageTag("26.2");
 
 if (builder.ExecutionContext.IsRunMode)
 {

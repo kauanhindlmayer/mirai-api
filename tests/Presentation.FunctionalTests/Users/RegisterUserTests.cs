@@ -1,4 +1,3 @@
-using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
 using Presentation.Controllers.Users;
@@ -6,13 +5,8 @@ using Presentation.FunctionalTests.Infrastructure;
 
 namespace Presentation.FunctionalTests.Users;
 
-public class RegisterUserTests : BaseFunctionalTest
+public class RegisterUserTests(DistributedApplicationTestFixture fixture)
 {
-    public RegisterUserTests(FunctionalTestWebAppFactory factory)
-        : base(factory)
-    {
-    }
-
     [Theory]
     [ClassData(typeof(InvalidRegisterUserRequestData))]
     public async Task RegisterUser_WhenRequestIsInvalid_ShouldReturnBadRequest(
@@ -25,7 +19,7 @@ public class RegisterUserTests : BaseFunctionalTest
         var request = new RegisterUserRequest(email, password, firstName, lastName);
 
         // Act
-        var response = await _httpClient.PostAsJsonAsync(
+        var response = await fixture.HttpClient.PostAsJsonAsync(
             Routes.Users.Register,
             request,
             cancellationToken: TestContext.Current.CancellationToken);
@@ -45,7 +39,7 @@ public class RegisterUserTests : BaseFunctionalTest
             "Doe");
 
         // Act
-        var response = await _httpClient.PostAsJsonAsync(
+        var response = await fixture.HttpClient.PostAsJsonAsync(
             Routes.Users.Register,
             request,
             cancellationToken: TestContext.Current.CancellationToken);

@@ -1,4 +1,3 @@
-using System.Net;
 using System.Net.Http.Json;
 using Application.Users.Queries.GetCurrentUser;
 using FluentAssertions;
@@ -6,21 +5,13 @@ using Presentation.FunctionalTests.Infrastructure;
 
 namespace Presentation.FunctionalTests.Users;
 
-public class GetLoggedInUserTests : BaseFunctionalTest
+public class GetLoggedInUserTests(DistributedApplicationTestFixture fixture)
 {
-    public GetLoggedInUserTests(FunctionalTestWebAppFactory factory)
-        : base(factory)
-    {
-    }
-
     [Fact]
     public async Task GetLoggedInUser_WhenRequestIsValid_ShouldReturnUser()
     {
-        // Arrange
-        await SetAuthorizationHeaderAsync();
-
         // Act
-        var response = await _httpClient.GetAsync(
+        var response = await fixture.HttpClient.GetAsync(
             Routes.Users.GetLoggedInUser,
             TestContext.Current.CancellationToken);
 
@@ -39,7 +30,7 @@ public class GetLoggedInUserTests : BaseFunctionalTest
     public async Task GetLoggedInUser_WhenAccessTokenIsMissing_ShouldReturnUnauthorized()
     {
         // Act
-        var response = await _httpClient.GetAsync(
+        var response = await fixture.HttpClient.GetAsync(
             Routes.Users.GetLoggedInUser,
             TestContext.Current.CancellationToken);
 

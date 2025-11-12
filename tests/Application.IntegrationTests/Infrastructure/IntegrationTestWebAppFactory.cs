@@ -6,6 +6,7 @@ using Testcontainers.Redis;
 
 namespace Application.IntegrationTests.Infrastructure;
 
+// TODO: Migrate from Testcontainers to Aspire.Hosting.Testing
 public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly PostgreSqlContainer _dbContainer = new PostgreSqlBuilder()

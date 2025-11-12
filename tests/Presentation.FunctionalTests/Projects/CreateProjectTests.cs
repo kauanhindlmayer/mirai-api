@@ -1,4 +1,3 @@
-using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
 using Presentation.Controllers.Projects;
@@ -7,20 +6,14 @@ using Presentation.FunctionalTests.Organizations;
 
 namespace Presentation.FunctionalTests.Projects;
 
-public class CreateProjectTests : BaseFunctionalTest
+public class CreateProjectTests(DistributedApplicationTestFixture fixture)
 {
-    public CreateProjectTests(FunctionalTestWebAppFactory factory)
-        : base(factory)
-    {
-    }
-
     [Fact]
     public async Task CreateProject_WhenRequestIsValid_ShouldReturnCreated()
     {
         // Arrange
-        await SetAuthorizationHeaderAsync();
         var createOrganizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest();
-        var createOrganizationResponse = await _httpClient.PostAsJsonAsync(
+        var createOrganizationResponse = await fixture.HttpClient.PostAsJsonAsync(
             Routes.Organizations.Create,
             createOrganizationRequest,
             cancellationToken: TestContext.Current.CancellationToken);
@@ -31,7 +24,7 @@ public class CreateProjectTests : BaseFunctionalTest
             "Project Description");
 
         // Act
-        var createProjectResponse = await _httpClient.PostAsJsonAsync(
+        var createProjectResponse = await fixture.HttpClient.PostAsJsonAsync(
             Routes.Projects.Create(organizationId),
             createProjectRequest,
             cancellationToken: TestContext.Current.CancellationToken);

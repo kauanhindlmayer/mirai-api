@@ -1,24 +1,17 @@
-using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
 using Presentation.FunctionalTests.Infrastructure;
 
 namespace Presentation.FunctionalTests.Organizations;
 
-public class UpdateOrganizationTests : BaseFunctionalTest
+public class UpdateOrganizationTests(DistributedApplicationTestFixture fixture)
 {
-    public UpdateOrganizationTests(FunctionalTestWebAppFactory factory)
-        : base(factory)
-    {
-    }
-
     [Fact]
     public async Task UpdateOrganization_WhenOrganizationExists_ShouldReturnOk()
     {
         // Arrange
-        await SetAuthorizationHeaderAsync();
         var createOrganizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest(name: "Organization 3");
-        var createOrganizationResponse = await _httpClient.PostAsJsonAsync(
+        var createOrganizationResponse = await fixture.HttpClient.PostAsJsonAsync(
             Routes.Organizations.Create,
             createOrganizationRequest,
             cancellationToken: TestContext.Current.CancellationToken);
@@ -27,7 +20,7 @@ public class UpdateOrganizationTests : BaseFunctionalTest
         var updateOrganizationRequest = OrganizationRequestFactory.CreateUpdateOrganizationRequest();
 
         // Act
-        var updateOrganizationResponse = await _httpClient.PutAsJsonAsync(
+        var updateOrganizationResponse = await fixture.HttpClient.PutAsJsonAsync(
             Routes.Organizations.Update(organizationId),
             updateOrganizationRequest,
             cancellationToken: TestContext.Current.CancellationToken);
@@ -40,12 +33,11 @@ public class UpdateOrganizationTests : BaseFunctionalTest
     public async Task UpdateOrganization_WhenOrganizationDoesNotExist_ShouldReturnNotFound()
     {
         // Arrange
-        await SetAuthorizationHeaderAsync();
         var organizationId = Guid.NewGuid();
         var updateOrganizationRequest = OrganizationRequestFactory.CreateUpdateOrganizationRequest();
 
         // Act
-        var updateOrganizationResponse = await _httpClient.PutAsJsonAsync(
+        var updateOrganizationResponse = await fixture.HttpClient.PutAsJsonAsync(
             Routes.Organizations.Update(organizationId),
             updateOrganizationRequest,
             cancellationToken: TestContext.Current.CancellationToken);
@@ -58,9 +50,8 @@ public class UpdateOrganizationTests : BaseFunctionalTest
     public async Task UpdateOrganization_WhenNameIsMissing_ShouldReturnBadRequest()
     {
         // Arrange
-        await SetAuthorizationHeaderAsync();
         var createOrganizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest(name: "Organization 4");
-        var createOrganizationResponse = await _httpClient.PostAsJsonAsync(
+        var createOrganizationResponse = await fixture.HttpClient.PostAsJsonAsync(
             Routes.Organizations.Create,
             createOrganizationRequest,
             cancellationToken: TestContext.Current.CancellationToken);
@@ -69,7 +60,7 @@ public class UpdateOrganizationTests : BaseFunctionalTest
         var updateOrganizationRequest = OrganizationRequestFactory.CreateUpdateOrganizationRequest(name: string.Empty);
 
         // Act
-        var updateOrganizationResponse = await _httpClient.PutAsJsonAsync(
+        var updateOrganizationResponse = await fixture.HttpClient.PutAsJsonAsync(
             Routes.Organizations.Update(organizationId),
             updateOrganizationRequest,
             cancellationToken: TestContext.Current.CancellationToken);
@@ -82,9 +73,8 @@ public class UpdateOrganizationTests : BaseFunctionalTest
     public async Task UpdateOrganization_WhenNameIsTooLong_ShouldReturnBadRequest()
     {
         // Arrange
-        await SetAuthorizationHeaderAsync();
         var createOrganizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest();
-        var createOrganizationResponse = await _httpClient.PostAsJsonAsync(
+        var createOrganizationResponse = await fixture.HttpClient.PostAsJsonAsync(
             Routes.Organizations.Create,
             createOrganizationRequest,
             cancellationToken: TestContext.Current.CancellationToken);
@@ -93,7 +83,7 @@ public class UpdateOrganizationTests : BaseFunctionalTest
         var updateOrganizationRequest = OrganizationRequestFactory.CreateUpdateOrganizationRequest(name: new string('a', 256));
 
         // Act
-        var updateOrganizationResponse = await _httpClient.PutAsJsonAsync(
+        var updateOrganizationResponse = await fixture.HttpClient.PutAsJsonAsync(
             Routes.Organizations.Update(organizationId),
             updateOrganizationRequest,
             cancellationToken: TestContext.Current.CancellationToken);

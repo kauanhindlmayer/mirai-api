@@ -1,4 +1,3 @@
-using System.Net;
 using System.Net.Http.Json;
 using Application.Organizations.Queries.GetOrganization;
 using FluentAssertions;
@@ -6,25 +5,19 @@ using Presentation.FunctionalTests.Infrastructure;
 
 namespace Presentation.FunctionalTests.Organizations;
 
-public class ListOrganizationsTests : BaseFunctionalTest
+public class ListOrganizationsTests(DistributedApplicationTestFixture fixture)
 {
-    public ListOrganizationsTests(FunctionalTestWebAppFactory factory)
-        : base(factory)
-    {
-    }
-
     [Fact]
     public async Task ListOrganizations_WhenOrganizationsExist_ShouldReturnOrganizations()
     {
         // Arrange
-        await SetAuthorizationHeaderAsync();
         var createOrganizationRequest1 = OrganizationRequestFactory.CreateCreateOrganizationRequest(name: "Organization 1");
         var createOrganizationRequest2 = OrganizationRequestFactory.CreateCreateOrganizationRequest(name: "Organization 2");
-        var createOrganizationResponse1 = await _httpClient.PostAsJsonAsync(
+        var createOrganizationResponse1 = await fixture.HttpClient.PostAsJsonAsync(
             Routes.Organizations.Create,
             createOrganizationRequest1,
             cancellationToken: TestContext.Current.CancellationToken);
-        var createOrganizationResponse2 = await _httpClient.PostAsJsonAsync(
+        var createOrganizationResponse2 = await fixture.HttpClient.PostAsJsonAsync(
             Routes.Organizations.Create,
             createOrganizationRequest2,
             cancellationToken: TestContext.Current.CancellationToken);
@@ -34,7 +27,7 @@ public class ListOrganizationsTests : BaseFunctionalTest
             cancellationToken: TestContext.Current.CancellationToken);
 
         // Act
-        var listOrganizationsResponse = await _httpClient.GetAsync(
+        var listOrganizationsResponse = await fixture.HttpClient.GetAsync(
             Routes.Organizations.List,
             TestContext.Current.CancellationToken);
 
