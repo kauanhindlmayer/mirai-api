@@ -186,4 +186,116 @@ public class BoardColumnTests
         result.Errors.Should().HaveCount(1);
         result.FirstError.Should().BeEquivalentTo(BoardErrors.CardAlreadyExists);
     }
+
+    [Fact]
+    public void ReorderCard_WhenMovingDown_ShouldShiftCardsUp()
+    {
+        // Arrange
+        var column = BoardColumnFactory.Create();
+        var workItem1 = WorkItemFactory.Create();
+        var workItem2 = WorkItemFactory.Create();
+        var workItem3 = WorkItemFactory.Create();
+        var workItem4 = WorkItemFactory.Create();
+        var card1 = BoardCardFactory.Create(column.Id, workItem1.Id);
+        var card2 = BoardCardFactory.Create(column.Id, workItem2.Id);
+        var card3 = BoardCardFactory.Create(column.Id, workItem3.Id);
+        var card4 = BoardCardFactory.Create(column.Id, workItem4.Id);
+        column.AddCard(card1);
+        column.AddCard(card2);
+        column.AddCard(card3);
+        column.AddCard(card4);
+
+        // Act
+        var result = column.ReorderCard(card3.Id, 3);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        card4.Position.Should().Be(0);
+        card2.Position.Should().Be(1);
+        card1.Position.Should().Be(2);
+        card3.Position.Should().Be(3);
+    }
+
+    [Fact]
+    public void ReorderCard_WhenMovingUp_ShouldShiftCardsDown()
+    {
+        // Arrange
+        var column = BoardColumnFactory.Create();
+        var workItem1 = WorkItemFactory.Create();
+        var workItem2 = WorkItemFactory.Create();
+        var workItem3 = WorkItemFactory.Create();
+        var workItem4 = WorkItemFactory.Create();
+        var card1 = BoardCardFactory.Create(column.Id, workItem1.Id);
+        var card2 = BoardCardFactory.Create(column.Id, workItem2.Id);
+        var card3 = BoardCardFactory.Create(column.Id, workItem3.Id);
+        var card4 = BoardCardFactory.Create(column.Id, workItem4.Id);
+        column.AddCard(card1);
+        column.AddCard(card2);
+        column.AddCard(card3);
+        column.AddCard(card4);
+
+        // Act
+        var result = column.ReorderCard(card1.Id, 1);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        card4.Position.Should().Be(0);
+        card1.Position.Should().Be(1);
+        card3.Position.Should().Be(2);
+        card2.Position.Should().Be(3);
+    }
+
+    [Fact]
+    public void ReorderCard_WhenMovingToSamePosition_ShouldSucceed()
+    {
+        // Arrange
+        var column = BoardColumnFactory.Create();
+        var workItem1 = WorkItemFactory.Create();
+        var workItem2 = WorkItemFactory.Create();
+        var card1 = BoardCardFactory.Create(column.Id, workItem1.Id);
+        var card2 = BoardCardFactory.Create(column.Id, workItem2.Id);
+        column.AddCard(card1);
+        column.AddCard(card2);
+
+        // Act
+        var result = column.ReorderCard(card2.Id, 0);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        card2.Position.Should().Be(0);
+        card1.Position.Should().Be(1);
+    }
+
+    [Fact]
+    public void ReorderCard_WhenCardDoesNotExist_ShouldReturnError()
+    {
+        // Arrange
+        var column = BoardColumnFactory.Create();
+        var workItem = WorkItemFactory.Create();
+        var card = BoardCardFactory.Create(column.Id, workItem.Id);
+
+        // Act
+        var result = column.ReorderCard(card.Id, 0);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().BeEquivalentTo(BoardErrors.CardNotFound);
+    }
+
+    [Fact]
+    public void ReorderCard_WhenPositionIsInvalid_ShouldReturnError()
+    {
+        // Arrange
+        var column = BoardColumnFactory.Create();
+        var workItem = WorkItemFactory.Create();
+        var card = BoardCardFactory.Create(column.Id, workItem.Id);
+        column.AddCard(card);
+
+        // Act
+        var result = column.ReorderCard(card.Id, 10);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().BeEquivalentTo(BoardErrors.InvalidPosition);
+    }
 }

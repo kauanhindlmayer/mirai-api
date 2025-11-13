@@ -409,11 +409,15 @@ public static class DatabaseExtensions
     {
         var workItemCode = 1;
         var columns = board.Columns.ToList();
-        var columnPositions = new Dictionary<Guid, int>();
+        var columnPositions = new Dictionary<(Guid ColumnId, WorkItemType Type), int>();
 
         foreach (var column in columns)
         {
-            columnPositions[column.Id] = 0;
+            columnPositions[(column.Id, WorkItemType.Epic)] = 0;
+            columnPositions[(column.Id, WorkItemType.Feature)] = 0;
+            columnPositions[(column.Id, WorkItemType.UserStory)] = 0;
+            columnPositions[(column.Id, WorkItemType.Bug)] = 0;
+            columnPositions[(column.Id, WorkItemType.Defect)] = 0;
         }
 
         var orderedSprints = sprints.OrderBy(s => s.StartDate).ToList();
@@ -442,10 +446,8 @@ public static class DatabaseExtensions
             epics.Add(epic);
 
             var epicColumnId = GetColumnForStatus(columns, epic.Status).Id;
-            var epicCard = new BoardCard(
-                epicColumnId,
-                epic.Id,
-                columnPositions[epicColumnId]++);
+            var epicCard = new BoardCard(epicColumnId, epic.Id, columnPositions[(epicColumnId, WorkItemType.Epic)]);
+            columnPositions[(epicColumnId, WorkItemType.Epic)]++;
             await context.BoardCards.AddAsync(epicCard);
         }
 
@@ -480,10 +482,8 @@ public static class DatabaseExtensions
                 features.Add(feature);
 
                 var featureColumnId = GetColumnForStatus(columns, feature.Status).Id;
-                var featureCard = new BoardCard(
-                    featureColumnId,
-                    feature.Id,
-                    columnPositions[featureColumnId]++);
+                var featureCard = new BoardCard(featureColumnId, feature.Id, columnPositions[(featureColumnId, WorkItemType.Feature)]);
+                columnPositions[(featureColumnId, WorkItemType.Feature)]++;
                 await context.BoardCards.AddAsync(featureCard);
             }
         }
@@ -517,10 +517,8 @@ public static class DatabaseExtensions
                 await context.WorkItems.AddAsync(userStory);
 
                 var userStoryColumnId = GetColumnForStatus(columns, userStory.Status).Id;
-                var userStoryCard = new BoardCard(
-                    userStoryColumnId,
-                    userStory.Id,
-                    columnPositions[userStoryColumnId]++);
+                var userStoryCard = new BoardCard(userStoryColumnId, userStory.Id, columnPositions[(userStoryColumnId, WorkItemType.UserStory)]);
+                columnPositions[(userStoryColumnId, WorkItemType.UserStory)]++;
                 await context.BoardCards.AddAsync(userStoryCard);
             }
         }
@@ -556,10 +554,9 @@ public static class DatabaseExtensions
             await context.WorkItems.AddAsync(bug);
 
             var bugColumnId = GetColumnForStatus(columns, bug.Status).Id;
-            var bugCard = new BoardCard(
-                bugColumnId,
-                bug.Id,
-                columnPositions[bugColumnId]++);
+            var bugType = bug.Type; // Bug or Defect
+            var bugCard = new BoardCard(bugColumnId, bug.Id, columnPositions[(bugColumnId, bugType)]);
+            columnPositions[(bugColumnId, bugType)]++;
             await context.BoardCards.AddAsync(bugCard);
         }
 
@@ -583,7 +580,7 @@ public static class DatabaseExtensions
         Team team,
         Sprint currentSprint,
         Board board,
-        Dictionary<Guid, int> columnPositions,
+        Dictionary<(Guid ColumnId, WorkItemType Type), int> columnPositions,
         int startingWorkItemCode,
         List<WorkItem> features,
         List<User> users,
@@ -662,10 +659,8 @@ public static class DatabaseExtensions
             await context.WorkItems.AddAsync(recentWorkItem);
 
             var columnId = GetColumnForStatus(columns, recentWorkItem.Status).Id;
-            var card = new BoardCard(
-                columnId,
-                recentWorkItem.Id,
-                columnPositions[columnId]++);
+            var card = new BoardCard(columnId, recentWorkItem.Id, columnPositions[(columnId, recentWorkItem.Type)]);
+            columnPositions[(columnId, recentWorkItem.Type)]++;
             await context.BoardCards.AddAsync(card);
         }
     }

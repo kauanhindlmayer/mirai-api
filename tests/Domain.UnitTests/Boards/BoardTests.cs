@@ -272,6 +272,7 @@ public class BoardTests
         result.IsError.Should().BeFalse();
         column1.Cards.Should().NotContain(card);
         column2.Cards.Should().Contain(card);
+        card.BoardColumnId.Should().Be(column2.Id);
     }
 
     [Fact]
@@ -305,5 +306,34 @@ public class BoardTests
         // Assert
         result.IsError.Should().BeFalse();
         column.Cards.Should().Contain(card);
+    }
+
+    [Fact]
+    public void MoveCard_WhenMovingWithinSameColumn_ShouldReorderCard()
+    {
+        // Arrange
+        var board = BoardFactory.Create();
+        var column = BoardColumnFactory.Create(board.Id, name: "Column 1");
+        var workItem1 = WorkItemFactory.Create();
+        var workItem2 = WorkItemFactory.Create();
+        var workItem3 = WorkItemFactory.Create();
+        var card1 = BoardCardFactory.Create(column.Id, workItem1.Id);
+        var card2 = BoardCardFactory.Create(column.Id, workItem2.Id);
+        var card3 = BoardCardFactory.Create(column.Id, workItem3.Id);
+        board.Columns.Clear();
+        board.AddColumn(column);
+        column.AddCard(card1);
+        column.AddCard(card2);
+        column.AddCard(card3);
+
+        // Act
+        var result = board.MoveCard(column.Id, card3.Id, column.Id, 2);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        card2.Position.Should().Be(0);
+        card1.Position.Should().Be(1);
+        card3.Position.Should().Be(2);
+        column.Cards.Should().HaveCount(3);
     }
 }
