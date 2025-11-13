@@ -21,7 +21,7 @@ public static class Routes
 
     public static class Users
     {
-        public const string Register = Base;
+        public const string Register = $"{Base}/register";
         public const string Login = $"{Base}/login";
         public const string GetLoggedInUser = $"{Base}/me";
         public const string UpdateProfile = $"{Base}/profile";

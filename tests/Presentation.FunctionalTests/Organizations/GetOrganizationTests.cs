@@ -1,4 +1,3 @@
-using System.Net;
 using System.Net.Http.Json;
 using Application.Organizations.Queries.GetOrganization;
 using FluentAssertions;
@@ -6,20 +5,14 @@ using Presentation.FunctionalTests.Infrastructure;
 
 namespace Presentation.FunctionalTests.Organizations;
 
-public class GetOrganizationTests : BaseFunctionalTest
+public class GetOrganizationTests(DistributedApplicationTestFixture fixture)
 {
-    public GetOrganizationTests(FunctionalTestWebAppFactory factory)
-        : base(factory)
-    {
-    }
-
     [Fact]
     public async Task GetOrganization_WhenOrganizationExists_ShouldReturnOrganization()
     {
         // Arrange
-        await SetAuthorizationHeaderAsync();
         var createOrganizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest();
-        var createOrganizationResponse = await _httpClient.PostAsJsonAsync(
+        var createOrganizationResponse = await fixture.HttpClient.PostAsJsonAsync(
             Routes.Organizations.Create,
             createOrganizationRequest,
             cancellationToken: TestContext.Current.CancellationToken);
@@ -27,7 +20,7 @@ public class GetOrganizationTests : BaseFunctionalTest
             cancellationToken: TestContext.Current.CancellationToken);
 
         // Act
-        var getOrganizationResponse = await _httpClient.GetAsync(
+        var getOrganizationResponse = await fixture.HttpClient.GetAsync(
             Routes.Organizations.Get(organizationId),
             TestContext.Current.CancellationToken);
 
@@ -45,11 +38,10 @@ public class GetOrganizationTests : BaseFunctionalTest
     public async Task GetOrganization_WhenOrganizationDoesNotExist_ShouldReturnNotFound()
     {
         // Arrange
-        await SetAuthorizationHeaderAsync();
         var organizationId = Guid.NewGuid();
 
         // Act
-        var getOrganizationResponse = await _httpClient.GetAsync(
+        var getOrganizationResponse = await fixture.HttpClient.GetAsync(
             Routes.Organizations.Get(organizationId),
             TestContext.Current.CancellationToken);
 

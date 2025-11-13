@@ -6,7 +6,6 @@ using Application.Abstractions.Jobs;
 using Application.Abstractions.Storage;
 using Application.Abstractions.Time;
 using Asp.Versioning;
-using Azure.Storage.Blobs;
 using Domain.Boards;
 using Domain.Organizations;
 using Domain.Projects;
@@ -58,21 +57,21 @@ public static class DependencyInjection
             .AddPersistence(configuration)
             .AddApiVersioning()
             .AddCorsPolicy(configuration)
-            .AddCaching(configuration)
             .AddBackgroundJobs();
 
         return services;
     }
 
-    public static WebApplicationBuilder AddOllamaServices(
+    public static WebApplicationBuilder AddOpenAIServices(
         this WebApplicationBuilder builder)
     {
         builder
-            .AddOllamaApiClient(ServiceKeys.Chat)
+            .AddOpenAIClient(ServiceKeys.Chat)
             .AddKeyedChatClient(ServiceKeys.Chat);
+
         builder
-            .AddOllamaApiClient(ServiceKeys.Embedding)
-            .AddKeyedEmbeddingGenerator(ServiceKeys.Embedding);
+            .AddOpenAIClient(ServiceKeys.Embeddings)
+            .AddKeyedEmbeddingGenerator(ServiceKeys.Embeddings);
 
         return builder;
     }
@@ -87,8 +86,8 @@ public static class DependencyInjection
         services.AddTransient<IBackgroundJobScheduler, BackgroundJobScheduler>();
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IDashboardChartService, DashboardChartService>();
+        services.AddSingleton<ICacheService, CacheService>();
         services.AddSingleton<IBlobService, BlobService>();
-        services.AddSingleton(_ => new BlobServiceClient(configuration["Azure:BlobStorage:ConnectionString"]!));
         services.Configure<BlobStorageOptions>(configuration.GetSection(BlobStorageOptions.SectionName));
 
         return services;
@@ -198,24 +197,10 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IServiceCollection AddCaching(
-        this IServiceCollection services,
-        IConfiguration configuration)
-    {
-        var connectionString = configuration.GetConnectionString("redis");
-        services.AddStackExchangeRedisCache(options => options.Configuration = connectionString);
-        services.AddSingleton<StackExchange.Redis.IConnectionMultiplexer>(_ =>
-            StackExchange.Redis.ConnectionMultiplexer.Connect(connectionString!));
-        services.AddSingleton<ICacheService, CacheService>();
-
-        return services;
-    }
-
     private static IServiceCollection AddBackgroundJobs(this IServiceCollection services)
     {
         services.AddQuartz(config =>
         {
-            // Runs every day at 3 AM UTC
             config.AddJob<CleanupTagImportJobsJob>(job => job.WithIdentity("cleanup-tag-import-jobs"));
 
             config.AddTrigger(trigger =>

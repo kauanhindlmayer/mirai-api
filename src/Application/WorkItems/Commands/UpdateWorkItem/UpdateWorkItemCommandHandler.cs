@@ -15,7 +15,7 @@ internal sealed class UpdateWorkItemCommandHandler
 
     public UpdateWorkItemCommandHandler(
         IWorkItemRepository workItemRepository,
-        [FromKeyedServices(ServiceKeys.Embedding)] IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator)
+        [FromKeyedServices(ServiceKeys.Embeddings)] IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator)
     {
         _workItemRepository = workItemRepository;
         _embeddingGenerator = embeddingGenerator;

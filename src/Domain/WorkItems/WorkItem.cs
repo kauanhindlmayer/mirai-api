@@ -21,7 +21,7 @@ public sealed class WorkItem : AggregateRoot
     public WorkItemStatus Status { get; private set; }
     public Planning Planning { get; private set; } = new();
     public Classification Classification { get; private set; } = new();
-    public Vector SearchVector { get; private set; } = new(new float[384]);
+    public Vector SearchVector { get; private set; } = new(new float[1536]);
     public Guid? AssigneeId { get; private set; }
     public User? Assignee { get; private set; }
     public Guid ProjectId { get; private set; }
