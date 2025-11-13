@@ -5,9 +5,10 @@ namespace Presentation.FunctionalTests.Organizations;
 public static class OrganizationRequestFactory
 {
     public static CreateOrganizationRequest CreateCreateOrganizationRequest(
-        string name = "Organization Name",
+        string? name = null,
         string description = "Organization Description")
     {
+        name ??= $"Organization {Guid.NewGuid()}";
         return new CreateOrganizationRequest(name, description);
     }
 

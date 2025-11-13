@@ -12,12 +12,10 @@ public class LoginUserTests(DistributedApplicationTestFixture fixture)
     public async Task LoginUser_WhenRequestIsValid_ShouldReturnOk()
     {
         // Arrange
-        var request = new LoginUserRequest(
-            $"john.doe{Random.Shared.Next(1, 100)}@mirai.com",
-            "password123");
+        var request = UserRequestFactory.CreateLoginUserRequest();
 
         // Act
-        var response = await fixture.HttpClient.PostAsJsonAsync(
+        var response = await fixture.UnauthenticatedHttpClient.PostAsJsonAsync(
             Routes.Users.Login,
             request,
             cancellationToken: TestContext.Current.CancellationToken);
@@ -37,7 +35,7 @@ public class LoginUserTests(DistributedApplicationTestFixture fixture)
         var request = new LoginUserRequest("invalid-email", "password123");
 
         // Act
-        var response = await fixture.HttpClient.PostAsJsonAsync(
+        var response = await fixture.UnauthenticatedHttpClient.PostAsJsonAsync(
             Routes.Users.Login,
             request,
             cancellationToken: TestContext.Current.CancellationToken);

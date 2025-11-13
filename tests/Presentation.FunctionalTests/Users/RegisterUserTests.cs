@@ -19,7 +19,7 @@ public class RegisterUserTests(DistributedApplicationTestFixture fixture)
         var request = new RegisterUserRequest(email, password, firstName, lastName);
 
         // Act
-        var response = await fixture.HttpClient.PostAsJsonAsync(
+        var response = await fixture.UnauthenticatedHttpClient.PostAsJsonAsync(
             Routes.Users.Register,
             request,
             cancellationToken: TestContext.Current.CancellationToken);
@@ -33,13 +33,13 @@ public class RegisterUserTests(DistributedApplicationTestFixture fixture)
     {
         // Arrange
         var request = new RegisterUserRequest(
-            $"john.doe{Random.Shared.Next(1, 100)}@mirai.com",
-            "password123",
+            $"user-{Guid.NewGuid()}@mirai.com",
+            UserRequestFactory.Password,
             "John",
             "Doe");
 
         // Act
-        var response = await fixture.HttpClient.PostAsJsonAsync(
+        var response = await fixture.UnauthenticatedHttpClient.PostAsJsonAsync(
             Routes.Users.Register,
             request,
             cancellationToken: TestContext.Current.CancellationToken);

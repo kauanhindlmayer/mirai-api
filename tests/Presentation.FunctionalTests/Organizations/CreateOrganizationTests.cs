@@ -21,7 +21,7 @@ public class CreateOrganizationTests(DistributedApplicationTestFixture fixture)
         // Assert
         createOrganizationResponse.StatusCode.Should().Be(HttpStatusCode.Created);
         var organizationId = await createOrganizationResponse.Content.ReadFromJsonAsync<Guid>(
-            cancellationToken: TestContext.Current.CancellationToken);
+            TestContext.Current.CancellationToken);
         organizationId.Should().NotBeEmpty();
         createOrganizationResponse.Headers.Location.Should().NotBeNull();
         createOrganizationResponse.Headers.Location.AbsolutePath.Should()

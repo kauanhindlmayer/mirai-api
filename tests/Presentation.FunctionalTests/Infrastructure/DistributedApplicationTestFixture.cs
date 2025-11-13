@@ -18,9 +18,13 @@ public sealed class DistributedApplicationTestFixture : IAsyncLifetime
 
     private DistributedApplication? _app;
     private HttpClient? _httpClient;
+    private HttpClient? _unauthenticatedHttpClient;
 
     public HttpClient HttpClient => _httpClient
         ?? throw new InvalidOperationException("HttpClient is not initialized.");
+
+    public HttpClient UnauthenticatedHttpClient => _unauthenticatedHttpClient
+        ?? throw new InvalidOperationException("UnauthenticatedHttpClient is not initialized.");
 
     public async ValueTask InitializeAsync()
     {
@@ -46,6 +50,7 @@ public sealed class DistributedApplicationTestFixture : IAsyncLifetime
             cts.Token);
 
         _httpClient = _app.CreateHttpClient(ApiResourceName, "https");
+        _unauthenticatedHttpClient = _app.CreateHttpClient(ApiResourceName, "https");
 
         var accessToken = await GetAccessToken();
         SetAuthorizationHeader(accessToken);
@@ -59,6 +64,7 @@ public sealed class DistributedApplicationTestFixture : IAsyncLifetime
         }
 
         _httpClient?.Dispose();
+        _unauthenticatedHttpClient?.Dispose();
     }
 
     private async Task<string> GetAccessToken()

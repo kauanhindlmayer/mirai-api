@@ -10,7 +10,7 @@ public class UpdateOrganizationTests(DistributedApplicationTestFixture fixture)
     public async Task UpdateOrganization_WhenOrganizationExists_ShouldReturnOk()
     {
         // Arrange
-        var createOrganizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest(name: "Organization 3");
+        var createOrganizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest();
         var createOrganizationResponse = await fixture.HttpClient.PostAsJsonAsync(
             Routes.Organizations.Create,
             createOrganizationRequest,
@@ -50,7 +50,7 @@ public class UpdateOrganizationTests(DistributedApplicationTestFixture fixture)
     public async Task UpdateOrganization_WhenNameIsMissing_ShouldReturnBadRequest()
     {
         // Arrange
-        var createOrganizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest(name: "Organization 4");
+        var createOrganizationRequest = OrganizationRequestFactory.CreateCreateOrganizationRequest();
         var createOrganizationResponse = await fixture.HttpClient.PostAsJsonAsync(
             Routes.Organizations.Create,
             createOrganizationRequest,

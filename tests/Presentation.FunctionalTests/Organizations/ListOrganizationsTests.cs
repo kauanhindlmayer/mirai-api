@@ -11,8 +11,8 @@ public class ListOrganizationsTests(DistributedApplicationTestFixture fixture)
     public async Task ListOrganizations_WhenOrganizationsExist_ShouldReturnOrganizations()
     {
         // Arrange
-        var createOrganizationRequest1 = OrganizationRequestFactory.CreateCreateOrganizationRequest(name: "Organization 1");
-        var createOrganizationRequest2 = OrganizationRequestFactory.CreateCreateOrganizationRequest(name: "Organization 2");
+        var createOrganizationRequest1 = OrganizationRequestFactory.CreateCreateOrganizationRequest();
+        var createOrganizationRequest2 = OrganizationRequestFactory.CreateCreateOrganizationRequest();
         var createOrganizationResponse1 = await fixture.HttpClient.PostAsJsonAsync(
             Routes.Organizations.Create,
             createOrganizationRequest1,
