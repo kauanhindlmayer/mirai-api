@@ -7,7 +7,7 @@ Mirai (Japanese word for "future") is a web-based project management tool that a
 
 ![Mirai screenshot showing the Boards page](./docs/images/boards.png)
 
-Mirai's key features include:
+Key features include:
 
 - [Agile and Scrum](http://docs.miraihq.com/agile-and-scrum)
 - [Wikis](http://docs.miraihq.com/wikis)
