@@ -9,7 +9,10 @@ using ServiceDefaults;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
-builder.AddOllamaServices();
+builder.AddRedisClient(connectionName: "redis");
+builder.AddRedisDistributedCache(connectionName: "redis");
+builder.AddAzureBlobServiceClient(connectionName: "blobs");
+builder.AddOpenAIServices();
 
 builder.Services.AddSerilog(config =>
     config.ReadFrom.Configuration(builder.Configuration));
@@ -32,10 +35,10 @@ if (app.Environment.IsDevelopment())
 
     app.MapScalarApiReference(options =>
         options.WithOpenApiRoutePattern("/swagger/1.0/swagger.json"));
-
-    await app.ApplyMigrationsAsync();
-    await app.SeedDataAsync();
 }
+
+await app.ApplyMigrationsAsync();
+await app.SeedDataAsync();
 
 app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();

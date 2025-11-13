@@ -92,6 +92,11 @@ public sealed class Board : AggregateRoot
             return BoardErrors.ColumnNotFound;
         }
 
+        if (columnId == targetColumnId)
+        {
+            return sourceColumn.ReorderCard(cardId, targetPosition);
+        }
+
         var card = sourceColumn.RemoveCard(cardId);
         if (card.IsError)
         {

@@ -26,4 +26,9 @@ public sealed class BoardCard : Entity
     {
         Position = position;
     }
+
+    public void UpdateColumn(Guid boardColumnId)
+    {
+        BoardColumnId = boardColumnId;
+    }
 }

@@ -19,7 +19,7 @@ internal sealed class CreateWorkItemCommandHandler
     public CreateWorkItemCommandHandler(
         IProjectRepository projectRepository,
         IWorkItemRepository workItemRepository,
-        [FromKeyedServices(ServiceKeys.Embedding)] IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator)
+        [FromKeyedServices(ServiceKeys.Embeddings)] IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator)
     {
         _projectRepository = projectRepository;
         _workItemRepository = workItemRepository;

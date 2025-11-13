@@ -5,7 +5,7 @@ namespace Presentation.FunctionalTests.Users;
 public static class UserRequestFactory
 {
     public const string Email = "john.doe@mirai.com";
-    public const string Password = "vXJu9zCgjOV2dW3";
+    public const string Password = "Test@123";
     public const string FirstName = "John";
     public const string LastName = "Doe";
 

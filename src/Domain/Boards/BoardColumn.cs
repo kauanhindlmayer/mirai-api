@@ -48,6 +48,7 @@ public sealed class BoardColumn : Entity
         }
 
         ShiftCards(0, 1);
+        card.UpdateColumn(Id);
         card.UpdatePosition(0);
         Cards.Add(card);
         return card;
@@ -79,8 +80,59 @@ public sealed class BoardColumn : Entity
         }
 
         ShiftCards(position, 1);
+        card.UpdateColumn(Id);
         card.UpdatePosition(position);
         Cards.Add(card);
+        return Result.Success;
+    }
+
+    public ErrorOr<Success> ReorderCard(Guid cardId, int newPosition)
+    {
+        var card = Cards.FirstOrDefault(c => c.Id == cardId);
+        if (card is null)
+        {
+            return BoardErrors.CardNotFound;
+        }
+
+        if (newPosition < 0 || newPosition >= Cards.Count)
+        {
+            return BoardErrors.InvalidPosition;
+        }
+
+        var currentPosition = card.Position;
+        if (currentPosition == newPosition)
+        {
+            return Result.Success;
+        }
+
+        // Shift cards between old and new positions
+        if (currentPosition < newPosition)
+        {
+            // Moving down: shift cards up
+            // Materialize the collection to avoid modifying while iterating
+            var cardsToShift = Cards
+                .Where(c => c.Position > currentPosition && c.Position <= newPosition)
+                .ToList();
+            foreach (var c in cardsToShift)
+            {
+                c.UpdatePosition(c.Position - 1);
+            }
+        }
+        else
+        {
+            // Moving up: shift cards down
+            // Materialize the collection to avoid modifying while iterating
+            var cardsToShift = Cards
+                .Where(c => c.Position >= newPosition && c.Position < currentPosition)
+                .ToList();
+            foreach (var c in cardsToShift)
+            {
+                c.UpdatePosition(c.Position + 1);
+            }
+        }
+
+        // Set the card to its target position
+        card.UpdatePosition(newPosition);
         return Result.Success;
     }
 

@@ -26,7 +26,7 @@ internal sealed partial class ExtractWisdomQueryHandler
     public ExtractWisdomQueryHandler(
         ILogger<ExtractWisdomQueryHandler> logger,
         [FromKeyedServices(ServiceKeys.Chat)] IChatClient chatClient,
-        [FromKeyedServices(ServiceKeys.Embedding)] IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator,
+        [FromKeyedServices(ServiceKeys.Embeddings)] IEmbeddingGenerator<string, Embedding<float>> embeddingGenerator,
         IApplicationDbContext context)
     {
         _logger = logger;

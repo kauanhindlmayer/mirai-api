@@ -67,8 +67,7 @@ internal sealed class BoardConfigurations :
 
         builder.HasIndex(bc => bc.BoardId);
 
-        builder.HasIndex(bc => new { bc.BoardId, bc.Position })
-            .IsUnique();
+        builder.HasIndex(bc => new { bc.BoardId, bc.Position });
     }
 
     public void Configure(EntityTypeBuilder<BoardCard> builder)
@@ -101,7 +100,8 @@ internal sealed class BoardConfigurations :
         builder.HasIndex(bc => bc.WorkItemId)
             .IsUnique();
 
-        builder.HasIndex(bc => new { bc.BoardColumnId, bc.Position })
-            .IsUnique();
+        // Position index without unique constraint to allow reordering operations
+        // The uniqueness is enforced at the application level
+        builder.HasIndex(bc => new { bc.BoardColumnId, bc.Position });
     }
 }

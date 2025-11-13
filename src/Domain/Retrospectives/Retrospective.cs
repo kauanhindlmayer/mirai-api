@@ -1,4 +1,3 @@
-using System.Collections;
 using Domain.Retrospectives.Enums;
 using Domain.Shared;
 using Domain.Teams;

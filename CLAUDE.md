@@ -27,7 +27,7 @@ The codebase follows Clean Architecture with clear separation of concerns:
 - **Redis** for caching
 - **Azure Blob Storage** for file storage
 - **Keycloak** for authentication
-- **Ollama** for AI integration
+- **OpenAI** for AI integration (chat and embeddings)
 - **.NET Aspire** for orchestration
 - **Quartz.NET** for background jobs
 
@@ -82,16 +82,44 @@ dotnet build
 # The project uses StyleCop.Analyzers with TreatWarningsAsErrors=true
 ```
 
-### User Secrets Setup
-```bash
-# Run the setup script to configure user secrets
-./scripts/setup-secrets.sh
+### Secrets Management
 
-# Or manually set secrets from src/Presentation:
+Secrets are managed through .NET Aspire. When you run the AppHost for the first time, the Aspire Dashboard will prompt you to enter required secrets. These are automatically stored in user secrets and persisted for future runs.
+
+You can also manually set secrets if needed:
+
+```bash
+# AppHost secrets (e.g., OpenAI API key)
+cd src/AppHost
+dotnet user-secrets set "Parameters:openai-openai-apikey" "sk-your-api-key-here"
+
+# API secrets (e.g., Azure Blob Storage)
 cd src/Presentation
 dotnet user-secrets set "Azure:BlobStorage:ConnectionString" "<value>"
 dotnet user-secrets set "Keycloak:AuthClientSecret" "<value>"
 ```
+
+### OpenAI Configuration
+
+The application uses OpenAI for AI features (chat and embeddings) through .NET Aspire integration.
+
+**Setup:**
+
+Set the OpenAI API key in AppHost user secrets or as an environment variable:
+
+```bash
+cd src/AppHost
+dotnet user-secrets set "Parameters:openai-openai-apikey" "sk-your-api-key-here"
+
+# Or set as environment variable:
+export OPENAI_API_KEY="sk-your-api-key-here"
+```
+
+**Default Models:**
+- Chat: `gpt-4o-mini`
+- Embeddings: `text-embedding-3-small`
+
+These models are configured in [AppHost/Program.cs:21-24](src/AppHost/Program.cs#L21-L24) and can be modified as needed.
 
 ## Code Standards
 

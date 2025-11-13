@@ -4,11 +4,15 @@
     "burnup",
     "disableable",
     "hateoas",
+    "jdbc",
     "mediatr",
     "minilm",
     "ollama",
     "pgvector",
-    "serilog"
+    "provisionable",
+    "serilog",
+    "xforwarded",
+    "npgsql"
   ],
   "dotnet.defaultSolution": "Mirai.slnx",
   "github.copilot.chat.commitMessageGeneration.instructions": [

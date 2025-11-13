@@ -1,4 +1,3 @@
-using Domain.Boards;
 using Domain.Retrospectives;
 using Domain.Sprints;
 using Domain.Teams;
