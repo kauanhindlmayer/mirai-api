@@ -12,7 +12,7 @@ builder.AddServiceDefaults();
 builder.AddRedisClient(connectionName: "redis");
 builder.AddRedisDistributedCache(connectionName: "redis");
 builder.AddAzureBlobServiceClient(connectionName: "blobs");
-builder.AddOpenAIServices();
+builder.AddOllamaServices();
 
 builder.Services.AddSerilog(config =>
     config.ReadFrom.Configuration(builder.Configuration));

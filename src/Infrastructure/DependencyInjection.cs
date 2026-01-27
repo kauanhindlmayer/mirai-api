@@ -62,15 +62,14 @@ public static class DependencyInjection
         return services;
     }
 
-    public static WebApplicationBuilder AddOpenAIServices(
+    public static WebApplicationBuilder AddOllamaServices(
         this WebApplicationBuilder builder)
     {
         builder
-            .AddOpenAIClient(ServiceKeys.Chat)
+            .AddOllamaApiClient(ServiceKeys.Chat)
             .AddKeyedChatClient(ServiceKeys.Chat);
-
         builder
-            .AddOpenAIClient(ServiceKeys.Embeddings)
+            .AddOllamaApiClient(ServiceKeys.Embeddings)
             .AddKeyedEmbeddingGenerator(ServiceKeys.Embeddings);
 
         return builder;

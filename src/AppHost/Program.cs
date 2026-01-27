@@ -74,10 +74,12 @@ if (builder.ExecutionContext.IsPublishMode)
 
 var keycloakBaseUrl = keycloak.GetEndpoint("http").Property(EndpointProperty.Url);
 
-var openai = builder.AddOpenAI("openai");
+var ollama = builder.AddOllama("ollama")
+    .WithDataVolume()
+    .WithContainerRuntimeArgs("--gpus=all");
 
-var chat = openai.AddModel("chat", "gpt-4o-mini");
-var embeddings = openai.AddModel("embeddings", "text-embedding-3-small");
+var llama = ollama.AddModel("chat", "llama3.2:1b");
+var minilm = ollama.AddModel("embeddings", "all-minilm");
 
 var keycloakAuthClientSecret = builder.AddParameter("KeycloakAuthClientSecret", secret: true);
 var keycloakAdminClientSecret = builder.AddParameter("KeycloakAdminClientSecret", secret: true);
@@ -89,8 +91,8 @@ var miraiApi = builder.AddProject<Projects.Presentation>("mirai-api")
     .WaitFor(redis)
     .WithReference(keycloak)
     .WaitFor(keycloak)
-    .WithReference(chat)
-    .WithReference(embeddings)
+    .WithReference(llama)
+    .WithReference(minilm)
     .WithReference(storage)
     .WithEnvironment("Keycloak__AuthClientSecret", keycloakAuthClientSecret)
     .WithEnvironment("Keycloak__AdminClientSecret", keycloakAdminClientSecret)
