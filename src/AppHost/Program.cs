@@ -24,15 +24,11 @@ var postgres = builder.AddAzurePostgresFlexibleServer("postgres")
 
 var database = postgres.AddDatabase("mirai-db");
 
-var redis = builder.AddAzureRedis("redis")
-    .WithAccessKeyAuthentication()
-    .RunAsContainer(configure =>
+var redis = builder.AddRedis("redis")
+    .WithRedisInsight(redisInsight =>
     {
-        configure.WithRedisInsight(redisInsight =>
-        {
-            redisInsight.WithHostPort(6060);
-            redisInsight.WithExplicitStart();
-        });
+        redisInsight.WithHostPort(6060);
+        redisInsight.WithExplicitStart();
     });
 
 var keycloakPassword = builder.AddParameter("KeycloakPassword", secret: true);
