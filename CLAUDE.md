@@ -19,7 +19,7 @@ The codebase follows Clean Architecture with clear separation of concerns:
 
 ## Key Technologies
 
-- **.NET 9** with C# preview features
+- **.NET 10** with C# preview features
 - **Entity Framework Core** with PostgreSQL and pgvector for vector search
 - **MediatR** for CQRS pattern implementation
 - **FluentValidation** for input validation

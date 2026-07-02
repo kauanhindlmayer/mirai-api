@@ -4,7 +4,7 @@
 
 ### Prerequisites
 
-- [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0).
+- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0).
 - [Docker](https://docs.docker.com/get-started/get-docker/).
 - [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd).
 

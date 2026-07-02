@@ -1,13 +1,13 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-builder.AddAzureContainerAppEnvironment("mirai-env");
+// builder.AddAzureContainerAppEnvironment("mirai-env");
 
-var existingStorageName = builder.AddParameter("existingStorageName");
-var existingStorageResourceGroup = builder.AddParameter("existingStorageResourceGroup");
+// var existingStorageName = builder.AddParameter("existingStorageName");
+// var existingStorageResourceGroup = builder.AddParameter("existingStorageResourceGroup");
 
-var storage = builder.AddAzureStorage("storage")
-    .AsExisting(existingStorageName, existingStorageResourceGroup)
-    .AddBlobs("blobs");
+// var storage = builder.AddAzureStorage("storage")
+//     .AsExisting(existingStorageName, existingStorageResourceGroup)
+//     .AddBlobs("blobs");
 
 var postgres = builder.AddAzurePostgresFlexibleServer("postgres")
     .RunAsContainer(configure =>
@@ -89,7 +89,7 @@ var miraiApi = builder.AddProject<Projects.Presentation>("mirai-api")
     .WaitFor(keycloak)
     .WithReference(llama)
     .WithReference(minilm)
-    .WithReference(storage)
+    // .WithReference(storage)
     .WithEnvironment("Keycloak__AuthClientSecret", keycloakAuthClientSecret)
     .WithEnvironment("Keycloak__AdminClientSecret", keycloakAdminClientSecret)
     .WithEnvironment("Keycloak__AdminUrl", $"{keycloakBaseUrl}/admin/realms/mirai/")
@@ -110,22 +110,22 @@ var miraiApp = builder.AddNpmApp("mirai-app", "../../../mirai-app")
 
 if (builder.ExecutionContext.IsPublishMode)
 {
-    var customDomain = builder.AddParameter("customDomain");
-    var certificateName = builder.AddParameter(
-        "certificateName",
-        value: string.Empty,
-        publishValueAsDefault: true);
+    // var customDomain = builder.AddParameter("customDomain");
+    // var certificateName = builder.AddParameter(
+    //     "certificateName",
+    //     value: string.Empty,
+    //     publishValueAsDefault: true);
 
-    miraiApp.PublishAsAzureContainerApp((container, configure) =>
-    {
-        configure.ConfigureCustomDomain(customDomain, certificateName);
-    });
+    // miraiApp.PublishAsAzureContainerApp((container, configure) =>
+    // {
+    //     configure.ConfigureCustomDomain(customDomain, certificateName);
+    // });
 
-    var insights = builder.AddAzureApplicationInsights("mirai-insights");
-    miraiApi.WithReference(insights);
+    // var insights = builder.AddAzureApplicationInsights("mirai-insights");
+    // miraiApi.WithReference(insights);
 
-    var miraiAppUrl = miraiApp.GetEndpoint("http");
-    miraiApi.WithEnvironment("Cors__AllowedOrigins__0", miraiAppUrl);
+    // var miraiAppUrl = miraiApp.GetEndpoint("http");
+    // miraiApi.WithEnvironment("Cors__AllowedOrigins__0", miraiAppUrl);
 }
 
 builder.Build().Run();
