@@ -39,6 +39,7 @@ if (app.Environment.IsDevelopment())
 
 await app.ApplyMigrationsAsync();
 await app.SeedDataAsync();
+await app.EnsureBlobContainerPublicAccessAsync();
 
 app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();

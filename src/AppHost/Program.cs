@@ -1,13 +1,22 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-// builder.AddAzureContainerAppEnvironment("mirai-env");
+var storage = builder.AddAzureStorage("storage");
 
-// var existingStorageName = builder.AddParameter("existingStorageName");
-// var existingStorageResourceGroup = builder.AddParameter("existingStorageResourceGroup");
+if (builder.ExecutionContext.IsRunMode)
+{
+    storage.RunAsEmulator(azurite => azurite.WithDataVolume());
+}
 
-// var storage = builder.AddAzureStorage("storage")
-//     .AsExisting(existingStorageName, existingStorageResourceGroup)
-//     .AddBlobs("blobs");
+if (builder.ExecutionContext.IsPublishMode)
+{
+    var existingStorageName = builder.AddParameter("existingStorageName");
+    var existingStorageResourceGroup = builder.AddParameter("existingStorageResourceGroup");
+    storage.AsExisting(existingStorageName, existingStorageResourceGroup);
+}
+
+storage.AddBlobContainer("files");
+
+var blobs = storage.AddBlobs("blobs");
 
 var postgres = builder.AddAzurePostgresFlexibleServer("postgres")
     .RunAsContainer(configure =>
@@ -89,7 +98,8 @@ var miraiApi = builder.AddProject<Projects.Presentation>("mirai-api")
     .WaitFor(keycloak)
     .WithReference(llama)
     .WithReference(minilm)
-    // .WithReference(storage)
+    .WithReference(blobs)
+    .WaitFor(blobs)
     .WithEnvironment("Keycloak__AuthClientSecret", keycloakAuthClientSecret)
     .WithEnvironment("Keycloak__AdminClientSecret", keycloakAdminClientSecret)
     .WithEnvironment("Keycloak__AdminUrl", $"{keycloakBaseUrl}/admin/realms/mirai/")
@@ -100,7 +110,7 @@ var miraiApi = builder.AddProject<Projects.Presentation>("mirai-api")
 
 var miraiApiUrl = miraiApi.GetEndpoint("https");
 
-var miraiApp = builder.AddNpmApp("mirai-app", "../../../mirai-app")
+var miraiApp = builder.AddNpmApp("mirai-app", "../../../mirai-react-app")
     .WithReference(miraiApi)
     .WaitFor(miraiApi)
     .WithHttpEndpoint(env: "PORT", port: builder.ExecutionContext.IsPublishMode ? 80 : 5173)
@@ -110,22 +120,24 @@ var miraiApp = builder.AddNpmApp("mirai-app", "../../../mirai-app")
 
 if (builder.ExecutionContext.IsPublishMode)
 {
-    // var customDomain = builder.AddParameter("customDomain");
-    // var certificateName = builder.AddParameter(
-    //     "certificateName",
-    //     value: string.Empty,
-    //     publishValueAsDefault: true);
+    builder.AddAzureContainerAppEnvironment("mirai-env");
 
-    // miraiApp.PublishAsAzureContainerApp((container, configure) =>
-    // {
-    //     configure.ConfigureCustomDomain(customDomain, certificateName);
-    // });
+    var customDomain = builder.AddParameter("customDomain");
+    var certificateName = builder.AddParameter(
+        "certificateName",
+        value: string.Empty,
+        publishValueAsDefault: true);
 
-    // var insights = builder.AddAzureApplicationInsights("mirai-insights");
-    // miraiApi.WithReference(insights);
+    miraiApp.PublishAsAzureContainerApp((container, configure) =>
+    {
+        configure.ConfigureCustomDomain(customDomain, certificateName);
+    });
 
-    // var miraiAppUrl = miraiApp.GetEndpoint("http");
-    // miraiApi.WithEnvironment("Cors__AllowedOrigins__0", miraiAppUrl);
+    var insights = builder.AddAzureApplicationInsights("mirai-insights");
+    miraiApi.WithReference(insights);
+
+    var miraiAppUrl = miraiApp.GetEndpoint("http");
+    miraiApi.WithEnvironment("Cors__AllowedOrigins__0", miraiAppUrl);
 }
 
 builder.Build().Run();
