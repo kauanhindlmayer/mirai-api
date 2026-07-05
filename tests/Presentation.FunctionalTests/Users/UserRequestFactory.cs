@@ -18,6 +18,15 @@ public static class UserRequestFactory
             password ?? Password);
     }
 
+    public static LoginWithGitHubRequest CreateLoginWithGitHubRequest(
+        string? code = null,
+        string? redirectUri = null)
+    {
+        return new LoginWithGitHubRequest(
+            code ?? "invalid-code",
+            redirectUri ?? "https://localhost:5173/auth/github/callback");
+    }
+
     public static RegisterUserRequest CreateRegisterUserRequest(
         string? email = null,
         string? password = null,

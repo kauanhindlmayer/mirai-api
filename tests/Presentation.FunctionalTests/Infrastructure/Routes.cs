@@ -23,6 +23,7 @@ public static class Routes
     {
         public const string Register = $"{Base}/register";
         public const string Login = $"{Base}/login";
+        public const string LoginWithGitHub = $"{Base}/login/github";
         public const string GetLoggedInUser = $"{Base}/me";
         public const string UpdateProfile = $"{Base}/profile";
         private const string Base = "/api/users";

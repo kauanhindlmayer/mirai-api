@@ -65,4 +65,45 @@ internal sealed class JwtService : IJwtService
             return UserErrors.InvalidCredentials;
         }
     }
+
+    public async Task<ErrorOr<string>> GetAccessTokenByAuthorizationCodeAsync(
+        string code,
+        string redirectUri,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var authRequestParameters = new KeyValuePair<string, string>[]
+            {
+                new("client_id", _keycloakOptions.AuthClientId),
+                new("client_secret", _keycloakOptions.AuthClientSecret),
+                new("grant_type", "authorization_code"),
+                new("code", code),
+                new("redirect_uri", redirectUri),
+            };
+
+            var authorizationRequestContent = new FormUrlEncodedContent(authRequestParameters);
+
+            var response = await _httpClient.PostAsync(
+                string.Empty,
+                authorizationRequestContent,
+                cancellationToken);
+
+            response.EnsureSuccessStatusCode();
+
+            var authorizationToken = await response.Content.ReadFromJsonAsync<AuthorizationToken>(cancellationToken);
+
+            if (authorizationToken is null)
+            {
+                return UserErrors.InvalidCredentials;
+            }
+
+            return authorizationToken.AccessToken;
+        }
+        catch (HttpRequestException ex)
+        {
+            _logger.LogError(ex, "Error while exchanging authorization code for access token with Keycloak.");
+            return UserErrors.InvalidCredentials;
+        }
+    }
 }

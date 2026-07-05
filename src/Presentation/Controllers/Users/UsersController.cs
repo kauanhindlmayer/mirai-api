@@ -1,5 +1,6 @@
 using System.Net.Mime;
 using Application.Abstractions;
+using Application.Users.Commands.LoginWithGitHub;
 using Application.Users.Commands.RegisterUser;
 using Application.Users.Commands.UpdateUserAvatar;
 using Application.Users.Commands.UpdateUserProfile;
@@ -75,6 +76,31 @@ public sealed class UsersController : ApiController
         var query = new LoginUserQuery(request.Email, request.Password);
 
         var result = await _sender.Send(query, cancellationToken);
+
+        if (result.IsError && result.FirstError == UserErrors.InvalidCredentials)
+        {
+            return Problem(
+               statusCode: StatusCodes.Status401Unauthorized,
+               title: UserErrors.InvalidCredentials.Description);
+        }
+
+        return result.Match(Ok, Problem);
+    }
+
+    /// <summary>
+    /// Log in a user with GitHub.
+    /// </summary>
+    [AllowAnonymous]
+    [HttpPost("login/github")]
+    [ProducesResponseType(typeof(AccessTokenResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<AccessTokenResponse>> LoginWithGitHub(
+        LoginWithGitHubRequest request,
+        CancellationToken cancellationToken)
+    {
+        var command = new LoginWithGitHubCommand(request.Code, request.RedirectUri);
+
+        var result = await _sender.Send(command, cancellationToken);
 
         if (result.IsError && result.FirstError == UserErrors.InvalidCredentials)
         {
