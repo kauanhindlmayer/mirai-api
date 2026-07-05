@@ -139,6 +139,9 @@ public static class DependencyInjection
         services.Configure<KeycloakOptions>(keycloakSection);
         var keycloakOptions = keycloakSection.Get<KeycloakOptions>()!;
 
+        var gitHubSection = configuration.GetSection(GitHubIdentityProviderOptions.SectionName);
+        services.Configure<GitHubIdentityProviderOptions>(gitHubSection);
+
         services
             .ConfigureOptions<JwtBearerOptionsSetup>()
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -150,6 +153,12 @@ public static class DependencyInjection
         {
             httpClient.BaseAddress = new Uri(keycloakOptions.AdminUrl);
         }).AddHttpMessageHandler<AdminAuthorizationDelegatingHandler>();
+
+        services.AddHttpClient<IIdentityProviderProvisioningService, KeycloakIdentityProviderProvisioningService>(
+            (_, httpClient) =>
+            {
+                httpClient.BaseAddress = new Uri(keycloakOptions.AdminUrl);
+            }).AddHttpMessageHandler<AdminAuthorizationDelegatingHandler>();
 
         services.AddHttpClient<IJwtService, JwtService>((_, httpClient) =>
         {

@@ -89,9 +89,6 @@ var minilm = ollama.AddModel("embeddings", "all-minilm");
 var keycloakAuthClientSecret = builder.AddParameter("KeycloakAuthClientSecret", secret: true);
 var keycloakAdminClientSecret = builder.AddParameter("KeycloakAdminClientSecret", secret: true);
 
-// Not yet wired to a consumer: hosted Keycloak's GitHub Identity Provider is
-// configured manually via the Admin Console (see docs/getting-started.md).
-// These are declared here for a future automated provisioning step.
 var gitHubClientId = builder.AddParameter("GitHubClientId");
 var gitHubClientSecret = builder.AddParameter("GitHubClientSecret", secret: true);
 
@@ -112,6 +109,8 @@ var miraiApi = builder.AddProject<Projects.Presentation>("mirai-api")
     .WithEnvironment("Keycloak__TokenUrl", $"{keycloakBaseUrl}/realms/mirai/protocol/openid-connect/token")
     .WithEnvironment("Authentication__ValidIssuer", $"{keycloakBaseUrl}/realms/mirai")
     .WithEnvironment("Authentication__MetadataAddress", $"{keycloakBaseUrl}/realms/mirai/.well-known/openid-configuration")
+    .WithEnvironment("GitHub__ClientId", gitHubClientId)
+    .WithEnvironment("GitHub__ClientSecret", gitHubClientSecret)
     .WithExternalHttpEndpoints();
 
 var miraiApiUrl = miraiApi.GetEndpoint("https");

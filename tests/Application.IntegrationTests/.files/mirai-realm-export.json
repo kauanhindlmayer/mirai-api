@@ -430,7 +430,7 @@
       "requiredActions": [],
       "realmRoles": ["default-roles-mirai"],
       "clientRoles": {
-        "realm-management": ["manage-users"]
+        "realm-management": ["manage-users", "manage-identity-providers"]
       },
       "notBefore": 0,
       "groups": []

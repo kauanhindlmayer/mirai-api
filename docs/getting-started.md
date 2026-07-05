@@ -32,15 +32,24 @@ When you run the AppHost for the first time, the Aspire Dashboard will prompt yo
 
 ## Sign in with GitHub
 
-"Continue with GitHub" is brokered entirely by Keycloak: the frontend redirects to Keycloak's authorize endpoint, Keycloak forwards the user to GitHub, and the API exchanges the resulting authorization code for a Keycloak access token. This requires registering GitHub as an Identity Provider on the `mirai` realm — a one-time manual step that is **not** committed to source control (the realm export's `identityProviders` array is intentionally left empty).
+"Continue with GitHub" is brokered entirely by Keycloak: the frontend redirects to Keycloak's authorize endpoint, Keycloak forwards the user to GitHub, and the API exchanges the resulting authorization code for a Keycloak access token. This requires registering GitHub as an Identity Provider on the `mirai` realm. The API provisions and keeps this Identity Provider up to date automatically on startup — you only need to supply a GitHub OAuth App's credentials.
 
 To enable it locally:
 
 1. Register a new [GitHub OAuth App](https://github.com/settings/developers):
    - **Homepage URL**: `http://localhost:5173` (the frontend origin).
    - **Authorization callback URL**: `http://localhost:8080/realms/mirai/broker/github/endpoint` (Keycloak's local port is pinned to `8080` in `src/AppHost/Program.cs`).
-2. Start the AppHost (`dotnet run --project ./src/AppHost/AppHost.csproj`) and open the Keycloak Admin Console for the `mirai` realm.
-3. Under **Identity Providers**, add a **GitHub** provider with alias `github`, and enter the OAuth App's Client ID and Client Secret from step 1.
+2. Set the OAuth App's Client ID and Client Secret as AppHost user secrets:
+
+```bash
+cd src/AppHost
+dotnet user-secrets set "Parameters:GitHubClientId" "<client-id>"
+dotnet user-secrets set "Parameters:GitHubClientSecret" "<client-secret>"
+```
+
+3. Start the AppHost (`dotnet run --project ./src/AppHost/AppHost.csproj`). On startup, the API creates (or updates, if the secret was rotated) the `github` Identity Provider on the `mirai` realm via Keycloak's Admin REST API — no manual Admin Console step required.
 4. Click "Continue with GitHub" on the frontend's login/signup page to verify the flow end-to-end.
 
-This configuration is persisted in the Keycloak container's data volume, so it only needs to be done once per environment.
+If you don't want to set up GitHub sign-in locally, the AppHost will still prompt for `GitHubClientId`/`GitHubClientSecret` the first time you run it (same as the other required secrets) — just submit them blank. The API treats an empty value as "not configured" and skips provisioning entirely.
+
+If GitHub sign-in stops working after previously working (e.g. "Unexpected error when authenticating with identity provider"), the most common cause is that the GitHub OAuth App's client secret was regenerated on GitHub's side without updating `Parameters:GitHubClientSecret` — update the secret and restart the AppHost so the API can push the new value to Keycloak.

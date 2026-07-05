@@ -40,6 +40,7 @@ if (app.Environment.IsDevelopment())
 await app.ApplyMigrationsAsync();
 await app.SeedDataAsync();
 await app.EnsureBlobContainerPublicAccessAsync();
+await app.EnsureGitHubIdentityProviderAsync();
 
 app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
