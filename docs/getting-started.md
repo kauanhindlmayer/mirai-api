@@ -53,3 +53,9 @@ dotnet user-secrets set "Parameters:GitHubClientSecret" "<client-secret>"
 If you don't want to set up GitHub sign-in locally, the AppHost will still prompt for `GitHubClientId`/`GitHubClientSecret` the first time you run it (same as the other required secrets) — just submit them blank. The API treats an empty value as "not configured" and skips provisioning entirely.
 
 If GitHub sign-in stops working after previously working (e.g. "Unexpected error when authenticating with identity provider"), the most common cause is that the GitHub OAuth App's client secret was regenerated on GitHub's side without updating `Parameters:GitHubClientSecret` — update the secret and restart the AppHost so the API can push the new value to Keycloak.
+
+## Viewing emails sent locally (Mailpit)
+
+The API never talks to a real email provider locally. The AppHost runs [Mailpit](https://mailpit.axllent.org/), a local SMTP test server, and `EmailService` sends to it whenever it's reachable (falling back to logging only, as before, if it isn't — e.g. when running `dotnet run --project src/Presentation` directly without the AppHost).
+
+To see an email the API sent (e.g. a password reset link), open Mailpit's web UI at `http://localhost:8025` — every message sent through `IEmailService.SendEmailAsync` shows up there instantly, with no real inbox or SMTP provider involved.

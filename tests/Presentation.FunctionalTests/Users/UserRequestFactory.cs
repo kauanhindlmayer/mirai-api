@@ -39,4 +39,20 @@ public static class UserRequestFactory
             firstName ?? FirstName,
             lastName ?? LastName);
     }
+
+    public static ForgotPasswordRequest CreateForgotPasswordRequest(string? email = null)
+    {
+        return new ForgotPasswordRequest(email ?? Email);
+    }
+
+    public static ResetPasswordRequest CreateResetPasswordRequest(
+        string? email = null,
+        string? token = null,
+        string? newPassword = null)
+    {
+        return new ResetPasswordRequest(
+            email ?? Email,
+            token ?? "invalid-token",
+            newPassword ?? Password);
+    }
 }

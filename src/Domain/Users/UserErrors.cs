@@ -15,4 +15,8 @@ public static class UserErrors
     public static readonly Error InvalidCredentials = Error.Validation(
         "User.InvalidCredentials",
         "Authentication with the provided credentials failed.");
+
+    public static readonly Error InvalidOrExpiredPasswordResetToken = Error.Validation(
+        "User.InvalidOrExpiredPasswordResetToken",
+        "The password reset token is invalid or has expired.");
 }

@@ -86,6 +86,8 @@ var ollama = builder.AddOllama("ollama")
 var llama = ollama.AddModel("chat", "llama3.2:1b");
 var minilm = ollama.AddModel("embeddings", "all-minilm");
 
+var mailpit = builder.AddMailPit("mailpit", 8025, 1025);
+
 var keycloakAuthClientSecret = builder.AddParameter("KeycloakAuthClientSecret", secret: true);
 var keycloakAdminClientSecret = builder.AddParameter("KeycloakAdminClientSecret", secret: true);
 
@@ -103,6 +105,8 @@ var miraiApi = builder.AddProject<Projects.Presentation>("mirai-api")
     .WithReference(minilm)
     .WithReference(blobs)
     .WaitFor(blobs)
+    .WithReference(mailpit)
+    .WaitFor(mailpit)
     .WithEnvironment("Keycloak__AuthClientSecret", keycloakAuthClientSecret)
     .WithEnvironment("Keycloak__AdminClientSecret", keycloakAdminClientSecret)
     .WithEnvironment("Keycloak__AdminUrl", $"{keycloakBaseUrl}/admin/realms/mirai/")
@@ -143,6 +147,7 @@ if (builder.ExecutionContext.IsPublishMode)
 
     var miraiAppUrl = miraiApp.GetEndpoint("http");
     miraiApi.WithEnvironment("Cors__AllowedOrigins__0", miraiAppUrl);
+    miraiApi.WithEnvironment("Frontend__BaseUrl", miraiAppUrl);
 }
 
 builder.Build().Run();

@@ -1,7 +1,9 @@
 using System.Net.Mime;
 using Application.Abstractions;
+using Application.Users.Commands.ForgotPassword;
 using Application.Users.Commands.LoginWithGitHub;
 using Application.Users.Commands.RegisterUser;
+using Application.Users.Commands.ResetPassword;
 using Application.Users.Commands.UpdateUserAvatar;
 using Application.Users.Commands.UpdateUserProfile;
 using Application.Users.Queries.GetCurrentUser;
@@ -111,6 +113,48 @@ public sealed class UsersController : ApiController
         }
 
         return result.Match(Ok, Problem);
+    }
+
+    /// <summary>
+    /// Request a password reset email.
+    /// </summary>
+    [AllowAnonymous]
+    [HttpPost("forgot-password")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult> ForgotPassword(
+        ForgotPasswordRequest request,
+        CancellationToken cancellationToken)
+    {
+        var command = new ForgotPasswordCommand(request.Email);
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        return result.Match(
+            _ => Ok(),
+            Problem);
+    }
+
+    /// <summary>
+    /// Reset a user's password using a reset token.
+    /// </summary>
+    [AllowAnonymous]
+    [HttpPost("reset-password")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> ResetPassword(
+        ResetPasswordRequest request,
+        CancellationToken cancellationToken)
+    {
+        var command = new ResetPasswordCommand(
+            request.Email,
+            request.Token,
+            request.NewPassword);
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        return result.Match(
+            _ => Ok(),
+            Problem);
     }
 
     /// <summary>

@@ -61,4 +61,35 @@ public class UserTests
         Assert.Equal(newLastName, user.LastName);
         Assert.Equal($"{newFirstName} {newLastName}", user.FullName);
     }
+
+    [Fact]
+    public void SetPasswordResetToken_ShouldSetTokenAndExpiry()
+    {
+        // Arrange
+        var user = UserFactory.Create();
+        var token = "reset-token";
+        var expiresAtUtc = DateTime.UtcNow.AddHours(1);
+
+        // Act
+        user.SetPasswordResetToken(token, expiresAtUtc);
+
+        // Assert
+        Assert.Equal(token, user.PasswordResetToken);
+        Assert.Equal(expiresAtUtc, user.PasswordResetTokenExpiresAtUtc);
+    }
+
+    [Fact]
+    public void ClearPasswordResetToken_ShouldClearTokenAndExpiry()
+    {
+        // Arrange
+        var user = UserFactory.Create();
+        user.SetPasswordResetToken("reset-token", DateTime.UtcNow.AddHours(1));
+
+        // Act
+        user.ClearPasswordResetToken();
+
+        // Assert
+        Assert.Null(user.PasswordResetToken);
+        Assert.Null(user.PasswordResetTokenExpiresAtUtc);
+    }
 }

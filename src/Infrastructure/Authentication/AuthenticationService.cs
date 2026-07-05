@@ -40,6 +40,24 @@ internal sealed class AuthenticationService : IAuthenticationService
         return ExtractIdentityIdFromLocationHeader(response);
     }
 
+    public async Task ResetPasswordAsync(
+        string identityId,
+        string newPassword,
+        CancellationToken cancellationToken = default)
+    {
+        var credentialRepresentationModel = new CredentialRepresentationModel
+        {
+            Type = PasswordCredentialType,
+            Value = newPassword,
+            Temporary = false,
+        };
+
+        await _httpClient.PutAsJsonAsync(
+            $"users/{identityId}/reset-password",
+            credentialRepresentationModel,
+            cancellationToken);
+    }
+
     private static string ExtractIdentityIdFromLocationHeader(HttpResponseMessage response)
     {
         const string usersSegmentName = "users/";

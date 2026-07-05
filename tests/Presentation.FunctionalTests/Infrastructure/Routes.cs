@@ -26,6 +26,8 @@ public static class Routes
         public const string LoginWithGitHub = $"{Base}/login/github";
         public const string GetLoggedInUser = $"{Base}/me";
         public const string UpdateProfile = $"{Base}/profile";
+        public const string ForgotPassword = $"{Base}/forgot-password";
+        public const string ResetPassword = $"{Base}/reset-password";
         private const string Base = "/api/users";
     }
 }

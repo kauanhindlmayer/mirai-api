@@ -19,6 +19,8 @@ public sealed class User : Entity
     public string IdentityId { get; private set; } = string.Empty;
     public Guid? ImageFileId { get; private set; }
     public DateTime? LastActiveAtUtc { get; private set; }
+    public string? PasswordResetToken { get; private set; }
+    public DateTime? PasswordResetTokenExpiresAtUtc { get; private set; }
     public ICollection<WorkItem> WorkItems { get; private set; } = [];
     public ICollection<Organization> Organizations { get; private set; } = [];
     public ICollection<Project> Projects { get; private set; } = [];
@@ -54,5 +56,17 @@ public sealed class User : Entity
     public void UpdateLastActive()
     {
         LastActiveAtUtc = DateTime.UtcNow;
+    }
+
+    public void SetPasswordResetToken(string token, DateTime expiresAtUtc)
+    {
+        PasswordResetToken = token;
+        PasswordResetTokenExpiresAtUtc = expiresAtUtc;
+    }
+
+    public void ClearPasswordResetToken()
+    {
+        PasswordResetToken = null;
+        PasswordResetTokenExpiresAtUtc = null;
     }
 }

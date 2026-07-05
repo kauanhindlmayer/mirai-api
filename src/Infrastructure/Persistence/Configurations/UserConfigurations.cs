@@ -34,6 +34,11 @@ internal sealed class UserConfigurations : IEntityTypeConfiguration<User>
         builder.HasIndex(u => u.Email)
             .IsUnique();
 
+        builder.Property(u => u.PasswordResetToken)
+            .IsRequired(false);
+
+        builder.HasIndex(u => u.PasswordResetToken);
+
         builder.HasMany(u => u.WorkItems)
             .WithOne(w => w.Assignee)
             .HasForeignKey(w => w.AssigneeId)

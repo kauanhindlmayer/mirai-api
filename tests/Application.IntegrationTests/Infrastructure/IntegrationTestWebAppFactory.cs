@@ -43,7 +43,7 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder.UseSetting("ConnectionStrings:postgres", _dbContainer.GetConnectionString());
+        builder.UseSetting("ConnectionStrings:mirai-db", _dbContainer.GetConnectionString());
         builder.UseSetting("ConnectionStrings:redis", _redisContainer.GetConnectionString());
 
         var keycloakAddress = _keycloakContainer.GetBaseAddress();

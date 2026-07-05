@@ -3,6 +3,7 @@ using Application.Abstractions.Authentication;
 using Application.Abstractions.Caching;
 using Application.Abstractions.Email;
 using Application.Abstractions.Jobs;
+using Application.Abstractions.Links;
 using Application.Abstractions.Storage;
 using Application.Abstractions.Time;
 using Asp.Versioning;
@@ -24,6 +25,7 @@ using Infrastructure.Caching;
 using Infrastructure.Dashboards;
 using Infrastructure.Email;
 using Infrastructure.Jobs;
+using Infrastructure.Links;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Repositories;
 using Infrastructure.Storage;
@@ -88,6 +90,8 @@ public static class DependencyInjection
         services.AddSingleton<ICacheService, CacheService>();
         services.AddSingleton<IBlobService, BlobService>();
         services.Configure<BlobStorageOptions>(configuration.GetSection(BlobStorageOptions.SectionName));
+        services.AddSingleton<IFrontendLinkService, FrontendLinkService>();
+        services.Configure<FrontendOptions>(configuration.GetSection(FrontendOptions.SectionName));
 
         return services;
     }

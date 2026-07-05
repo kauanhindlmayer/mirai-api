@@ -25,6 +25,7 @@
     <PackageReference Include="BCrypt.Net-Next" />
     <PackageReference Include="Quartz.Extensions.Hosting" />
     <PackageReference Include="CsvHelper" />
+    <PackageReference Include="MailKit" />
   </ItemGroup>
 
   <ItemGroup>
