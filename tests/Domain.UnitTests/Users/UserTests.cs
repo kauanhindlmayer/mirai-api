@@ -14,7 +14,6 @@ public class UserTests
         Assert.Equal(UserFactory.Email, user.Email);
         Assert.Equal($"{UserFactory.FirstName} {UserFactory.LastName}", user.FullName);
         Assert.Empty(user.IdentityId);
-        Assert.Null(user.ImageUrl);
         Assert.Null(user.ImageFileId);
     }
 
@@ -33,18 +32,16 @@ public class UserTests
     }
 
     [Fact]
-    public void SetImage_ShouldUpdateImageProperties()
+    public void SetImage_ShouldUpdateImageFileId()
     {
         // Arrange
         var user = UserFactory.Create();
-        var imageUrl = "https://example.com/avatar.png";
         var imageFileId = Guid.NewGuid();
 
         // Act
-        user.SetImage(imageUrl, imageFileId);
+        user.SetImage(imageFileId);
 
         // Assert
-        Assert.Equal(imageUrl, user.ImageUrl);
         Assert.Equal(imageFileId, user.ImageFileId);
     }
 

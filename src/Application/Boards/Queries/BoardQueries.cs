@@ -60,7 +60,9 @@ internal static class BoardQueries
                                     {
                                         Id = card.WorkItem.Assignee.Id,
                                         Name = card.WorkItem.Assignee.FullName,
-                                        ImageUrl = card.WorkItem.Assignee.ImageUrl,
+                                        ImageUrl = card.WorkItem.Assignee.ImageFileId != null
+                                            ? $"/api/users/{card.WorkItem.Assignee.Id}/avatar"
+                                            : null,
                                     },
                                 Type = card.WorkItem.Type.ToString(),
                                 Status = card.WorkItem.Status.ToString(),
@@ -102,7 +104,9 @@ internal static class BoardQueries
                     {
                         Id = card.WorkItem.Assignee.Id,
                         Name = card.WorkItem.Assignee.FullName,
-                        ImageUrl = card.WorkItem.Assignee.ImageUrl,
+                        ImageUrl = card.WorkItem.Assignee.ImageFileId != null
+                            ? $"/api/users/{card.WorkItem.Assignee.Id}/avatar"
+                            : null,
                     },
                 Type = card.WorkItem.Type.ToString(),
                 Status = card.WorkItem.Status.ToString(),

@@ -3,9 +3,11 @@ using Application.Personas.Commands.CreatePersona;
 using Application.Personas.Commands.DeletePersona;
 using Application.Personas.Commands.UpdatePersona;
 using Application.Personas.Queries.GetPersona;
+using Application.Personas.Queries.GetPersonaAvatar;
 using Application.Personas.Queries.ListPersonas;
 using Asp.Versioning;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Constants;
 
@@ -68,6 +70,27 @@ public sealed class PersonasController : ApiController
         var result = await _sender.Send(query, cancellationToken);
 
         return result.Match(Ok, Problem);
+    }
+
+    /// <summary>
+    /// Get a persona's avatar image.
+    /// </summary>
+    /// <param name="personaId">The persona's unique identifier.</param>
+    [AllowAnonymous]
+    [HttpGet("{personaId:guid}/avatar")]
+    [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> GetPersonaAvatar(
+        Guid personaId,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetPersonaAvatarQuery(personaId);
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(
+            file => File(file.Stream, file.ContentType),
+            Problem);
     }
 
     /// <summary>

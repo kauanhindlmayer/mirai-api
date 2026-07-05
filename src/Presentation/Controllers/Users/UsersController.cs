@@ -5,6 +5,7 @@ using Application.Users.Commands.RegisterUser;
 using Application.Users.Commands.UpdateUserAvatar;
 using Application.Users.Commands.UpdateUserProfile;
 using Application.Users.Queries.GetCurrentUser;
+using Application.Users.Queries.GetUserAvatar;
 using Application.Users.Queries.LoginUser;
 using Asp.Versioning;
 using Domain.Users;
@@ -175,6 +176,27 @@ public sealed class UsersController : ApiController
 
         return result.Match(
             _ => Ok(),
+            Problem);
+    }
+
+    /// <summary>
+    /// Get a user's avatar image.
+    /// </summary>
+    /// <param name="userId">The user's unique identifier.</param>
+    [AllowAnonymous]
+    [HttpGet("{userId:guid}/avatar")]
+    [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> GetUserAvatar(
+        Guid userId,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetUserAvatarQuery(userId);
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(
+            file => File(file.Stream, file.ContentType),
             Problem);
     }
 

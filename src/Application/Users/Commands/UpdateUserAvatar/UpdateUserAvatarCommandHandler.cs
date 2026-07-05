@@ -43,14 +43,12 @@ internal sealed class UpdateUserAvatarCommandHandler
                 cancellationToken);
         }
 
-        var uploadResponse = await _blobService.UploadAsync(
+        var fileId = await _blobService.UploadAsync(
             command.File.OpenReadStream(),
             command.File.ContentType,
             cancellationToken: cancellationToken);
 
-        user.SetImage(
-            uploadResponse.FileUrl,
-            uploadResponse.FileId);
+        user.SetImage(fileId);
         _userRepository.Update(user);
 
         return Result.Success;

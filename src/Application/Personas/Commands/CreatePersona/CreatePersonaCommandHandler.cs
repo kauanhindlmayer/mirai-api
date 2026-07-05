@@ -47,14 +47,12 @@ internal sealed class CreatePersonaCommandHandler
 
         if (command.File is not null)
         {
-            var uploadResponse = await _blobService.UploadAsync(
+            var fileId = await _blobService.UploadAsync(
                 command.File.OpenReadStream(),
                 command.File.ContentType,
                 cancellationToken);
 
-            persona.SetImage(
-                uploadResponse.FileUrl,
-                uploadResponse.FileId);
+            persona.SetImage(fileId);
         }
 
         _projectRepository.Update(project);

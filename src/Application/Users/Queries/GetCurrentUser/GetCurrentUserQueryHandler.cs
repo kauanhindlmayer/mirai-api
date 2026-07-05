@@ -35,7 +35,7 @@ internal sealed class GetCurrentUserQueryHandler
                 FirstName = u.FirstName,
                 LastName = u.LastName,
                 FullName = u.FullName,
-                ImageUrl = u.ImageUrl,
+                ImageUrl = u.ImageFileId != null ? $"/api/users/{u.Id}/avatar" : null,
             })
             .FirstOrDefaultAsync(cancellationToken);
 

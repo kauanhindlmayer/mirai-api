@@ -36,7 +36,7 @@ internal sealed class UploadAttachmentCommandHandler
             return WorkItemErrors.NotFound;
         }
 
-        var uploadResponse = await _blobService.UploadAsync(
+        var fileId = await _blobService.UploadAsync(
             command.FileStream,
             command.ContentType,
             cancellationToken);
@@ -44,7 +44,7 @@ internal sealed class UploadAttachmentCommandHandler
         var attachment = new WorkItemAttachment(
             workItem.Id,
             command.FileName,
-            uploadResponse.FileId,
+            fileId,
             command.ContentType,
             command.FileSizeBytes,
             _userContext.UserId);

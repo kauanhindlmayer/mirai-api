@@ -24,7 +24,7 @@ internal static class WorkItemQueries
                 {
                     Id = wi.Assignee.Id,
                     Name = wi.Assignee.FullName,
-                    ImageUrl = wi.Assignee.ImageUrl,
+                    ImageUrl = wi.Assignee.ImageFileId != null ? $"/api/users/{wi.Assignee.Id}/avatar" : null,
                 },
             Tags = wi.Tags.Select(t => new ListWorkItems.TagBriefResponse
             {
@@ -74,7 +74,9 @@ internal static class WorkItemQueries
                             Id = wi.ParentWorkItem.Assignee.Id,
                             FullName = wi.ParentWorkItem.Assignee.FullName,
                             Email = wi.ParentWorkItem.Assignee.Email,
-                            ImageUrl = wi.ParentWorkItem.Assignee.ImageUrl,
+                            ImageUrl = wi.ParentWorkItem.Assignee.ImageFileId != null
+                                ? $"/api/users/{wi.ParentWorkItem.Assignee.Id}/avatar"
+                                : null,
                         },
                 },
             ChildWorkItems = wi.ChildWorkItems.Select(cwi => new RelatedWorkItemResponse
@@ -91,7 +93,9 @@ internal static class WorkItemQueries
                         Id = cwi.Assignee.Id,
                         FullName = cwi.Assignee.FullName,
                         Email = cwi.Assignee.Email,
-                        ImageUrl = cwi.Assignee.ImageUrl,
+                        ImageUrl = cwi.Assignee.ImageFileId != null
+                            ? $"/api/users/{cwi.Assignee.Id}/avatar"
+                            : null,
                     },
             }),
             Assignee = wi.Assignee == null
@@ -101,7 +105,7 @@ internal static class WorkItemQueries
                     Id = wi.Assignee.Id,
                     FullName = wi.Assignee.FullName,
                     Email = wi.Assignee.Email,
-                    ImageUrl = wi.Assignee.ImageUrl,
+                    ImageUrl = wi.Assignee.ImageFileId != null ? $"/api/users/{wi.Assignee.Id}/avatar" : null,
                 },
             Comments = wi.Comments.Select(comment => new WorkItemCommentResponse
             {
@@ -110,7 +114,9 @@ internal static class WorkItemQueries
                 {
                     Id = comment.Author.Id,
                     Name = comment.Author.FullName,
-                    ImageUrl = comment.Author.ImageUrl,
+                    ImageUrl = comment.Author.ImageFileId != null
+                        ? $"/api/users/{comment.Author.Id}/avatar"
+                        : null,
                 },
                 Content = comment.Content,
                 CreatedAtUtc = comment.CreatedAtUtc,
@@ -148,7 +154,9 @@ internal static class WorkItemQueries
                             Id = l.TargetWorkItem.Assignee.Id,
                             FullName = l.TargetWorkItem.Assignee.FullName,
                             Email = l.TargetWorkItem.Assignee.Email,
-                            ImageUrl = l.TargetWorkItem.Assignee.ImageUrl,
+                            ImageUrl = l.TargetWorkItem.Assignee.ImageFileId != null
+                                ? $"/api/users/{l.TargetWorkItem.Assignee.Id}/avatar"
+                                : null,
                         },
                 },
                 LinkType = l.LinkType.GetForwardName(),
@@ -171,7 +179,9 @@ internal static class WorkItemQueries
                             Id = l.SourceWorkItem.Assignee.Id,
                             FullName = l.SourceWorkItem.Assignee.FullName,
                             Email = l.SourceWorkItem.Assignee.Email,
-                            ImageUrl = l.SourceWorkItem.Assignee.ImageUrl,
+                            ImageUrl = l.SourceWorkItem.Assignee.ImageFileId != null
+                                ? $"/api/users/{l.SourceWorkItem.Assignee.Id}/avatar"
+                                : null,
                         },
                 },
                 LinkType = l.LinkType.GetReverseName(),

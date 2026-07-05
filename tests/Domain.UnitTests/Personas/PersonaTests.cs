@@ -13,37 +13,20 @@ public class PersonaTests
         persona.Name.Should().Be(PersonaFactory.Name);
         persona.Category.Should().Be(PersonaFactory.Category);
         persona.Description.Should().Be(PersonaFactory.Description);
-        persona.ImageUrl.Should().BeNull();
         persona.ImageFileId.Should().BeNull();
     }
 
     [Fact]
-    public void SetImage_WithImageUrl_ShouldUpdateImageUrl()
-    {
-        // Arrange
-        var persona = PersonaFactory.Create();
-        var imageUrl = "https://example.com/image.jpg";
-
-        // Act
-        persona.SetImage(imageUrl, null);
-
-        // Assert
-        persona.ImageUrl.Should().Be(imageUrl);
-        persona.ImageFileId.Should().BeNull();
-    }
-
-    [Fact]
-    public void SetImage_WithImageFileId_ShouldUpdateImageFileId()
+    public void SetImage_ShouldUpdateImageFileId()
     {
         // Arrange
         var persona = PersonaFactory.Create();
         var imageFileId = Guid.NewGuid();
 
         // Act
-        persona.SetImage(null, imageFileId);
+        persona.SetImage(imageFileId);
 
         // Assert
-        persona.ImageUrl.Should().BeNull();
         persona.ImageFileId.Should().Be(imageFileId);
     }
 

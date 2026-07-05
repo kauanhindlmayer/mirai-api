@@ -23,9 +23,6 @@ internal sealed class PersonaConfigurations : IEntityTypeConfiguration<Persona>
         builder.Property(p => p.Description)
             .HasMaxLength(500);
 
-        builder.Property(p => p.ImageUrl)
-            .HasMaxLength(500);
-
         builder.HasOne(p => p.Project)
             .WithMany(p => p.Personas)
             .HasForeignKey(p => p.ProjectId)

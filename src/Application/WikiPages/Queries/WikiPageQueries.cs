@@ -16,8 +16,9 @@ internal static class WikiPageQueries
             Content = wp.Content,
             Author = new AuthorResponse
             {
+                Id = wp.Author.Id,
                 Name = wp.Author.FullName,
-                ImageUrl = wp.Author.ImageUrl,
+                ImageUrl = wp.Author.ImageFileId != null ? $"/api/users/{wp.Author.Id}/avatar" : null,
             },
             Comments = wp.Comments.Select(comment => new WikiPageCommentResponse
             {
@@ -26,7 +27,9 @@ internal static class WikiPageQueries
                 {
                     Id = comment.Author.Id,
                     Name = comment.Author.FullName,
-                    ImageUrl = comment.Author.ImageUrl,
+                    ImageUrl = comment.Author.ImageFileId != null
+                        ? $"/api/users/{comment.Author.Id}/avatar"
+                        : null,
                 },
                 Content = comment.Content,
                 CreatedAtUtc = comment.CreatedAtUtc,

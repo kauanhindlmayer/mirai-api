@@ -2,7 +2,7 @@ namespace Application.Abstractions.Storage;
 
 public interface IBlobService
 {
-    Task<UploadResponse> UploadAsync(
+    Task<Guid> UploadAsync(
         Stream stream,
         string contentType,
         CancellationToken cancellationToken = default);

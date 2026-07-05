@@ -59,7 +59,7 @@ internal sealed class GetOrganizationUsersQueryHandler
                 u.Id,
                 u.FullName,
                 u.Email,
-                u.ImageUrl,
+                u.ImageFileId != null ? $"/api/users/{u.Id}/avatar" : null,
                 u.LastActiveAtUtc))
             .PaginatedListAsync(
                 query.Page,

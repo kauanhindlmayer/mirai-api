@@ -53,7 +53,7 @@ internal sealed class GetProjectUsersQueryHandler
                 u.Id,
                 u.FullName,
                 u.Email,
-                u.ImageUrl))
+                u.ImageFileId != null ? $"/api/users/{u.Id}/avatar" : null))
             .PaginatedListAsync(
                 query.Page,
                 query.PageSize,

@@ -14,7 +14,9 @@ internal static class PersonaQueries
             Id = p.Id,
             Name = p.Name,
             Description = p.Description,
-            ImageUrl = p.ImageUrl,
+            ImageUrl = p.ImageFileId != null
+                ? $"/api/projects/{p.ProjectId}/personas/{p.Id}/avatar"
+                : null,
             ProjectId = p.ProjectId,
             CreatedAtUtc = p.CreatedAtUtc,
             UpdatedAtUtc = p.UpdatedAtUtc,
@@ -27,7 +29,9 @@ internal static class PersonaQueries
         {
             Id = p.Id,
             Name = p.Name,
-            ImageUrl = p.ImageUrl,
+            ImageUrl = p.ImageFileId != null
+                ? $"/api/projects/{p.ProjectId}/personas/{p.Id}/avatar"
+                : null,
         };
     }
 }
