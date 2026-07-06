@@ -115,43 +115,49 @@ public sealed class Project : AggregateRoot
             return parent.InsertSubWikiPage(parent.SubWikiPages.Count, wikiPage);
         }
 
-        wikiPage.UpdatePosition(WikiPages.Count);
+        wikiPage.UpdatePosition(RootWikiPages.Count());
         WikiPages.Add(wikiPage);
         return Result.Success;
     }
 
     public ErrorOr<Success> MoveWikiPage(Guid wikiPageId, Guid? targetParentId, int targetPosition)
     {
-        var wikiPage = WikiPages.FirstOrDefault(wp => wp.Id == wikiPageId);
+        var wikiPage = FindWikiPage(wikiPageId);
         if (wikiPage is null)
         {
             return WikiPageErrors.NotFound;
         }
 
-        WikiPages.Remove(wikiPage);
+        if (wikiPage.ParentWikiPage is { } currentParent)
+        {
+            currentParent.RemoveSubWikiPage(wikiPage);
+        }
+        else
+        {
+            WikiPages.Remove(wikiPage);
+            ShiftWikiPages(wikiPage.Position + 1, -1);
+        }
 
         if (targetParentId is not null)
         {
-            var targetParent = WikiPages.FirstOrDefault(wp => wp.Id == targetParentId);
+            var targetParent = FindWikiPage(targetParentId.Value);
             if (targetParent is null)
             {
                 return WikiPageErrors.ParentWikiPageNotFound;
             }
 
-            targetParent.InsertSubWikiPage(targetPosition, wikiPage);
+            return targetParent.InsertSubWikiPage(targetPosition, wikiPage);
         }
-        else
-        {
-            if (targetPosition < 0 || targetPosition > WikiPages.Count)
-            {
-                return WikiPageErrors.InvalidPosition;
-            }
 
-            wikiPage.RemoveParent();
-            ShiftWikiPages(targetPosition, 1);
-            wikiPage.UpdatePosition(targetPosition);
-            WikiPages.Add(wikiPage);
+        if (targetPosition < 0 || targetPosition > RootWikiPages.Count())
+        {
+            return WikiPageErrors.InvalidPosition;
         }
+
+        wikiPage.RemoveParent();
+        ShiftWikiPages(targetPosition, 1);
+        wikiPage.UpdatePosition(targetPosition);
+        WikiPages.Add(wikiPage);
 
         return Result.Success;
     }
@@ -229,11 +235,47 @@ public sealed class Project : AggregateRoot
         OrganizationId = organization.Id;
     }
 
+    private IEnumerable<WikiPage> RootWikiPages =>
+        WikiPages.Where(wp => wp.ParentWikiPageId is null);
+
     private void ShiftWikiPages(int fromIndex, int offset)
     {
-        foreach (var page in WikiPages.Where(p => p.Position >= fromIndex))
+        foreach (var page in RootWikiPages.Where(p => p.Position >= fromIndex))
         {
             page.UpdatePosition(page.Position + offset);
         }
+    }
+
+    private WikiPage? FindWikiPage(Guid wikiPageId)
+    {
+        foreach (var page in WikiPages)
+        {
+            var found = FindWikiPageRecursive(page, wikiPageId);
+            if (found is not null)
+            {
+                return found;
+            }
+        }
+
+        return null;
+    }
+
+    private static WikiPage? FindWikiPageRecursive(WikiPage page, Guid wikiPageId)
+    {
+        if (page.Id == wikiPageId)
+        {
+            return page;
+        }
+
+        foreach (var subPage in page.SubWikiPages)
+        {
+            var found = FindWikiPageRecursive(subPage, wikiPageId);
+            if (found is not null)
+            {
+                return found;
+            }
+        }
+
+        return null;
     }
 }

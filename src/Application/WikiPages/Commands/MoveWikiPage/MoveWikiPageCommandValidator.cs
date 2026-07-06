@@ -13,7 +13,8 @@ internal sealed class MoveWikiPageCommandValidator : AbstractValidator<MoveWikiP
             .NotEmpty();
 
         RuleFor(x => x.TargetParentId)
-            .NotEmpty();
+            .NotEqual(Guid.Empty)
+            .When(x => x.TargetParentId.HasValue);
 
         RuleFor(x => x.TargetPosition)
             .GreaterThanOrEqualTo(0);

@@ -97,6 +97,12 @@ public sealed class WikiPage : AggregateRoot
         return Result.Success;
     }
 
+    public void RemoveSubWikiPage(WikiPage subWikiPage)
+    {
+        SubWikiPages.Remove(subWikiPage);
+        ShiftSubWikiPages(subWikiPage.Position + 1, -1);
+    }
+
     public void SetParent(WikiPage parentWikiPage)
     {
         ParentWikiPage = parentWikiPage;
