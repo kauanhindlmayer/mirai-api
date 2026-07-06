@@ -1,7 +1,9 @@
 using System.Net.Mime;
+using Application.Abstractions;
 using Application.Teams.Commands.AddUserToTeam;
 using Application.Teams.Commands.CreateTeam;
 using Application.Teams.Queries.GetTeam;
+using Application.Teams.Queries.GetTeamMembers;
 using Application.Teams.Queries.ListTeams;
 using Asp.Versioning;
 using MediatR;
@@ -105,5 +107,28 @@ public sealed class TeamsController : ApiController
         return result.Match(
             _ => NoContent(),
             Problem);
+    }
+
+    /// <summary>
+    /// Retrieve the members of a team.
+    /// </summary>
+    /// <param name="teamId">The team's unique identifier.</param>
+    /// <param name="pageRequest">Pagination parameters.</param>
+    [HttpGet("{teamId:guid}/members")]
+    [ProducesResponseType(typeof(PaginatedList<TeamMemberResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<PaginatedList<TeamMemberResponse>>> GetTeamMembers(
+        Guid teamId,
+        [FromQuery] PageRequest pageRequest,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetTeamMembersQuery(
+            teamId,
+            pageRequest.Page,
+            pageRequest.PageSize);
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(Ok, Problem);
     }
 }
