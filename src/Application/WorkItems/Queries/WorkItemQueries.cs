@@ -187,6 +187,17 @@ internal static class WorkItemQueries
                 LinkType = l.LinkType.GetReverseName(),
                 Comment = l.Comment,
             }),
+            PullRequestLinks = wi.PullRequestLinks.Select(l => new WorkItemPullRequestLinkResponse
+            {
+                Id = l.Id,
+                PullRequestNumber = l.PullRequestNumber,
+                Title = l.Title,
+                HtmlUrl = l.HtmlUrl,
+                State = l.State.ToString(),
+                AuthorLogin = l.AuthorLogin,
+                Source = l.Source.ToString(),
+                LinkedAtUtc = l.LinkedAtUtc,
+            }),
             CreatedAtUtc = wi.CreatedAtUtc,
             UpdatedAtUtc = wi.UpdatedAtUtc,
         };

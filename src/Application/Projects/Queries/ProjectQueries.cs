@@ -16,6 +16,15 @@ internal static class ProjectQueries
             OrganizationId = p.OrganizationId,
             CreatedAtUtc = p.CreatedAtUtc,
             UpdatedAtUtc = p.UpdatedAtUtc,
+            GitHubRepositoryConnection = p.GitHubRepositoryConnection == null
+                ? null
+                : new GitHubRepositoryConnectionResponse
+                {
+                    RepositoryId = p.GitHubRepositoryConnection.RepositoryId,
+                    RepositoryOwner = p.GitHubRepositoryConnection.RepositoryOwner,
+                    RepositoryName = p.GitHubRepositoryConnection.RepositoryName,
+                    ConnectedAtUtc = p.GitHubRepositoryConnection.ConnectedAtUtc,
+                },
         };
     }
 }

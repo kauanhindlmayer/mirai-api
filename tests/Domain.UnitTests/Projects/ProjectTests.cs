@@ -554,4 +554,86 @@ public class ProjectTests : BaseTest
         project.Organization.Should().Be(newOrganization);
         project.OrganizationId.Should().Be(newOrganization.Id);
     }
+
+    [Fact]
+    public void ConnectGitHubRepository_WhenNotConnected_ShouldConnect()
+    {
+        // Arrange
+        var project = ProjectFactory.Create();
+
+        // Act
+        var result = project.ConnectGitHubRepository(
+            GitHubRepositoryConnectionFactory.InstallationId,
+            GitHubRepositoryConnectionFactory.RepositoryId,
+            GitHubRepositoryConnectionFactory.RepositoryOwner,
+            GitHubRepositoryConnectionFactory.RepositoryName,
+            GitHubRepositoryConnectionFactory.ConnectedByUserId);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        project.GitHubRepositoryConnection.Should().NotBeNull();
+        project.GitHubRepositoryConnection!.RepositoryId.Should().Be(GitHubRepositoryConnectionFactory.RepositoryId);
+        project.GitHubRepositoryConnection!.RepositoryOwner.Should().Be(GitHubRepositoryConnectionFactory.RepositoryOwner);
+        project.GitHubRepositoryConnection!.RepositoryName.Should().Be(GitHubRepositoryConnectionFactory.RepositoryName);
+    }
+
+    [Fact]
+    public void ConnectGitHubRepository_WhenAlreadyConnected_ShouldReturnError()
+    {
+        // Arrange
+        var project = ProjectFactory.Create();
+        project.ConnectGitHubRepository(
+            GitHubRepositoryConnectionFactory.InstallationId,
+            GitHubRepositoryConnectionFactory.RepositoryId,
+            GitHubRepositoryConnectionFactory.RepositoryOwner,
+            GitHubRepositoryConnectionFactory.RepositoryName,
+            GitHubRepositoryConnectionFactory.ConnectedByUserId);
+
+        // Act
+        var result = project.ConnectGitHubRepository(
+            GitHubRepositoryConnectionFactory.InstallationId,
+            999,
+            "other-owner",
+            "other-repo",
+            GitHubRepositoryConnectionFactory.ConnectedByUserId);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(ProjectErrors.GitHubRepositoryAlreadyConnected);
+        project.GitHubRepositoryConnection!.RepositoryId.Should().Be(GitHubRepositoryConnectionFactory.RepositoryId);
+    }
+
+    [Fact]
+    public void DisconnectGitHubRepository_WhenConnected_ShouldDisconnect()
+    {
+        // Arrange
+        var project = ProjectFactory.Create();
+        project.ConnectGitHubRepository(
+            GitHubRepositoryConnectionFactory.InstallationId,
+            GitHubRepositoryConnectionFactory.RepositoryId,
+            GitHubRepositoryConnectionFactory.RepositoryOwner,
+            GitHubRepositoryConnectionFactory.RepositoryName,
+            GitHubRepositoryConnectionFactory.ConnectedByUserId);
+
+        // Act
+        var result = project.DisconnectGitHubRepository();
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        project.GitHubRepositoryConnection.Should().BeNull();
+    }
+
+    [Fact]
+    public void DisconnectGitHubRepository_WhenNotConnected_ShouldReturnError()
+    {
+        // Arrange
+        var project = ProjectFactory.Create();
+
+        // Act
+        var result = project.DisconnectGitHubRepository();
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(ProjectErrors.NoGitHubRepositoryConnected);
+    }
 }

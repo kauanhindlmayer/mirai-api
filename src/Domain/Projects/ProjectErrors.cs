@@ -35,4 +35,20 @@ public static class ProjectErrors
     public static readonly Error UserIsInTeams = Error.Conflict(
         "Project.UserIsInTeams",
         "Cannot remove user who is a member of project teams.");
+
+    public static readonly Error GitHubRepositoryAlreadyConnected = Error.Conflict(
+        "Project.GitHubRepositoryAlreadyConnected",
+        "This project is already connected to a GitHub repository.");
+
+    public static readonly Error NoGitHubRepositoryConnected = Error.Validation(
+        "Project.NoGitHubRepositoryConnected",
+        "This project has no connected GitHub repository.");
+
+    public static readonly Error GitHubRepositoryAlreadyConnectedElsewhere = Error.Conflict(
+        "Project.GitHubRepositoryAlreadyConnectedElsewhere",
+        "This GitHub repository is already connected to another project.");
+
+    public static readonly Error InvalidGitHubInstallationState = Error.Validation(
+        "Project.InvalidGitHubInstallationState",
+        "This GitHub installation request is invalid or has expired. Please try connecting again.");
 }

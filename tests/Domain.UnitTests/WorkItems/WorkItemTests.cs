@@ -450,4 +450,115 @@ public class WorkItemTests
         result.IsError.Should().BeTrue();
         result.FirstError.Should().Be(WorkItemErrors.LinkNotFound);
     }
+
+    [Fact]
+    public void AddPullRequestLink_WithNewPullRequest_ShouldAddLink()
+    {
+        // Arrange
+        var workItem = WorkItemFactory.Create();
+        var link = WorkItemPullRequestLinkFactory.Create(workItemId: workItem.Id);
+
+        // Act
+        var result = workItem.AddPullRequestLink(link);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        workItem.PullRequestLinks.Should().ContainSingle();
+        workItem.PullRequestLinks.Should().Contain(link);
+    }
+
+    [Fact]
+    public void AddPullRequestLink_WithDuplicatePullRequest_ShouldReturnError()
+    {
+        // Arrange
+        var workItem = WorkItemFactory.Create();
+        var link1 = WorkItemPullRequestLinkFactory.Create(workItemId: workItem.Id);
+        var link2 = WorkItemPullRequestLinkFactory.Create(workItemId: workItem.Id);
+        workItem.AddPullRequestLink(link1);
+
+        // Act
+        var result = workItem.AddPullRequestLink(link2);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(WorkItemErrors.PullRequestLinkAlreadyExists);
+        workItem.PullRequestLinks.Should().ContainSingle();
+    }
+
+    [Fact]
+    public void UpsertPullRequestLink_WhenNotLinked_ShouldCreateLink()
+    {
+        // Arrange
+        var workItem = WorkItemFactory.Create();
+
+        // Act
+        var result = workItem.UpsertPullRequestLink(
+            WorkItemPullRequestLinkFactory.PullRequestId,
+            WorkItemPullRequestLinkFactory.PullRequestNumber,
+            WorkItemPullRequestLinkFactory.Title,
+            WorkItemPullRequestLinkFactory.HtmlUrl,
+            PullRequestLinkState.Open,
+            WorkItemPullRequestLinkFactory.AuthorLogin,
+            PullRequestLinkSource.Automatic);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        workItem.PullRequestLinks.Should().ContainSingle();
+        workItem.PullRequestLinks.First().State.Should().Be(PullRequestLinkState.Open);
+    }
+
+    [Fact]
+    public void UpsertPullRequestLink_WhenAlreadyLinked_ShouldUpdateState()
+    {
+        // Arrange
+        var workItem = WorkItemFactory.Create();
+        var link = WorkItemPullRequestLinkFactory.Create(workItemId: workItem.Id, state: PullRequestLinkState.Open);
+        workItem.AddPullRequestLink(link);
+
+        // Act
+        var result = workItem.UpsertPullRequestLink(
+            WorkItemPullRequestLinkFactory.PullRequestId,
+            WorkItemPullRequestLinkFactory.PullRequestNumber,
+            WorkItemPullRequestLinkFactory.Title,
+            WorkItemPullRequestLinkFactory.HtmlUrl,
+            PullRequestLinkState.Merged,
+            WorkItemPullRequestLinkFactory.AuthorLogin,
+            PullRequestLinkSource.Automatic);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        workItem.PullRequestLinks.Should().ContainSingle();
+        workItem.PullRequestLinks.First().State.Should().Be(PullRequestLinkState.Merged);
+    }
+
+    [Fact]
+    public void RemovePullRequestLink_WithExistingLink_ShouldRemoveSuccessfully()
+    {
+        // Arrange
+        var workItem = WorkItemFactory.Create();
+        var link = WorkItemPullRequestLinkFactory.Create(workItemId: workItem.Id);
+        workItem.AddPullRequestLink(link);
+
+        // Act
+        var result = workItem.RemovePullRequestLink(link.Id);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        workItem.PullRequestLinks.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void RemovePullRequestLink_WithNonExistentLink_ShouldReturnError()
+    {
+        // Arrange
+        var workItem = WorkItemFactory.Create();
+        var nonExistentLinkId = Guid.NewGuid();
+
+        // Act
+        var result = workItem.RemovePullRequestLink(nonExistentLinkId);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(WorkItemErrors.PullRequestLinkNotFound);
+    }
 }

@@ -28,4 +28,24 @@ internal sealed class BackgroundJobScheduler : IBackgroundJobScheduler
 
         await scheduler.ScheduleJob(job, trigger, cancellationToken);
     }
+
+    public async Task ScheduleGitHubPullRequestWebhookJobAsync(
+        GitHubPullRequestWebhookPayload payload,
+        CancellationToken cancellationToken)
+    {
+        var scheduler = await _schedulerFactory.GetScheduler(cancellationToken);
+        var jobId = Guid.NewGuid();
+
+        var job = JobBuilder.Create<ProcessGitHubPullRequestWebhookJob>()
+            .WithIdentity($"process-github-pr-webhook-{jobId}")
+            .UsingJobData(new JobDataMap { { "payload", payload } })
+            .Build();
+
+        var trigger = TriggerBuilder.Create()
+            .WithIdentity($"trigger-github-pr-webhook-{jobId}")
+            .StartNow()
+            .Build();
+
+        await scheduler.ScheduleJob(job, trigger, cancellationToken);
+    }
 }

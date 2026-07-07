@@ -67,5 +67,10 @@ internal sealed class ProjectConfigurations : IEntityTypeConfiguration<Project>
         builder.HasMany(p => p.WikiPages)
             .WithOne(wp => wp.Project)
             .HasForeignKey(wp => wp.ProjectId);
+
+        builder.HasOne(p => p.GitHubRepositoryConnection)
+            .WithOne(c => c.Project)
+            .HasForeignKey<GitHubRepositoryConnection>(c => c.ProjectId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

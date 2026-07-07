@@ -24,6 +24,7 @@ public sealed class Project : AggregateRoot
     public ICollection<Tag> Tags { get; private set; } = [];
     public ICollection<Persona> Personas { get; private set; } = [];
     public ICollection<User> Users { get; private set; } = [];
+    public GitHubRepositoryConnection? GitHubRepositoryConnection { get; private set; }
 
     public Project(string name, string description, Guid organizationId)
     {
@@ -233,6 +234,40 @@ public sealed class Project : AggregateRoot
     {
         Organization = organization;
         OrganizationId = organization.Id;
+    }
+
+    public ErrorOr<Success> ConnectGitHubRepository(
+        long installationId,
+        long repositoryId,
+        string repositoryOwner,
+        string repositoryName,
+        Guid connectedByUserId)
+    {
+        if (GitHubRepositoryConnection is not null)
+        {
+            return ProjectErrors.GitHubRepositoryAlreadyConnected;
+        }
+
+        GitHubRepositoryConnection = new GitHubRepositoryConnection(
+            Id,
+            installationId,
+            repositoryId,
+            repositoryOwner,
+            repositoryName,
+            connectedByUserId);
+
+        return Result.Success;
+    }
+
+    public ErrorOr<Success> DisconnectGitHubRepository()
+    {
+        if (GitHubRepositoryConnection is null)
+        {
+            return ProjectErrors.NoGitHubRepositoryConnected;
+        }
+
+        GitHubRepositoryConnection = null;
+        return Result.Success;
     }
 
     private IEnumerable<WikiPage> RootWikiPages =>

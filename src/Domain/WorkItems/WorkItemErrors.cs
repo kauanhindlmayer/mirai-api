@@ -47,4 +47,16 @@ public static class WorkItemErrors
     public static readonly Error AttachmentNotFound = Error.NotFound(
         code: "WorkItem.AttachmentNotFound",
         description: "Attachment not found");
+
+    public static readonly Error PullRequestLinkAlreadyExists = Error.Conflict(
+        code: "WorkItem.PullRequestLinkAlreadyExists",
+        description: "This pull request is already linked to this work item.");
+
+    public static readonly Error PullRequestLinkNotFound = Error.NotFound(
+        code: "WorkItem.PullRequestLinkNotFound",
+        description: "The specified pull request link was not found.");
+
+    public static readonly Error GitHubPullRequestNotFound = Error.NotFound(
+        code: "WorkItem.GitHubPullRequestNotFound",
+        description: "No pull request with that number was found in the connected repository.");
 }

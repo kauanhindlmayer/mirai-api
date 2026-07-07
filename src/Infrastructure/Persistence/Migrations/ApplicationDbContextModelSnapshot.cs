@@ -228,6 +228,70 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("personas", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Projects.GitHubRepositoryConnection", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("ConnectedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("connected_at_utc");
+
+                    b.Property<Guid>("ConnectedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("connected_by_user_id");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<long>("InstallationId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("installation_id");
+
+                    b.Property<DateTime?>("LastSyncedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_synced_at_utc");
+
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("project_id");
+
+                    b.Property<long>("RepositoryId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("repository_id");
+
+                    b.Property<string>("RepositoryName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("repository_name");
+
+                    b.Property<string>("RepositoryOwner")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("repository_owner");
+
+                    b.Property<DateTime?>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.HasKey("Id")
+                        .HasName("pk_git_hub_repository_connection");
+
+                    b.HasIndex("ProjectId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_git_hub_repository_connection_project_id");
+
+                    b.HasIndex("RepositoryId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_git_hub_repository_connection_repository_id");
+
+                    b.ToTable("git_hub_repository_connection", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Projects.Project", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1050,6 +1114,76 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("work_item_link", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.WorkItems.WorkItemPullRequestLink", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("AuthorLogin")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("author_login");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<string>("HtmlUrl")
+                        .IsRequired()
+                        .HasMaxLength(2048)
+                        .HasColumnType("character varying(2048)")
+                        .HasColumnName("html_url");
+
+                    b.Property<DateTime>("LinkedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("linked_at_utc");
+
+                    b.Property<long>("PullRequestId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("pull_request_id");
+
+                    b.Property<int>("PullRequestNumber")
+                        .HasColumnType("integer")
+                        .HasColumnName("pull_request_number");
+
+                    b.Property<string>("Source")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("source");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("state");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("title");
+
+                    b.Property<DateTime?>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.Property<Guid>("WorkItemId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("work_item_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_work_item_pull_request_link");
+
+                    b.HasIndex("PullRequestId")
+                        .HasDatabaseName("ix_work_item_pull_request_link_pull_request_id");
+
+                    b.HasIndex("WorkItemId", "PullRequestId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_work_item_pull_request_link_work_item_id_pull_request_id");
+
+                    b.ToTable("work_item_pull_request_link", (string)null);
+                });
+
             modelBuilder.Entity("TagWorkItem", b =>
                 {
                     b.Property<Guid>("TagsId")
@@ -1188,6 +1322,18 @@ namespace Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_personas_projects_project_id");
+
+                    b.Navigation("Project");
+                });
+
+            modelBuilder.Entity("Domain.Projects.GitHubRepositoryConnection", b =>
+                {
+                    b.HasOne("Domain.Projects.Project", "Project")
+                        .WithOne("GitHubRepositoryConnection")
+                        .HasForeignKey("Domain.Projects.GitHubRepositoryConnection", "ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_git_hub_repository_connection_projects_project_id");
 
                     b.Navigation("Project");
                 });
@@ -1453,6 +1599,18 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("TargetWorkItem");
                 });
 
+            modelBuilder.Entity("Domain.WorkItems.WorkItemPullRequestLink", b =>
+                {
+                    b.HasOne("Domain.WorkItems.WorkItem", "WorkItem")
+                        .WithMany("PullRequestLinks")
+                        .HasForeignKey("WorkItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_work_item_pull_request_link_work_items_work_item_id");
+
+                    b.Navigation("WorkItem");
+                });
+
             modelBuilder.Entity("TagWorkItem", b =>
                 {
                     b.HasOne("Domain.Tags.Tag", null)
@@ -1538,6 +1696,8 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.Projects.Project", b =>
                 {
+                    b.Navigation("GitHubRepositoryConnection");
+
                     b.Navigation("Personas");
 
                     b.Navigation("Tags");
@@ -1601,6 +1761,8 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("IncomingLinks");
 
                     b.Navigation("OutgoingLinks");
+
+                    b.Navigation("PullRequestLinks");
                 });
 #pragma warning restore 612, 618
         }

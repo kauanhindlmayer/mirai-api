@@ -6,7 +6,9 @@ using Application.WorkItems.Commands.AssignWorkItem;
 using Application.WorkItems.Commands.CreateWorkItem;
 using Application.WorkItems.Commands.DeleteAttachment;
 using Application.WorkItems.Commands.DeleteWorkItem;
+using Application.WorkItems.Commands.LinkPullRequestToWorkItem;
 using Application.WorkItems.Commands.LinkWorkItems;
+using Application.WorkItems.Commands.RemovePullRequestLink;
 using Application.WorkItems.Commands.RemoveTag;
 using Application.WorkItems.Commands.UnlinkWorkItems;
 using Application.WorkItems.Commands.UpdateComment;
@@ -365,6 +367,53 @@ public sealed class WorkItemsController : ApiController
         CancellationToken cancellationToken)
     {
         var command = new UnlinkWorkItemsCommand(workItemId, linkId);
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        return result.Match(
+            _ => NoContent(),
+            Problem);
+    }
+
+    /// <summary>
+    /// Link a GitHub pull request to a work item.
+    /// </summary>
+    /// <param name="projectId">The project's unique identifier.</param>
+    /// <param name="workItemId">The work item's unique identifier.</param>
+    /// <param name="request">The pull request number to link.</param>
+    [HttpPost("{workItemId:guid}/pull-request-links")]
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<Guid>> LinkPullRequest(
+        Guid projectId,
+        Guid workItemId,
+        LinkPullRequestRequest request,
+        CancellationToken cancellationToken)
+    {
+        var command = new LinkPullRequestToWorkItemCommand(workItemId, request.PullRequestNumber);
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        return result.Match(
+            linkId => CreatedAtAction(nameof(GetWorkItem), new { projectId, workItemId }, linkId),
+            Problem);
+    }
+
+    /// <summary>
+    /// Remove a pull request link from a work item.
+    /// </summary>
+    /// <param name="workItemId">The work item's unique identifier.</param>
+    /// <param name="linkId">The pull request link's unique identifier.</param>
+    [HttpDelete("{workItemId:guid}/pull-request-links/{linkId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> RemovePullRequestLink(
+        Guid workItemId,
+        Guid linkId,
+        CancellationToken cancellationToken)
+    {
+        var command = new RemovePullRequestLinkCommand(workItemId, linkId);
 
         var result = await _sender.Send(command, cancellationToken);
 

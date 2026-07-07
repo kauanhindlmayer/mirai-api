@@ -5,6 +5,7 @@ using Domain.Tags;
 using Domain.Teams;
 using Domain.Users;
 using Domain.WorkItems.Enums;
+using Domain.WorkItems.Events;
 using Domain.WorkItems.ValueObjects;
 using ErrorOr;
 using Pgvector;
@@ -36,6 +37,7 @@ public sealed class WorkItem : AggregateRoot
     public ICollection<WorkItemAttachment> Attachments { get; private set; } = [];
     public ICollection<WorkItemLink> OutgoingLinks { get; private set; } = [];
     public ICollection<WorkItemLink> IncomingLinks { get; private set; } = [];
+    public ICollection<WorkItemPullRequestLink> PullRequestLinks { get; private set; } = [];
     public DateTime? StartedAtUtc { get; private set; }
     public DateTime? CompletedAtUtc { get; private set; }
     public Guid? SprintId { get; private set; }
@@ -200,6 +202,63 @@ public sealed class WorkItem : AggregateRoot
         }
 
         OutgoingLinks.Remove(link);
+        return Result.Success;
+    }
+
+    public ErrorOr<Success> AddPullRequestLink(WorkItemPullRequestLink link)
+    {
+        if (PullRequestLinks.Any(l => l.PullRequestId == link.PullRequestId))
+        {
+            return WorkItemErrors.PullRequestLinkAlreadyExists;
+        }
+
+        PullRequestLinks.Add(link);
+        RaiseDomainEvent(new PullRequestLinksUpdatedDomainEvent(this));
+        return Result.Success;
+    }
+
+    public ErrorOr<Success> UpsertPullRequestLink(
+        long pullRequestId,
+        int pullRequestNumber,
+        string title,
+        string htmlUrl,
+        PullRequestLinkState state,
+        string? authorLogin,
+        PullRequestLinkSource source)
+    {
+        var existingLink = PullRequestLinks.FirstOrDefault(l => l.PullRequestId == pullRequestId);
+        if (existingLink is not null)
+        {
+            existingLink.UpdateState(state, title, htmlUrl);
+            RaiseDomainEvent(new PullRequestLinksUpdatedDomainEvent(this));
+            return Result.Success;
+        }
+
+        var link = new WorkItemPullRequestLink(
+            Id,
+            pullRequestId,
+            pullRequestNumber,
+            title,
+            htmlUrl,
+            state,
+            authorLogin,
+            source);
+
+        PullRequestLinks.Add(link);
+        RaiseDomainEvent(new PullRequestLinksUpdatedDomainEvent(this));
+        return Result.Success;
+    }
+
+    public ErrorOr<Success> RemovePullRequestLink(Guid linkId)
+    {
+        var link = PullRequestLinks.FirstOrDefault(l => l.Id == linkId);
+        if (link is null)
+        {
+            return WorkItemErrors.PullRequestLinkNotFound;
+        }
+
+        PullRequestLinks.Remove(link);
+        RaiseDomainEvent(new PullRequestLinksUpdatedDomainEvent(this));
         return Result.Success;
     }
 
