@@ -5,7 +5,7 @@ namespace Domain.WorkItems;
 
 /// <summary>
 /// Represents a link between a work item and a GitHub pull request, created
-/// either automatically from a webhook-detected "#&lt;code&gt;" reference or
+/// either automatically from a webhook-detected "MB#&lt;code&gt;" reference or
 /// manually through the work item's UI.
 /// </summary>
 public sealed class WorkItemPullRequestLink : Entity
