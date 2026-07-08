@@ -3,9 +3,8 @@ using System.Text.RegularExpressions;
 namespace Domain.WorkItems;
 
 /// <summary>
-/// Parses "#&lt;code&gt;" work item references out of PR titles, bodies, and
-/// branch names. A connected repository maps 1:1 to a single project, so a
-/// bare numeric code is unambiguous once scoped to that project.
+/// Parses "MB#&lt;code&gt;" work item references out of PR titles, bodies, and
+/// branch names.
 /// </summary>
 public static partial class PullRequestReferenceParser
 {
@@ -32,9 +31,6 @@ public static partial class PullRequestReferenceParser
         return codes;
     }
 
-    // Negative lookbehind excludes word characters and "/" immediately before
-    // "#" so URL fragments (e.g. "example.com/page#123") and code like
-    // "item#123" don't false-match; the trailing \b rejects "#123abc".
-    [GeneratedRegex(@"(?<![\w/])#(\d+)\b")]
+    [GeneratedRegex(@"(?<![\w/])MB#(\d+)\b", RegexOptions.IgnoreCase)]
     private static partial Regex CodeReferencePattern();
 }

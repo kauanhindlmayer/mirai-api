@@ -32,10 +32,12 @@ The RS256 App-JWT signing and installation-token lifecycle are nontrivial and se
 This matches the literal feature wording (singular) and keeps the domain model simple: `GitHubRepositoryConnection` is a one-to-one child of `Project`.
 It is modeled so it could extend to multiple repositories per project later, but that is not built now.
 
-**The `#<code>` reference convention for automatic linking.**
+**The `MB#<code>` reference convention for automatic linking.**
 `WorkItem.Code` is an `int`, unique only within its project.
-Since a connected repository maps 1:1 to one project, a `#<code>` mention in a PR's title, body, or branch name is unambiguous once scoped to that project's repository, so no project-key prefix is needed.
-This mirrors how the frontend already displays work items (`#{item.code}`).
+Since a connected repository maps 1:1 to one project, a bare numeric code mention in a PR's title, body, or branch name would already be unambiguous once scoped to that project's repository, so a project-key prefix isn't needed for disambiguation on Mirai's side.
+The `MB` ("Mirai Board") prefix exists instead to avoid colliding with GitHub's own native behavior: GitHub auto-links any bare `#<number>` in a PR to an issue/PR with that number in the same repository, and closing keywords (e.g. "fixes #42") will auto-close that GitHub issue on merge.
+A bare `#<code>` convention would risk linking to or closing an unrelated GitHub issue whenever its number happened to coincide with a Mirai work item code.
+This is a deliberate departure from how the frontend displays work items (`#{item.code}`); the string typed into a GitHub PR is not the same as the one shown in Mirai's UI.
 
 **Both automatic (webhook) and manual linking.**
 Webhook-driven detection on `pull_request` events is the primary mechanism.
@@ -75,7 +77,7 @@ Rejected as the primary mechanism, but kept as `GitHubRepositorySyncJob`, a fall
 - GitHub webhooks require a publicly reachable HTTPS URL, and Mirai currently has no deployed environment.
 Until one exists, the webhook path can only be exercised by whoever runs a local tunnel (smee.io, per `docs/getting-started.md`), which means automatic linking is not meaningfully "live" for anyone else until Mirai is actually deployed somewhere.
 - Registering the GitHub App itself (permissions, webhook URL, private key) is a manual, one-time, non-code step, following this repo's existing secrets convention for the ADR-0003 OAuth App.
-- The fallback-sync job's "recently updated" scan only inspects PR titles (GitHub's Search API does not return the PR body), so a `#<code>` reference mentioned only in a PR's body is caught by the next real webhook delivery rather than by the sync job itself.
+- The fallback-sync job's "recently updated" scan only inspects PR titles (GitHub's Search API does not return the PR body), so an `MB#<code>` reference mentioned only in a PR's body is caught by the next real webhook delivery rather than by the sync job itself.
 
 ### Open Questions
 

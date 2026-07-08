@@ -8,7 +8,7 @@ public class PullRequestReferenceParserTests
     public void ParseCodes_WithSingleReference_ShouldReturnCode()
     {
         // Act
-        var codes = PullRequestReferenceParser.ParseCodes("Fixes #42");
+        var codes = PullRequestReferenceParser.ParseCodes("Fixes MB#42");
 
         // Assert
         codes.Should().BeEquivalentTo([42]);
@@ -19,19 +19,29 @@ public class PullRequestReferenceParserTests
     {
         // Act
         var codes = PullRequestReferenceParser.ParseCodes(
-            "Fixes #42 and #43",
-            "Also relates to #44, see #42 again",
-            "feature/44-fix-branch");
+            "Fixes MB#42 and MB#43",
+            "Also relates to MB#44, see MB#42 again",
+            "feature/MB#44-fix-branch");
 
         // Assert
         codes.Should().BeEquivalentTo([42, 43, 44]);
     }
 
     [Fact]
+    public void ParseCodes_WithLowercasePrefix_ShouldMatch()
+    {
+        // Act
+        var codes = PullRequestReferenceParser.ParseCodes("fixes mb#42");
+
+        // Assert
+        codes.Should().BeEquivalentTo([42]);
+    }
+
+    [Fact]
     public void ParseCodes_WithNearMissTrailingLetters_ShouldNotMatch()
     {
         // Act
-        var codes = PullRequestReferenceParser.ParseCodes("See #123abc for context");
+        var codes = PullRequestReferenceParser.ParseCodes("See MB#123abc for context");
 
         // Assert
         codes.Should().BeEmpty();
@@ -42,7 +52,17 @@ public class PullRequestReferenceParserTests
     {
         // Act
         var codes = PullRequestReferenceParser.ParseCodes(
-            "See https://example.com/page#123 for details");
+            "See https://example.com/pageMB#123 for details");
+
+        // Assert
+        codes.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void ParseCodes_WithBareHashReference_ShouldNotMatch()
+    {
+        // Act
+        var codes = PullRequestReferenceParser.ParseCodes("Fixes #42");
 
         // Assert
         codes.Should().BeEmpty();
@@ -52,7 +72,7 @@ public class PullRequestReferenceParserTests
     public void ParseCodes_WithReferenceInParentheses_ShouldMatch()
     {
         // Act
-        var codes = PullRequestReferenceParser.ParseCodes("Closes issue (#7)");
+        var codes = PullRequestReferenceParser.ParseCodes("Closes issue (MB#7)");
 
         // Assert
         codes.Should().BeEquivalentTo([7]);

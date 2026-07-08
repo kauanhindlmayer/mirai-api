@@ -111,7 +111,7 @@ dotnet user-secrets set "Parameters:GitHubAppPrivateKey" "$(cat /path/to/downloa
 1. Start the AppHost (`dotnet run --project ./src/AppHost/AppHost.csproj`) with the smee client from step 2 still running.
 2. In the frontend, open a project's Settings page, go to the GitHub tab, and click "Connect your GitHub Account".
 3. Complete GitHub's install flow and pick the repository you want linked (or let it auto-connect if the installation only has access to one).
-4. Open a pull request against that repository titled something like `Fixes #<code>`, using a real work item code from that project.
+4. Open a pull request against that repository titled something like `Fixes MB#<code>`, using a real work item code from that project.
 5. Watch the smee terminal for the delivered webhook, then check the work item's detail view — the linked PR should appear (live, via SignalR, if the dialog was already open; otherwise on next load).
 6. Close or merge the PR and confirm the status badge updates the same way.
 

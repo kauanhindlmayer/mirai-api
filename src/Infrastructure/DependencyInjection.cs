@@ -252,13 +252,6 @@ public static class DependencyInjection
                     .WithCronSchedule(
                         "0 */20 * * * ?",
                         cron => cron.InTimeZone(TimeZoneInfo.Utc)));
-
-            // TEMPORARY: manual trigger for local testing, remove after use.
-            config.AddTrigger(trigger =>
-                trigger
-                    .ForJob("github-repository-sync")
-                    .WithIdentity("github-repository-sync-manual-trigger")
-                    .StartNow());
         });
 
         services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);

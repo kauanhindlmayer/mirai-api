@@ -39,6 +39,10 @@ public sealed class GitHubRepositorySyncJob : IJob
             .Where(p => p.GitHubRepositoryConnection != null)
             .ToListAsync(context.CancellationToken);
 
+        _logger.LogInformation(
+            "GitHub repository sync started for {ProjectCount} connected project(s).",
+            connectedProjects.Count);
+
         foreach (var project in connectedProjects)
         {
             await SyncOpenPullRequestLinksAsync(project, context.CancellationToken);
@@ -48,6 +52,8 @@ public sealed class GitHubRepositorySyncJob : IJob
         }
 
         await _context.SaveChangesAsync(context.CancellationToken);
+
+        _logger.LogInformation("GitHub repository sync completed.");
     }
 
     private async Task SyncOpenPullRequestLinksAsync(Project project, CancellationToken cancellationToken)
@@ -60,6 +66,14 @@ public sealed class GitHubRepositorySyncJob : IJob
                 && wi.PullRequestLinks.Any(l => l.State == PullRequestLinkState.Open))
             .ToListAsync(cancellationToken);
 
+        if (workItemsWithOpenLinks.Count == 0)
+        {
+            return;
+        }
+
+        var checkedCount = 0;
+        var updatedCount = 0;
+
         foreach (var workItem in workItemsWithOpenLinks)
         {
             var openLinks = workItem.PullRequestLinks
@@ -68,6 +82,8 @@ public sealed class GitHubRepositorySyncJob : IJob
 
             foreach (var link in openLinks)
             {
+                checkedCount++;
+
                 var pullRequest = await TryGetPullRequestAsync(connection, link.PullRequestNumber, cancellationToken);
                 if (pullRequest is null)
                 {
@@ -82,8 +98,17 @@ public sealed class GitHubRepositorySyncJob : IJob
                     ResolveState(pullRequest),
                     pullRequest.AuthorLogin,
                     link.Source);
+
+                updatedCount++;
             }
         }
+
+        _logger.LogInformation(
+            "Re-checked {CheckedCount} open pull request link(s) for {Owner}/{Name}, updated {UpdatedCount}.",
+            checkedCount,
+            connection.RepositoryOwner,
+            connection.RepositoryName,
+            updatedCount);
     }
 
     private async Task SyncRecentlyUpdatedPullRequestsAsync(Project project, CancellationToken cancellationToken)
@@ -91,12 +116,33 @@ public sealed class GitHubRepositorySyncJob : IJob
         var connection = project.GitHubRepositoryConnection!;
         var sinceUtc = connection.LastSyncedAtUtc ?? connection.ConnectedAtUtc;
         var searchQuery = $"updated:>{sinceUtc:yyyy-MM-dd}";
-        var recentPullRequests = await _pullRequestService.SearchPullRequestsAsync(
-            connection.InstallationId,
-            connection.RepositoryOwner,
-            connection.RepositoryName,
-            searchQuery,
-            cancellationToken);
+
+        IReadOnlyList<GitHubPullRequestSummary> recentPullRequests;
+        try
+        {
+            recentPullRequests = await _pullRequestService.SearchPullRequestsAsync(
+                connection.InstallationId,
+                connection.RepositoryOwner,
+                connection.RepositoryName,
+                searchQuery,
+                cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(
+                ex,
+                "Failed to search recently updated GitHub pull requests for {Owner}/{Name}.",
+                connection.RepositoryOwner,
+                connection.RepositoryName);
+            return;
+        }
+
+        if (recentPullRequests.Count == 0)
+        {
+            return;
+        }
+
+        var linkedCount = 0;
 
         foreach (var pullRequest in recentPullRequests)
         {
@@ -110,7 +156,12 @@ public sealed class GitHubRepositorySyncJob : IJob
                     .Include(wi => wi.PullRequestLinks)
                     .FirstOrDefaultAsync(wi => wi.ProjectId == project.Id && wi.Code == code, cancellationToken);
 
-                workItem?.UpsertPullRequestLink(
+                if (workItem is null)
+                {
+                    continue;
+                }
+
+                workItem.UpsertPullRequestLink(
                     pullRequest.Id,
                     pullRequest.Number,
                     pullRequest.Title,
@@ -118,8 +169,17 @@ public sealed class GitHubRepositorySyncJob : IJob
                     ResolveState(pullRequest),
                     pullRequest.AuthorLogin,
                     PullRequestLinkSource.Automatic);
+
+                linkedCount++;
             }
         }
+
+        _logger.LogInformation(
+            "Scanned {PullRequestCount} recently updated pull request(s) for {Owner}/{Name}, linked {LinkedCount}.",
+            recentPullRequests.Count,
+            connection.RepositoryOwner,
+            connection.RepositoryName,
+            linkedCount);
     }
 
     private async Task<GitHubPullRequestSummary?> TryGetPullRequestAsync(
