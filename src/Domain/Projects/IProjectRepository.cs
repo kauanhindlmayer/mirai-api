@@ -31,4 +31,12 @@ public interface IProjectRepository : IRepository<Project>
     Task<Project?> GetByIdWithPersonasAsync(
         Guid id,
         CancellationToken cancellationToken = default);
+
+    Task<Project?> GetByIdWithGitHubRepositoryConnectionAsync(
+        Guid id,
+        CancellationToken cancellationToken = default);
+
+    Task<Project?> GetByGitHubRepositoryIdAsync(
+        long repositoryId,
+        CancellationToken cancellationToken = default);
 }

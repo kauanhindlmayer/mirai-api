@@ -1,6 +1,8 @@
 using System.Text.Json.Serialization;
+using Application.Abstractions.GitHub;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Octokit.Webhooks.AspNetCore;
 using Presentation.Constants;
 using Presentation.Converters;
 using Presentation.Hubs;
@@ -40,12 +42,18 @@ public static class DependencyInjection
             .AddJsonProtocol(config =>
                 config.PayloadSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
+        services.AddScoped<IGitHubIntegrationNotifier, GitHubIntegrationNotifier>();
+
         return services;
     }
 
     public static void UsePresentation(this WebApplication app)
     {
         app.MapHub<RetrospectiveHub>("/hubs/retrospective");
+        app.MapHub<GitHubIntegrationHub>("/hubs/github");
+        app.MapGitHubWebhooks(
+            path: "/api/webhooks/github",
+            secret: app.Configuration["GitHubApp:WebhookSecret"]);
         app.UseMiddleware<RequestContextLoggingMiddleware>();
     }
 

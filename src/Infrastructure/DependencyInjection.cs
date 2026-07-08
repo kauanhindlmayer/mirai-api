@@ -2,6 +2,7 @@ using Application.Abstractions;
 using Application.Abstractions.Authentication;
 using Application.Abstractions.Caching;
 using Application.Abstractions.Email;
+using Application.Abstractions.GitHub;
 using Application.Abstractions.Jobs;
 using Application.Abstractions.Links;
 using Application.Abstractions.Storage;
@@ -24,6 +25,7 @@ using Infrastructure.Authorization;
 using Infrastructure.Caching;
 using Infrastructure.Dashboards;
 using Infrastructure.Email;
+using Infrastructure.Integrations.GitHub;
 using Infrastructure.Jobs;
 using Infrastructure.Links;
 using Infrastructure.Persistence;
@@ -38,6 +40,7 @@ using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Octokit.Webhooks;
 using Quartz;
 using AuthenticationOptions = Infrastructure.Authentication.AuthenticationOptions;
 using AuthenticationService = Infrastructure.Authentication.AuthenticationService;
@@ -56,6 +59,7 @@ public static class DependencyInjection
             .AddServices(configuration)
             .AddAuthorization()
             .AddAuthentication(configuration)
+            .AddGitHubApp(configuration)
             .AddPersistence(configuration)
             .AddApiVersioning()
             .AddCorsPolicy(configuration)
@@ -172,6 +176,22 @@ public static class DependencyInjection
         return services;
     }
 
+    private static IServiceCollection AddGitHubApp(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        var gitHubAppSection = configuration.GetSection(GitHubAppOptions.SectionName);
+        services.Configure<GitHubAppOptions>(gitHubAppSection);
+
+        services.AddScoped<IGitHubAppClientFactory, GitHubAppClientFactory>();
+        services.AddScoped<IGitHubInstallationService, GitHubInstallationService>();
+        services.AddScoped<IGitHubPullRequestService, GitHubPullRequestService>();
+        services.AddSingleton<IGitHubAppUrlProvider, GitHubAppUrlProvider>();
+        services.AddScoped<WebhookEventProcessor, GitHubWebhookEventProcessor>();
+
+        return services;
+    }
+
     private static IServiceCollection AddApiVersioning(this IServiceCollection services)
     {
         services.AddApiVersioning(options =>
@@ -221,6 +241,16 @@ public static class DependencyInjection
                     .WithIdentity("cleanup-tag-import-jobs-trigger")
                     .WithCronSchedule(
                         "0 0 3 * * ?",
+                        cron => cron.InTimeZone(TimeZoneInfo.Utc)));
+
+            config.AddJob<GitHubRepositorySyncJob>(job => job.WithIdentity("github-repository-sync"));
+
+            config.AddTrigger(trigger =>
+                trigger
+                    .ForJob("github-repository-sync")
+                    .WithIdentity("github-repository-sync-trigger")
+                    .WithCronSchedule(
+                        "0 */20 * * * ?",
                         cron => cron.InTimeZone(TimeZoneInfo.Utc)));
         });
 

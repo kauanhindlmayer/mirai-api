@@ -58,4 +58,23 @@ internal sealed class WorkItemRepository : Repository<WorkItem>, IWorkItemReposi
             .Where(wi => wi.Tags.Any(t => t.Id == tagId))
             .ToListAsync(cancellationToken);
     }
+
+    public Task<WorkItem?> GetByProjectAndCodeAsync(
+        Guid projectId,
+        int code,
+        CancellationToken cancellationToken = default)
+    {
+        return _dbContext.WorkItems
+            .Include(wi => wi.PullRequestLinks)
+            .FirstOrDefaultAsync(wi => wi.ProjectId == projectId && wi.Code == code, cancellationToken);
+    }
+
+    public async Task<WorkItem?> GetByIdWithPullRequestLinksAsync(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.WorkItems
+            .Include(wi => wi.PullRequestLinks)
+            .FirstOrDefaultAsync(wi => wi.Id == id, cancellationToken);
+    }
 }

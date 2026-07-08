@@ -23,4 +23,13 @@ public interface IWorkItemRepository : IRepository<WorkItem>
     Task<List<WorkItem>> ListByTagIdAsync(
         Guid tagId,
         CancellationToken cancellationToken = default);
+
+    Task<WorkItem?> GetByProjectAndCodeAsync(
+        Guid projectId,
+        int code,
+        CancellationToken cancellationToken = default);
+
+    Task<WorkItem?> GetByIdWithPullRequestLinksAsync(
+        Guid id,
+        CancellationToken cancellationToken = default);
 }

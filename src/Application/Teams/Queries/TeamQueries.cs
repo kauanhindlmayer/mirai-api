@@ -16,11 +16,6 @@ internal static class TeamQueries
             Name = t.Name,
             Description = t.Description,
             IsDefault = t.IsDefault,
-            Members = t.Users.Select(m => new MemberResponse
-            {
-                Id = m.Id,
-                Name = m.FullName,
-            }),
             CreatedAtUtc = t.CreatedAtUtc,
             UpdatedAtUtc = t.UpdatedAtUtc,
         };

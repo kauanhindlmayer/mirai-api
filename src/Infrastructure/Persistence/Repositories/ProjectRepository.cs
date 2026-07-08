@@ -78,4 +78,24 @@ internal sealed class ProjectRepository : Repository<Project>, IProjectRepositor
             .Include(p => p.Personas)
             .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
     }
+
+    public async Task<Project?> GetByIdWithGitHubRepositoryConnectionAsync(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Projects
+            .Include(p => p.GitHubRepositoryConnection)
+            .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
+    }
+
+    public async Task<Project?> GetByGitHubRepositoryIdAsync(
+        long repositoryId,
+        CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Projects
+            .Include(p => p.GitHubRepositoryConnection)
+            .FirstOrDefaultAsync(
+                p => p.GitHubRepositoryConnection != null && p.GitHubRepositoryConnection.RepositoryId == repositoryId,
+                cancellationToken);
+    }
 }

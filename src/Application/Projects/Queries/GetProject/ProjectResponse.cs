@@ -8,4 +8,5 @@ public sealed class ProjectResponse
     public Guid OrganizationId { get; init; }
     public DateTime CreatedAtUtc { get; init; }
     public DateTime? UpdatedAtUtc { get; init; }
+    public GitHubRepositoryConnectionResponse? GitHubRepositoryConnection { get; init; }
 }

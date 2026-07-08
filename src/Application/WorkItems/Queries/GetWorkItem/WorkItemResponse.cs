@@ -20,6 +20,7 @@ public sealed class WorkItemResponse
     public IEnumerable<TagResponse> Tags { get; init; } = [];
     public IEnumerable<WorkItemLinkResponse> OutgoingLinks { get; init; } = [];
     public IEnumerable<WorkItemLinkResponse> IncomingLinks { get; init; } = [];
+    public IEnumerable<WorkItemPullRequestLinkResponse> PullRequestLinks { get; init; } = [];
     public DateTime CreatedAtUtc { get; init; }
     public DateTime? UpdatedAtUtc { get; init; }
 }
@@ -82,6 +83,18 @@ public sealed class WorkItemLinkResponse
     public RelatedWorkItemResponse TargetWorkItem { get; init; } = null!;
     public required string LinkType { get; init; }
     public string? Comment { get; init; }
+}
+
+public sealed class WorkItemPullRequestLinkResponse
+{
+    public Guid Id { get; init; }
+    public int PullRequestNumber { get; init; }
+    public required string Title { get; init; }
+    public required string HtmlUrl { get; init; }
+    public required string State { get; init; }
+    public string? AuthorLogin { get; init; }
+    public required string Source { get; init; }
+    public DateTime LinkedAtUtc { get; init; }
 }
 
 public sealed class WorkItemAttachmentResponse

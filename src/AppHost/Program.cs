@@ -94,6 +94,12 @@ var keycloakAdminClientSecret = builder.AddParameter("KeycloakAdminClientSecret"
 var gitHubClientId = builder.AddParameter("GitHubClientId");
 var gitHubClientSecret = builder.AddParameter("GitHubClientSecret", secret: true);
 
+var gitHubAppId = builder.AddParameter("GitHubAppId");
+var gitHubAppClientId = builder.AddParameter("GitHubAppClientId");
+var gitHubAppPrivateKey = builder.AddParameter("GitHubAppPrivateKey", secret: true);
+var gitHubAppWebhookSecret = builder.AddParameter("GitHubAppWebhookSecret", secret: true);
+var gitHubAppInstallUrlSlug = builder.AddParameter("GitHubAppInstallUrlSlug");
+
 var miraiApi = builder.AddProject<Projects.Presentation>("mirai-api")
     .WithReference(database)
     .WaitFor(database)
@@ -115,6 +121,11 @@ var miraiApi = builder.AddProject<Projects.Presentation>("mirai-api")
     .WithEnvironment("Authentication__MetadataAddress", $"{keycloakBaseUrl}/realms/mirai/.well-known/openid-configuration")
     .WithEnvironment("GitHub__ClientId", gitHubClientId)
     .WithEnvironment("GitHub__ClientSecret", gitHubClientSecret)
+    .WithEnvironment("GitHubApp__AppId", gitHubAppId)
+    .WithEnvironment("GitHubApp__ClientId", gitHubAppClientId)
+    .WithEnvironment("GitHubApp__PrivateKey", gitHubAppPrivateKey)
+    .WithEnvironment("GitHubApp__WebhookSecret", gitHubAppWebhookSecret)
+    .WithEnvironment("GitHubApp__InstallUrlSlug", gitHubAppInstallUrlSlug)
     .WithExternalHttpEndpoints();
 
 var miraiApiUrl = miraiApi.GetEndpoint("https");
