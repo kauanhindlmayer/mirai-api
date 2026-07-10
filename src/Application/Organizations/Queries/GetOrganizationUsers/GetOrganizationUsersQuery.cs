@@ -1,6 +1,7 @@
 using Application.Abstractions;
+using Application.Abstractions.Authorization;
+using Domain.Authorization;
 using ErrorOr;
-using MediatR;
 
 namespace Application.Organizations.Queries.GetOrganizationUsers;
 
@@ -10,4 +11,9 @@ public sealed record GetOrganizationUsersQuery(
     int PageSize = 10,
     string? Sort = null,
     string? SearchTerm = null,
-    Guid? ExcludeProjectId = null) : IRequest<ErrorOr<PaginatedList<OrganizationUserResponse>>>;
+    Guid? ExcludeProjectId = null) : IAuthorizationRequest<ErrorOr<PaginatedList<OrganizationUserResponse>>>
+{
+    public Permission RequiredPermission => Permission.OrganizationView;
+    public ResourceType ResourceType => ResourceType.Organization;
+    public Guid ResourceId => OrganizationId;
+}

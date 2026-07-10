@@ -33,7 +33,7 @@ internal sealed class GetProjectUsersQueryHandler
         }
 
         var usersQuery = _context.Users
-            .Where(u => u.Projects.Any(p => p.Id == query.ProjectId));
+            .Where(u => u.ProjectMemberships.Any(m => m.ProjectId == query.ProjectId));
 
         if (!string.IsNullOrWhiteSpace(query.SearchTerm))
         {
@@ -53,7 +53,9 @@ internal sealed class GetProjectUsersQueryHandler
                 u.Id,
                 u.FullName,
                 u.Email,
-                u.ImageFileId != null ? $"/api/users/{u.Id}/avatar" : null))
+                u.ImageFileId != null ? $"/api/users/{u.Id}/avatar" : null,
+                u.ProjectMemberships.First(m => m.ProjectId == query.ProjectId).RoleId,
+                u.ProjectMemberships.First(m => m.ProjectId == query.ProjectId).Role.Name))
             .PaginatedListAsync(
                 query.Page,
                 query.PageSize,

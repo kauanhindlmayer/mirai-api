@@ -1,7 +1,9 @@
 using System.Net.Mime;
 using Application.Abstractions;
 using Application.Abstractions.Authentication;
+using Application.Authorization.Queries.GetEffectivePermissions;
 using Application.Organizations.Commands.AddUserToOrganization;
+using Application.Organizations.Commands.ChangeOrganizationMemberRole;
 using Application.Organizations.Commands.CreateOrganization;
 using Application.Organizations.Commands.DeleteOrganization;
 using Application.Organizations.Commands.RemoveUserFromOrganization;
@@ -10,6 +12,7 @@ using Application.Organizations.Queries.GetOrganization;
 using Application.Organizations.Queries.GetOrganizationUsers;
 using Application.Organizations.Queries.ListOrganizations;
 using Asp.Versioning;
+using Domain.Authorization;
 using Infrastructure;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -239,6 +242,47 @@ public sealed class OrganizationsController : ApiController
         return result.Match(
             _ => NoContent(),
             Problem);
+    }
+
+    /// <summary>
+    /// Change an organization member's role.
+    /// </summary>
+    [HttpPut("{organizationId:guid}/users/{userId:guid}/role")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<ActionResult> ChangeOrganizationMemberRole(
+        Guid organizationId,
+        Guid userId,
+        ChangeOrganizationMemberRoleRequest request,
+        CancellationToken cancellationToken)
+    {
+        var command = new ChangeOrganizationMemberRoleCommand(
+            organizationId,
+            userId,
+            request.RoleId);
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        return result.Match(
+            _ => NoContent(),
+            Problem);
+    }
+
+    /// <summary>
+    /// Retrieve the caller's effective permissions within an organization.
+    /// </summary>
+    [HttpGet("{organizationId:guid}/effective-permissions")]
+    [ProducesResponseType(typeof(IReadOnlyList<string>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IReadOnlyList<string>>> GetEffectivePermissions(
+        Guid organizationId,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetEffectivePermissionsQuery(ResourceType.Organization, organizationId);
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(Ok, Problem);
     }
 
     private List<LinkResponse> CreateLinksForOrganization(Guid id)

@@ -1,6 +1,8 @@
 using System.Net.Mime;
 using Application.Abstractions;
+using Application.Authorization.Queries.GetEffectivePermissions;
 using Application.Projects.Commands.AddUserToProject;
+using Application.Projects.Commands.ChangeProjectMemberRole;
 using Application.Projects.Commands.CreateProject;
 using Application.Projects.Commands.RemoveUserFromProject;
 using Application.Projects.Commands.UpdateProject;
@@ -8,6 +10,7 @@ using Application.Projects.Queries.GetProject;
 using Application.Projects.Queries.GetProjectUsers;
 using Application.Projects.Queries.ListProjects;
 using Asp.Versioning;
+using Domain.Authorization;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Constants;
@@ -191,6 +194,47 @@ public sealed class ProjectsController : ApiController
             pageRequest.PageSize,
             pageRequest.Sort,
             pageRequest.SearchTerm);
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(Ok, Problem);
+    }
+
+    /// <summary>
+    /// Change a project member's role.
+    /// </summary>
+    [HttpPut("{projectId:guid}/users/{userId:guid}/role")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<ActionResult> ChangeProjectMemberRole(
+        Guid projectId,
+        Guid userId,
+        ChangeProjectMemberRoleRequest request,
+        CancellationToken cancellationToken)
+    {
+        var command = new ChangeProjectMemberRoleCommand(
+            projectId,
+            userId,
+            request.RoleId);
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        return result.Match(
+            _ => NoContent(),
+            Problem);
+    }
+
+    /// <summary>
+    /// Retrieve the caller's effective permissions within a project.
+    /// </summary>
+    [HttpGet("/api/projects/{projectId:guid}/effective-permissions")]
+    [ProducesResponseType(typeof(IReadOnlyList<string>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IReadOnlyList<string>>> GetEffectivePermissions(
+        Guid projectId,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetEffectivePermissionsQuery(ResourceType.Project, projectId);
 
         var result = await _sender.Send(query, cancellationToken);
 

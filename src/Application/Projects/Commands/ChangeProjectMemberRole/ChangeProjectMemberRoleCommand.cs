@@ -2,11 +2,12 @@ using Application.Abstractions.Authorization;
 using Domain.Authorization;
 using ErrorOr;
 
-namespace Application.Projects.Commands.RemoveUserFromProject;
+namespace Application.Projects.Commands.ChangeProjectMemberRole;
 
-public sealed record RemoveUserFromProjectCommand(
+public sealed record ChangeProjectMemberRoleCommand(
     Guid ProjectId,
-    Guid UserId) : IAuthorizationRequest<ErrorOr<Success>>
+    Guid UserId,
+    Guid RoleId) : IAuthorizationRequest<ErrorOr<Success>>
 {
     public Permission RequiredPermission => Permission.ProjectManageMembers;
     public ResourceType ResourceType => ResourceType.Project;

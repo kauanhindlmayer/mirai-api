@@ -2,11 +2,12 @@ using Application.Abstractions.Authorization;
 using Domain.Authorization;
 using ErrorOr;
 
-namespace Application.Organizations.Commands.RemoveUserFromOrganization;
+namespace Application.Organizations.Commands.ChangeOrganizationMemberRole;
 
-public sealed record RemoveUserFromOrganizationCommand(
+public sealed record ChangeOrganizationMemberRoleCommand(
     Guid OrganizationId,
-    Guid UserId) : IAuthorizationRequest<ErrorOr<Success>>
+    Guid UserId,
+    Guid RoleId) : IAuthorizationRequest<ErrorOr<Success>>
 {
     public Permission RequiredPermission => Permission.OrganizationManageMembers;
     public ResourceType ResourceType => ResourceType.Organization;

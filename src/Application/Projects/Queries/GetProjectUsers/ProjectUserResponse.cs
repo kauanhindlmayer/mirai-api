@@ -4,4 +4,6 @@ public sealed record ProjectUserResponse(
     Guid Id,
     string FullName,
     string Email,
-    string? ImageUrl);
+    string? ImageUrl,
+    Guid RoleId,
+    string RoleName);

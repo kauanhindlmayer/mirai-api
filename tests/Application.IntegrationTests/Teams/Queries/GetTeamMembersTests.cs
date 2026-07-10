@@ -1,5 +1,6 @@
 using Application.IntegrationTests.Infrastructure;
 using Application.Teams.Queries.GetTeamMembers;
+using Domain.Authorization;
 using Domain.Organizations;
 using Domain.Projects;
 using Domain.Teams;
@@ -54,6 +55,7 @@ public class GetTeamMembersTests : BaseIntegrationTest
 
     private async Task<Team> CreateTeamWithMembersAsync(int memberCount)
     {
+        await SeedCurrentUserAsync();
         var organization = new Organization(
             $"Organization {Guid.NewGuid()}",
             "Description");
@@ -76,14 +78,17 @@ public class GetTeamMembersTests : BaseIntegrationTest
                 $"Last{i}",
                 $"member-{Guid.NewGuid()}@mirai.com"))
             .ToList();
+        var teamMemberRole = await GetRoleAsync(SystemRoles.TeamMemberId);
         foreach (var user in users)
         {
             user.SetIdentityId(Guid.NewGuid().ToString());
-            team.AddUser(user);
+            team.AddMember(user, teamMemberRole);
         }
 
         _dbContext.Users.AddRange(users);
         await _dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
+
+        SetCurrentUser(users[0].Id);
 
         return team;
     }

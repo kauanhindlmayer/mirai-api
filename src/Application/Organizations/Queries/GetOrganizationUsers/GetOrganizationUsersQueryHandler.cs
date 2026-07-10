@@ -33,12 +33,12 @@ internal sealed class GetOrganizationUsersQueryHandler
         }
 
         var usersQuery = _context.Users
-            .Where(u => u.Organizations.Any(o => o.Id == query.OrganizationId));
+            .Where(u => u.OrganizationMemberships.Any(m => m.OrganizationId == query.OrganizationId));
 
         if (query.ExcludeProjectId.HasValue)
         {
             usersQuery = usersQuery.Where(u =>
-                !u.Projects.Any(p => p.Id == query.ExcludeProjectId.Value));
+                !u.ProjectMemberships.Any(m => m.ProjectId == query.ExcludeProjectId.Value));
         }
 
         if (!string.IsNullOrWhiteSpace(query.SearchTerm))
@@ -60,7 +60,9 @@ internal sealed class GetOrganizationUsersQueryHandler
                 u.FullName,
                 u.Email,
                 u.ImageFileId != null ? $"/api/users/{u.Id}/avatar" : null,
-                u.LastActiveAtUtc))
+                u.LastActiveAtUtc,
+                u.OrganizationMemberships.First(m => m.OrganizationId == query.OrganizationId).RoleId,
+                u.OrganizationMemberships.First(m => m.OrganizationId == query.OrganizationId).Role.Name))
             .PaginatedListAsync(
                 query.Page,
                 query.PageSize,

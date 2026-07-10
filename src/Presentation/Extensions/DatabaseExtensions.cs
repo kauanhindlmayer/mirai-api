@@ -1,4 +1,5 @@
 using Bogus;
+using Domain.Authorization;
 using Domain.Boards;
 using Domain.Organizations;
 using Domain.Projects;
@@ -309,14 +310,24 @@ public static class DatabaseExtensions
 
         var users = new List<User>();
 
-        foreach (var userData in seedUserData)
+        var organizationOwnerRole = await context.Roles.SingleAsync(r => r.Id == SystemRoles.OrganizationOwnerId);
+        var organizationMemberRole = await context.Roles.SingleAsync(r => r.Id == SystemRoles.OrganizationMemberId);
+        var projectAdminRole = await context.Roles.SingleAsync(r => r.Id == SystemRoles.ProjectAdminId);
+        var projectContributorRole = await context.Roles.SingleAsync(r => r.Id == SystemRoles.ProjectContributorId);
+        var teamAdminRole = await context.Roles.SingleAsync(r => r.Id == SystemRoles.TeamAdminId);
+        var teamMemberRole = await context.Roles.SingleAsync(r => r.Id == SystemRoles.TeamMemberId);
+
+        for (var i = 0; i < seedUserData.Length; i++)
         {
+            var userData = seedUserData[i];
             var user = new User(userData.FirstName, userData.LastName, userData.Email);
             user.SetIdentityId(userData.IdentityId);
             users.Add(user);
-            organization.AddUser(user);
-            project.AddUser(user);
-            team.AddUser(user);
+
+            var isFirstUser = i == 0;
+            organization.AddMember(user, isFirstUser ? organizationOwnerRole : organizationMemberRole);
+            project.AddMember(user, isFirstUser ? projectAdminRole : projectContributorRole);
+            team.AddMember(user, isFirstUser ? teamAdminRole : teamMemberRole);
         }
 
         await context.AddRangeAsync(users);
