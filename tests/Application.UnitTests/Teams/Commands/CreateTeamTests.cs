@@ -24,7 +24,7 @@ public class CreateTeamTests
     public async Task Handle_WhenProjectDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _projectRepository.GetByIdAsync(
+        _projectRepository.GetByIdWithTeamsAsync(
             Command.ProjectId,
             TestContext.Current.CancellationToken)
             .Returns(null as Project);
@@ -45,7 +45,7 @@ public class CreateTeamTests
         // Arrange
         var project = new Project("Name", "Description", Guid.NewGuid());
         project.AddTeam(new Team(project.Id, Command.Name, Command.Description));
-        _projectRepository.GetByIdAsync(
+        _projectRepository.GetByIdWithTeamsAsync(
             Command.ProjectId,
             TestContext.Current.CancellationToken)
             .Returns(project);
@@ -65,7 +65,7 @@ public class CreateTeamTests
     {
         // Arrange
         var project = new Project("Name", "Description", Guid.NewGuid());
-        _projectRepository.GetByIdAsync(
+        _projectRepository.GetByIdWithTeamsAsync(
             Command.ProjectId,
             TestContext.Current.CancellationToken)
             .Returns(project);

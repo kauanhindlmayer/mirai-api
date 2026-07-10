@@ -1,5 +1,9 @@
+using Application.Abstractions.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Testcontainers.Keycloak;
 using Testcontainers.PostgreSql;
 using Testcontainers.Redis;
@@ -43,7 +47,7 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder.UseSetting("ConnectionStrings:mirai-db", _dbContainer.GetConnectionString());
+        builder.UseSetting("ConnectionStrings:mirai-db", $"{_dbContainer.GetConnectionString()};Include Error Detail=true");
         builder.UseSetting("ConnectionStrings:redis", _redisContainer.GetConnectionString());
 
         var keycloakAddress = _keycloakContainer.GetBaseAddress();
@@ -51,5 +55,10 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
         builder.UseSetting("Keycloak:TokenUrl", $"{keycloakAddress}realms/mirai/protocol/openid-connect/token");
         builder.UseSetting("Authentication:ValidIssuer", $"{keycloakAddress}realms/mirai/");
         builder.UseSetting("Authentication:MetadataAddress", $"{keycloakAddress}realms/mirai/.well-known/openid-configuration");
+
+        // Tests call handlers directly through ISender.Send with no HTTP pipeline, so the
+        // real IUserContext (which reads the current request's claims) would always throw.
+        builder.ConfigureTestServices(services =>
+            services.Replace(ServiceDescriptor.Scoped<IUserContext, TestUserContext>()));
     }
 }

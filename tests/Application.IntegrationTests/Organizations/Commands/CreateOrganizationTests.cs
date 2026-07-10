@@ -1,6 +1,7 @@
 using Application.IntegrationTests.Infrastructure;
 using Application.Organizations.Commands.CreateOrganization;
 using Domain.Organizations;
+using Domain.Users;
 using FluentAssertions;
 
 namespace Application.IntegrationTests.Organizations.Commands;
@@ -16,6 +17,7 @@ public class CreateOrganizationTests : BaseIntegrationTest
     public async Task CreateOrganization_WhenValidCommand_ShouldCreateOrganization()
     {
         // Arrange
+        await SeedCurrentUserAsync();
         var command = new CreateOrganizationCommand(
             "Test Organization",
             "Test Description");
@@ -34,6 +36,7 @@ public class CreateOrganizationTests : BaseIntegrationTest
     public async Task CreateOrganization_WhenOrganizationExists_ShouldReturnError()
     {
         // Arrange
+        await SeedCurrentUserAsync();
         var command = new CreateOrganizationCommand(
             "Test Organization 2",
             "Test Description 2");

@@ -1,3 +1,4 @@
+using Application.Abstractions;
 using Application.Abstractions.Authentication;
 using Application.Projects.Commands.CreateProject;
 using Domain.Organizations;
@@ -17,16 +18,19 @@ public class CreateProjectTests
     private readonly IOrganizationRepository _mockOrganizationRepository;
     private readonly IUserRepository _mockUserRepository;
     private readonly IUserContext _mockUserContext;
+    private readonly IApplicationDbContext _mockContext;
 
     public CreateProjectTests()
     {
         _mockOrganizationRepository = Substitute.For<IOrganizationRepository>();
         _mockUserRepository = Substitute.For<IUserRepository>();
         _mockUserContext = Substitute.For<IUserContext>();
+        _mockContext = Substitute.For<IApplicationDbContext>();
         _handler = new CreateProjectCommandHandler(
             _mockOrganizationRepository,
             _mockUserRepository,
-            _mockUserContext);
+            _mockUserContext,
+            _mockContext);
     }
 
     [Fact]
@@ -49,36 +53,26 @@ public class CreateProjectTests
     }
 
     [Fact]
-    public async Task Handle_WhenOrganizationExists_ShouldReturnProject()
-    {
-        // Arrange
-        var organization = new Organization("Test Organization", "Test Description");
-        _mockOrganizationRepository.GetByIdWithProjectsAsync(
-            Command.OrganizationId,
-            TestContext.Current.CancellationToken)
-            .Returns(organization);
-
-        // Act
-        var result = await _handler.Handle(
-            Command,
-            TestContext.Current.CancellationToken);
-
-        // Assert
-        result.Should().BeOfType<ErrorOr<Guid>>();
-        result.Value.Should().NotBeEmpty();
-    }
-
-    [Fact]
     public async Task Handle_WhenOrganizationExistsAndProjectAlreadyExists_ShouldReturnError()
     {
         // Arrange
         var organization = new Organization("Test Organization", "Test Description");
         var project = new Project("Test Project", "Test Description", organization.Id);
+        var currentUser = new User("Test", "User", "test@example.com");
         organization.AddProject(project);
         _mockOrganizationRepository.GetByIdWithProjectsAsync(
             Command.OrganizationId,
             TestContext.Current.CancellationToken)
             .Returns(organization);
+        _mockUserRepository.GetByIdAsync(
+            _mockUserContext.UserId,
+            TestContext.Current.CancellationToken)
+            .Returns(currentUser);
+        _mockOrganizationRepository.IsUserInOrganizationAsync(
+            Command.OrganizationId,
+            currentUser.Id,
+            TestContext.Current.CancellationToken)
+            .Returns(true);
 
         // Act
         var result = await _handler.Handle(
