@@ -1,5 +1,6 @@
 using Application.Abstractions;
 using Application.Abstractions.Authentication;
+using Application.Abstractions.Authorization;
 using Application.Abstractions.Caching;
 using Application.Abstractions.Email;
 using Application.Abstractions.GitHub;
@@ -57,7 +58,7 @@ public static class DependencyInjection
         services
             .AddHttpContextAccessor()
             .AddServices(configuration)
-            .AddAuthorization()
+            .AddAuthorization(configuration)
             .AddAuthentication(configuration)
             .AddGitHubApp(configuration)
             .AddPersistence(configuration)
@@ -127,11 +128,14 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IServiceCollection AddAuthorization(this IServiceCollection services)
+    private static IServiceCollection AddAuthorization(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
         services.AddScoped<AuthorizationService>();
         services.AddTransient<IClaimsTransformation, CustomClaimsTransformation>();
         services.AddScoped<IUserContext, UserContext>();
+        services.AddScoped<IPermissionService, PermissionService>();
 
         return services;
     }

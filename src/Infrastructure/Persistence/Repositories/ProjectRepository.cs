@@ -16,7 +16,8 @@ internal sealed class ProjectRepository : Repository<Project>, IProjectRepositor
     {
         return _dbContext.Projects
             .Include(p => p.Organization)
-            .Include(p => p.Users)
+            .Include(p => p.Members)
+                .ThenInclude(m => m.User)
             .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
     }
 
@@ -25,7 +26,8 @@ internal sealed class ProjectRepository : Repository<Project>, IProjectRepositor
         CancellationToken cancellationToken = default)
     {
         return _dbContext.Projects
-            .Include(p => p.Users)
+            .Include(p => p.Members)
+                .ThenInclude(m => m.User)
             .Include(p => p.Teams)
             .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
     }

@@ -1,5 +1,4 @@
 using Domain.Projects;
-using Domain.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -36,25 +35,10 @@ internal sealed class ProjectConfigurations : IEntityTypeConfiguration<Project>
             .WithOne(t => t.Project)
             .HasForeignKey(t => t.ProjectId);
 
-        builder.HasMany(p => p.Users)
-            .WithMany(u => u.Projects)
-            .UsingEntity<Dictionary<string, object>>(
-                "project_users",
-                j => j.HasOne<User>()
-                    .WithMany()
-                    .HasForeignKey("user_id")
-                    .OnDelete(DeleteBehavior.Cascade),
-                j => j.HasOne<Project>()
-                    .WithMany()
-                    .HasForeignKey("project_id")
-                    .OnDelete(DeleteBehavior.Cascade),
-                j =>
-                {
-                    j.HasKey("project_id", "user_id");
-                    j.ToTable("project_users");
-                    j.HasIndex("user_id");
-                    j.HasIndex("project_id");
-                });
+        builder.HasMany(p => p.Members)
+            .WithOne()
+            .HasForeignKey(m => m.ProjectId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasMany(p => p.Tags)
             .WithOne(t => t.Project)

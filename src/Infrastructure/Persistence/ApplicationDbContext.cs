@@ -1,4 +1,5 @@
 using Application.Abstractions;
+using Domain.Authorization;
 using Domain.Boards;
 using Domain.Organizations;
 using Domain.Personas;
@@ -60,6 +61,8 @@ public sealed class ApplicationDbContext(
     public DbSet<Sprint> Sprints { get; init; }
 
     public DbSet<Persona> Personas { get; init; }
+
+    public DbSet<Role> Roles { get; init; }
 
     public async override Task<int> SaveChangesAsync(
         CancellationToken cancellationToken = default)

@@ -26,7 +26,8 @@ internal sealed class OrganizationRepository : Repository<Organization>,
     {
         return await _dbContext.Organizations
             .Include(o => o.Projects)
-            .Include(o => o.Users)
+            .Include(o => o.Members)
+                .ThenInclude(m => m.User)
             .FirstOrDefaultAsync(o => o.Id == id, cancellationToken);
     }
 
@@ -47,6 +48,6 @@ internal sealed class OrganizationRepository : Repository<Organization>,
         return _dbContext.Organizations
             .AsNoTracking()
             .Where(o => o.Id == organizationId)
-            .AnyAsync(o => o.Users.Any(u => u.Id == userId), cancellationToken);
+            .AnyAsync(o => o.Members.Any(m => m.UserId == userId), cancellationToken);
     }
 }
