@@ -1,7 +1,7 @@
+using Application.Abstractions.Authorization;
 using Application.IntegrationTests.Infrastructure;
 using Application.Organizations.Commands.CreateOrganization;
 using Application.Organizations.Commands.DeleteOrganization;
-using Domain.Organizations;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,7 +15,7 @@ public class DeleteOrganizationTests : BaseIntegrationTest
     }
 
     [Fact]
-    public async Task DeleteOrganization_WhenOrganizationDoesNotExist_ShouldReturnError()
+    public async Task DeleteOrganization_WhenOrganizationDoesNotExist_ShouldReturnForbidden()
     {
         // Arrange
         var command = new DeleteOrganizationCommand(Guid.NewGuid());
@@ -25,14 +25,14 @@ public class DeleteOrganizationTests : BaseIntegrationTest
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.Errors.Should().HaveCount(1);
-        result.FirstError.Should().Be(OrganizationErrors.NotFound);
+        result.FirstError.Should().Be(AuthorizationErrors.Forbidden);
     }
 
     [Fact]
     public async Task DeleteOrganization_WhenValidCommand_ShouldDeleteOrganization()
     {
         // Arrange
+        await SeedCurrentUserAsync();
         var createCommand = new CreateOrganizationCommand(
             "Test Organization 3",
             "Test Description");

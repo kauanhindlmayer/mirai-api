@@ -5,6 +5,7 @@ using Aspire.Hosting;
 using Aspire.Hosting.Postgres;
 using Aspire.Hosting.Redis;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Presentation.Controllers.Users;
 using Presentation.FunctionalTests.Infrastructure;
 using Presentation.FunctionalTests.Users;
 
@@ -19,12 +20,21 @@ public sealed class DistributedApplicationTestFixture : IAsyncLifetime
     private DistributedApplication? _app;
     private HttpClient? _httpClient;
     private HttpClient? _unauthenticatedHttpClient;
+    private HttpClient? _secondaryHttpClient;
 
     public HttpClient HttpClient => _httpClient
         ?? throw new InvalidOperationException("HttpClient is not initialized.");
 
     public HttpClient UnauthenticatedHttpClient => _unauthenticatedHttpClient
         ?? throw new InvalidOperationException("UnauthenticatedHttpClient is not initialized.");
+
+    /// <summary>
+    /// Authenticated as <see cref="UserRequestFactory.SecondaryEmail"/>, a seeded user who only
+    /// holds Member/Contributor roles - used to verify that authorization enforcement denies
+    /// actions a caller does not have permission for.
+    /// </summary>
+    public HttpClient SecondaryHttpClient => _secondaryHttpClient
+        ?? throw new InvalidOperationException("SecondaryHttpClient is not initialized.");
 
     public async ValueTask InitializeAsync()
     {
@@ -51,9 +61,15 @@ public sealed class DistributedApplicationTestFixture : IAsyncLifetime
 
         _httpClient = _app.CreateHttpClient(ApiResourceName, "https");
         _unauthenticatedHttpClient = _app.CreateHttpClient(ApiResourceName, "https");
+        _secondaryHttpClient = _app.CreateHttpClient(ApiResourceName, "https");
 
-        var accessToken = await GetAccessToken();
-        SetAuthorizationHeader(accessToken);
+        var accessToken = await GetAccessToken(_httpClient, UserRequestFactory.CreateLoginUserRequest());
+        SetAuthorizationHeader(_httpClient, accessToken);
+
+        var secondaryAccessToken = await GetAccessToken(
+            _secondaryHttpClient,
+            UserRequestFactory.CreateLoginUserRequest(email: UserRequestFactory.SecondaryEmail));
+        SetAuthorizationHeader(_secondaryHttpClient, secondaryAccessToken);
     }
 
     public async ValueTask DisposeAsync()
@@ -65,22 +81,21 @@ public sealed class DistributedApplicationTestFixture : IAsyncLifetime
 
         _httpClient?.Dispose();
         _unauthenticatedHttpClient?.Dispose();
+        _secondaryHttpClient?.Dispose();
     }
 
-    private async Task<string> GetAccessToken()
+    private static async Task<string> GetAccessToken(HttpClient httpClient, LoginUserRequest request)
     {
-        var loginResponse = await _httpClient!.PostAsJsonAsync(
-            Routes.Users.Login,
-            UserRequestFactory.CreateLoginUserRequest());
+        var loginResponse = await httpClient.PostAsJsonAsync(Routes.Users.Login, request);
 
         var tokenResponse = await loginResponse.Content.ReadFromJsonAsync<AccessTokenResponse>();
 
         return tokenResponse!.AccessToken;
     }
 
-    private void SetAuthorizationHeader(string accessToken)
+    private static void SetAuthorizationHeader(HttpClient httpClient, string accessToken)
     {
-        _httpClient!.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
             JwtBearerDefaults.AuthenticationScheme,
             accessToken);
     }

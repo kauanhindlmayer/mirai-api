@@ -28,7 +28,7 @@ public class DeleteOrganizationTests(DistributedApplicationTestFixture fixture)
     }
 
     [Fact]
-    public async Task DeleteOrganization_WhenOrganizationDoesNotExist_ShouldReturnNotFound()
+    public async Task DeleteOrganization_WhenOrganizationDoesNotExist_ShouldReturnForbidden()
     {
         // Arrange
         var organizationId = Guid.NewGuid();
@@ -39,6 +39,6 @@ public class DeleteOrganizationTests(DistributedApplicationTestFixture fixture)
             TestContext.Current.CancellationToken);
 
         // Assert
-        deleteOrganizationResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        deleteOrganizationResponse.StatusCode.Should().Be(HttpStatusCode.Forbidden);
     }
 }

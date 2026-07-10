@@ -9,6 +9,12 @@ public static class UserRequestFactory
     public const string FirstName = "John";
     public const string LastName = "Doe";
 
+    /// <summary>
+    /// A seeded user who is a Member/Contributor (not Owner/Admin) of the default seeded
+    /// organization, project, and team - used to exercise authorization-denied paths.
+    /// </summary>
+    public const string SecondaryEmail = "jane.smith@mirai.com";
+
     public static LoginUserRequest CreateLoginUserRequest(
         string? email = null,
         string? password = null)

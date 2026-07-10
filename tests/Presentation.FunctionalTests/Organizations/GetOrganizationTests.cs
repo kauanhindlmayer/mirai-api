@@ -35,7 +35,7 @@ public class GetOrganizationTests(DistributedApplicationTestFixture fixture)
     }
 
     [Fact]
-    public async Task GetOrganization_WhenOrganizationDoesNotExist_ShouldReturnNotFound()
+    public async Task GetOrganization_WhenOrganizationDoesNotExist_ShouldReturnForbidden()
     {
         // Arrange
         var organizationId = Guid.NewGuid();
@@ -46,6 +46,6 @@ public class GetOrganizationTests(DistributedApplicationTestFixture fixture)
             TestContext.Current.CancellationToken);
 
         // Assert
-        getOrganizationResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        getOrganizationResponse.StatusCode.Should().Be(HttpStatusCode.Forbidden);
     }
 }

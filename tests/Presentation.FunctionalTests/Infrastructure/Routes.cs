@@ -9,6 +9,7 @@ public static class Routes
         public static string Get(Guid organizationId) => $"{Base}/{organizationId}";
         public static string Update(Guid organizationId) => $"{Base}/{organizationId}";
         public static string Delete(Guid organizationId) => $"{Base}/{organizationId}";
+        public static string AddUser(Guid organizationId) => $"{Base}/{organizationId}/users";
         private const string Base = "/api/organizations";
     }
 
