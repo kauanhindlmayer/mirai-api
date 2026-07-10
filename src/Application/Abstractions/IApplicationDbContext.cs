@@ -1,3 +1,4 @@
+using Domain.Authorization;
 using Domain.Boards;
 using Domain.Organizations;
 using Domain.Personas;
@@ -31,5 +32,6 @@ public interface IApplicationDbContext
     DbSet<WorkItem> WorkItems { get; }
     DbSet<Sprint> Sprints { get; }
     DbSet<Persona> Personas { get; }
+    DbSet<Role> Roles { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
