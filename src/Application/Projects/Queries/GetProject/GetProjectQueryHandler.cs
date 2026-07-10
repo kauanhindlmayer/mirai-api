@@ -1,5 +1,4 @@
 using Application.Abstractions;
-using Application.Abstractions.Authentication;
 using Domain.Projects;
 using ErrorOr;
 using MediatR;
@@ -11,14 +10,10 @@ internal sealed class GetProjectQueryHandler
     : IRequestHandler<GetProjectQuery, ErrorOr<ProjectResponse>>
 {
     private readonly IApplicationDbContext _context;
-    private readonly IUserContext _userContext;
 
-    public GetProjectQueryHandler(
-        IApplicationDbContext context,
-        IUserContext userContext)
+    public GetProjectQueryHandler(IApplicationDbContext context)
     {
         _context = context;
-        _userContext = userContext;
     }
 
     public async Task<ErrorOr<ProjectResponse>> Handle(
@@ -27,8 +22,7 @@ internal sealed class GetProjectQueryHandler
     {
         var project = await _context.Projects
             .AsNoTracking()
-            .Where(p => p.Id == query.ProjectId
-                        && p.Users.Any(u => u.Id == _userContext.UserId))
+            .Where(p => p.Id == query.ProjectId)
             .Select(ProjectQueries.ProjectToDto())
             .FirstOrDefaultAsync(cancellationToken);
 
