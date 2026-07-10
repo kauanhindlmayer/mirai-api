@@ -1,3 +1,4 @@
+using Domain.Authorization;
 using Domain.Boards;
 using Domain.Projects;
 using Domain.Retrospectives;
@@ -18,7 +19,7 @@ public sealed class Team : AggregateRoot
     public string? Description { get; private set; }
     public bool IsDefault { get; private set; }
     public Board Board { get; private set; } = null!;
-    public ICollection<User> Users { get; private set; } = [];
+    public ICollection<TeamMember> Members { get; private set; } = [];
     public ICollection<Retrospective> Retrospectives { get; private set; } = [];
     public ICollection<Sprint> Sprints { get; private set; } = [];
     public ICollection<WorkItem> WorkItems { get; private set; } = [];
@@ -36,22 +37,49 @@ public sealed class Team : AggregateRoot
     {
     }
 
-    public ErrorOr<Success> AddUser(User user)
+    public ErrorOr<Success> AddMember(User user, Role role)
     {
-        if (Users.Contains(user))
+        if (role.Scope != RoleScope.Team)
+        {
+            return RoleErrors.ScopeMismatch;
+        }
+
+        if (Members.Any(m => m.UserId == user.Id))
         {
             return TeamErrors.UserAlreadyExists;
         }
 
-        Users.Add(user);
+        Members.Add(new TeamMember(Id, user, role));
         RaiseDomainEvent(new UserAddedToTeamDomainEvent(this, user));
+        return Result.Success;
+    }
+
+    public ErrorOr<Success> ChangeMemberRole(Guid userId, Role newRole)
+    {
+        if (newRole.Scope != RoleScope.Team)
+        {
+            return RoleErrors.ScopeMismatch;
+        }
+
+        var member = Members.FirstOrDefault(m => m.UserId == userId);
+        if (member is null)
+        {
+            return TeamErrors.UserNotFound;
+        }
+
+        if (newRole.Id != SystemRoles.TeamAdminId && IsLastAdmin(userId))
+        {
+            return TeamErrors.CannotRemoveLastAdmin;
+        }
+
+        member.ChangeRole(newRole);
         return Result.Success;
     }
 
     public ErrorOr<Success> RemoveUser(Guid userId)
     {
-        var user = Users.FirstOrDefault(u => u.Id == userId);
-        if (user is null)
+        var member = Members.FirstOrDefault(m => m.UserId == userId);
+        if (member is null)
         {
             return TeamErrors.UserNotFound;
         }
@@ -61,8 +89,13 @@ public sealed class Team : AggregateRoot
             return TeamErrors.UserHasAssignedWorkItems;
         }
 
-        Users.Remove(user);
-        RaiseDomainEvent(new UserRemovedFromTeamDomainEvent(this, user));
+        if (IsLastAdmin(userId))
+        {
+            return TeamErrors.CannotRemoveLastAdmin;
+        }
+
+        Members.Remove(member);
+        RaiseDomainEvent(new UserRemovedFromTeamDomainEvent(this, member.User));
         return Result.Success;
     }
 
@@ -107,5 +140,16 @@ public sealed class Team : AggregateRoot
     public void UnsetAsDefault()
     {
         IsDefault = false;
+    }
+
+    private bool IsLastAdmin(Guid userId)
+    {
+        var member = Members.FirstOrDefault(m => m.UserId == userId);
+        if (member is null || member.RoleId != SystemRoles.TeamAdminId)
+        {
+            return false;
+        }
+
+        return Members.Count(m => m.RoleId == SystemRoles.TeamAdminId) == 1;
     }
 }

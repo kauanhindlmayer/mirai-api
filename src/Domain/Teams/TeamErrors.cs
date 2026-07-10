@@ -23,4 +23,8 @@ public static class TeamErrors
     public static readonly Error BoardAlreadyExists = Error.Conflict(
         code: "Team.BoardAlreadyExists",
         description: "A board already exists for this team.");
+
+    public static Error CannotRemoveLastAdmin => Error.Conflict(
+        code: "Team.CannotRemoveLastAdmin",
+        description: "Cannot remove or demote the last remaining Admin of this team.");
 }

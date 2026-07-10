@@ -1,3 +1,4 @@
+using Domain.Authorization;
 using Domain.Retrospectives;
 using Domain.Sprints;
 using Domain.Teams;
@@ -37,15 +38,15 @@ public class TeamTests : BaseTest
     }
 
     [Fact]
-    public void AddUser_WhenUserAlreadyExists_ShouldReturnError()
+    public void AddMember_WhenUserAlreadyExists_ShouldReturnError()
     {
         // Arrange
         var team = TeamFactory.Create();
         var user = UserFactory.Create();
-        team.AddUser(user);
+        team.AddMember(user, SystemRoles.TeamMember);
 
         // Act
-        var result = team.AddUser(user);
+        var result = team.AddMember(user, SystemRoles.TeamMember);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -54,18 +55,49 @@ public class TeamTests : BaseTest
     }
 
     [Fact]
-    public void AddUser_WhenUserDoesNotExist_ShouldAddUser()
+    public void AddMember_WhenUserDoesNotExist_ShouldAddMember()
     {
         // Arrange
         var team = TeamFactory.Create();
         var user = UserFactory.Create();
 
         // Act
-        var result = team.AddUser(user);
+        var result = team.AddMember(user, SystemRoles.TeamMember);
 
         // Assert
         result.IsError.Should().BeFalse();
-        team.Users.Should().Contain(user);
+        team.Members.Should().Contain(m => m.UserId == user.Id);
+    }
+
+    [Fact]
+    public void AddMember_WhenRoleScopeDoesNotMatch_ShouldReturnError()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+        var user = UserFactory.Create();
+
+        // Act
+        var result = team.AddMember(user, SystemRoles.ProjectContributor);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().BeEquivalentTo(RoleErrors.ScopeMismatch);
+    }
+
+    [Fact]
+    public void ChangeMemberRole_WhenDemotingLastAdmin_ShouldReturnError()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+        var admin = UserFactory.Create();
+        team.AddMember(admin, SystemRoles.TeamAdmin);
+
+        // Act
+        var result = team.ChangeMemberRole(admin.Id, SystemRoles.TeamMember);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().BeEquivalentTo(TeamErrors.CannotRemoveLastAdmin);
     }
 
     [Fact]
@@ -92,7 +124,7 @@ public class TeamTests : BaseTest
         var user = UserFactory.Create();
         var workItem = WorkItemFactory.Create(assignedTeamId: team.Id);
         workItem.UpdateAssignment(user.Id);
-        team.AddUser(user);
+        team.AddMember(user, SystemRoles.TeamMember);
         team.WorkItems.Add(workItem);
 
         // Act
@@ -109,15 +141,33 @@ public class TeamTests : BaseTest
     {
         // Arrange
         var team = TeamFactory.Create();
-        var user = UserFactory.Create();
-        team.AddUser(user);
+        var admin = UserFactory.Create();
+        var user = UserFactory.Create(email: "member@example.com");
+        team.AddMember(admin, SystemRoles.TeamAdmin);
+        team.AddMember(user, SystemRoles.TeamMember);
 
         // Act
         var result = team.RemoveUser(user.Id);
 
         // Assert
         result.IsError.Should().BeFalse();
-        team.Users.Should().NotContain(user);
+        team.Members.Should().NotContain(m => m.UserId == user.Id);
+    }
+
+    [Fact]
+    public void RemoveUser_WhenRemovingLastAdmin_ShouldReturnError()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+        var admin = UserFactory.Create();
+        team.AddMember(admin, SystemRoles.TeamAdmin);
+
+        // Act
+        var result = team.RemoveUser(admin.Id);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().BeEquivalentTo(TeamErrors.CannotRemoveLastAdmin);
     }
 
     [Fact]

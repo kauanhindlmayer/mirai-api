@@ -22,9 +22,9 @@ public sealed class User : Entity
     public string? PasswordResetToken { get; private set; }
     public DateTime? PasswordResetTokenExpiresAtUtc { get; private set; }
     public ICollection<WorkItem> WorkItems { get; private set; } = [];
-    public ICollection<Organization> Organizations { get; private set; } = [];
-    public ICollection<Project> Projects { get; private set; } = [];
-    public ICollection<Team> Teams { get; private set; } = [];
+    public ICollection<OrganizationMember> OrganizationMemberships { get; private set; } = [];
+    public ICollection<ProjectMember> ProjectMemberships { get; private set; } = [];
+    public ICollection<TeamMember> TeamMemberships { get; private set; } = [];
 
     public User(string firstName, string lastName, string email)
     {

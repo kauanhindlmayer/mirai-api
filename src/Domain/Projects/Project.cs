@@ -1,3 +1,4 @@
+using Domain.Authorization;
 using Domain.Boards;
 using Domain.Organizations;
 using Domain.Personas;
@@ -23,7 +24,7 @@ public sealed class Project : AggregateRoot
     public ICollection<Team> Teams { get; private set; } = [];
     public ICollection<Tag> Tags { get; private set; } = [];
     public ICollection<Persona> Personas { get; private set; } = [];
-    public ICollection<User> Users { get; private set; } = [];
+    public ICollection<ProjectMember> Members { get; private set; } = [];
     public GitHubRepositoryConnection? GitHubRepositoryConnection { get; private set; }
 
     public Project(string name, string description, Guid organizationId)
@@ -44,22 +45,49 @@ public sealed class Project : AggregateRoot
         Description = description;
     }
 
-    public ErrorOr<Success> AddUser(User user)
+    public ErrorOr<Success> AddMember(User user, Role role)
     {
-        if (Users.Any(u => u.Id == user.Id))
+        if (role.Scope != RoleScope.Project)
+        {
+            return RoleErrors.ScopeMismatch;
+        }
+
+        if (Members.Any(m => m.UserId == user.Id))
         {
             return ProjectErrors.UserAlreadyExists;
         }
 
-        Users.Add(user);
+        Members.Add(new ProjectMember(Id, user, role));
         RaiseDomainEvent(new UserAddedToProjectDomainEvent(this, user));
+        return Result.Success;
+    }
+
+    public ErrorOr<Success> ChangeMemberRole(Guid userId, Role newRole)
+    {
+        if (newRole.Scope != RoleScope.Project)
+        {
+            return RoleErrors.ScopeMismatch;
+        }
+
+        var member = Members.FirstOrDefault(m => m.UserId == userId);
+        if (member is null)
+        {
+            return UserErrors.NotFound;
+        }
+
+        if (newRole.Id != SystemRoles.ProjectAdminId && IsLastAdmin(userId))
+        {
+            return ProjectErrors.CannotRemoveLastAdmin;
+        }
+
+        member.ChangeRole(newRole);
         return Result.Success;
     }
 
     public ErrorOr<Success> RemoveUser(Guid userId)
     {
-        var user = Users.FirstOrDefault(u => u.Id == userId);
-        if (user is null)
+        var member = Members.FirstOrDefault(m => m.UserId == userId);
+        if (member is null)
         {
             return UserErrors.NotFound;
         }
@@ -69,13 +97,18 @@ public sealed class Project : AggregateRoot
             return ProjectErrors.UserHasAssignedWorkItems;
         }
 
-        if (Teams.Any(t => t.Users.Any(m => m.Id == userId)))
+        if (Teams.Any(t => t.Members.Any(m => m.UserId == userId)))
         {
             return ProjectErrors.UserIsInTeams;
         }
 
-        Users.Remove(user);
-        RaiseDomainEvent(new UserRemovedFromProjectDomainEvent(this, user));
+        if (IsLastAdmin(userId))
+        {
+            return ProjectErrors.CannotRemoveLastAdmin;
+        }
+
+        Members.Remove(member);
+        RaiseDomainEvent(new UserRemovedFromProjectDomainEvent(this, member.User));
         return Result.Success;
     }
 
@@ -268,6 +301,17 @@ public sealed class Project : AggregateRoot
 
         GitHubRepositoryConnection = null;
         return Result.Success;
+    }
+
+    private bool IsLastAdmin(Guid userId)
+    {
+        var member = Members.FirstOrDefault(m => m.UserId == userId);
+        if (member is null || member.RoleId != SystemRoles.ProjectAdminId)
+        {
+            return false;
+        }
+
+        return Members.Count(m => m.RoleId == SystemRoles.ProjectAdminId) == 1;
     }
 
     private IEnumerable<WikiPage> RootWikiPages =>

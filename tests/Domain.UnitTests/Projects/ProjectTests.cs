@@ -1,3 +1,4 @@
+using Domain.Authorization;
 using Domain.Personas;
 using Domain.Projects;
 using Domain.Projects.Events;
@@ -248,75 +249,64 @@ public class ProjectTests : BaseTest
     }
 
     [Fact]
-    public void AddUser_WhenUserNotInOrganization_ShouldReturnError()
+    public void AddMember_WhenRoleScopeDoesNotMatch_ShouldReturnError()
     {
         // Arrange
         var project = ProjectFactory.Create();
         var user = UserFactory.Create();
-        var organization = OrganizationFactory.Create();
-        project.SetOrganization(organization);
 
         // Act
-        var result = project.AddUser(user);
+        var result = project.AddMember(user, SystemRoles.OrganizationMember);
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Should().BeEquivalentTo(ProjectErrors.UserNotInOrganization);
-        project.Users.Should().BeEmpty();
+        result.FirstError.Should().BeEquivalentTo(RoleErrors.ScopeMismatch);
+        project.Members.Should().BeEmpty();
     }
 
     [Fact]
-    public void AddUser_WhenUserAlreadyInProject_ShouldReturnError()
+    public void AddMember_WhenUserAlreadyInProject_ShouldReturnError()
     {
         // Arrange
         var project = ProjectFactory.Create();
         var user = UserFactory.Create();
-        var organization = OrganizationFactory.Create();
-        project.SetOrganization(organization);
-        project.Organization.AddUser(user);
-        project.AddUser(user);
+        project.AddMember(user, SystemRoles.ProjectAdmin);
 
         // Act
-        var result = project.AddUser(user);
+        var result = project.AddMember(user, SystemRoles.ProjectContributor);
 
         // Assert
         result.IsError.Should().BeTrue();
         result.FirstError.Should().BeEquivalentTo(ProjectErrors.UserAlreadyExists);
-        project.Users.Should().HaveCount(1);
+        project.Members.Should().HaveCount(1);
     }
 
     [Fact]
-    public void AddUser_WhenUserInOrganizationAndNotInProject_ShouldAddUser()
+    public void AddMember_WhenUserNotInProject_ShouldAddMember()
     {
         // Arrange
         var project = ProjectFactory.Create();
         var user = UserFactory.Create();
-        var organization = OrganizationFactory.Create();
-        project.SetOrganization(organization);
-        project.Organization.AddUser(user);
 
         // Act
-        var result = project.AddUser(user);
+        var result = project.AddMember(user, SystemRoles.ProjectContributor);
 
         // Assert
         result.IsError.Should().BeFalse();
-        project.Users.Should().HaveCount(1);
-        project.Users.Should().Contain(user);
+        project.Members.Should().HaveCount(1);
+        project.Members.First().UserId.Should().Be(user.Id);
     }
 
     [Fact]
-    public void AddUser_WhenUserAdded_ShouldRaiseUserAddedToProjectDomainEvent()
+    public void AddMember_WhenUserAdded_ShouldRaiseUserAddedToProjectDomainEvent()
     {
         // Arrange
         var project = ProjectFactory.Create();
         var user = UserFactory.Create();
-        var organization = OrganizationFactory.Create();
-        project.SetOrganization(organization);
-        project.Organization.AddUser(user);
         project.ClearDomainEvents();
 
         // Act
-        var result = project.AddUser(user);
+        var result = project.AddMember(user, SystemRoles.ProjectContributor);
 
         // Assert
         result.IsError.Should().BeFalse();
@@ -326,13 +316,27 @@ public class ProjectTests : BaseTest
     }
 
     [Fact]
+    public void ChangeMemberRole_WhenDemotingLastAdmin_ShouldReturnError()
+    {
+        // Arrange
+        var project = ProjectFactory.Create();
+        var admin = UserFactory.Create();
+        project.AddMember(admin, SystemRoles.ProjectAdmin);
+
+        // Act
+        var result = project.ChangeMemberRole(admin.Id, SystemRoles.ProjectContributor);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().BeEquivalentTo(ProjectErrors.CannotRemoveLastAdmin);
+    }
+
+    [Fact]
     public void RemoveUser_WhenUserNotInProject_ShouldReturnError()
     {
         // Arrange
         var project = ProjectFactory.Create();
         var userId = Guid.NewGuid();
-        var organization = OrganizationFactory.Create();
-        project.SetOrganization(organization);
 
         // Act
         var result = project.RemoveUser(userId);
@@ -347,14 +351,13 @@ public class ProjectTests : BaseTest
     {
         // Arrange
         var project = ProjectFactory.Create();
-        var user = UserFactory.Create();
+        var admin = UserFactory.Create();
+        var user = UserFactory.Create(email: "member@example.com");
         var team = TeamFactory.Create(project.Id);
-        var organization = OrganizationFactory.Create();
-        project.SetOrganization(organization);
-        project.Organization.AddUser(user);
-        project.AddUser(user);
+        project.AddMember(admin, SystemRoles.ProjectAdmin);
+        project.AddMember(user, SystemRoles.ProjectContributor);
         project.AddTeam(team);
-        team.AddUser(user);
+        team.AddMember(user, SystemRoles.TeamMember);
 
         // Act
         var result = project.RemoveUser(user.Id);
@@ -362,7 +365,7 @@ public class ProjectTests : BaseTest
         // Assert
         result.IsError.Should().BeTrue();
         result.FirstError.Should().BeEquivalentTo(ProjectErrors.UserIsInTeams);
-        project.Users.Should().Contain(user);
+        project.Members.Should().Contain(m => m.UserId == user.Id);
     }
 
     [Fact]
@@ -370,18 +373,17 @@ public class ProjectTests : BaseTest
     {
         // Arrange
         var project = ProjectFactory.Create();
-        var user = UserFactory.Create();
-        var organization = OrganizationFactory.Create();
-        project.SetOrganization(organization);
-        project.Organization.AddUser(user);
-        project.AddUser(user);
+        var admin = UserFactory.Create();
+        var user = UserFactory.Create(email: "member@example.com");
+        project.AddMember(admin, SystemRoles.ProjectAdmin);
+        project.AddMember(user, SystemRoles.ProjectContributor);
 
         // Act
         var result = project.RemoveUser(user.Id);
 
         // Assert
         result.IsError.Should().BeFalse();
-        project.Users.Should().NotContain(user);
+        project.Members.Should().NotContain(m => m.UserId == user.Id);
     }
 
     [Fact]
@@ -389,11 +391,10 @@ public class ProjectTests : BaseTest
     {
         // Arrange
         var project = ProjectFactory.Create();
-        var user = UserFactory.Create();
-        var organization = OrganizationFactory.Create();
-        project.SetOrganization(organization);
-        project.Organization.AddUser(user);
-        project.AddUser(user);
+        var admin = UserFactory.Create();
+        var user = UserFactory.Create(email: "member@example.com");
+        project.AddMember(admin, SystemRoles.ProjectAdmin);
+        project.AddMember(user, SystemRoles.ProjectContributor);
         project.ClearDomainEvents();
 
         // Act
@@ -404,6 +405,22 @@ public class ProjectTests : BaseTest
         var domainEvent = AssertDomainEventWasPublished<UserRemovedFromProjectDomainEvent>(project);
         domainEvent.Project.Should().Be(project);
         domainEvent.User.Should().Be(user);
+    }
+
+    [Fact]
+    public void RemoveUser_WhenRemovingLastAdmin_ShouldReturnError()
+    {
+        // Arrange
+        var project = ProjectFactory.Create();
+        var admin = UserFactory.Create();
+        project.AddMember(admin, SystemRoles.ProjectAdmin);
+
+        // Act
+        var result = project.RemoveUser(admin.Id);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().BeEquivalentTo(ProjectErrors.CannotRemoveLastAdmin);
     }
 
     [Fact]

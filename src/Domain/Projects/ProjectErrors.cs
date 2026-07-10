@@ -36,6 +36,10 @@ public static class ProjectErrors
         "Project.UserIsInTeams",
         "Cannot remove user who is a member of project teams.");
 
+    public static readonly Error CannotRemoveLastAdmin = Error.Conflict(
+        "Project.CannotRemoveLastAdmin",
+        "Cannot remove or demote the last remaining Admin of this project.");
+
     public static readonly Error GitHubRepositoryAlreadyConnected = Error.Conflict(
         "Project.GitHubRepositoryAlreadyConnected",
         "This project is already connected to a GitHub repository.");

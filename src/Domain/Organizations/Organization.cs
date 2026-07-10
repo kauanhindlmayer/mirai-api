@@ -1,3 +1,4 @@
+using Domain.Authorization;
 using Domain.Organizations.Events;
 using Domain.Projects;
 using Domain.Shared;
@@ -11,7 +12,7 @@ public sealed class Organization : AggregateRoot
     public string Name { get; private set; } = null!;
     public string? Description { get; private set; }
     public ICollection<Project> Projects { get; private set; } = [];
-    public ICollection<User> Users { get; private set; } = [];
+    public ICollection<OrganizationMember> Members { get; private set; } = [];
 
     public Organization(string name, string description)
     {
@@ -36,33 +37,65 @@ public sealed class Organization : AggregateRoot
         RaiseDomainEvent(new OrganizationDeletedDomainEvent(this));
     }
 
-    public ErrorOr<Success> AddUser(User user)
+    public ErrorOr<Success> AddMember(User user, Role role)
     {
-        if (Users.Any(u => u.Id == user.Id))
+        if (role.Scope != RoleScope.Organization)
+        {
+            return RoleErrors.ScopeMismatch;
+        }
+
+        if (Members.Any(m => m.UserId == user.Id))
         {
             return OrganizationErrors.UserAlreadyExists;
         }
 
-        Users.Add(user);
+        Members.Add(new OrganizationMember(Id, user, role));
         RaiseDomainEvent(new UserAddedToOrganizationDomainEvent(this, user));
+        return Result.Success;
+    }
+
+    public ErrorOr<Success> ChangeMemberRole(Guid userId, Role newRole)
+    {
+        if (newRole.Scope != RoleScope.Organization)
+        {
+            return RoleErrors.ScopeMismatch;
+        }
+
+        var member = Members.FirstOrDefault(m => m.UserId == userId);
+        if (member is null)
+        {
+            return UserErrors.NotFound;
+        }
+
+        if (newRole.Id != SystemRoles.OrganizationOwnerId && IsLastOwner(userId))
+        {
+            return OrganizationErrors.CannotRemoveLastOwner;
+        }
+
+        member.ChangeRole(newRole);
         return Result.Success;
     }
 
     public ErrorOr<Success> RemoveUser(Guid userId)
     {
-        var user = Users.FirstOrDefault(u => u.Id == userId);
-        if (user is null)
+        var member = Members.FirstOrDefault(m => m.UserId == userId);
+        if (member is null)
         {
             return UserErrors.NotFound;
         }
 
-        if (Projects.Any(p => p.Users.Any(u => u.Id == userId)))
+        if (Projects.Any(p => p.Members.Any(m => m.UserId == userId)))
         {
             return OrganizationErrors.UserHasProjects;
         }
 
-        Users.Remove(user);
-        RaiseDomainEvent(new UserRemovedFromOrganizationDomainEvent(this, user));
+        if (IsLastOwner(userId))
+        {
+            return OrganizationErrors.CannotRemoveLastOwner;
+        }
+
+        Members.Remove(member);
+        RaiseDomainEvent(new UserRemovedFromOrganizationDomainEvent(this, member.User));
         return Result.Success;
     }
 
@@ -87,5 +120,16 @@ public sealed class Organization : AggregateRoot
 
         Projects.Remove(project);
         return Result.Success;
+    }
+
+    private bool IsLastOwner(Guid userId)
+    {
+        var member = Members.FirstOrDefault(m => m.UserId == userId);
+        if (member is null || member.RoleId != SystemRoles.OrganizationOwnerId)
+        {
+            return false;
+        }
+
+        return Members.Count(m => m.RoleId == SystemRoles.OrganizationOwnerId) == 1;
     }
 }

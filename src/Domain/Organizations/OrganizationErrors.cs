@@ -19,4 +19,8 @@ public static class OrganizationErrors
     public static readonly Error UserHasProjects = Error.Conflict(
         "Organization.UserHasProjects",
         "Cannot remove user who has projects in this organization.");
+
+    public static readonly Error CannotRemoveLastOwner = Error.Conflict(
+        "Organization.CannotRemoveLastOwner",
+        "Cannot remove or demote the last remaining Owner of this organization.");
 }

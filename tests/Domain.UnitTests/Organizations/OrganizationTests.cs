@@ -1,3 +1,4 @@
+using Domain.Authorization;
 using Domain.Organizations;
 using Domain.Organizations.Events;
 using Domain.Projects;
@@ -142,30 +143,30 @@ public class OrganizationTests : BaseTest
     }
 
     [Fact]
-    public void AddUser_WhenUserDoesNotExist_ShouldAddUser()
+    public void AddMember_WhenUserDoesNotExist_ShouldAddMember()
     {
         // Arrange
         var organization = OrganizationFactory.Create();
         var user = UserFactory.Create();
 
         // Act
-        var result = organization.AddUser(user);
+        var result = organization.AddMember(user, SystemRoles.OrganizationMember);
 
         // Assert
         result.IsError.Should().BeFalse();
-        organization.Users.Should().HaveCount(1);
-        organization.Users.First().Should().Be(user);
+        organization.Members.Should().HaveCount(1);
+        organization.Members.First().UserId.Should().Be(user.Id);
     }
 
     [Fact]
-    public void AddUser_WhenUserDoesNotExist_ShouldRaiseUserAddedToOrganizationDomainEvent()
+    public void AddMember_WhenUserDoesNotExist_ShouldRaiseUserAddedToOrganizationDomainEvent()
     {
         // Arrange
         var organization = OrganizationFactory.Create();
         var user = UserFactory.Create();
 
         // Act
-        organization.AddUser(user);
+        organization.AddMember(user, SystemRoles.OrganizationMember);
 
         // Assert
         var domainEvent = AssertDomainEventWasPublished<UserAddedToOrganizationDomainEvent>(organization);
@@ -174,20 +175,83 @@ public class OrganizationTests : BaseTest
     }
 
     [Fact]
-    public void AddUser_WhenUserAlreadyExists_ShouldReturnError()
+    public void AddMember_WhenUserAlreadyExists_ShouldReturnError()
     {
         // Arrange
         var organization = OrganizationFactory.Create();
         var user = UserFactory.Create();
-        organization.AddUser(user);
+        organization.AddMember(user, SystemRoles.OrganizationMember);
 
         // Act
-        var result = organization.AddUser(user);
+        var result = organization.AddMember(user, SystemRoles.OrganizationMember);
 
         // Assert
         result.IsError.Should().BeTrue();
         result.FirstError.Should().BeEquivalentTo(OrganizationErrors.UserAlreadyExists);
-        organization.Users.Should().HaveCount(1);
+        organization.Members.Should().HaveCount(1);
+    }
+
+    [Fact]
+    public void AddMember_WhenRoleScopeDoesNotMatch_ShouldReturnError()
+    {
+        // Arrange
+        var organization = OrganizationFactory.Create();
+        var user = UserFactory.Create();
+
+        // Act
+        var result = organization.AddMember(user, SystemRoles.ProjectAdmin);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().BeEquivalentTo(RoleErrors.ScopeMismatch);
+    }
+
+    [Fact]
+    public void ChangeMemberRole_WhenMemberDoesNotExist_ShouldReturnError()
+    {
+        // Arrange
+        var organization = OrganizationFactory.Create();
+
+        // Act
+        var result = organization.ChangeMemberRole(Guid.NewGuid(), SystemRoles.OrganizationAdmin);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().BeEquivalentTo(UserErrors.NotFound);
+    }
+
+    [Fact]
+    public void ChangeMemberRole_WhenMemberExists_ShouldChangeRole()
+    {
+        // Arrange
+        var organization = OrganizationFactory.Create();
+        var owner = UserFactory.Create();
+        var member = UserFactory.Create(email: "member@example.com");
+        organization.AddMember(owner, SystemRoles.OrganizationOwner);
+        organization.AddMember(member, SystemRoles.OrganizationMember);
+
+        // Act
+        var result = organization.ChangeMemberRole(member.Id, SystemRoles.OrganizationAdmin);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        organization.Members.Single(m => m.UserId == member.Id).RoleId.Should().Be(SystemRoles.OrganizationAdminId);
+    }
+
+    [Fact]
+    public void ChangeMemberRole_WhenDemotingLastOwner_ShouldReturnError()
+    {
+        // Arrange
+        var organization = OrganizationFactory.Create();
+        var owner = UserFactory.Create();
+        organization.AddMember(owner, SystemRoles.OrganizationOwner);
+
+        // Act
+        var result = organization.ChangeMemberRole(owner.Id, SystemRoles.OrganizationAdmin);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().BeEquivalentTo(OrganizationErrors.CannotRemoveLastOwner);
     }
 
     [Fact]
@@ -210,24 +274,28 @@ public class OrganizationTests : BaseTest
     {
         // Arrange
         var organization = OrganizationFactory.Create();
-        var user = UserFactory.Create();
-        organization.AddUser(user);
+        var owner = UserFactory.Create();
+        var user = UserFactory.Create(email: "member@example.com");
+        organization.AddMember(owner, SystemRoles.OrganizationOwner);
+        organization.AddMember(user, SystemRoles.OrganizationMember);
 
         // Act
         var result = organization.RemoveUser(user.Id);
 
         // Assert
         result.IsError.Should().BeFalse();
-        organization.Users.Should().BeEmpty();
+        organization.Members.Should().NotContain(m => m.UserId == user.Id);
     }
 
     [Fact]
-    public void RemoveUser_WhenUserExists_ShouldRaiseUserRemovedFromOrganizationDomainEvent()
+    public void RemoveUser_WhenUserRemoved_ShouldRaiseUserRemovedFromOrganizationDomainEvent()
     {
         // Arrange
         var organization = OrganizationFactory.Create();
-        var user = UserFactory.Create();
-        organization.AddUser(user);
+        var owner = UserFactory.Create();
+        var user = UserFactory.Create(email: "member@example.com");
+        organization.AddMember(owner, SystemRoles.OrganizationOwner);
+        organization.AddMember(user, SystemRoles.OrganizationMember);
 
         // Act
         organization.RemoveUser(user.Id);
@@ -245,11 +313,10 @@ public class OrganizationTests : BaseTest
         var organization = OrganizationFactory.Create();
         var user = UserFactory.Create();
         var project = ProjectFactory.Create();
-        organization.AddUser(user);
+        organization.AddMember(user, SystemRoles.OrganizationOwner);
         organization.AddProject(project);
         project.SetOrganization(organization);
-        project.Users.Add(user);
-        project.AddUser(user);
+        project.AddMember(user, SystemRoles.ProjectAdmin);
 
         // Act
         var result = organization.RemoveUser(user.Id);
@@ -257,6 +324,22 @@ public class OrganizationTests : BaseTest
         // Assert
         result.IsError.Should().BeTrue();
         result.FirstError.Should().BeEquivalentTo(OrganizationErrors.UserHasProjects);
-        organization.Users.Should().HaveCount(1);
+        organization.Members.Should().HaveCount(1);
+    }
+
+    [Fact]
+    public void RemoveUser_WhenRemovingLastOwner_ShouldReturnError()
+    {
+        // Arrange
+        var organization = OrganizationFactory.Create();
+        var owner = UserFactory.Create();
+        organization.AddMember(owner, SystemRoles.OrganizationOwner);
+
+        // Act
+        var result = organization.RemoveUser(owner.Id);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().BeEquivalentTo(OrganizationErrors.CannotRemoveLastOwner);
     }
 }
