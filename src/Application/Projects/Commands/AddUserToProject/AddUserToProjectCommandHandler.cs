@@ -1,8 +1,11 @@
+using Application.Abstractions;
+using Domain.Authorization;
 using Domain.Organizations;
 using Domain.Projects;
 using Domain.Users;
 using ErrorOr;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Projects.Commands.AddUserToProject;
 
@@ -12,15 +15,18 @@ internal sealed class AddUserToProjectCommandHandler
     private readonly IProjectRepository _projectRepository;
     private readonly IUserRepository _userRepository;
     private readonly IOrganizationRepository _organizationRepository;
+    private readonly IApplicationDbContext _context;
 
     public AddUserToProjectCommandHandler(
         IProjectRepository projectRepository,
         IUserRepository userRepository,
-        IOrganizationRepository organizationRepository)
+        IOrganizationRepository organizationRepository,
+        IApplicationDbContext context)
     {
         _projectRepository = projectRepository;
         _userRepository = userRepository;
         _organizationRepository = organizationRepository;
+        _context = context;
     }
 
     public async Task<ErrorOr<Success>> Handle(
@@ -53,7 +59,15 @@ internal sealed class AddUserToProjectCommandHandler
             return ProjectErrors.UserNotInOrganization;
         }
 
-        var result = project.AddUser(user);
+        if (project.Members.Any(m => m.UserId == user.Id))
+        {
+            return ProjectErrors.UserAlreadyExists;
+        }
+
+        var contributorRole = await _context.Roles
+            .FirstAsync(r => r.Id == SystemRoles.ProjectContributorId, cancellationToken);
+
+        var result = project.AddMember(user, contributorRole);
         if (result.IsError)
         {
             return result.Errors;

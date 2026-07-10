@@ -1,9 +1,12 @@
+using Application.Abstractions;
 using Application.Abstractions.Authentication;
+using Domain.Authorization;
 using Domain.Organizations;
 using Domain.Projects;
 using Domain.Users;
 using ErrorOr;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Projects.Commands.CreateProject;
 
@@ -13,15 +16,18 @@ internal sealed class CreateProjectCommandHandler
     private readonly IOrganizationRepository _organizationRepository;
     private readonly IUserRepository _userRepository;
     private readonly IUserContext _userContext;
+    private readonly IApplicationDbContext _context;
 
     public CreateProjectCommandHandler(
         IOrganizationRepository organizationRepository,
         IUserRepository userRepository,
-        IUserContext userContext)
+        IUserContext userContext,
+        IApplicationDbContext context)
     {
         _organizationRepository = organizationRepository;
         _userRepository = userRepository;
         _userContext = userContext;
+        _context = context;
     }
 
     public async Task<ErrorOr<Guid>> Handle(
@@ -65,7 +71,10 @@ internal sealed class CreateProjectCommandHandler
             return addProjectResult.Errors;
         }
 
-        var addUserResult = project.AddUser(currentUser);
+        var adminRole = await _context.Roles
+            .FirstAsync(r => r.Id == SystemRoles.ProjectAdminId, cancellationToken);
+
+        var addUserResult = project.AddMember(currentUser, adminRole);
         if (addUserResult.IsError)
         {
             return addUserResult.Errors;

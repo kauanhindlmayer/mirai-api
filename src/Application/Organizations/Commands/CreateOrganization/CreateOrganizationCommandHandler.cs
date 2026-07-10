@@ -1,8 +1,11 @@
+using Application.Abstractions;
 using Application.Abstractions.Authentication;
+using Domain.Authorization;
 using Domain.Organizations;
 using Domain.Users;
 using ErrorOr;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Organizations.Commands.CreateOrganization;
 
@@ -12,15 +15,18 @@ internal sealed class CreateOrganizationCommandHandler
     private readonly IOrganizationRepository _organizationRepository;
     private readonly IUserRepository _userRepository;
     private readonly IUserContext _userContext;
+    private readonly IApplicationDbContext _context;
 
     public CreateOrganizationCommandHandler(
         IOrganizationRepository organizationRepository,
         IUserRepository userRepository,
-        IUserContext userContext)
+        IUserContext userContext,
+        IApplicationDbContext context)
     {
         _organizationRepository = organizationRepository;
         _userRepository = userRepository;
         _userContext = userContext;
+        _context = context;
     }
 
     public async Task<ErrorOr<Guid>> Handle(
@@ -43,11 +49,14 @@ internal sealed class CreateOrganizationCommandHandler
             return UserErrors.NotFound;
         }
 
+        var ownerRole = await _context.Roles
+            .FirstAsync(r => r.Id == SystemRoles.OrganizationOwnerId, cancellationToken);
+
         var organization = new Organization(
             command.Name,
             command.Description);
 
-        var addUserResult = organization.AddUser(currentUser);
+        var addUserResult = organization.AddMember(currentUser, ownerRole);
         if (addUserResult.IsError)
         {
             return addUserResult.Errors;

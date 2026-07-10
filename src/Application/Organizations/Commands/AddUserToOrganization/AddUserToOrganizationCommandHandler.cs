@@ -1,7 +1,10 @@
+using Application.Abstractions;
+using Domain.Authorization;
 using Domain.Organizations;
 using Domain.Users;
 using ErrorOr;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Organizations.Commands.AddUserToOrganization;
 
@@ -10,20 +13,23 @@ internal sealed class AddUserToOrganizationCommandHandler
 {
     private readonly IOrganizationRepository _organizationRepository;
     private readonly IUserRepository _userRepository;
+    private readonly IApplicationDbContext _context;
 
     public AddUserToOrganizationCommandHandler(
         IOrganizationRepository organizationRepository,
-        IUserRepository userRepository)
+        IUserRepository userRepository,
+        IApplicationDbContext context)
     {
         _organizationRepository = organizationRepository;
         _userRepository = userRepository;
+        _context = context;
     }
 
     public async Task<ErrorOr<Success>> Handle(
         AddUserToOrganizationCommand command,
         CancellationToken cancellationToken)
     {
-        var organization = await _organizationRepository.GetByIdAsync(
+        var organization = await _organizationRepository.GetByIdWithProjectsAndUsersAsync(
             command.OrganizationId,
             cancellationToken);
 
@@ -41,7 +47,15 @@ internal sealed class AddUserToOrganizationCommandHandler
             return UserErrors.NotFound;
         }
 
-        var result = organization.AddUser(user);
+        if (organization.Members.Any(m => m.UserId == user.Id))
+        {
+            return OrganizationErrors.UserAlreadyExists;
+        }
+
+        var memberRole = await _context.Roles
+            .FirstAsync(r => r.Id == SystemRoles.OrganizationMemberId, cancellationToken);
+
+        var result = organization.AddMember(user, memberRole);
         if (result.IsError)
         {
             return result.Errors;

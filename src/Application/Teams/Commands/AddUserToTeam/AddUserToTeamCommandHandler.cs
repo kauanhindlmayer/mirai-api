@@ -1,7 +1,10 @@
+using Application.Abstractions;
+using Domain.Authorization;
 using Domain.Teams;
 using Domain.Users;
 using ErrorOr;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Teams.Commands.AddUserToTeam;
 
@@ -10,13 +13,16 @@ internal sealed class AddUserToTeamCommandHandler
 {
     private readonly ITeamRepository _teamRepository;
     private readonly IUserRepository _userRepository;
+    private readonly IApplicationDbContext _context;
 
     public AddUserToTeamCommandHandler(
         ITeamRepository teamRepository,
-        IUserRepository userRepository)
+        IUserRepository userRepository,
+        IApplicationDbContext context)
     {
         _teamRepository = teamRepository;
         _userRepository = userRepository;
+        _context = context;
     }
 
     public async Task<ErrorOr<Success>> Handle(
@@ -41,7 +47,15 @@ internal sealed class AddUserToTeamCommandHandler
             return TeamErrors.UserNotFound;
         }
 
-        var result = team.AddUser(user);
+        if (team.Members.Any(m => m.UserId == user.Id))
+        {
+            return TeamErrors.UserAlreadyExists;
+        }
+
+        var memberRole = await _context.Roles
+            .FirstAsync(r => r.Id == SystemRoles.TeamMemberId, cancellationToken);
+
+        var result = team.AddMember(user, memberRole);
         if (result.IsError)
         {
             return result.Errors;
