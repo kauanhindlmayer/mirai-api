@@ -50,19 +50,19 @@ A recurring Quartz job (`GitHubRepositorySyncJob`) re-checks open pull request l
 
 - **Pros:** No new App registration; reuses existing credentials.
 - **Cons:** Mixes the login flow's security blast radius with repository access, and an OAuth App's permissions are coarser than a GitHub App's.
-Rejected to keep user authentication and repository/PR access as two independently revocable, independently scoped concerns.
+  Rejected to keep user authentication and repository/PR access as two independently revocable, independently scoped concerns.
 
 ### Hand-rolled `HttpClient` against the GitHub REST API
 
 - **Pros:** No new dependency; full control over the request shape.
 - **Cons:** Reinvents RS256 JWT signing, installation-token refresh and caching, pagination, and rate-limit handling, all of which Octokit.NET already provides and tests.
-Rejected in favor of the well-maintained client library.
+  Rejected in favor of the well-maintained client library.
 
 ### Pure polling instead of webhooks
 
 - **Pros:** Simpler initial implementation; no public endpoint required.
 - **Cons:** Higher latency for status updates, and it does not scale well as the number of connected repositories grows.
-Rejected as the primary mechanism, but kept as `GitHubRepositorySyncJob`, a fallback safety net over the webhook path.
+  Rejected as the primary mechanism, but kept as `GitHubRepositorySyncJob`, a fallback safety net over the webhook path.
 
 ## Consequences
 
@@ -75,14 +75,6 @@ Rejected as the primary mechanism, but kept as `GitHubRepositorySyncJob`, a fall
 ### Negative
 
 - GitHub webhooks require a publicly reachable HTTPS URL, and Mirai currently has no deployed environment.
-Until one exists, the webhook path can only be exercised by whoever runs a local tunnel (smee.io, per `docs/getting-started.md`), which means automatic linking is not meaningfully "live" for anyone else until Mirai is actually deployed somewhere.
+  Until one exists, the webhook path can only be exercised by whoever runs a local tunnel (smee.io, per `docs/getting-started.md`), which means automatic linking is not meaningfully "live" for anyone else until Mirai is actually deployed somewhere.
 - Registering the GitHub App itself (permissions, webhook URL, private key) is a manual, one-time, non-code step, following this repo's existing secrets convention for the ADR-0003 OAuth App.
 - The fallback-sync job's "recently updated" scan only inspects PR titles (GitHub's Search API does not return the PR body), so an `MB#<code>` reference mentioned only in a PR's body is caught by the next real webhook delivery rather than by the sync job itself.
-
-### Open Questions
-
-These are flagged here rather than blocking implementation:
-
-- Should "repository already connected elsewhere" reveal which project has it, or stay silent to avoid leaking cross-org or cross-project information?
-- Is keeping PR links on disconnect (rather than marking them stale) the desired product behavior?
-- If a project reconnects to a different repository, should its old PR links be flagged as referencing a now-unrelated repository?
