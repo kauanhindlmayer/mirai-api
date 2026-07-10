@@ -1,7 +1,13 @@
+using Application.Abstractions.Authorization;
+using Domain.Authorization;
 using ErrorOr;
-using MediatR;
 
 namespace Application.Retrospectives.Queries.ListRetrospectives;
 
 public sealed record ListRetrospectivesQuery(Guid TeamId)
-    : IRequest<ErrorOr<IReadOnlyList<RetrospectiveBriefResponse>>>;
+    : IAuthorizationRequest<ErrorOr<IReadOnlyList<RetrospectiveBriefResponse>>>
+{
+    public Permission RequiredPermission => Permission.TeamView;
+    public ResourceType ResourceType => ResourceType.Team;
+    public Guid ResourceId => TeamId;
+}

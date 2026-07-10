@@ -1,5 +1,6 @@
+using Application.Abstractions.Authorization;
+using Domain.Authorization;
 using ErrorOr;
-using MediatR;
 
 namespace Application.Boards.Commands.CreateColumn;
 
@@ -8,4 +9,9 @@ public sealed record CreateColumnCommand(
     string Name,
     int? WipLimit,
     string DefinitionOfDone,
-    int Position) : IRequest<ErrorOr<Guid>>;
+    int Position) : IAuthorizationRequest<ErrorOr<Guid>>
+{
+    public Permission RequiredPermission => Permission.TeamManageBoards;
+    public ResourceType ResourceType => ResourceType.Board;
+    public Guid ResourceId => BoardId;
+}

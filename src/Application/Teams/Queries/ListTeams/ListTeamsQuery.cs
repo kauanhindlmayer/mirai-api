@@ -1,7 +1,13 @@
+using Application.Abstractions.Authorization;
+using Domain.Authorization;
 using ErrorOr;
-using MediatR;
 
 namespace Application.Teams.Queries.ListTeams;
 
 public sealed record ListTeamsQuery(Guid ProjectId)
-    : IRequest<ErrorOr<IReadOnlyList<TeamBriefResponse>>>;
+    : IAuthorizationRequest<ErrorOr<IReadOnlyList<TeamBriefResponse>>>
+{
+    public Permission RequiredPermission => Permission.ProjectView;
+    public ResourceType ResourceType => ResourceType.Project;
+    public Guid ResourceId => ProjectId;
+}

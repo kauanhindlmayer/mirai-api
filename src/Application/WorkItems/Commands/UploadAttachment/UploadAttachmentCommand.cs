@@ -1,5 +1,6 @@
+using Application.Abstractions.Authorization;
+using Domain.Authorization;
 using ErrorOr;
-using MediatR;
 
 namespace Application.WorkItems.Commands.UploadAttachment;
 
@@ -8,4 +9,9 @@ public sealed record UploadAttachmentCommand(
     string FileName,
     string ContentType,
     long FileSizeBytes,
-    Stream FileStream) : IRequest<ErrorOr<Guid>>;
+    Stream FileStream) : IAuthorizationRequest<ErrorOr<Guid>>
+{
+    public Permission RequiredPermission => Permission.ProjectManageWorkItems;
+    public ResourceType ResourceType => ResourceType.WorkItem;
+    public Guid ResourceId => WorkItemId;
+}

@@ -1,8 +1,10 @@
 using Domain.Retrospectives;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Presentation.Hubs;
 
+[Authorize]
 public sealed class RetrospectiveHub : Hub<IRetrospectiveHub>
 {
     private int _connectedClientsCount;

@@ -1,7 +1,13 @@
+using Application.Abstractions.Authorization;
+using Domain.Authorization;
 using ErrorOr;
-using MediatR;
 
 namespace Application.Organizations.Commands.DeleteOrganization;
 
 public sealed record DeleteOrganizationCommand(Guid OrganizationId)
-    : IRequest<ErrorOr<Success>>;
+    : IAuthorizationRequest<ErrorOr<Success>>
+{
+    public Permission RequiredPermission => Permission.OrganizationDelete;
+    public ResourceType ResourceType => ResourceType.Organization;
+    public Guid ResourceId => OrganizationId;
+}

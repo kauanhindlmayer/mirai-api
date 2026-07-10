@@ -1,5 +1,6 @@
+using Application.Abstractions.Authorization;
+using Domain.Authorization;
 using ErrorOr;
-using MediatR;
 
 namespace Application.Tags.Commands.UpdateTag;
 
@@ -8,4 +9,9 @@ public sealed record UpdateTagCommand(
     Guid TagId,
     string Name,
     string Description,
-    string Color) : IRequest<ErrorOr<Guid>>;
+    string Color) : IAuthorizationRequest<ErrorOr<Guid>>
+{
+    public Permission RequiredPermission => Permission.ProjectManageTags;
+    public ResourceType ResourceType => ResourceType.Project;
+    public Guid ResourceId => ProjectId;
+}

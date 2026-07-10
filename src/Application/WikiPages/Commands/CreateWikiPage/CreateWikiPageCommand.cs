@@ -1,5 +1,6 @@
+using Application.Abstractions.Authorization;
+using Domain.Authorization;
 using ErrorOr;
-using MediatR;
 
 namespace Application.WikiPages.Commands.CreateWikiPage;
 
@@ -7,4 +8,9 @@ public sealed record CreateWikiPageCommand(
     Guid ProjectId,
     string Title,
     string Content,
-    Guid? ParentWikiPageId) : IRequest<ErrorOr<Guid>>;
+    Guid? ParentWikiPageId) : IAuthorizationRequest<ErrorOr<Guid>>
+{
+    public Permission RequiredPermission => Permission.ProjectManageWikiPages;
+    public ResourceType ResourceType => ResourceType.Project;
+    public Guid ResourceId => ProjectId;
+}

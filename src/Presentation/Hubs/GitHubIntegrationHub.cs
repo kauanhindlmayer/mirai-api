@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Presentation.Hubs;
@@ -7,6 +8,7 @@ namespace Presentation.Hubs;
 /// updates via <see cref="GitHubIntegrationNotifier"/>; clients only ever
 /// subscribe, they don't invoke methods on this hub.
 /// </summary>
+[Authorize]
 public sealed class GitHubIntegrationHub : Hub<IGitHubIntegrationHub>
 {
 }

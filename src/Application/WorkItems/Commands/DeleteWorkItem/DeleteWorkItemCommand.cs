@@ -1,7 +1,13 @@
+using Application.Abstractions.Authorization;
+using Domain.Authorization;
 using ErrorOr;
-using MediatR;
 
 namespace Application.WorkItems.Commands.DeleteWorkItem;
 
 public sealed record DeleteWorkItemCommand(
-    Guid WorkItemId) : IRequest<ErrorOr<Success>>;
+    Guid WorkItemId) : IAuthorizationRequest<ErrorOr<Success>>
+{
+    public Permission RequiredPermission => Permission.ProjectManageWorkItems;
+    public ResourceType ResourceType => ResourceType.WorkItem;
+    public Guid ResourceId => WorkItemId;
+}

@@ -1,8 +1,14 @@
+using Application.Abstractions.Authorization;
+using Domain.Authorization;
 using ErrorOr;
-using MediatR;
 
 namespace Application.Retrospectives.Commands.CreateRetrospectiveColumn;
 
 public sealed record CreateRetrospectiveColumnCommand(
     string Title,
-    Guid RetrospectiveId) : IRequest<ErrorOr<Guid>>;
+    Guid RetrospectiveId) : IAuthorizationRequest<ErrorOr<Guid>>
+{
+    public Permission RequiredPermission => Permission.TeamManageRetrospectives;
+    public ResourceType ResourceType => ResourceType.Retrospective;
+    public Guid ResourceId => RetrospectiveId;
+}

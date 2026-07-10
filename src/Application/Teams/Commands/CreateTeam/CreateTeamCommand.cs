@@ -1,9 +1,15 @@
+using Application.Abstractions.Authorization;
+using Domain.Authorization;
 using ErrorOr;
-using MediatR;
 
 namespace Application.Teams.Commands.CreateTeam;
 
 public sealed record CreateTeamCommand(
     Guid ProjectId,
     string Name,
-    string Description) : IRequest<ErrorOr<Guid>>;
+    string Description) : IAuthorizationRequest<ErrorOr<Guid>>
+{
+    public Permission RequiredPermission => Permission.ProjectManage;
+    public ResourceType ResourceType => ResourceType.Project;
+    public Guid ResourceId => ProjectId;
+}

@@ -1,9 +1,15 @@
+using Application.Abstractions.Authorization;
+using Domain.Authorization;
 using ErrorOr;
-using MediatR;
 using Microsoft.AspNetCore.Http;
 
 namespace Application.TagImportJobs.Commands.CreateTagImportJob;
 
 public sealed record CreateTagImportJobCommand(
     Guid ProjectId,
-    IFormFile File) : IRequest<ErrorOr<Guid>>;
+    IFormFile File) : IAuthorizationRequest<ErrorOr<Guid>>
+{
+    public Permission RequiredPermission => Permission.ProjectManageTags;
+    public ResourceType ResourceType => ResourceType.Project;
+    public Guid ResourceId => ProjectId;
+}

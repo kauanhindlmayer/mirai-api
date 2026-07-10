@@ -1,9 +1,15 @@
+using Application.Abstractions.Authorization;
+using Domain.Authorization;
 using ErrorOr;
-using MediatR;
 
 namespace Application.Organizations.Commands.UpdateOrganization;
 
 public sealed record UpdateOrganizationCommand(
     Guid Id,
     string Name,
-    string Description) : IRequest<ErrorOr<Guid>>;
+    string Description) : IAuthorizationRequest<ErrorOr<Guid>>
+{
+    public Permission RequiredPermission => Permission.OrganizationManage;
+    public ResourceType ResourceType => ResourceType.Organization;
+    public Guid ResourceId => Id;
+}

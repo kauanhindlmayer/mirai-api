@@ -1,7 +1,13 @@
+using Application.Abstractions.Authorization;
+using Domain.Authorization;
 using ErrorOr;
-using MediatR;
 
 namespace Application.Boards.Queries.ListBoards;
 
 public sealed record ListBoardsQuery(Guid ProjectId)
-    : IRequest<ErrorOr<IReadOnlyList<BoardBriefResponse>>>;
+    : IAuthorizationRequest<ErrorOr<IReadOnlyList<BoardBriefResponse>>>
+{
+    public Permission RequiredPermission => Permission.ProjectView;
+    public ResourceType ResourceType => ResourceType.Project;
+    public Guid ResourceId => ProjectId;
+}

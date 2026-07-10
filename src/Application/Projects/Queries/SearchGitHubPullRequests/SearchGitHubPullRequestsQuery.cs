@@ -1,9 +1,15 @@
+using Application.Abstractions.Authorization;
 using Application.Abstractions.GitHub;
+using Domain.Authorization;
 using ErrorOr;
-using MediatR;
 
 namespace Application.Projects.Queries.SearchGitHubPullRequests;
 
 public sealed record SearchGitHubPullRequestsQuery(
     Guid ProjectId,
-    string SearchTerm) : IRequest<ErrorOr<IReadOnlyList<GitHubPullRequestSummary>>>;
+    string SearchTerm) : IAuthorizationRequest<ErrorOr<IReadOnlyList<GitHubPullRequestSummary>>>
+{
+    public Permission RequiredPermission => Permission.ProjectView;
+    public ResourceType ResourceType => ResourceType.Project;
+    public Guid ResourceId => ProjectId;
+}

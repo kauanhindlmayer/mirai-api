@@ -1,8 +1,14 @@
+using Application.Abstractions.Authorization;
+using Domain.Authorization;
 using ErrorOr;
-using MediatR;
 
 namespace Application.WorkItems.Commands.DeleteAttachment;
 
 public sealed record DeleteAttachmentCommand(
     Guid WorkItemId,
-    Guid AttachmentId) : IRequest<ErrorOr<Success>>;
+    Guid AttachmentId) : IAuthorizationRequest<ErrorOr<Success>>
+{
+    public Permission RequiredPermission => Permission.ProjectManageWorkItems;
+    public ResourceType ResourceType => ResourceType.WorkItem;
+    public Guid ResourceId => WorkItemId;
+}

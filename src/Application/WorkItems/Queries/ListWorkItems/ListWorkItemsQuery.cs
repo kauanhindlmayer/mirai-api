@@ -1,7 +1,8 @@
 using Application.Abstractions;
+using Application.Abstractions.Authorization;
+using Domain.Authorization;
 using Domain.WorkItems.Enums;
 using ErrorOr;
-using MediatR;
 
 namespace Application.WorkItems.Queries.ListWorkItems;
 
@@ -13,7 +14,11 @@ public sealed record ListWorkItemsQuery(
     string? SearchTerm,
     WorkItemType? Type,
     WorkItemStatus? Status,
-    Guid? AssigneeId) : IRequest<ErrorOr<PaginatedList<WorkItemBriefResponse>>>
+    Guid? AssigneeId) : IAuthorizationRequest<ErrorOr<PaginatedList<WorkItemBriefResponse>>>
 {
     public string? SearchTerm { get; set; } = SearchTerm;
+
+    public Permission RequiredPermission => Permission.ProjectView;
+    public ResourceType ResourceType => ResourceType.Project;
+    public Guid ResourceId => ProjectId;
 }

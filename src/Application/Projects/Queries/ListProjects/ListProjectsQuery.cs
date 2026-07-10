@@ -1,8 +1,14 @@
+using Application.Abstractions.Authorization;
 using Application.Projects.Queries.GetProject;
+using Domain.Authorization;
 using ErrorOr;
-using MediatR;
 
 namespace Application.Projects.Queries.ListProjects;
 
 public sealed record ListProjectsQuery(Guid OrganizationId)
-    : IRequest<ErrorOr<IReadOnlyList<ProjectResponse>>>;
+    : IAuthorizationRequest<ErrorOr<IReadOnlyList<ProjectResponse>>>
+{
+    public Permission RequiredPermission => Permission.OrganizationView;
+    public ResourceType ResourceType => ResourceType.Organization;
+    public Guid ResourceId => OrganizationId;
+}

@@ -1,7 +1,13 @@
+using Application.Abstractions.Authorization;
+using Domain.Authorization;
 using ErrorOr;
-using MediatR;
 
 namespace Application.Personas.Queries.ListPersonas;
 
 public sealed record ListPersonasQuery(Guid ProjectId)
-    : IRequest<ErrorOr<IReadOnlyList<PersonaBriefResponse>>>;
+    : IAuthorizationRequest<ErrorOr<IReadOnlyList<PersonaBriefResponse>>>
+{
+    public Permission RequiredPermission => Permission.ProjectView;
+    public ResourceType ResourceType => ResourceType.Project;
+    public Guid ResourceId => ProjectId;
+}

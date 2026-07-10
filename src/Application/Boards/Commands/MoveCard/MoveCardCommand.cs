@@ -1,5 +1,6 @@
+using Application.Abstractions.Authorization;
+using Domain.Authorization;
 using ErrorOr;
-using MediatR;
 
 namespace Application.Boards.Commands.MoveCard;
 
@@ -8,4 +9,9 @@ public sealed record MoveCardCommand(
     Guid ColumnId,
     Guid CardId,
     Guid TargetColumnId,
-    int TargetPosition) : IRequest<ErrorOr<Success>>;
+    int TargetPosition) : IAuthorizationRequest<ErrorOr<Success>>
+{
+    public Permission RequiredPermission => Permission.ProjectManageWorkItems;
+    public ResourceType ResourceType => ResourceType.Board;
+    public Guid ResourceId => BoardId;
+}

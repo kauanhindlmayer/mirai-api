@@ -1,6 +1,7 @@
+using Application.Abstractions.Authorization;
+using Domain.Authorization;
 using Domain.WorkItems.Enums;
 using ErrorOr;
-using MediatR;
 
 namespace Application.WorkItems.Commands.CreateWorkItem;
 
@@ -8,4 +9,9 @@ public sealed record CreateWorkItemCommand(
     Guid ProjectId,
     WorkItemType Type,
     string Title,
-    Guid AssignedTeamId) : IRequest<ErrorOr<Guid>>;
+    Guid AssignedTeamId) : IAuthorizationRequest<ErrorOr<Guid>>
+{
+    public Permission RequiredPermission => Permission.ProjectManageWorkItems;
+    public ResourceType ResourceType => ResourceType.Project;
+    public Guid ResourceId => ProjectId;
+}

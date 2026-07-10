@@ -21,7 +21,7 @@ internal sealed class ListOrganizationsQueryHandler
     {
         var organizations = await _context.Organizations
             .AsNoTracking()
-            .Where(o => o.Users.Any(u => u.Id == query.UserId))
+            .Where(o => o.Members.Any(m => m.UserId == query.UserId))
             .OrderBy(o => o.Name)
             .Select(OrganizationQueries.ProjectToBriefDto())
             .ToListAsync(cancellationToken);

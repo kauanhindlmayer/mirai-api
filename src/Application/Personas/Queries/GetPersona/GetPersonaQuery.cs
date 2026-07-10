@@ -1,6 +1,12 @@
+using Application.Abstractions.Authorization;
+using Domain.Authorization;
 using ErrorOr;
-using MediatR;
 
 namespace Application.Personas.Queries.GetPersona;
 
-public sealed record GetPersonaQuery(Guid PersonaId) : IRequest<ErrorOr<PersonaResponse>>;
+public sealed record GetPersonaQuery(Guid PersonaId) : IAuthorizationRequest<ErrorOr<PersonaResponse>>
+{
+    public Permission RequiredPermission => Permission.ProjectView;
+    public ResourceType ResourceType => ResourceType.Persona;
+    public Guid ResourceId => PersonaId;
+}

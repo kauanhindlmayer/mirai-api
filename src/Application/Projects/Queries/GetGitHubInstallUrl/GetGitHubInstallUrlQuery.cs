@@ -1,8 +1,14 @@
+using Application.Abstractions.Authorization;
+using Domain.Authorization;
 using ErrorOr;
-using MediatR;
 
 namespace Application.Projects.Queries.GetGitHubInstallUrl;
 
 public sealed record GetGitHubInstallUrlQuery(
     Guid OrganizationId,
-    Guid ProjectId) : IRequest<ErrorOr<string>>;
+    Guid ProjectId) : IAuthorizationRequest<ErrorOr<string>>
+{
+    public Permission RequiredPermission => Permission.ProjectManage;
+    public ResourceType ResourceType => ResourceType.Project;
+    public Guid ResourceId => ProjectId;
+}

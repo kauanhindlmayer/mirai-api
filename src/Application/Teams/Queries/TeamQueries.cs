@@ -30,7 +30,7 @@ internal static class TeamQueries
             Description = t.Description,
             BoardId = t.Board.Id,
             IsDefault = t.IsDefault,
-            MemberCount = t.Users.Count,
+            MemberCount = t.Members.Count,
         };
     }
 }

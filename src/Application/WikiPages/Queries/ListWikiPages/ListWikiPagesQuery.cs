@@ -1,7 +1,13 @@
+using Application.Abstractions.Authorization;
+using Domain.Authorization;
 using ErrorOr;
-using MediatR;
 
 namespace Application.WikiPages.Queries.ListWikiPages;
 
 public sealed record ListWikiPagesQuery(Guid ProjectId)
-    : IRequest<ErrorOr<IReadOnlyList<WikiPageBriefResponse>>>;
+    : IAuthorizationRequest<ErrorOr<IReadOnlyList<WikiPageBriefResponse>>>
+{
+    public Permission RequiredPermission => Permission.ProjectView;
+    public ResourceType ResourceType => ResourceType.Project;
+    public Guid ResourceId => ProjectId;
+}
