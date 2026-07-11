@@ -18,7 +18,7 @@ internal sealed class LinkWorkItemsCommandHandler
         LinkWorkItemsCommand command,
         CancellationToken cancellationToken)
     {
-        var sourceWorkItem = await _workItemRepository.GetByIdAsync(
+        var sourceWorkItem = await _workItemRepository.GetByIdWithLinksAsync(
             command.SourceWorkItemId,
             cancellationToken);
 

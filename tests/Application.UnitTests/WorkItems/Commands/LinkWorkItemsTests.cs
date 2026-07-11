@@ -28,7 +28,7 @@ public class LinkWorkItemsTests
     public async Task Handle_WhenSourceWorkItemDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _workItemRepository.GetByIdAsync(
+        _workItemRepository.GetByIdWithLinksAsync(
             Command.SourceWorkItemId,
             TestContext.Current.CancellationToken)
             .Returns(null as WorkItem);
@@ -49,7 +49,7 @@ public class LinkWorkItemsTests
     {
         // Arrange
         var sourceWorkItem = new WorkItem(Guid.NewGuid(), 1, "Source", WorkItemType.UserStory);
-        _workItemRepository.GetByIdAsync(
+        _workItemRepository.GetByIdWithLinksAsync(
             Command.SourceWorkItemId,
             TestContext.Current.CancellationToken)
             .Returns(sourceWorkItem);
@@ -76,7 +76,7 @@ public class LinkWorkItemsTests
         var sourceWorkItem = new WorkItem(Guid.NewGuid(), 1, "Source", WorkItemType.UserStory);
         var targetWorkItem = new WorkItem(Guid.NewGuid(), 2, "Target", WorkItemType.Bug);
 
-        _workItemRepository.GetByIdAsync(
+        _workItemRepository.GetByIdWithLinksAsync(
             Command.SourceWorkItemId,
             TestContext.Current.CancellationToken)
             .Returns(sourceWorkItem);
@@ -110,6 +110,10 @@ public class LinkWorkItemsTests
             WorkItemLinkType.Related,
             null);
 
+        _workItemRepository.GetByIdWithLinksAsync(
+            workItemId,
+            TestContext.Current.CancellationToken)
+            .Returns(workItem);
         _workItemRepository.GetByIdAsync(
             workItemId,
             TestContext.Current.CancellationToken)
@@ -141,7 +145,7 @@ public class LinkWorkItemsTests
             null);
         sourceWorkItem.AddLink(existingLink);
 
-        _workItemRepository.GetByIdAsync(
+        _workItemRepository.GetByIdWithLinksAsync(
             Command.SourceWorkItemId,
             TestContext.Current.CancellationToken)
             .Returns(sourceWorkItem);
