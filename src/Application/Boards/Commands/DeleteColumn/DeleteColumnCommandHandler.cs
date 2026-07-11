@@ -18,7 +18,7 @@ internal sealed class DeleteColumnCommandHandler
         DeleteColumnCommand command,
         CancellationToken cancellationToken)
     {
-        var board = await _boardRepository.GetByIdWithColumnsAsync(
+        var board = await _boardRepository.GetByIdWithCardsAsync(
             command.BoardId,
             cancellationToken);
 

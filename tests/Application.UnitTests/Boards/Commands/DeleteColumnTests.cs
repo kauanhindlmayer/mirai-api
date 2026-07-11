@@ -24,7 +24,7 @@ public class DeleteColumnTests
     public async Task Handle_WhenBoardDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _boardRepository.GetByIdWithColumnsAsync(
+        _boardRepository.GetByIdWithCardsAsync(
             Command.BoardId,
             TestContext.Current.CancellationToken)
             .Returns(null as Board);
@@ -44,7 +44,7 @@ public class DeleteColumnTests
     {
         // Arrange
         var board = new Board(Guid.NewGuid(), "Board");
-        _boardRepository.GetByIdWithColumnsAsync(
+        _boardRepository.GetByIdWithCardsAsync(
             Command.BoardId,
             TestContext.Current.CancellationToken)
             .Returns(board);
@@ -73,7 +73,7 @@ public class DeleteColumnTests
         var card = new BoardCard(column.Id, workItem.Id, 0);
         column.AddCard(card);
         board.AddColumn(column);
-        _boardRepository.GetByIdWithColumnsAsync(
+        _boardRepository.GetByIdWithCardsAsync(
             Command.BoardId,
             TestContext.Current.CancellationToken)
             .Returns(board);
@@ -95,7 +95,7 @@ public class DeleteColumnTests
         var board = new Board(Guid.NewGuid(), "Board");
         var column = new BoardColumn(board.Id, "Column");
         board.AddColumn(column);
-        _boardRepository.GetByIdWithColumnsAsync(
+        _boardRepository.GetByIdWithCardsAsync(
             Command.BoardId,
             TestContext.Current.CancellationToken)
             .Returns(board);
