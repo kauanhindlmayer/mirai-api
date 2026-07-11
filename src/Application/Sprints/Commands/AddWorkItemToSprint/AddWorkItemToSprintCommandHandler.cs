@@ -23,7 +23,7 @@ internal sealed class AddWorkItemToSprintCommandHandler
         AddWorkItemToSprintCommand command,
         CancellationToken cancellationToken)
     {
-        var sprint = await _sprintRepository.GetByIdAsync(
+        var sprint = await _sprintRepository.GetByIdWithWorkItemsAsync(
             command.SprintId,
             cancellationToken);
 
