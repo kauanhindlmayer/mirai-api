@@ -8,7 +8,7 @@ using Domain.WorkItems.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-namespace Infrastructure.Persistence.ChangeHistory;
+namespace Infrastructure.Persistence.Interceptors;
 
 /// <summary>
 /// Diffs the tracked <see cref="WorkItem"/> graph for scalar, complex, and structural

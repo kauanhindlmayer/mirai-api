@@ -30,7 +30,6 @@ using Infrastructure.Integrations.GitHub;
 using Infrastructure.Jobs;
 using Infrastructure.Links;
 using Infrastructure.Persistence;
-using Infrastructure.Persistence.ChangeHistory;
 using Infrastructure.Persistence.Interceptors;
 using Infrastructure.Persistence.Repositories;
 using Infrastructure.Storage;
