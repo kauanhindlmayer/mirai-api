@@ -32,4 +32,8 @@ public interface IWorkItemRepository : IRepository<WorkItem>
     Task<WorkItem?> GetByIdWithPullRequestLinksAsync(
         Guid id,
         CancellationToken cancellationToken = default);
+
+    Task<WorkItem?> GetByIdWithAttachmentsAsync(
+        Guid id,
+        CancellationToken cancellationToken = default);
 }

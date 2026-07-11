@@ -1,4 +1,5 @@
 using Application.Abstractions.Authentication;
+using Application.Abstractions.Storage;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -56,9 +57,14 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
         builder.UseSetting("Authentication:ValidIssuer", $"{keycloakAddress}realms/mirai/");
         builder.UseSetting("Authentication:MetadataAddress", $"{keycloakAddress}realms/mirai/.well-known/openid-configuration");
 
-        // Tests call handlers directly through ISender.Send with no HTTP pipeline, so the
-        // real IUserContext (which reads the current request's claims) would always throw.
         builder.ConfigureTestServices(services =>
-            services.Replace(ServiceDescriptor.Scoped<IUserContext, TestUserContext>()));
+        {
+            // Tests call handlers directly through ISender.Send with no HTTP pipeline, so the
+            // real IUserContext (which reads the current request's claims) would always throw.
+            services.Replace(ServiceDescriptor.Scoped<IUserContext, TestUserContext>());
+
+            // No blob storage container is available in this test host.
+            services.Replace(ServiceDescriptor.Singleton<IBlobService, FakeBlobService>());
+        });
     }
 }

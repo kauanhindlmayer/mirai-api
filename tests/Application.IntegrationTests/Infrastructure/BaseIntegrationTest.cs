@@ -1,4 +1,5 @@
 using Application.Abstractions.Authentication;
+using Application.Abstractions.Storage;
 using Domain.Authorization;
 using Domain.Users;
 using Infrastructure.Persistence;
@@ -42,6 +43,13 @@ public abstract class BaseIntegrationTest
     {
         return _dbContext.Roles.SingleAsync(r => r.Id == roleId);
     }
+
+    /// <summary>
+    /// The in-memory fake replacing IBlobService in this test host - use to assert a file was
+    /// (or wasn't) deleted, since no real blob storage container is available here.
+    /// </summary>
+    protected FakeBlobService FakeBlobService =>
+        (FakeBlobService)_scope.ServiceProvider.GetRequiredService<IBlobService>();
 
     /// <summary>
     /// Seeds and persists a user, then sets it as the current caller via <see cref="SetCurrentUser"/>.

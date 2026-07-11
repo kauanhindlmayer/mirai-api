@@ -77,4 +77,13 @@ internal sealed class WorkItemRepository : Repository<WorkItem>, IWorkItemReposi
             .Include(wi => wi.PullRequestLinks)
             .FirstOrDefaultAsync(wi => wi.Id == id, cancellationToken);
     }
+
+    public async Task<WorkItem?> GetByIdWithAttachmentsAsync(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.WorkItems
+            .Include(wi => wi.Attachments)
+            .FirstOrDefaultAsync(wi => wi.Id == id, cancellationToken);
+    }
 }

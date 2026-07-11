@@ -23,7 +23,7 @@ internal sealed class DeleteAttachmentCommandHandler
         DeleteAttachmentCommand command,
         CancellationToken cancellationToken)
     {
-        var workItem = await _workItemRepository.GetByIdAsync(
+        var workItem = await _workItemRepository.GetByIdWithAttachmentsAsync(
             command.WorkItemId,
             cancellationToken);
 
