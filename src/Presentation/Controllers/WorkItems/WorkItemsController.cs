@@ -10,6 +10,7 @@ using Application.WorkItems.Commands.LinkPullRequestToWorkItem;
 using Application.WorkItems.Commands.LinkWorkItems;
 using Application.WorkItems.Commands.RemovePullRequestLink;
 using Application.WorkItems.Commands.RemoveTag;
+using Application.WorkItems.Commands.UnassignWorkItem;
 using Application.WorkItems.Commands.UnlinkWorkItems;
 using Application.WorkItems.Commands.UpdateComment;
 using Application.WorkItems.Commands.UploadAttachment;
@@ -218,6 +219,26 @@ public sealed class WorkItemsController : ApiController
         CancellationToken cancellationToken)
     {
         var command = new AssignWorkItemCommand(workItemId, request.AssigneeId);
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        return result.Match(
+            _ => NoContent(),
+            Problem);
+    }
+
+    /// <summary>
+    /// Unassign a work item.
+    /// </summary>
+    /// <param name="workItemId">The work item's unique identifier.</param>
+    [HttpDelete("{workItemId:guid}/assign")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> UnassignWorkItem(
+        Guid workItemId,
+        CancellationToken cancellationToken)
+    {
+        var command = new UnassignWorkItemCommand(workItemId);
 
         var result = await _sender.Send(command, cancellationToken);
 

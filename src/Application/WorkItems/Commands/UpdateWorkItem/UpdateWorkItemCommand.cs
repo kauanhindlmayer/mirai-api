@@ -13,7 +13,6 @@ public sealed record UpdateWorkItemCommand(
     string? Description,
     string? AcceptanceCriteria,
     WorkItemStatus? Status,
-    Guid? AssigneeId,
     Guid? AssignedTeamId,
     Guid? SprintId,
     Guid? ParentWorkItemId,

@@ -34,11 +34,6 @@ internal sealed class UpdateWorkItemCommandValidator : AbstractValidator<UpdateW
             .When(x => x.Status.HasValue)
             .WithMessage("Invalid work item status.");
 
-        RuleFor(x => x.AssigneeId)
-            .NotEmpty()
-            .When(x => x.AssigneeId.HasValue)
-            .WithMessage("Assignee ID must be a valid GUID.");
-
         RuleFor(x => x.AssignedTeamId)
             .NotEmpty()
             .When(x => x.AssignedTeamId.HasValue)

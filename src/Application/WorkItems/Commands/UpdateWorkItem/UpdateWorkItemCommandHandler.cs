@@ -34,8 +34,6 @@ internal sealed class UpdateWorkItemCommandHandler
             return WorkItemErrors.NotFound;
         }
 
-        workItem.UpdateAssignment(command.AssigneeId);
-
         workItem.Update(
             command.Type,
             command.Title,

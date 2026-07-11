@@ -12,7 +12,6 @@ namespace Presentation.Controllers.WorkItems;
 /// <param name="Description">The description of the work item.</param>
 /// <param name="AcceptanceCriteria">The acceptance criteria for the work item.</param>
 /// <param name="Status">The status of the work item.</param>
-/// <param name="AssigneeId">The unique identifier of the user assigned to the work item.</param>
 /// <param name="AssignedTeamId">The unique identifier of the team assigned to the work item.</param>
 /// <param name="SprintId">The unique identifier of the sprint the work item belongs to.</param>
 /// <param name="ParentWorkItemId">The unique identifier of the parent work item.</param>
@@ -24,7 +23,6 @@ public sealed record UpdateWorkItemRequest(
     string? Description,
     string? AcceptanceCriteria,
     WorkItemStatus? Status,
-    Guid? AssigneeId,
     Guid? AssignedTeamId,
     Guid? SprintId,
     Guid? ParentWorkItemId,
@@ -40,7 +38,6 @@ public sealed record UpdateWorkItemRequest(
             Description,
             AcceptanceCriteria,
             Status,
-            AssigneeId,
             AssignedTeamId,
             SprintId,
             ParentWorkItemId,
