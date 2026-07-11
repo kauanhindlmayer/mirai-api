@@ -19,7 +19,7 @@ internal sealed class CreateRetrospectiveCommandHandler
         CreateRetrospectiveCommand command,
         CancellationToken cancellationToken)
     {
-        var team = await _teamRepository.GetByIdAsync(
+        var team = await _teamRepository.GetByIdWithRetrospectivesAsync(
             command.TeamId,
             cancellationToken);
 

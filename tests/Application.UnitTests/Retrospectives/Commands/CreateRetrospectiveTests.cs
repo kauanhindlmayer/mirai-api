@@ -26,7 +26,7 @@ public class CreateRetrospectiveTests
     public async Task Handle_WhenTeamDoesNotExist_ShouldReturnError()
     {
         // Arrange
-        _teamRepository.GetByIdAsync(
+        _teamRepository.GetByIdWithRetrospectivesAsync(
             Command.TeamId,
             TestContext.Current.CancellationToken)
             .Returns(null as Team);
@@ -49,7 +49,7 @@ public class CreateRetrospectiveTests
         var team = new Team(Guid.NewGuid(), "Test Team", "Test Description");
         var retrospective = new Retrospective("Test Retrospective", Guid.NewGuid(), 5, null);
         team.AddRetrospective(retrospective);
-        _teamRepository.GetByIdAsync(
+        _teamRepository.GetByIdWithRetrospectivesAsync(
             Command.TeamId,
             TestContext.Current.CancellationToken)
             .Returns(team);
@@ -70,7 +70,7 @@ public class CreateRetrospectiveTests
     {
         // Arrange
         var team = new Team(Guid.NewGuid(), "Test Team", "Test Description");
-        _teamRepository.GetByIdAsync(
+        _teamRepository.GetByIdWithRetrospectivesAsync(
             Command.TeamId,
             TestContext.Current.CancellationToken)
             .Returns(team);
