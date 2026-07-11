@@ -160,6 +160,11 @@ public sealed class WorkItem : AggregateRoot
 
     public void AddTag(Tag tag)
     {
+        if (Tags.Any(t => t.Id == tag.Id))
+        {
+            return;
+        }
+
         Tags.Add(tag);
     }
 

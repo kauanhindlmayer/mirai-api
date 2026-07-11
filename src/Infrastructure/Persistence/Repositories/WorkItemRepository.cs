@@ -54,7 +54,7 @@ internal sealed class WorkItemRepository : Repository<WorkItem>, IWorkItemReposi
         CancellationToken cancellationToken = default)
     {
         return _dbContext.WorkItems
-            .AsNoTracking()
+            .Include(wi => wi.Tags)
             .Where(wi => wi.Tags.Any(t => t.Id == tagId))
             .ToListAsync(cancellationToken);
     }
