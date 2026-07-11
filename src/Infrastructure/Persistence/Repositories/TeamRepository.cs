@@ -28,4 +28,13 @@ internal sealed class TeamRepository : Repository<Team>, ITeamRepository
             .Include(t => t.Retrospectives)
             .FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
     }
+
+    public async Task<Team?> GetByIdWithSprintsAsync(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Teams
+            .Include(t => t.Sprints)
+            .FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
+    }
 }

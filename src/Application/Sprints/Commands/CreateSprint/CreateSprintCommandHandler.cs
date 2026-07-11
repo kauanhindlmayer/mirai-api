@@ -19,7 +19,7 @@ internal sealed class CreateSprintCommandHandler
         CreateSprintCommand command,
         CancellationToken cancellationToken)
     {
-        var team = await _teamRepository.GetByIdAsync(
+        var team = await _teamRepository.GetByIdWithSprintsAsync(
             command.TeamId,
             cancellationToken);
 
