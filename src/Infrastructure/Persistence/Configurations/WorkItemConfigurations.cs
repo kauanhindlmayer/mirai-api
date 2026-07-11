@@ -8,7 +8,9 @@ internal sealed class WorkItemConfigurations :
     IEntityTypeConfiguration<WorkItem>,
     IEntityTypeConfiguration<WorkItemComment>,
     IEntityTypeConfiguration<WorkItemAttachment>,
-    IEntityTypeConfiguration<WorkItemLink>
+    IEntityTypeConfiguration<WorkItemLink>,
+    IEntityTypeConfiguration<WorkItemChangeSet>,
+    IEntityTypeConfiguration<WorkItemChange>
 {
     public void Configure(EntityTypeBuilder<WorkItem> builder)
     {
@@ -192,5 +194,53 @@ internal sealed class WorkItemConfigurations :
 
         builder.HasIndex(wil => new { wil.SourceWorkItemId, wil.TargetWorkItemId, wil.LinkType })
             .IsUnique();
+    }
+
+    public void Configure(EntityTypeBuilder<WorkItemChangeSet> builder)
+    {
+        builder.HasKey(wics => wics.Id);
+
+        builder.Property(wics => wics.Id)
+            .ValueGeneratedNever();
+
+        builder.Property(wics => wics.WorkItemId)
+            .IsRequired();
+
+        builder.Property(wics => wics.SystemActor)
+            .HasMaxLength(100);
+
+        builder.HasOne(wics => wics.WorkItem)
+            .WithMany()
+            .HasForeignKey(wics => wics.WorkItemId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(wics => wics.ChangedByUser)
+            .WithMany()
+            .HasForeignKey(wics => wics.ChangedByUserId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        builder.HasMany(wics => wics.Changes)
+            .WithOne(wic => wic.WorkItemChangeSet)
+            .HasForeignKey(wic => wic.WorkItemChangeSetId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasIndex(wics => wics.WorkItemId);
+    }
+
+    public void Configure(EntityTypeBuilder<WorkItemChange> builder)
+    {
+        builder.ToTable("work_item_changes");
+
+        builder.HasKey(wic => wic.Id);
+
+        builder.Property(wic => wic.Id)
+            .ValueGeneratedNever();
+
+        builder.Property(wic => wic.WorkItemChangeSetId)
+            .IsRequired();
+
+        builder.Property(wic => wic.FieldName)
+            .IsRequired()
+            .HasMaxLength(100);
     }
 }

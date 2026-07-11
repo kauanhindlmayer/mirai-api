@@ -30,6 +30,7 @@ public interface IApplicationDbContext
     DbSet<WikiPage> WikiPages { get; }
     DbSet<WikiPageView> WikiPageViews { get; }
     DbSet<WorkItem> WorkItems { get; }
+    DbSet<WorkItemChangeSet> WorkItemChangeSets { get; }
     DbSet<Sprint> Sprints { get; }
     DbSet<Persona> Personas { get; }
     DbSet<Role> Roles { get; }

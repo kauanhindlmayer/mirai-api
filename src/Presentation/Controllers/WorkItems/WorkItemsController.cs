@@ -15,6 +15,7 @@ using Application.WorkItems.Commands.UpdateComment;
 using Application.WorkItems.Commands.UploadAttachment;
 using Application.WorkItems.Queries.DownloadAttachment;
 using Application.WorkItems.Queries.GetWorkItem;
+using Application.WorkItems.Queries.GetWorkItemHistory;
 using Application.WorkItems.Queries.GetWorkItemsStats;
 using Application.WorkItems.Queries.ListWorkItems;
 using Application.WorkItems.Queries.SearchWorkItems;
@@ -79,6 +80,25 @@ public sealed class WorkItemsController : ApiController
         CancellationToken cancellationToken)
     {
         var query = new GetWorkItemQuery(workItemId);
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(Ok, Problem);
+    }
+
+    /// <summary>
+    /// Retrieve a paginated change history for a work item.
+    /// </summary>
+    /// <param name="workItemId">The work item's unique identifier.</param>
+    [HttpGet("{workItemId:guid}/history")]
+    [ProducesResponseType(typeof(PaginatedList<WorkItemChangeSetResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<PaginatedList<WorkItemChangeSetResponse>>> GetWorkItemHistory(
+        Guid workItemId,
+        [FromQuery] PageRequest request,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetWorkItemHistoryQuery(workItemId, request.Page, request.PageSize);
 
         var result = await _sender.Send(query, cancellationToken);
 

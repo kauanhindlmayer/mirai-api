@@ -1,8 +1,10 @@
 using Application.Abstractions.Authentication;
 using Application.Abstractions.Storage;
+using Domain.Shared;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Testcontainers.Keycloak;
@@ -65,6 +67,11 @@ public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>, IAsy
 
             // No blob storage container is available in this test host.
             services.Replace(ServiceDescriptor.Singleton<IBlobService, FakeBlobService>());
+
+            // No Ollama instance is available in this test host.
+            services.RemoveAll<IEmbeddingGenerator<string, Embedding<float>>>();
+            services.AddKeyedSingleton<IEmbeddingGenerator<string, Embedding<float>>, FakeEmbeddingGenerator>(
+                ServiceKeys.Embeddings);
         });
     }
 }

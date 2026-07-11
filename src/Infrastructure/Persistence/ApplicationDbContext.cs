@@ -1,4 +1,5 @@
 using Application.Abstractions;
+using Application.Abstractions.Authentication;
 using Domain.Authorization;
 using Domain.Boards;
 using Domain.Organizations;
@@ -13,6 +14,7 @@ using Domain.Teams;
 using Domain.Users;
 using Domain.WikiPages;
 using Domain.WorkItems;
+using Domain.WorkItems.ValueObjects;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,7 +22,8 @@ namespace Infrastructure.Persistence;
 
 public sealed class ApplicationDbContext(
     DbContextOptions options,
-    IPublisher publisher) : DbContext(options), IApplicationDbContext
+    IPublisher publisher,
+    IUserContext userContext) : DbContext(options), IApplicationDbContext
 {
     private const string PostgresVectorExtension = "vector";
 
@@ -39,6 +42,8 @@ public sealed class ApplicationDbContext(
     public DbSet<BoardCard> BoardCards { get; init; }
 
     public DbSet<WorkItem> WorkItems { get; init; }
+
+    public DbSet<WorkItemChangeSet> WorkItemChangeSets { get; init; }
 
     public DbSet<WorkItemComment> WorkItemComments { get; init; }
 
@@ -64,10 +69,39 @@ public sealed class ApplicationDbContext(
 
     public DbSet<Role> Roles { get; init; }
 
+    private static readonly Dictionary<string, string> TrackedScalarFields = new()
+    {
+        [nameof(WorkItem.Title)] = "Title",
+        [nameof(WorkItem.Description)] = "Description",
+        [nameof(WorkItem.AcceptanceCriteria)] = "Acceptance Criteria",
+        [nameof(WorkItem.Type)] = "Type",
+        [nameof(WorkItem.Status)] = "Status",
+        [nameof(WorkItem.AssigneeId)] = "Assignee",
+        [nameof(WorkItem.AssignedTeamId)] = "Assigned Team",
+        [nameof(WorkItem.ParentWorkItemId)] = "Parent Work Item",
+        [nameof(WorkItem.SprintId)] = "Sprint",
+    };
+
+    private static readonly Dictionary<string, string> TrackedComplexFields = new()
+    {
+        [nameof(Planning.StoryPoints)] = "Story Points",
+        [nameof(Planning.Priority)] = "Priority",
+        [nameof(Classification.ValueArea)] = "Value Area",
+    };
+
+    private static readonly HashSet<string> ReferenceIdFields =
+    [
+        nameof(WorkItem.AssigneeId),
+        nameof(WorkItem.AssignedTeamId),
+        nameof(WorkItem.ParentWorkItemId),
+        nameof(WorkItem.SprintId),
+    ];
+
     public async override Task<int> SaveChangesAsync(
         CancellationToken cancellationToken = default)
     {
         UpdateTimestamps();
+        await CaptureWorkItemChangesAsync(cancellationToken);
 
         var domainEvents = ChangeTracker.Entries<Entity>()
            .SelectMany(entry =>
@@ -109,5 +143,105 @@ public sealed class ApplicationDbContext(
         {
             await publisher.Publish(domainEvent);
         }
+    }
+
+    private async Task CaptureWorkItemChangesAsync(CancellationToken cancellationToken)
+    {
+        var modifiedWorkItems = ChangeTracker.Entries<WorkItem>()
+            .Where(entry => entry.State == EntityState.Modified)
+            .ToList();
+
+        foreach (var entry in modifiedWorkItems)
+        {
+            var changeSet = new WorkItemChangeSet(entry.Entity.Id, userContext.UserId);
+
+            foreach (var property in entry.Properties.Where(p => p.IsModified))
+            {
+                if (!TrackedScalarFields.TryGetValue(property.Metadata.Name, out var fieldName))
+                {
+                    continue;
+                }
+
+                var oldValue = await FormatScalarValueAsync(
+                    property.Metadata.Name,
+                    property.OriginalValue,
+                    cancellationToken);
+                var newValue = await FormatScalarValueAsync(
+                    property.Metadata.Name,
+                    property.CurrentValue,
+                    cancellationToken);
+
+                if (oldValue == newValue)
+                {
+                    continue;
+                }
+
+                changeSet.AddChange(fieldName, oldValue, newValue);
+            }
+
+            foreach (var complexProperty in entry.ComplexProperties)
+            {
+                foreach (var property in complexProperty.Properties.Where(p => p.IsModified))
+                {
+                    if (!TrackedComplexFields.TryGetValue(property.Metadata.Name, out var fieldName))
+                    {
+                        continue;
+                    }
+
+                    if (property.OriginalValue?.ToString() == property.CurrentValue?.ToString())
+                    {
+                        continue;
+                    }
+
+                    changeSet.AddChange(
+                        fieldName,
+                        property.OriginalValue?.ToString(),
+                        property.CurrentValue?.ToString());
+                }
+            }
+
+            if (changeSet.Changes.Count > 0)
+            {
+                WorkItemChangeSets.Add(changeSet);
+            }
+        }
+    }
+
+    private async Task<string?> FormatScalarValueAsync(
+        string propertyName,
+        object? value,
+        CancellationToken cancellationToken)
+    {
+        if (value is null)
+        {
+            return null;
+        }
+
+        if (!ReferenceIdFields.Contains(propertyName))
+        {
+            return value.ToString();
+        }
+
+        var id = (Guid)value;
+        return propertyName switch
+        {
+            nameof(WorkItem.AssigneeId) => await Users
+                .Where(u => u.Id == id)
+                .Select(u => u.FirstName + " " + u.LastName)
+                .FirstOrDefaultAsync(cancellationToken),
+            nameof(WorkItem.AssignedTeamId) => await Teams
+                .Where(t => t.Id == id)
+                .Select(t => t.Name)
+                .FirstOrDefaultAsync(cancellationToken),
+            nameof(WorkItem.ParentWorkItemId) => await WorkItems
+                .Where(w => w.Id == id)
+                .Select(w => w.Title)
+                .FirstOrDefaultAsync(cancellationToken),
+            nameof(WorkItem.SprintId) => await Sprints
+                .Where(s => s.Id == id)
+                .Select(s => s.Name)
+                .FirstOrDefaultAsync(cancellationToken),
+            _ => id.ToString(),
+        };
     }
 }
