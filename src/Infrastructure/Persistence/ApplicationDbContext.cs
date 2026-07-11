@@ -1,12 +1,10 @@
 using Application.Abstractions;
-using Application.Abstractions.Authentication;
 using Domain.Authorization;
 using Domain.Boards;
 using Domain.Organizations;
 using Domain.Personas;
 using Domain.Projects;
 using Domain.Retrospectives;
-using Domain.Shared;
 using Domain.Sprints;
 using Domain.TagImportJobs;
 using Domain.Tags;
@@ -14,16 +12,12 @@ using Domain.Teams;
 using Domain.Users;
 using Domain.WikiPages;
 using Domain.WorkItems;
-using Infrastructure.Persistence.ChangeHistory;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence;
 
-public sealed class ApplicationDbContext(
-    DbContextOptions options,
-    IPublisher publisher,
-    IUserContext userContext) : DbContext(options), IApplicationDbContext
+public sealed class ApplicationDbContext(DbContextOptions options)
+    : DbContext(options), IApplicationDbContext
 {
     private const string PostgresVectorExtension = "vector";
 
@@ -69,51 +63,10 @@ public sealed class ApplicationDbContext(
 
     public DbSet<Role> Roles { get; init; }
 
-    public async override Task<int> SaveChangesAsync(
-        CancellationToken cancellationToken = default)
-    {
-        UpdateTimestamps();
-        await new WorkItemChangeHistoryRecorder(this).RecordAsync(userContext.UserId, cancellationToken);
-
-        var domainEvents = ChangeTracker.Entries<Entity>()
-           .SelectMany(entry =>
-            {
-                var domainEvents = entry.Entity.GetDomainEvents();
-                entry.Entity.ClearDomainEvents();
-                return domainEvents;
-            })
-           .ToList();
-
-        await PublishDomainEvents(domainEvents);
-        return await base.SaveChangesAsync(cancellationToken);
-    }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasPostgresExtension(PostgresVectorExtension);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
         base.OnModelCreating(modelBuilder);
-    }
-
-    private void UpdateTimestamps()
-    {
-        var entities = ChangeTracker.Entries<Entity>()
-            .Where(e => e.State == EntityState.Modified)
-            .Select(e => e.Entity);
-
-        foreach (var entity in entities)
-        {
-            typeof(Entity)
-                .GetProperty(nameof(Entity.UpdatedAtUtc))!
-                .SetValue(entity, DateTime.UtcNow);
-        }
-    }
-
-    private async Task PublishDomainEvents(List<IDomainEvent> domainEvents)
-    {
-        foreach (var domainEvent in domainEvents)
-        {
-            await publisher.Publish(domainEvent);
-        }
     }
 }

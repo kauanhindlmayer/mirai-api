@@ -30,6 +30,8 @@ using Infrastructure.Integrations.GitHub;
 using Infrastructure.Jobs;
 using Infrastructure.Links;
 using Infrastructure.Persistence;
+using Infrastructure.Persistence.ChangeHistory;
+using Infrastructure.Persistence.Interceptors;
 using Infrastructure.Persistence.Repositories;
 using Infrastructure.Storage;
 using Infrastructure.Time;
@@ -105,10 +107,18 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
+        services.AddSingleton<UpdateTimestampsInterceptor>();
+        services.AddScoped<WorkItemChangeHistoryInterceptor>();
+        services.AddScoped<DomainEventPublishingInterceptor>();
+
         var connectionString = configuration.GetConnectionString("mirai-db");
-        services.AddDbContext<ApplicationDbContext>(options =>
+        services.AddDbContext<ApplicationDbContext>((sp, options) =>
             options.UseNpgsql(connectionString, npgsqlOptions => npgsqlOptions.UseVector())
-                .UseSnakeCaseNamingConvention());
+                .UseSnakeCaseNamingConvention()
+                .AddInterceptors(
+                    sp.GetRequiredService<UpdateTimestampsInterceptor>(),
+                    sp.GetRequiredService<WorkItemChangeHistoryInterceptor>(),
+                    sp.GetRequiredService<DomainEventPublishingInterceptor>()));
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IOrganizationRepository, OrganizationRepository>();

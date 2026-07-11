@@ -270,7 +270,7 @@ internal sealed class WorkItemChangeHistoryRecorder(DbContext context)
             }
 
             return ResolveReferenceAsync is null
-                ? Task.FromResult<string?>(value.ToString())
+                ? Task.FromResult(value.ToString())
                 : ResolveReferenceAsync(context, (Guid)value, cancellationToken);
         }
     }
