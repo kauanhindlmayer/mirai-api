@@ -64,6 +64,14 @@ internal sealed class JwtBearerOptionsSetup : IConfigureNamedOptions<JwtBearerOp
                     "JWT message received. Has Authorization header: {HasAuthHeader}, Token preview: {TokenPreview}",
                     hasAuthHeader,
                     tokenPreview);
+
+                var accessToken = context.Request.Query["access_token"];
+                if (!string.IsNullOrEmpty(accessToken) &&
+                    context.HttpContext.Request.Path.StartsWithSegments("/hubs"))
+                {
+                    context.Token = accessToken;
+                }
+
                 return Task.CompletedTask;
             },
         };
