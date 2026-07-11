@@ -22,7 +22,7 @@ internal sealed class GetTagImportJobQueryHandler
     {
         var importJob = await _context.TagImportJobs
             .AsNoTracking()
-            .Where(job => job.Id == query.JobImportId)
+            .Where(job => job.Id == query.JobImportId && job.ProjectId == query.ProjectId)
             .Select(TagImportJobQueries.ProjectToDto())
             .FirstOrDefaultAsync(cancellationToken);
 

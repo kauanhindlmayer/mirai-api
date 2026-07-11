@@ -67,7 +67,7 @@ public sealed class TagImportJobsController : ApiController
         [FromHeader] AcceptHeaderRequest acceptHeader,
         CancellationToken cancellationToken)
     {
-        var query = new GetTagImportJobQuery(importJobId);
+        var query = new GetTagImportJobQuery(projectId, importJobId);
 
         var result = await _sender.Send(query, cancellationToken);
 
