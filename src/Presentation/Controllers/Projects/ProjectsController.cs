@@ -9,6 +9,7 @@ using Application.Projects.Commands.UpdateProject;
 using Application.Projects.Queries.GetProject;
 using Application.Projects.Queries.GetProjectUsers;
 using Application.Projects.Queries.ListProjects;
+using Application.Projects.Queries.ResolveProjectUsers;
 using Asp.Versioning;
 using Domain.Authorization;
 using MediatR;
@@ -194,6 +195,33 @@ public sealed class ProjectsController : ApiController
             pageRequest.PageSize,
             pageRequest.Sort,
             pageRequest.SearchTerm);
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(Ok, Problem);
+    }
+
+    /// <summary>
+    /// Resolve users by id within a project's organization, regardless of
+    /// their current project membership.
+    /// </summary>
+    /// <remarks>
+    /// Used to resolve users who are no longer project members (e.g. an
+    /// @mention referencing someone since removed from the project). A
+    /// user id with no match (not in the same organization, or never
+    /// existed) is simply omitted from the response.
+    /// </remarks>
+    /// <param name="projectId">The project's unique identifier.</param>
+    /// <param name="request">The user ids to resolve.</param>
+    [HttpGet("{projectId:guid}/users/resolve")]
+    [ProducesResponseType(typeof(IReadOnlyList<ResolvedUserResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<IReadOnlyList<ResolvedUserResponse>>> ResolveProjectUsers(
+        Guid projectId,
+        [FromQuery] ResolveProjectUsersRequest request,
+        CancellationToken cancellationToken)
+    {
+        var query = new ResolveProjectUsersQuery(projectId, request.UserIds);
 
         var result = await _sender.Send(query, cancellationToken);
 
