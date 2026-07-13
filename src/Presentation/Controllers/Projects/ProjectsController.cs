@@ -6,6 +6,7 @@ using Application.Projects.Commands.ChangeProjectMemberRole;
 using Application.Projects.Commands.CreateProject;
 using Application.Projects.Commands.RemoveUserFromProject;
 using Application.Projects.Commands.UpdateProject;
+using Application.Projects.Queries.GetMentionableProjectUsers;
 using Application.Projects.Queries.GetProject;
 using Application.Projects.Queries.GetProjectUsers;
 using Application.Projects.Queries.ListProjects;
@@ -194,6 +195,36 @@ public sealed class ProjectsController : ApiController
             pageRequest.Page,
             pageRequest.PageSize,
             pageRequest.Sort,
+            pageRequest.SearchTerm);
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(Ok, Problem);
+    }
+
+    /// <summary>
+    /// Get users eligible to be @mentioned within a project.
+    /// </summary>
+    /// <remarks>
+    /// Unlike <see cref="GetProjectUsers"/>, which lists only direct project
+    /// members for membership management, this includes anyone with
+    /// effective access to the project - such as organization owners and
+    /// admins - even without a direct membership record.
+    /// </remarks>
+    /// <param name="projectId">The project's unique identifier.</param>
+    /// <param name="pageRequest">Pagination parameters and the search term.</param>
+    [HttpGet("{projectId:guid}/users/mentionable")]
+    [ProducesResponseType(typeof(PaginatedList<MentionableProjectUserResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<PaginatedList<MentionableProjectUserResponse>>> GetMentionableProjectUsers(
+        Guid projectId,
+        [FromQuery] PageRequest pageRequest,
+        CancellationToken cancellationToken = default)
+    {
+        var query = new GetMentionableProjectUsersQuery(
+            projectId,
+            pageRequest.Page,
+            pageRequest.PageSize,
             pageRequest.SearchTerm);
 
         var result = await _sender.Send(query, cancellationToken);
