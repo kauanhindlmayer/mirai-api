@@ -110,6 +110,7 @@ public static class DependencyInjection
     {
         services.AddSingleton<UpdateTimestampsInterceptor>();
         services.AddScoped<WorkItemChangeHistoryInterceptor>();
+        services.AddScoped<NotificationInterceptor>();
         services.AddScoped<DomainEventPublishingInterceptor>();
 
         var connectionString = configuration.GetConnectionString("mirai-db");
@@ -119,6 +120,7 @@ public static class DependencyInjection
                 .AddInterceptors(
                     sp.GetRequiredService<UpdateTimestampsInterceptor>(),
                     sp.GetRequiredService<WorkItemChangeHistoryInterceptor>(),
+                    sp.GetRequiredService<NotificationInterceptor>(),
                     sp.GetRequiredService<DomainEventPublishingInterceptor>()));
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();

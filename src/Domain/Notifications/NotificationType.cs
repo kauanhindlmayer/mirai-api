@@ -5,4 +5,5 @@ public enum NotificationType
     AddedToProject,
     AddedToTeam,
     AddedToOrganization,
+    AssignedWorkItemChanged,
 }
