@@ -1,6 +1,7 @@
 using Application.Abstractions.Behaviors;
 using Application.Abstractions.Mappings;
 using Application.Abstractions.Sorting;
+using Application.Notifications.Events;
 using Application.Organizations.Queries.GetOrganizationUsers;
 using Application.Projects.Queries.GetProjectUsers;
 using Application.Tags.Queries.ListTags;
@@ -31,6 +32,7 @@ public static class DependencyInjection
             includeInternalTypes: true);
 
         services.AddSortMappings();
+        services.AddScoped<NotificationCreator>();
 
         return services;
     }

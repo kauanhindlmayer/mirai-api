@@ -1,6 +1,7 @@
 using Application.Abstractions;
 using Domain.Authorization;
 using Domain.Boards;
+using Domain.Notifications;
 using Domain.Organizations;
 using Domain.Personas;
 using Domain.Projects;
@@ -62,6 +63,8 @@ public sealed class ApplicationDbContext(DbContextOptions options)
     public DbSet<Persona> Personas { get; init; }
 
     public DbSet<Role> Roles { get; init; }
+
+    public DbSet<Notification> Notifications { get; init; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -17,6 +17,8 @@ public class AuthorizationTests : BaseTest
         "CreateOrganizationCommand",
         "ForgotPasswordCommand",
         "LoginWithGitHubCommand",
+        "MarkAllNotificationsAsReadCommand",
+        "MarkNotificationAsReadCommand",
         "RegisterUserCommand",
         "ResetPasswordCommand",
         "UpdateUserAvatarCommand",
@@ -31,6 +33,7 @@ public class AuthorizationTests : BaseTest
     [
         "GetCurrentUserQuery",
         "GetEffectivePermissionsQuery",
+        "GetNotificationsQuery",
         "GetUserAvatarQuery",
         "ListOrganizationsQuery",
         "ListRolesQuery",

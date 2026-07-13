@@ -10,6 +10,7 @@ using Application.Abstractions.Storage;
 using Application.Abstractions.Time;
 using Asp.Versioning;
 using Domain.Boards;
+using Domain.Notifications;
 using Domain.Organizations;
 using Domain.Projects;
 using Domain.Retrospectives;
@@ -130,6 +131,7 @@ public static class DependencyInjection
         services.AddScoped<ITagRepository, TagRepository>();
         services.AddScoped<IBoardRepository, BoardRepository>();
         services.AddScoped<ISprintRepository, SprintRepository>();
+        services.AddScoped<INotificationRepository, NotificationRepository>();
 
         services.AddScoped<IApplicationDbContext>(sp =>
             sp.GetRequiredService<ApplicationDbContext>());

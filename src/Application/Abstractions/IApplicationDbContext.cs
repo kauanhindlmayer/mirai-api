@@ -1,5 +1,6 @@
 using Domain.Authorization;
 using Domain.Boards;
+using Domain.Notifications;
 using Domain.Organizations;
 using Domain.Personas;
 using Domain.Projects;
@@ -20,6 +21,7 @@ public interface IApplicationDbContext
     DbSet<Board> Boards { get; }
     DbSet<BoardColumn> BoardColumns { get; }
     DbSet<BoardCard> BoardCards { get; }
+    DbSet<Notification> Notifications { get; }
     DbSet<Organization> Organizations { get; }
     DbSet<Project> Projects { get; }
     DbSet<Retrospective> Retrospectives { get; }
