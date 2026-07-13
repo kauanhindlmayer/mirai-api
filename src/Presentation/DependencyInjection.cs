@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Application.Abstractions.GitHub;
+using Application.Abstractions.Notifications;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Octokit.Webhooks.AspNetCore;
@@ -43,6 +44,7 @@ public static class DependencyInjection
                 config.PayloadSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
         services.AddScoped<IGitHubIntegrationNotifier, GitHubIntegrationNotifier>();
+        services.AddScoped<INotificationRealtimeNotifier, NotificationRealtimeNotifier>();
 
         return services;
     }
@@ -51,6 +53,7 @@ public static class DependencyInjection
     {
         app.MapHub<RetrospectiveHub>("/hubs/retrospective");
         app.MapHub<GitHubIntegrationHub>("/hubs/github");
+        app.MapHub<NotificationHub>("/hubs/notifications");
         app.MapGitHubWebhooks(
             path: "/api/webhooks/github",
             secret: app.Configuration["GitHubApp:WebhookSecret"]);

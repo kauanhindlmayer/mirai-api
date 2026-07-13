@@ -38,6 +38,7 @@ using Infrastructure.Time;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Configuration;
@@ -169,6 +170,8 @@ public static class DependencyInjection
             .ConfigureOptions<JwtBearerOptionsSetup>()
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer();
+
+        services.AddSingleton<IUserIdProvider, UserIdProvider>();
 
         services.AddTransient<AdminAuthorizationDelegatingHandler>();
 
