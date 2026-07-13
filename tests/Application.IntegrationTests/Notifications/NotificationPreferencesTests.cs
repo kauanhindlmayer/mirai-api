@@ -42,7 +42,7 @@ public class NotificationPreferencesTests : BaseIntegrationTest
         // Arrange
         var owner = await SeedCurrentUserAsync();
         var createResult = await _sender.Send(
-            new CreateOrganizationCommand("Test Organization", "Description"),
+            new CreateOrganizationCommand($"Organization {Guid.NewGuid()}", "Description"),
             TestContext.Current.CancellationToken);
         var organizationId = createResult.Value;
 
@@ -81,7 +81,7 @@ public class NotificationPreferencesTests : BaseIntegrationTest
     public async Task UpdateNotificationPreferences_WhenCalledTwice_ShouldUpdateExistingRowNotCreateDuplicate()
     {
         // Arrange
-        await SeedCurrentUserAsync();
+        var user = await SeedCurrentUserAsync();
         await _sender.Send(
             new UpdateNotificationPreferencesCommand(
                 MentionsEnabled: false,
@@ -101,7 +101,8 @@ public class NotificationPreferencesTests : BaseIntegrationTest
 
         // Assert
         _dbContext.ChangeTracker.Clear();
-        var rows = await _dbContext.Set<NotificationPreference>().CountAsync(TestContext.Current.CancellationToken);
+        var rows = await _dbContext.Set<NotificationPreference>()
+            .CountAsync(p => p.UserId == user.Id, TestContext.Current.CancellationToken);
         rows.Should().Be(1);
 
         var result = await _sender.Send(

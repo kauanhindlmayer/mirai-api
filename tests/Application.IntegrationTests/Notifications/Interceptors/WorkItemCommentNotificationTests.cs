@@ -103,7 +103,9 @@ public class WorkItemCommentNotificationTests : BaseIntegrationTest
         _dbContext.ChangeTracker.Clear();
         var notifications = await _dbContext.Notifications
             .AsNoTracking()
-            .Where(n => n.RecipientUserId == assignee.Id)
+            .Where(n => n.RecipientUserId == assignee.Id
+                && (n.Type == NotificationType.MentionedInWorkItemComment
+                    || n.Type == NotificationType.WorkItemCommentAdded))
             .ToListAsync(TestContext.Current.CancellationToken);
         notifications.Should().HaveCount(2);
         notifications.Should().Contain(n => n.Type == NotificationType.MentionedInWorkItemComment);

@@ -50,10 +50,11 @@ public class UserAddedToProjectNotificationTests : BaseIntegrationTest
         _dbContext.ChangeTracker.Clear();
         var notification = await _dbContext.Notifications
             .AsNoTracking()
-            .SingleOrDefaultAsync(n => n.RecipientUserId == user.Id, TestContext.Current.CancellationToken);
+            .SingleOrDefaultAsync(
+                n => n.RecipientUserId == user.Id && n.Type == NotificationType.AddedToProject,
+                TestContext.Current.CancellationToken);
         notification.Should().NotBeNull();
-        notification!.Type.Should().Be(NotificationType.AddedToProject);
-        notification.EntityId.Should().Be(project.Id);
+        notification!.EntityId.Should().Be(project.Id);
         notification.Message.Should().Contain(project.Name);
     }
 }

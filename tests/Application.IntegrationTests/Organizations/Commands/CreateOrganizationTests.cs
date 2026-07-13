@@ -19,7 +19,7 @@ public class CreateOrganizationTests : BaseIntegrationTest
         // Arrange
         await SeedCurrentUserAsync();
         var command = new CreateOrganizationCommand(
-            "Test Organization",
+            $"Test Organization {Guid.NewGuid()}",
             "Test Description");
 
         // Act
@@ -38,7 +38,7 @@ public class CreateOrganizationTests : BaseIntegrationTest
         // Arrange
         await SeedCurrentUserAsync();
         var command = new CreateOrganizationCommand(
-            "Test Organization 2",
+            $"Test Organization {Guid.NewGuid()}",
             "Test Description 2");
         await _sender.Send(command, TestContext.Current.CancellationToken);
 

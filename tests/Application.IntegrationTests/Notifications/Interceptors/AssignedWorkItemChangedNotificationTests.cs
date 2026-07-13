@@ -121,7 +121,9 @@ public class AssignedWorkItemChangedNotificationTests : BaseIntegrationTest
         // Assert
         var anyNotification = await _dbContext.Notifications
             .AsNoTracking()
-            .AnyAsync(n => n.Type == NotificationType.AssignedWorkItemChanged, TestContext.Current.CancellationToken);
+            .AnyAsync(
+                n => n.EntityId == workItem.Id && n.Type == NotificationType.AssignedWorkItemChanged,
+                TestContext.Current.CancellationToken);
         anyNotification.Should().BeFalse();
     }
 
@@ -196,6 +198,12 @@ public class AssignedWorkItemChangedNotificationTests : BaseIntegrationTest
         await _sender.Send(
             new AssignWorkItemCommand(workItem.Id, assignee.Id),
             TestContext.Current.CancellationToken);
+
+        // The assignment itself notifies the assignee - clear it so tests can assert in
+        // isolation on notifications produced by the change under test, not this setup step.
+        await _dbContext.Notifications
+            .Where(n => n.RecipientUserId == assignee.Id && n.Type == NotificationType.AssignedWorkItemChanged)
+            .ExecuteDeleteAsync(TestContext.Current.CancellationToken);
 
         return (admin, assignee, workItem);
     }
