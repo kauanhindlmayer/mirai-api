@@ -1,5 +1,6 @@
 using Domain.Notifications;
 using Domain.Users;
+using Domain.WikiPages;
 using Domain.WorkItems;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -25,6 +26,8 @@ internal sealed class NotificationInterceptor : SaveChangesInterceptor
         if (eventData.Context is not null)
         {
             await CreateAssignedWorkItemChangedNotificationsAsync(eventData.Context, cancellationToken);
+            CreateWorkItemCommentNotifications(eventData.Context);
+            CreateWikiPageCommentNotifications(eventData.Context);
         }
 
         return await base.SavingChangesAsync(eventData, result, cancellationToken);
@@ -49,9 +52,7 @@ internal sealed class NotificationInterceptor : SaveChangesInterceptor
             // Read the tracked entity rather than querying the database: the database
             // still holds pre-save values at this point, so a reassignment in the same
             // save would otherwise resolve to the outgoing assignee, not the new one.
-            var workItem = context.ChangeTracker.Entries<WorkItem>()
-                .Select(entry => entry.Entity)
-                .FirstOrDefault(wi => wi.Id == changeSet.WorkItemId);
+            var workItem = FindTrackedWorkItem(context, changeSet.WorkItemId);
 
             if (workItem?.AssigneeId is null || workItem.AssigneeId == changeSet.ChangedByUserId)
             {
@@ -66,13 +67,81 @@ internal sealed class NotificationInterceptor : SaveChangesInterceptor
             var fieldNames = string.Join(", ", changeSet.Changes.Select(c => c.FieldName).Distinct());
             var message = $"{actorName} changed {fieldNames} on \"{workItem.Title}\".";
 
-            var notification = new Notification(
+            context.Set<Notification>().Add(new Notification(
                 workItem.AssigneeId.Value,
                 NotificationType.AssignedWorkItemChanged,
                 changeSet.WorkItemId,
-                message);
-
-            context.Set<Notification>().Add(notification);
+                message));
         }
+    }
+
+    private static void CreateWorkItemCommentNotifications(DbContext context)
+    {
+        var comments = context.ChangeTracker.Entries<WorkItemComment>()
+            .Where(entry => entry.State == EntityState.Added)
+            .Select(entry => entry.Entity)
+            .ToList();
+
+        foreach (var comment in comments)
+        {
+            foreach (var mentionedUserId in MentionParser.ParseMentionedUserIds(comment.Content))
+            {
+                if (mentionedUserId == comment.AuthorId)
+                {
+                    continue;
+                }
+
+                context.Set<Notification>().Add(new Notification(
+                    mentionedUserId,
+                    NotificationType.MentionedInWorkItemComment,
+                    comment.WorkItemId,
+                    "You were mentioned in a comment on a work item."));
+            }
+
+            var workItem = FindTrackedWorkItem(context, comment.WorkItemId);
+
+            if (workItem?.AssigneeId is null || workItem.AssigneeId == comment.AuthorId)
+            {
+                continue;
+            }
+
+            context.Set<Notification>().Add(new Notification(
+                workItem.AssigneeId.Value,
+                NotificationType.WorkItemCommentAdded,
+                comment.WorkItemId,
+                $"New comment on \"{workItem.Title}\"."));
+        }
+    }
+
+    private static void CreateWikiPageCommentNotifications(DbContext context)
+    {
+        var comments = context.ChangeTracker.Entries<WikiPageComment>()
+            .Where(entry => entry.State == EntityState.Added)
+            .Select(entry => entry.Entity)
+            .ToList();
+
+        foreach (var comment in comments)
+        {
+            foreach (var mentionedUserId in MentionParser.ParseMentionedUserIds(comment.Content))
+            {
+                if (mentionedUserId == comment.AuthorId)
+                {
+                    continue;
+                }
+
+                context.Set<Notification>().Add(new Notification(
+                    mentionedUserId,
+                    NotificationType.MentionedInWikiPageComment,
+                    comment.WikiPageId,
+                    "You were mentioned in a comment on a wiki page."));
+            }
+        }
+    }
+
+    private static WorkItem? FindTrackedWorkItem(DbContext context, Guid workItemId)
+    {
+        return context.ChangeTracker.Entries<WorkItem>()
+            .Select(entry => entry.Entity)
+            .FirstOrDefault(wi => wi.Id == workItemId);
     }
 }

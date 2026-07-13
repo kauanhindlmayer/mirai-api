@@ -6,4 +6,7 @@ public enum NotificationType
     AddedToTeam,
     AddedToOrganization,
     AssignedWorkItemChanged,
+    MentionedInWorkItemComment,
+    MentionedInWikiPageComment,
+    WorkItemCommentAdded,
 }
