@@ -7,15 +7,18 @@ namespace Application.Notifications.Events;
 internal sealed class NotificationCreator
 {
     private readonly INotificationRepository _notificationRepository;
+    private readonly INotificationPreferenceRepository _notificationPreferenceRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<NotificationCreator> _logger;
 
     public NotificationCreator(
         INotificationRepository notificationRepository,
+        INotificationPreferenceRepository notificationPreferenceRepository,
         IUnitOfWork unitOfWork,
         ILogger<NotificationCreator> logger)
     {
         _notificationRepository = notificationRepository;
+        _notificationPreferenceRepository = notificationPreferenceRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
@@ -35,6 +38,15 @@ internal sealed class NotificationCreator
 
         try
         {
+            var preference = await _notificationPreferenceRepository.GetByUserIdAsync(
+                recipientUserId,
+                cancellationToken);
+
+            if (!(preference?.IsEnabled(type) ?? true))
+            {
+                return;
+            }
+
             var notification = new Notification(recipientUserId, type, entityId, message);
             await _notificationRepository.AddAsync(notification, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);

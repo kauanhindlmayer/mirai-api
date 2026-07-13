@@ -2,6 +2,8 @@ using System.Net.Mime;
 using Application.Abstractions;
 using Application.Notifications.Commands.MarkAllNotificationsAsRead;
 using Application.Notifications.Commands.MarkNotificationAsRead;
+using Application.Notifications.Commands.UpdateNotificationPreferences;
+using Application.Notifications.Queries.GetNotificationPreferences;
 using Application.Notifications.Queries.GetNotifications;
 using Asp.Versioning;
 using MediatR;
@@ -67,6 +69,41 @@ public sealed class NotificationsController : ApiController
     public async Task<ActionResult> MarkAllNotificationsAsRead(CancellationToken cancellationToken)
     {
         var command = new MarkAllNotificationsAsReadCommand();
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        return result.Match(_ => Ok(), Problem);
+    }
+
+    /// <summary>
+    /// Retrieve the current user's notification preferences.
+    /// </summary>
+    [HttpGet("preferences")]
+    [ProducesResponseType(typeof(NotificationPreferenceResponse), StatusCodes.Status200OK)]
+    public async Task<ActionResult<NotificationPreferenceResponse>> GetNotificationPreferences(
+        CancellationToken cancellationToken)
+    {
+        var query = new GetNotificationPreferencesQuery();
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(Ok, Problem);
+    }
+
+    /// <summary>
+    /// Update the current user's notification preferences.
+    /// </summary>
+    [HttpPut("preferences")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult> UpdateNotificationPreferences(
+        UpdateNotificationPreferencesRequest request,
+        CancellationToken cancellationToken)
+    {
+        var command = new UpdateNotificationPreferencesCommand(
+            request.MentionsEnabled,
+            request.AssignedWorkItemChangesEnabled,
+            request.WorkItemCommentsEnabled,
+            request.MembershipEnabled);
 
         var result = await _sender.Send(command, cancellationToken);
 

@@ -26,8 +26,8 @@ internal sealed class NotificationInterceptor : SaveChangesInterceptor
         if (eventData.Context is not null)
         {
             await CreateAssignedWorkItemChangedNotificationsAsync(eventData.Context, cancellationToken);
-            CreateWorkItemCommentNotifications(eventData.Context);
-            CreateWikiPageCommentNotifications(eventData.Context);
+            await CreateWorkItemCommentNotificationsAsync(eventData.Context, cancellationToken);
+            await CreateWikiPageCommentNotificationsAsync(eventData.Context, cancellationToken);
         }
 
         return await base.SavingChangesAsync(eventData, result, cancellationToken);
@@ -67,15 +67,19 @@ internal sealed class NotificationInterceptor : SaveChangesInterceptor
             var fieldNames = string.Join(", ", changeSet.Changes.Select(c => c.FieldName).Distinct());
             var message = $"{actorName} changed {fieldNames} on \"{workItem.Title}\".";
 
-            context.Set<Notification>().Add(new Notification(
+            await TryAddNotificationAsync(
+                context,
                 workItem.AssigneeId.Value,
                 NotificationType.AssignedWorkItemChanged,
                 changeSet.WorkItemId,
-                message));
+                message,
+                cancellationToken);
         }
     }
 
-    private static void CreateWorkItemCommentNotifications(DbContext context)
+    private static async Task CreateWorkItemCommentNotificationsAsync(
+        DbContext context,
+        CancellationToken cancellationToken)
     {
         var comments = context.ChangeTracker.Entries<WorkItemComment>()
             .Where(entry => entry.State == EntityState.Added)
@@ -91,11 +95,13 @@ internal sealed class NotificationInterceptor : SaveChangesInterceptor
                     continue;
                 }
 
-                context.Set<Notification>().Add(new Notification(
+                await TryAddNotificationAsync(
+                    context,
                     mentionedUserId,
                     NotificationType.MentionedInWorkItemComment,
                     comment.WorkItemId,
-                    "You were mentioned in a comment on a work item."));
+                    "You were mentioned in a comment on a work item.",
+                    cancellationToken);
             }
 
             var workItem = FindTrackedWorkItem(context, comment.WorkItemId);
@@ -105,15 +111,19 @@ internal sealed class NotificationInterceptor : SaveChangesInterceptor
                 continue;
             }
 
-            context.Set<Notification>().Add(new Notification(
+            await TryAddNotificationAsync(
+                context,
                 workItem.AssigneeId.Value,
                 NotificationType.WorkItemCommentAdded,
                 comment.WorkItemId,
-                $"New comment on \"{workItem.Title}\"."));
+                $"New comment on \"{workItem.Title}\".",
+                cancellationToken);
         }
     }
 
-    private static void CreateWikiPageCommentNotifications(DbContext context)
+    private static async Task CreateWikiPageCommentNotificationsAsync(
+        DbContext context,
+        CancellationToken cancellationToken)
     {
         var comments = context.ChangeTracker.Entries<WikiPageComment>()
             .Where(entry => entry.State == EntityState.Added)
@@ -129,13 +139,34 @@ internal sealed class NotificationInterceptor : SaveChangesInterceptor
                     continue;
                 }
 
-                context.Set<Notification>().Add(new Notification(
+                await TryAddNotificationAsync(
+                    context,
                     mentionedUserId,
                     NotificationType.MentionedInWikiPageComment,
                     comment.WikiPageId,
-                    "You were mentioned in a comment on a wiki page."));
+                    "You were mentioned in a comment on a wiki page.",
+                    cancellationToken);
             }
         }
+    }
+
+    private static async Task TryAddNotificationAsync(
+        DbContext context,
+        Guid recipientUserId,
+        NotificationType type,
+        Guid entityId,
+        string message,
+        CancellationToken cancellationToken)
+    {
+        var preference = await context.Set<NotificationPreference>()
+            .FirstOrDefaultAsync(p => p.UserId == recipientUserId, cancellationToken);
+
+        if (!(preference?.IsEnabled(type) ?? true))
+        {
+            return;
+        }
+
+        context.Set<Notification>().Add(new Notification(recipientUserId, type, entityId, message));
     }
 
     private static WorkItem? FindTrackedWorkItem(DbContext context, Guid workItemId)

@@ -21,6 +21,7 @@ public class AuthorizationTests : BaseTest
         "MarkNotificationAsReadCommand",
         "RegisterUserCommand",
         "ResetPasswordCommand",
+        "UpdateNotificationPreferencesCommand",
         "UpdateUserAvatarCommand",
         "UpdateUserProfileCommand",
     ];
@@ -33,6 +34,7 @@ public class AuthorizationTests : BaseTest
     [
         "GetCurrentUserQuery",
         "GetEffectivePermissionsQuery",
+        "GetNotificationPreferencesQuery",
         "GetNotificationsQuery",
         "GetUserAvatarQuery",
         "ListOrganizationsQuery",

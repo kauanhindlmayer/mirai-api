@@ -66,6 +66,8 @@ public sealed class ApplicationDbContext(DbContextOptions options)
 
     public DbSet<Notification> Notifications { get; init; }
 
+    public DbSet<NotificationPreference> NotificationPreferences { get; init; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasPostgresExtension(PostgresVectorExtension);

@@ -8,16 +8,19 @@ namespace Application.UnitTests.Notifications.Events;
 public class NotificationCreatorTests
 {
     private readonly INotificationRepository _notificationRepository;
+    private readonly INotificationPreferenceRepository _notificationPreferenceRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly NotificationCreator _notificationCreator;
 
     public NotificationCreatorTests()
     {
         _notificationRepository = Substitute.For<INotificationRepository>();
+        _notificationPreferenceRepository = Substitute.For<INotificationPreferenceRepository>();
         _unitOfWork = Substitute.For<IUnitOfWork>();
 
         _notificationCreator = new NotificationCreator(
             _notificationRepository,
+            _notificationPreferenceRepository,
             _unitOfWork,
             NullLogger<NotificationCreator>.Instance);
     }
@@ -91,5 +94,35 @@ public class NotificationCreatorTests
 
         // Assert
         await act.Should().NotThrowAsync();
+    }
+
+    [Fact]
+    public async Task CreateAsync_WhenCategoryIsMuted_ShouldNotCreateNotification()
+    {
+        // Arrange
+        var recipientId = Guid.NewGuid();
+        var mutedPreference = new NotificationPreference(recipientId);
+        mutedPreference.Update(
+            mentionsEnabled: true,
+            assignedWorkItemChangesEnabled: true,
+            workItemCommentsEnabled: true,
+            membershipEnabled: false);
+        _notificationPreferenceRepository
+            .GetByUserIdAsync(recipientId, Arg.Any<CancellationToken>())
+            .Returns(mutedPreference);
+
+        // Act
+        await _notificationCreator.CreateAsync(
+            recipientId,
+            Guid.NewGuid(),
+            NotificationType.AddedToProject,
+            Guid.NewGuid(),
+            "You were added to the project \"Mirai\".",
+            TestContext.Current.CancellationToken);
+
+        // Assert
+        await _notificationRepository.DidNotReceive().AddAsync(
+            Arg.Any<Notification>(),
+            Arg.Any<CancellationToken>());
     }
 }
