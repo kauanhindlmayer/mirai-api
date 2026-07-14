@@ -10,6 +10,8 @@ public static class Routes
         public static string Update(Guid organizationId) => $"{Base}/{organizationId}";
         public static string Delete(Guid organizationId) => $"{Base}/{organizationId}";
         public static string AddUser(Guid organizationId) => $"{Base}/{organizationId}/users";
+        public static string GetUserProfile(Guid organizationId, Guid userId) =>
+            $"{Base}/{organizationId}/users/{userId}/profile";
         private const string Base = "/api/organizations";
     }
 
@@ -17,7 +19,15 @@ public static class Routes
     {
         public static string Create(Guid organizationId) => $"{Base}/{organizationId}/projects";
         public static string Get(Guid projectId) => $"/api/projects/{projectId}";
+        public static string AddUser(Guid projectId) => $"/api/projects/{projectId}/users";
         private const string Base = "/api/organizations";
+    }
+
+    public static class Teams
+    {
+        public static string Create(Guid projectId) => $"/api/projects/{projectId}/teams";
+        public static string AddMember(Guid projectId, Guid teamId) =>
+            $"/api/projects/{projectId}/teams/{teamId}/members";
     }
 
     public static class Users

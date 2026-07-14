@@ -11,6 +11,7 @@ using Application.Organizations.Commands.UpdateOrganization;
 using Application.Organizations.Queries.GetOrganization;
 using Application.Organizations.Queries.GetOrganizationUsers;
 using Application.Organizations.Queries.ListOrganizations;
+using Application.Users.Queries.GetUserProfile;
 using Asp.Versioning;
 using Domain.Authorization;
 using Infrastructure;
@@ -192,6 +193,27 @@ public sealed class OrganizationsController : ApiController
             pageRequest.Sort,
             pageRequest.SearchTerm,
             excludeProjectId);
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(Ok, Problem);
+    }
+
+    /// <summary>
+    /// Retrieve a user's profile within an organization.
+    /// </summary>
+    /// <param name="organizationId">The organization's unique identifier.</param>
+    /// <param name="userId">The user's unique identifier.</param>
+    [HttpGet("{organizationId:guid}/users/{userId:guid}/profile")]
+    [ProducesResponseType(typeof(UserProfileResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<UserProfileResponse>> GetUserProfile(
+        Guid organizationId,
+        Guid userId,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetUserProfileQuery(organizationId, userId);
 
         var result = await _sender.Send(query, cancellationToken);
 

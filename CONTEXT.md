@@ -15,3 +15,7 @@ _Avoid_: Tag (already used for work item categorization), Ping
 **Notification Preference**:
 A per-user, per-trigger-type setting controlling whether a given kind of event produces a Notification for that user. Enabled by default; the user opts out, not in.
 _Avoid_: Setting, Subscription
+
+**Profile**:
+A view of a user as seen from within one organization: their identity (name, email, avatar) plus the teams and projects they belong to *within that organization*. A user has a different Profile per organization; a viewer never sees memberships in organizations they don't share with the target. Distinct from the user's own account, which they edit via `/api/users/profile`.
+_Avoid_: Account, Member card
