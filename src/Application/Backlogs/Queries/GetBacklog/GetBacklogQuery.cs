@@ -5,6 +5,10 @@ using ErrorOr;
 
 namespace Application.Backlogs.Queries.GetBacklog;
 
+/// <summary>
+/// Retrieves a team's work items for one sprint, or - when no sprint is given -
+/// the team's backlog: the work items that belong to no sprint at all.
+/// </summary>
 public sealed record GetBacklogQuery(
     Guid TeamId,
     Guid? SprintId,

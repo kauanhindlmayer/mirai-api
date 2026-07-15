@@ -1,12 +1,15 @@
 using FluentValidation;
 
-namespace Application.Sprints.Commands.CreateSprint;
+namespace Application.Sprints.Commands.UpdateSprint;
 
-internal sealed class CreateSprintCommandValidator : AbstractValidator<CreateSprintCommand>
+internal sealed class UpdateSprintCommandValidator : AbstractValidator<UpdateSprintCommand>
 {
-    public CreateSprintCommandValidator()
+    public UpdateSprintCommandValidator()
     {
         RuleFor(x => x.TeamId)
+            .NotEmpty();
+
+        RuleFor(x => x.SprintId)
             .NotEmpty();
 
         RuleFor(x => x.Name)

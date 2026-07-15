@@ -1,6 +1,8 @@
 using System.Net.Mime;
 using Application.Sprints.Commands.AddWorkItemToSprint;
 using Application.Sprints.Commands.CreateSprint;
+using Application.Sprints.Commands.DeleteSprint;
+using Application.Sprints.Commands.UpdateSprint;
 using Application.Sprints.Queries.ListSprints;
 using Asp.Versioning;
 using MediatR;
@@ -73,6 +75,58 @@ public sealed class SprintsController : ApiController
     }
 
     /// <summary>
+    /// Updates the specified sprint's name and dates.
+    /// </summary>
+    /// <param name="teamId">The team's unique identifier.</param>
+    /// <param name="sprintId">The sprint's unique identifier.</param>
+    /// <param name="request">The request containing the new sprint details.</param>
+    [HttpPut("{sprintId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> UpdateSprint(
+        Guid teamId,
+        Guid sprintId,
+        UpdateSprintRequest request,
+        CancellationToken cancellationToken)
+    {
+        var command = new UpdateSprintCommand(
+            teamId,
+            sprintId,
+            request.Name,
+            request.StartDate,
+            request.EndDate);
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        return result.Match(
+            _ => NoContent(),
+            Problem);
+    }
+
+    /// <summary>
+    /// Deletes the specified sprint, returning its work items to the backlog.
+    /// </summary>
+    /// <param name="teamId">The team's unique identifier.</param>
+    /// <param name="sprintId">The sprint's unique identifier.</param>
+    [HttpDelete("{sprintId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> DeleteSprint(
+        Guid teamId,
+        Guid sprintId,
+        CancellationToken cancellationToken)
+    {
+        var command = new DeleteSprintCommand(teamId, sprintId);
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        return result.Match(
+            _ => NoContent(),
+            Problem);
+    }
+
+    /// <summary>
     /// Adds a work item to the specified sprint.
     /// </summary>
     /// <param name="teamId">The team's unique identifier.</param>
@@ -97,4 +151,4 @@ public sealed class SprintsController : ApiController
             _ => NoContent(),
             Problem);
     }
-}
+}

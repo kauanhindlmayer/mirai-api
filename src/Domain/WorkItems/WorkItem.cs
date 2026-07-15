@@ -71,6 +71,16 @@ public sealed class WorkItem : AggregateRoot
         AssigneeId = userId;
     }
 
+    /// <summary>
+    /// Returns the work item to its team's backlog. A work item is in the
+    /// backlog precisely when it belongs to no sprint.
+    /// </summary>
+    public void RemoveFromSprint()
+    {
+        SprintId = null;
+        Sprint = null;
+    }
+
     public void Close()
     {
         Status = WorkItemStatus.Closed;

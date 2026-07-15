@@ -4,6 +4,14 @@ A web-based project management tool (work items, sprints, boards, wiki pages, re
 
 ## Language
 
+**Sprint**:
+A named, time-boxed iteration owned by a single team, spanning an inclusive range of calendar dates (a sprint dated the 1st to the 14th includes the 14th). Within its team, a sprint's name is unique and its dates may not overlap another sprint's. Deleting a sprint returns its work items to the **Backlog**.
+_Avoid_: Iteration, Cycle, Milestone
+
+**Backlog**:
+The work items belonging to no sprint. Backlog membership is not a flag or a separate list - a work item is in the backlog precisely when its `SprintId` is null, which is why deleting a sprint puts its work items back there.
+_Avoid_: Icebox, Queue, Unplanned work
+
 **Notification**:
 An in-app record informing a user that something relevant to them occurred - they were mentioned, a work item assigned to them changed, someone commented on their assigned work item, or they were added to a project, team, or organization. Stores a display message resolved at the moment it's created, so it reads correctly even if the underlying names later change.
 _Avoid_: Alert, Message, Activity

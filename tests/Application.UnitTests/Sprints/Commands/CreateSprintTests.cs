@@ -63,6 +63,6 @@ public class CreateSprintTests
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Should().Be(SprintErrors.AlreadyExists);
+        result.FirstError.Code.Should().Be(SprintErrors.AlreadyExists.Code);
     }
 }

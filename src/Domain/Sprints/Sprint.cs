@@ -40,4 +40,30 @@ public sealed class Sprint : Entity
         WorkItems.Add(workItem);
         return Result.Success;
     }
+
+    public void Update(string name, DateOnly startDate, DateOnly endDate)
+    {
+        Name = name;
+        StartDate = startDate;
+        EndDate = endDate;
+    }
+
+    public void ReturnWorkItemsToBacklog()
+    {
+        foreach (var workItem in WorkItems)
+        {
+            workItem.RemoveFromSprint();
+        }
+
+        WorkItems.Clear();
+    }
+
+    /// <summary>
+    /// A sprint's date range includes both endpoints, so a sprint ending on the
+    /// 14th and one starting on the 15th are back-to-back, not overlapping.
+    /// </summary>
+    public bool Overlaps(DateOnly startDate, DateOnly endDate)
+    {
+        return StartDate <= endDate && startDate <= EndDate;
+    }
 }

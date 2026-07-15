@@ -1,6 +1,9 @@
 using Application.Abstractions.Authentication;
 using Application.Abstractions.Storage;
 using Domain.Authorization;
+using Domain.Organizations;
+using Domain.Projects;
+using Domain.Teams;
 using Domain.Users;
 using Infrastructure.Persistence;
 using MediatR;
@@ -66,5 +69,33 @@ public abstract class BaseIntegrationTest
         SetCurrentUser(user.Id);
 
         return user;
+    }
+
+    /// <summary>
+    /// Seeds an organization, a project and a team, with a team admin who is left as the
+    /// current caller - enough for any command whose authorization is team-scoped.
+    /// </summary>
+    protected async Task<Team> SeedTeamWithAdminAsync()
+    {
+        await SeedCurrentUserAsync();
+
+        var organization = new Organization($"Organization {Guid.NewGuid()}", "Description");
+        var project = new Project($"Project {Guid.NewGuid()}", "Description", organization.Id);
+        var team = new Team(project.Id, "Engineering", "Description");
+        var admin = new User("Admin", "User", $"admin-{Guid.NewGuid()}@mirai.com");
+        admin.SetIdentityId(Guid.NewGuid().ToString());
+
+        _dbContext.Organizations.Add(organization);
+        _dbContext.Projects.Add(project);
+        _dbContext.Teams.Add(team);
+        _dbContext.Users.Add(admin);
+        await _dbContext.SaveChangesAsync();
+
+        team.AddMember(admin, await GetRoleAsync(SystemRoles.TeamAdminId));
+        await _dbContext.SaveChangesAsync();
+
+        SetCurrentUser(admin.Id);
+
+        return team;
     }
 }

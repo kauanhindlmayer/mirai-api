@@ -216,7 +216,7 @@ public class TeamTests : BaseTest
         // Assert
         result.IsError.Should().BeTrue();
         result.Errors.Should().HaveCount(1);
-        result.FirstError.Should().BeEquivalentTo(SprintErrors.AlreadyExists);
+        result.FirstError.Code.Should().Be(SprintErrors.AlreadyExists.Code);
     }
 
     [Fact]
@@ -232,6 +232,289 @@ public class TeamTests : BaseTest
         // Assert
         result.IsError.Should().BeFalse();
         team.Sprints.Should().Contain(sprint);
+    }
+
+    [Fact]
+    public void AddSprint_WhenSprintOverlapsAnExistingSprint_ShouldReturnError()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+        team.AddSprint(SprintFactory.Create(
+            name: "Sprint 1",
+            startDate: new DateOnly(2026, 6, 1),
+            endDate: new DateOnly(2026, 6, 14)));
+
+        // Act
+        var result = team.AddSprint(SprintFactory.Create(
+            name: "Sprint 2",
+            startDate: new DateOnly(2026, 6, 14),
+            endDate: new DateOnly(2026, 6, 28)));
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Code.Should().Be(SprintErrors.Overlaps.Code);
+    }
+
+    [Fact]
+    public void AddSprint_WhenSprintStartsTheDayAfterAnExistingSprintEnds_ShouldAddSprint()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+        team.AddSprint(SprintFactory.Create(
+            name: "Sprint 1",
+            startDate: new DateOnly(2026, 6, 1),
+            endDate: new DateOnly(2026, 6, 14)));
+
+        // Act
+        var result = team.AddSprint(SprintFactory.Create(
+            name: "Sprint 2",
+            startDate: new DateOnly(2026, 6, 15),
+            endDate: new DateOnly(2026, 6, 28)));
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        team.Sprints.Should().HaveCount(2);
+    }
+
+    [Fact]
+    public void UpdateSprint_WhenSprintDoesNotExist_ShouldReturnError()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+
+        // Act
+        var result = team.UpdateSprint(
+            Guid.NewGuid(),
+            "Sprint 1",
+            new DateOnly(2026, 6, 1),
+            new DateOnly(2026, 6, 14));
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().BeEquivalentTo(SprintErrors.NotFound);
+    }
+
+    [Fact]
+    public void UpdateSprint_ShouldOverwriteNameAndDates()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+        var sprint = SprintFactory.Create();
+        team.AddSprint(sprint);
+
+        // Act
+        var result = team.UpdateSprint(
+            sprint.Id,
+            "Sprint 42",
+            new DateOnly(2026, 6, 1),
+            new DateOnly(2026, 6, 14));
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        sprint.Name.Should().Be("Sprint 42");
+        sprint.StartDate.Should().Be(new DateOnly(2026, 6, 1));
+        sprint.EndDate.Should().Be(new DateOnly(2026, 6, 14));
+    }
+
+    [Fact]
+    public void UpdateSprint_WhenOnlyTheDatesChange_ShouldNotCollideWithItsOwnName()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+        var sprint = SprintFactory.Create(name: "Sprint 1");
+        team.AddSprint(sprint);
+
+        // Act
+        var result = team.UpdateSprint(
+            sprint.Id,
+            "Sprint 1",
+            new DateOnly(2026, 6, 1),
+            new DateOnly(2026, 6, 14));
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        sprint.StartDate.Should().Be(new DateOnly(2026, 6, 1));
+    }
+
+    [Fact]
+    public void UpdateSprint_WhenOnlyTheNameChanges_ShouldNotOverlapItself()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+        var sprint = SprintFactory.Create(
+            name: "Sprint 1",
+            startDate: new DateOnly(2026, 6, 1),
+            endDate: new DateOnly(2026, 6, 14));
+        team.AddSprint(sprint);
+
+        // Act
+        var result = team.UpdateSprint(
+            sprint.Id,
+            "Sprint 42",
+            new DateOnly(2026, 6, 1),
+            new DateOnly(2026, 6, 14));
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        sprint.Name.Should().Be("Sprint 42");
+    }
+
+    [Fact]
+    public void UpdateSprint_WhenNameIsTakenByAnotherSprint_ShouldReturnError()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+        team.AddSprint(SprintFactory.Create(
+            name: "Sprint 1",
+            startDate: new DateOnly(2026, 6, 1),
+            endDate: new DateOnly(2026, 6, 14)));
+        var sprint = SprintFactory.Create(
+            name: "Sprint 2",
+            startDate: new DateOnly(2026, 6, 15),
+            endDate: new DateOnly(2026, 6, 28));
+        team.AddSprint(sprint);
+
+        // Act
+        var result = team.UpdateSprint(
+            sprint.Id,
+            "Sprint 1",
+            sprint.StartDate,
+            sprint.EndDate);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Code.Should().Be(SprintErrors.AlreadyExists.Code);
+    }
+
+    [Fact]
+    public void UpdateSprint_WhenDatesOverlapAnotherSprint_ShouldReturnError()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+        team.AddSprint(SprintFactory.Create(
+            name: "Sprint 1",
+            startDate: new DateOnly(2026, 6, 1),
+            endDate: new DateOnly(2026, 6, 14)));
+        var sprint = SprintFactory.Create(
+            name: "Sprint 2",
+            startDate: new DateOnly(2026, 6, 15),
+            endDate: new DateOnly(2026, 6, 28));
+        team.AddSprint(sprint);
+
+        // Act
+        var result = team.UpdateSprint(
+            sprint.Id,
+            "Sprint 2",
+            new DateOnly(2026, 6, 10),
+            new DateOnly(2026, 6, 28));
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Code.Should().Be(SprintErrors.Overlaps.Code);
+    }
+
+    [Fact]
+    public void UpdateSprint_WhenDatesOverlap_ShouldNameTheSprintTheyOverlap()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+        team.AddSprint(SprintFactory.Create(
+            name: "Hardening",
+            startDate: new DateOnly(2026, 6, 1),
+            endDate: new DateOnly(2026, 6, 14)));
+        var sprint = SprintFactory.Create(
+            name: "Sprint 2",
+            startDate: new DateOnly(2026, 6, 15),
+            endDate: new DateOnly(2026, 6, 28));
+        team.AddSprint(sprint);
+
+        // Act
+        var result = team.UpdateSprint(
+            sprint.Id,
+            "Sprint 2",
+            new DateOnly(2026, 6, 10),
+            new DateOnly(2026, 6, 28));
+
+        // Assert
+        result.FirstError.Description.Should().Contain("Hardening");
+    }
+
+    [Fact]
+    public void UpdateSprint_WhenNameIsTaken_ShouldNameTheSprintThatHasIt()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+        team.AddSprint(SprintFactory.Create(
+            name: "Hardening",
+            startDate: new DateOnly(2026, 6, 1),
+            endDate: new DateOnly(2026, 6, 14)));
+        var sprint = SprintFactory.Create(
+            name: "Sprint 2",
+            startDate: new DateOnly(2026, 6, 15),
+            endDate: new DateOnly(2026, 6, 28));
+        team.AddSprint(sprint);
+
+        // Act
+        var result = team.UpdateSprint(
+            sprint.Id,
+            "Hardening",
+            sprint.StartDate,
+            sprint.EndDate);
+
+        // Assert
+        result.FirstError.Description.Should().Contain("Hardening");
+    }
+
+    [Fact]
+    public void DeleteSprint_WhenSprintDoesNotExist_ShouldReturnError()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+
+        // Act
+        var result = team.DeleteSprint(Guid.NewGuid());
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().BeEquivalentTo(SprintErrors.NotFound);
+    }
+
+    [Fact]
+    public void DeleteSprint_ShouldRemoveSprintAndReturnItsWorkItemsToTheBacklog()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+        var sprint = SprintFactory.Create();
+        var workItem = WorkItemFactory.Create();
+        sprint.AddWorkItem(workItem);
+        team.AddSprint(sprint);
+
+        // Act
+        var result = team.DeleteSprint(sprint.Id);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        team.Sprints.Should().BeEmpty();
+        workItem.SprintId.Should().BeNull();
+    }
+
+    [Fact]
+    public void DeleteSprint_ShouldFreeItsNameAndDatesForReuse()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+        var sprint = SprintFactory.Create();
+        team.AddSprint(sprint);
+        team.DeleteSprint(sprint.Id);
+
+        // Act
+        var result = team.AddSprint(SprintFactory.Create(
+            name: sprint.Name,
+            startDate: sprint.StartDate,
+            endDate: sprint.EndDate));
+
+        // Assert
+        result.IsError.Should().BeFalse();
     }
 
     [Fact]

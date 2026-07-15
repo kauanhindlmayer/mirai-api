@@ -11,4 +11,8 @@ public interface ITeamRepository : IRepository<Team>
     Task<Team?> GetByIdWithSprintsAsync(
         Guid id,
         CancellationToken cancellationToken = default);
+
+    Task<Team?> GetByIdWithSprintsAndWorkItemsAsync(
+        Guid id,
+        CancellationToken cancellationToken = default);
 }

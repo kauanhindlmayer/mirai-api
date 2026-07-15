@@ -27,7 +27,7 @@ internal sealed class GetBacklogQueryHandler
             .Include(wi => wi.ChildWorkItems)
             .Where(wi =>
                 wi.AssignedTeamId == query.TeamId &&
-                (!query.SprintId.HasValue || wi.SprintId == query.SprintId) &&
+                wi.SprintId == query.SprintId &&
                 (!query.BacklogLevel.HasValue ||
                  (query.BacklogLevel == BacklogLevel.Epic && wi.Type == WorkItemType.Epic && !wi.ParentWorkItemId.HasValue) ||
                  (query.BacklogLevel == BacklogLevel.Feature && wi.Type == WorkItemType.Feature) ||

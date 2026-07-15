@@ -112,12 +112,58 @@ public sealed class Team : AggregateRoot
 
     public ErrorOr<Success> AddSprint(Sprint sprint)
     {
-        if (Sprints.Any(s => s.Name == sprint.Name))
+        if (Sprints.Any(s => s.Id == sprint.Id))
         {
             return SprintErrors.AlreadyExists;
         }
 
+        var result = EnsureSprintIsDistinct(
+            sprint.Id,
+            sprint.Name,
+            sprint.StartDate,
+            sprint.EndDate);
+
+        if (result.IsError)
+        {
+            return result.Errors;
+        }
+
         Sprints.Add(sprint);
+        return Result.Success;
+    }
+
+    public ErrorOr<Success> UpdateSprint(
+        Guid sprintId,
+        string name,
+        DateOnly startDate,
+        DateOnly endDate)
+    {
+        var sprint = Sprints.FirstOrDefault(s => s.Id == sprintId);
+        if (sprint is null)
+        {
+            return SprintErrors.NotFound;
+        }
+
+        var result = EnsureSprintIsDistinct(sprintId, name, startDate, endDate);
+        if (result.IsError)
+        {
+            return result.Errors;
+        }
+
+        sprint.Update(name, startDate, endDate);
+        return Result.Success;
+    }
+
+    public ErrorOr<Success> DeleteSprint(Guid sprintId)
+    {
+        var sprint = Sprints.FirstOrDefault(s => s.Id == sprintId);
+        if (sprint is null)
+        {
+            return SprintErrors.NotFound;
+        }
+
+        sprint.ReturnWorkItemsToBacklog();
+        Sprints.Remove(sprint);
         return Result.Success;
     }
 
@@ -140,6 +186,35 @@ public sealed class Team : AggregateRoot
     public void UnsetAsDefault()
     {
         IsDefault = false;
+    }
+
+    /// <summary>
+    /// A team's sprints have distinct names and may not overlap in time. The
+    /// sprint being checked is excluded, so re-saving one against itself passes.
+    /// </summary>
+    private ErrorOr<Success> EnsureSprintIsDistinct(
+        Guid sprintId,
+        string name,
+        DateOnly startDate,
+        DateOnly endDate)
+    {
+        var otherSprints = Sprints.Where(s => s.Id != sprintId).ToList();
+
+        var sprintWithSameName = otherSprints.FirstOrDefault(s => s.Name == name);
+        if (sprintWithSameName is not null)
+        {
+            return SprintErrors.NameTakenBySprint(sprintWithSameName.Name);
+        }
+
+        var overlappingSprint = otherSprints
+            .FirstOrDefault(s => s.Overlaps(startDate, endDate));
+
+        if (overlappingSprint is not null)
+        {
+            return SprintErrors.OverlapsSprint(overlappingSprint.Name);
+        }
+
+        return Result.Success;
     }
 
     private bool IsLastAdmin(Guid userId)

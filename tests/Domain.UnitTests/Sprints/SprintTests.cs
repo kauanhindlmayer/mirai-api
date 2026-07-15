@@ -49,4 +49,63 @@ public class SprintTests
         result.IsError.Should().BeTrue();
         result.FirstError.Should().Be(SprintErrors.WorkItemAlreadyInSprint);
     }
+
+    [Fact]
+    public void Update_ShouldOverwriteNameAndDates()
+    {
+        // Arrange
+        var sprint = SprintFactory.Create();
+        var startDate = new DateOnly(2026, 3, 2);
+        var endDate = new DateOnly(2026, 3, 13);
+
+        // Act
+        sprint.Update("Sprint 42", startDate, endDate);
+
+        // Assert
+        sprint.Name.Should().Be("Sprint 42");
+        sprint.StartDate.Should().Be(startDate);
+        sprint.EndDate.Should().Be(endDate);
+    }
+
+    [Fact]
+    public void ReturnWorkItemsToBacklog_ShouldDetachEveryWorkItem()
+    {
+        // Arrange
+        var sprint = SprintFactory.Create();
+        var workItem = WorkItemFactory.Create();
+        sprint.AddWorkItem(workItem);
+
+        // Act
+        sprint.ReturnWorkItemsToBacklog();
+
+        // Assert
+        sprint.WorkItems.Should().BeEmpty();
+        workItem.SprintId.Should().BeNull();
+    }
+
+    [Theory]
+    [InlineData(1, 14, true)]
+    [InlineData(8, 21, true)]
+    [InlineData(1, 7, true)]
+    [InlineData(14, 28, true)]
+    [InlineData(15, 28, false)]
+    [InlineData(16, 28, false)]
+    public void Overlaps_ShouldTreatBothEndpointsAsInclusive(
+        int startDay,
+        int endDay,
+        bool expected)
+    {
+        // Arrange
+        var sprint = SprintFactory.Create(
+            startDate: new DateOnly(2026, 6, 1),
+            endDate: new DateOnly(2026, 6, 14));
+
+        // Act
+        var result = sprint.Overlaps(
+            new DateOnly(2026, 6, startDay),
+            new DateOnly(2026, 6, endDay));
+
+        // Assert
+        result.Should().Be(expected);
+    }
 }
