@@ -10,5 +10,7 @@ public sealed class SprintResponse
     public DateOnly EndDate { get; init; }
     public SprintStatus Status { get; init; }
     public DateTime? StartedAtUtc { get; init; }
+    public int? CommittedStoryPoints { get; init; }
+    public int? CommittedWorkItemCount { get; init; }
     public int WorkItemCount { get; init; }
 }

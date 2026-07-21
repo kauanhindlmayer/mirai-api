@@ -1,5 +1,6 @@
 using Domain.Sprints;
 using Domain.UnitTests.WorkItems;
+using Domain.WorkItems.ValueObjects;
 
 namespace Domain.UnitTests.Sprints;
 
@@ -132,5 +133,83 @@ public class SprintTests
         // Assert
         sprint.Status.Should().Be(SprintStatus.Active);
         sprint.StartedAtUtc.Should().NotBeNull();
+    }
+
+    [Fact]
+    public void Start_ShouldSnapshotOneCommitmentPerWorkItem()
+    {
+        // Arrange
+        var sprint = SprintFactory.Create();
+        var estimated = WorkItemFactory.Create();
+        estimated.Update(planning: new Planning { StoryPoints = 5 });
+        var unestimated = WorkItemFactory.Create();
+        sprint.AddWorkItem(estimated);
+        sprint.AddWorkItem(unestimated);
+
+        // Act
+        sprint.Start();
+
+        // Assert
+        sprint.Commitments.Should().HaveCount(2);
+        sprint.Commitments.Should().ContainSingle(c =>
+            c.WorkItemId == estimated.Id
+            && c.CommittedStoryPoints == 5
+            && c.StatusAtStart == estimated.Status);
+        sprint.Commitments.Should().ContainSingle(c =>
+            c.WorkItemId == unestimated.Id && c.CommittedStoryPoints == null);
+    }
+
+    [Fact]
+    public void Start_WhenSprintIsEmpty_ShouldRecordNoCommitments()
+    {
+        // Arrange
+        var sprint = SprintFactory.Create();
+
+        // Act
+        sprint.Start();
+
+        // Assert
+        sprint.Commitments.Should().BeEmpty();
+        sprint.CommittedStoryPoints.Should().Be(0);
+        sprint.CommittedWorkItemCount.Should().Be(0);
+    }
+
+    [Fact]
+    public void CommittedFigures_ShouldSumCommittedPointsAndCountItems()
+    {
+        // Arrange
+        var sprint = SprintFactory.Create();
+        var first = WorkItemFactory.Create();
+        first.Update(planning: new Planning { StoryPoints = 3 });
+        var second = WorkItemFactory.Create();
+        second.Update(planning: new Planning { StoryPoints = 8 });
+        var unestimated = WorkItemFactory.Create();
+        sprint.AddWorkItem(first);
+        sprint.AddWorkItem(second);
+        sprint.AddWorkItem(unestimated);
+
+        // Act
+        sprint.Start();
+
+        // Assert
+        sprint.CommittedStoryPoints.Should().Be(11);
+        sprint.CommittedWorkItemCount.Should().Be(3);
+    }
+
+    [Fact]
+    public void Commitments_ShouldNotChangeWhenAWorkItemIsReEstimatedAfterStart()
+    {
+        // Arrange
+        var sprint = SprintFactory.Create();
+        var workItem = WorkItemFactory.Create();
+        workItem.Update(planning: new Planning { StoryPoints = 5 });
+        sprint.AddWorkItem(workItem);
+        sprint.Start();
+
+        // Act
+        workItem.Update(planning: new Planning { StoryPoints = 13 });
+
+        // Assert
+        sprint.CommittedStoryPoints.Should().Be(5);
     }
 }

@@ -55,5 +55,10 @@ internal sealed class SprintConfigurations : IEntityTypeConfiguration<Sprint>
             .WithOne()
             .HasForeignKey(wi => wi.SprintId)
             .OnDelete(DeleteBehavior.NoAction);
+
+        builder.HasMany(s => s.Commitments)
+            .WithOne()
+            .HasForeignKey(c => c.SprintId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

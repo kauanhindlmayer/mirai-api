@@ -18,7 +18,9 @@ internal sealed class StartSprintCommandHandler
         StartSprintCommand command,
         CancellationToken cancellationToken)
     {
-        var team = await _teamRepository.GetByIdWithSprintsAsync(
+        // The sprint's work items must be loaded so Start() can snapshot them
+        // into the committed scope; the sprints-only loader leaves them empty.
+        var team = await _teamRepository.GetByIdWithSprintsAndWorkItemsAsync(
             command.TeamId,
             cancellationToken);
 

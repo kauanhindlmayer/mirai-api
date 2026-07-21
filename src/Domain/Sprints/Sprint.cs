@@ -15,6 +15,12 @@ public sealed class Sprint : Entity
     public SprintStatus Status { get; private set; } = SprintStatus.Planned;
     public DateTime? StartedAtUtc { get; private set; }
     public ICollection<WorkItem> WorkItems { get; private set; } = [];
+    public ICollection<SprintCommitment> Commitments { get; private set; } = [];
+
+    public int CommittedStoryPoints =>
+        Commitments.Sum(c => c.CommittedStoryPoints ?? 0);
+
+    public int CommittedWorkItemCount => Commitments.Count;
 
     public Sprint(
         Guid teamId,
@@ -59,6 +65,10 @@ public sealed class Sprint : Entity
     {
         Status = SprintStatus.Active;
         StartedAtUtc = DateTime.UtcNow;
+        foreach (var workItem in WorkItems)
+        {
+            Commitments.Add(new SprintCommitment(Id, workItem));
+        }
     }
 
     public void ReturnWorkItemsToBacklog()

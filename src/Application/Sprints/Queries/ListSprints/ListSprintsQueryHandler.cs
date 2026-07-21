@@ -1,4 +1,5 @@
 using Application.Abstractions;
+using Domain.Sprints;
 using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -31,6 +32,12 @@ internal sealed class ListSprintsQueryHandler
                 EndDate = t.EndDate,
                 Status = t.Status,
                 StartedAtUtc = t.StartedAtUtc,
+                CommittedStoryPoints = t.Status == SprintStatus.Planned
+                    ? null
+                    : t.Commitments.Sum(c => c.CommittedStoryPoints ?? 0),
+                CommittedWorkItemCount = t.Status == SprintStatus.Planned
+                    ? null
+                    : t.Commitments.Count,
                 WorkItemCount = t.WorkItems.Count,
             })
             .ToListAsync(cancellationToken);

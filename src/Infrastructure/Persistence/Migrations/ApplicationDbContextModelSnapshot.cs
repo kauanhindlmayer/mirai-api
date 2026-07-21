@@ -1378,6 +1378,48 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("sprints", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Sprints.SprintCommitment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<int?>("CommittedStoryPoints")
+                        .HasColumnType("integer")
+                        .HasColumnName("committed_story_points");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<Guid>("SprintId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("sprint_id");
+
+                    b.Property<string>("StatusAtStart")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("status_at_start");
+
+                    b.Property<DateTime?>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.Property<Guid>("WorkItemId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("work_item_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_sprint_commitments");
+
+                    b.HasIndex("SprintId", "WorkItemId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_sprint_commitments_sprint_id_work_item_id");
+
+                    b.ToTable("sprint_commitments", (string)null);
+                });
+
             modelBuilder.Entity("Domain.TagImportJobs.TagImportJob", b =>
                 {
                     b.Property<Guid>("Id")
@@ -2435,6 +2477,16 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Team");
                 });
 
+            modelBuilder.Entity("Domain.Sprints.SprintCommitment", b =>
+                {
+                    b.HasOne("Domain.Sprints.Sprint", null)
+                        .WithMany("Commitments")
+                        .HasForeignKey("SprintId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_sprint_commitments_sprints_sprint_id");
+                });
+
             modelBuilder.Entity("Domain.Tags.Tag", b =>
                 {
                     b.HasOne("Domain.Projects.Project", "Project")
@@ -2767,6 +2819,8 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.Sprints.Sprint", b =>
                 {
+                    b.Navigation("Commitments");
+
                     b.Navigation("WorkItems");
                 });
 
