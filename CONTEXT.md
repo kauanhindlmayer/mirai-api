@@ -12,6 +12,10 @@ _Avoid_: Iteration, Cycle, Milestone
 The work items belonging to no sprint. Backlog membership is not a flag or a separate list - a work item is in the backlog precisely when its `SprintId` is null, which is why deleting a sprint puts its work items back there.
 _Avoid_: Icebox, Queue, Unplanned work
 
+**Delivered**:
+Work that counts as finished: a work item whose status is `Closed`. `Resolved` means dev-done-awaiting-verification and is deliberately *not* delivered. This is the one definition anything measuring finished work must use - velocity does today, and the sprint report and carry-over will as they arrive - so that no two of them can disagree about what got done.
+_Avoid_: Completed (ambiguous with a sprint being completed), Done
+
 **Notification**:
 An in-app record informing a user that something relevant to them occurred - they were mentioned, a work item assigned to them changed, someone commented on their assigned work item, or they were added to a project, team, or organization. Stores a display message resolved at the moment it's created, so it reads correctly even if the underlying names later change.
 _Avoid_: Alert, Message, Activity

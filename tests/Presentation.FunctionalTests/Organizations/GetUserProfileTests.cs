@@ -21,7 +21,7 @@ public class GetUserProfileTests(DistributedApplicationTestFixture fixture)
         var organizationId = await CreateOrganizationAsync();
         await AddSecondaryUserToOrganizationAsync(organizationId);
         var projectId = await CreateProjectAsync(organizationId, "Apollo");
-        await AddUserToProjectAsync(projectId, userId);
+        await AddUserToProjectAsync(organizationId, projectId, userId);
         var teamId = await CreateTeamAsync(projectId, "Backend");
         await AddUserToTeamAsync(projectId, teamId, userId);
 
@@ -159,11 +159,11 @@ public class GetUserProfileTests(DistributedApplicationTestFixture fixture)
         return await response.Content.ReadFromJsonAsync<Guid>(TestContext.Current.CancellationToken);
     }
 
-    private async Task AddUserToProjectAsync(Guid projectId, Guid userId)
+    private async Task AddUserToProjectAsync(Guid organizationId, Guid projectId, Guid userId)
     {
         var request = new AddUserToProjectRequest(userId);
         var response = await fixture.HttpClient.PostAsJsonAsync(
-            Routes.Projects.AddUser(projectId),
+            Routes.Projects.AddUser(organizationId, projectId),
             request,
             TestContext.Current.CancellationToken);
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);

@@ -142,7 +142,7 @@ internal sealed class DashboardChartService : IDashboardChartService
                 s.EndDate,
                 WorkItems = s.WorkItems
                     .Where(wi => wi.CompletedAtUtc.HasValue
-                              && (wi.Status == WorkItemStatus.Closed || wi.Status == WorkItemStatus.Resolved))
+                              && wi.Status == WorkItemStatus.Closed)
                     .Select(wi => new { wi.Planning.StoryPoints })
                     .ToList(),
             })

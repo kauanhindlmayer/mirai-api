@@ -19,7 +19,8 @@ public static class Routes
     {
         public static string Create(Guid organizationId) => $"{Base}/{organizationId}/projects";
         public static string Get(Guid projectId) => $"/api/projects/{projectId}";
-        public static string AddUser(Guid projectId) => $"/api/projects/{projectId}/users";
+        public static string AddUser(Guid organizationId, Guid projectId) =>
+            $"{Base}/{organizationId}/projects/{projectId}/users";
         private const string Base = "/api/organizations";
     }
 

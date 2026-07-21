@@ -629,7 +629,7 @@ public static class DatabaseExtensions
 
             if (faker.Random.Double() < 0.9)
             {
-                var completedStatus = faker.PickRandom(new[] { WorkItemStatus.Closed, WorkItemStatus.Resolved });
+                var completedStatus = WorkItemStatus.Closed;
 
                 var maxDaysBack = Math.Min(7, (DateTime.UtcNow - creationDate).TotalDays - 0.1);
                 var completionDate = DateTime.UtcNow.AddDays(-faker.Random.Double() * Math.Max(0.1, maxDaysBack));
@@ -691,8 +691,7 @@ public static class DatabaseExtensions
 
         if (shouldComplete)
         {
-            var completedStatuses = new[] { WorkItemStatus.Closed, WorkItemStatus.Resolved };
-            var completedStatus = faker.PickRandom(completedStatuses);
+            var completedStatus = WorkItemStatus.Closed;
 
             var minCompletionDays = Math.Max(0.1, daysSinceCreation * 0.2);
             var maxCompletionDays = Math.Min(daysSinceCreation * 0.95, 15);
