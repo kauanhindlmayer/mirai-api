@@ -12,6 +12,8 @@ public sealed class Sprint : Entity
     public string Name { get; private set; } = null!;
     public DateOnly StartDate { get; private set; }
     public DateOnly EndDate { get; private set; }
+    public SprintStatus Status { get; private set; } = SprintStatus.Planned;
+    public DateTime? StartedAtUtc { get; private set; }
     public ICollection<WorkItem> WorkItems { get; private set; } = [];
 
     public Sprint(
@@ -46,6 +48,17 @@ public sealed class Sprint : Entity
         Name = name;
         StartDate = startDate;
         EndDate = endDate;
+    }
+
+    /// <summary>
+    /// Starting is a deliberate act, not a date passing - a sprint is Active
+    /// because someone started it, which is also the moment its committed scope
+    /// is fixed.
+    /// </summary>
+    public void Start()
+    {
+        Status = SprintStatus.Active;
+        StartedAtUtc = DateTime.UtcNow;
     }
 
     public void ReturnWorkItemsToBacklog()

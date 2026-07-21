@@ -154,6 +154,33 @@ public sealed class Team : AggregateRoot
         return Result.Success;
     }
 
+    /// <summary>
+    /// A team runs one sprint at a time, so starting is a team-level decision:
+    /// only the root can see whether a sibling sprint is already active.
+    /// </summary>
+    public ErrorOr<Success> StartSprint(Guid sprintId)
+    {
+        var sprint = Sprints.FirstOrDefault(s => s.Id == sprintId);
+        if (sprint is null)
+        {
+            return SprintErrors.NotFound;
+        }
+
+        if (sprint.Status != SprintStatus.Planned)
+        {
+            return SprintErrors.NotPlanned;
+        }
+
+        var activeSprint = Sprints.FirstOrDefault(s => s.Status == SprintStatus.Active);
+        if (activeSprint is not null)
+        {
+            return SprintErrors.TeamAlreadyHasActiveSprint(activeSprint.Name);
+        }
+
+        sprint.Start();
+        return Result.Success;
+    }
+
     public ErrorOr<Success> DeleteSprint(Guid sprintId)
     {
         var sprint = Sprints.FirstOrDefault(s => s.Id == sprintId);

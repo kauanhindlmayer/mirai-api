@@ -29,6 +29,8 @@ internal sealed class ListSprintsQueryHandler
                 Name = t.Name,
                 StartDate = t.StartDate,
                 EndDate = t.EndDate,
+                Status = t.Status,
+                StartedAtUtc = t.StartedAtUtc,
                 WorkItemCount = t.WorkItems.Count,
             })
             .ToListAsync(cancellationToken);

@@ -8,6 +8,10 @@ A web-based project management tool (work items, sprints, boards, wiki pages, re
 A named, time-boxed iteration owned by a single team, spanning an inclusive range of calendar dates (a sprint dated the 1st to the 14th includes the 14th). Within its team, a sprint's name is unique and its dates may not overlap another sprint's. Deleting a sprint returns its work items to the **Backlog**.
 _Avoid_: Iteration, Cycle, Milestone
 
+**Sprint status**:
+Where a sprint is in its lifecycle: `Planned` (created, not yet begun), `Active` (a person started it), or `Completed`. It is stored, not derived from the calendar - a sprint is active because someone started it, not because today falls inside its dates, which is also what gives its committed scope a moment to be fixed at. A team has at most one `Active` sprint, enforced by the domain and by a filtered unique index. See [ADR 0011](docs/adr/0011-sprint-lifecycle-is-stored-state.md).
+_Avoid_: State, Phase, Current (ambiguous with the calendar)
+
 **Backlog**:
 The work items belonging to no sprint. Backlog membership is not a flag or a separate list - a work item is in the backlog precisely when its `SprintId` is null, which is why deleting a sprint puts its work items back there.
 _Avoid_: Icebox, Queue, Unplanned work

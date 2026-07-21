@@ -2,6 +2,7 @@ using System.Net.Mime;
 using Application.Sprints.Commands.AddWorkItemToSprint;
 using Application.Sprints.Commands.CreateSprint;
 using Application.Sprints.Commands.DeleteSprint;
+using Application.Sprints.Commands.StartSprint;
 using Application.Sprints.Commands.UpdateSprint;
 using Application.Sprints.Queries.ListSprints;
 using Asp.Versioning;
@@ -72,6 +73,30 @@ public sealed class SprintsController : ApiController
         var result = await _sender.Send(query, cancellationToken);
 
         return result.Match(Ok, Problem);
+    }
+
+    /// <summary>
+    /// Starts the specified sprint, making it the team's active sprint.
+    /// </summary>
+    /// <param name="teamId">The team's unique identifier.</param>
+    /// <param name="sprintId">The sprint's unique identifier.</param>
+    [HttpPost("{sprintId:guid}/start")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<ActionResult> StartSprint(
+        Guid teamId,
+        Guid sprintId,
+        CancellationToken cancellationToken)
+    {
+        var command = new StartSprintCommand(teamId, sprintId);
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        return result.Match(
+            _ => NoContent(),
+            Problem);
     }
 
     /// <summary>

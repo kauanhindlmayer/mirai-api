@@ -108,4 +108,29 @@ public class SprintTests
         // Assert
         result.Should().Be(expected);
     }
+
+    [Fact]
+    public void Constructor_ShouldStartOutPlanned()
+    {
+        // Act
+        var sprint = SprintFactory.Create();
+
+        // Assert
+        sprint.Status.Should().Be(SprintStatus.Planned);
+        sprint.StartedAtUtc.Should().BeNull();
+    }
+
+    [Fact]
+    public void Start_ShouldMakeTheSprintActiveAndRecordWhen()
+    {
+        // Arrange
+        var sprint = SprintFactory.Create();
+
+        // Act
+        sprint.Start();
+
+        // Assert
+        sprint.Status.Should().Be(SprintStatus.Active);
+        sprint.StartedAtUtc.Should().NotBeNull();
+    }
 }

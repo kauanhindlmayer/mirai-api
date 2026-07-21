@@ -466,6 +466,98 @@ public class TeamTests : BaseTest
     }
 
     [Fact]
+    public void StartSprint_WhenSprintDoesNotExist_ShouldReturnError()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+
+        // Act
+        var result = team.StartSprint(Guid.NewGuid());
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().BeEquivalentTo(SprintErrors.NotFound);
+    }
+
+    [Fact]
+    public void StartSprint_ShouldMakeTheSprintActive()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+        var sprint = SprintFactory.Create();
+        team.AddSprint(sprint);
+
+        // Act
+        var result = team.StartSprint(sprint.Id);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        sprint.Status.Should().Be(SprintStatus.Active);
+        sprint.StartedAtUtc.Should().NotBeNull();
+    }
+
+    [Fact]
+    public void StartSprint_WhenSprintHasNoWorkItems_ShouldStillStart()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+        var sprint = SprintFactory.Create();
+        team.AddSprint(sprint);
+        sprint.WorkItems.Should().BeEmpty();
+
+        // Act
+        var result = team.StartSprint(sprint.Id);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+    }
+
+    [Fact]
+    public void StartSprint_WhenAnotherSprintIsActive_ShouldReturnErrorNamingIt()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+        var active = SprintFactory.Create(
+            name: "Hardening",
+            startDate: new DateOnly(2026, 6, 1),
+            endDate: new DateOnly(2026, 6, 14));
+        team.AddSprint(active);
+        team.StartSprint(active.Id);
+
+        var next = SprintFactory.Create(
+            name: "Sprint 2",
+            startDate: new DateOnly(2026, 6, 15),
+            endDate: new DateOnly(2026, 6, 28));
+        team.AddSprint(next);
+
+        // Act
+        var result = team.StartSprint(next.Id);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Code.Should().Be(SprintErrors.TeamAlreadyHasActiveSprint("any").Code);
+        result.FirstError.Description.Should().Contain("Hardening");
+        next.Status.Should().Be(SprintStatus.Planned);
+    }
+
+    [Fact]
+    public void StartSprint_WhenSprintIsAlreadyActive_ShouldReturnError()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+        var sprint = SprintFactory.Create();
+        team.AddSprint(sprint);
+        team.StartSprint(sprint.Id);
+
+        // Act
+        var result = team.StartSprint(sprint.Id);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Code.Should().Be(SprintErrors.NotPlanned.Code);
+    }
+
+    [Fact]
     public void DeleteSprint_WhenSprintDoesNotExist_ShouldReturnError()
     {
         // Arrange

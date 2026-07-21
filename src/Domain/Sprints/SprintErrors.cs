@@ -27,4 +27,12 @@ public static class SprintErrors
     public static Error NameTakenBySprint(string sprintName) => Error.Validation(
         code: "Sprint.AlreadyExists",
         description: $"A sprint named '{sprintName}' already exists in this team.");
+
+    public static readonly Error NotPlanned = Error.Validation(
+        code: "Sprint.NotPlanned",
+        description: "Only a planned sprint can be started.");
+
+    public static Error TeamAlreadyHasActiveSprint(string sprintName) => Error.Conflict(
+        code: "Sprint.TeamAlreadyHasActiveSprint",
+        description: $"The sprint '{sprintName}' is already active. Complete it before starting another.");
 }
