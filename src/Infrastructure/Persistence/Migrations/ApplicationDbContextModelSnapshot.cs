@@ -1326,6 +1326,18 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<DateTime?>("CompletedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("completed_at_utc");
+
+                    b.Property<int?>("CompletedStoryPoints")
+                        .HasColumnType("integer")
+                        .HasColumnName("completed_story_points");
+
+                    b.Property<int?>("CompletedWorkItemCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("completed_work_item_count");
+
                     b.Property<DateTime>("CreatedAtUtc")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at_utc");

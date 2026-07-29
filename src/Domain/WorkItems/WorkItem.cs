@@ -81,6 +81,11 @@ public sealed class WorkItem : AggregateRoot
         Sprint = null;
     }
 
+    public void AssignToSprint(Guid sprintId)
+    {
+        SprintId = sprintId;
+    }
+
     public void Close()
     {
         Status = WorkItemStatus.Closed;
