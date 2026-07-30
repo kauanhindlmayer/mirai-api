@@ -123,7 +123,7 @@ public sealed class SprintsController : ApiController
         CompleteSprintRequest request,
         CancellationToken cancellationToken)
     {
-        var dispositions = request.Dispositions
+        var dispositions = (request.Dispositions ?? [])
             .Select(d => new SprintItemDisposition(d.WorkItemId, d.Target, d.TargetSprintId))
             .ToList();
 
