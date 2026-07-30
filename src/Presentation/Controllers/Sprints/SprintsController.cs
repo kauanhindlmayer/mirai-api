@@ -5,6 +5,7 @@ using Application.Sprints.Commands.CreateSprint;
 using Application.Sprints.Commands.DeleteSprint;
 using Application.Sprints.Commands.StartSprint;
 using Application.Sprints.Commands.UpdateSprint;
+using Application.Sprints.Queries.GetIncompleteWorkItems;
 using Application.Sprints.Queries.ListSprints;
 using Asp.Versioning;
 using Domain.Sprints;
@@ -135,6 +136,31 @@ public sealed class SprintsController : ApiController
         return result.Match(
             _ => NoContent(),
             Problem);
+    }
+
+    /// <summary>
+    /// Retrieves a sprint's incomplete work items as a flat list.
+    /// </summary>
+    /// <remarks>
+    /// Returns exactly the items that must be given a carry-over disposition
+    /// to complete the sprint: any type, any hierarchy position, excluding
+    /// Closed and Removed items.
+    /// </remarks>
+    /// <param name="teamId">The team's unique identifier.</param>
+    /// <param name="sprintId">The sprint's unique identifier.</param>
+    [HttpGet("{sprintId:guid}/incomplete-work-items")]
+    [ProducesResponseType(typeof(IReadOnlyList<IncompleteWorkItemResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<IReadOnlyList<IncompleteWorkItemResponse>>> GetIncompleteWorkItems(
+        Guid teamId,
+        Guid sprintId,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetIncompleteWorkItemsQuery(teamId, sprintId);
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(Ok, Problem);
     }
 
     /// <summary>
