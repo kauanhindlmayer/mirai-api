@@ -48,8 +48,8 @@ Existing sprints become `Planned` in the migration. None is marked `Active`:
 there is no way to know which, if any, was really running, and guessing could
 violate the new index. In practice this only affects test data.
 
-Delete and edit are still not lifecycle-aware - a running sprint can still be
+Delete and edit are not made lifecycle-aware here - a running sprint can still be
 deleted, and a finished one edited. That is deliberate scope for the next slice;
-this ADR establishes only the state and the transition into it. ADR 0009's note
-that delete and edit carry no lifecycle guard therefore still stands, and will be
-superseded once the gating lands.
+this ADR establishes only the state and the transition into it.
+[ADR 0012](0012-completing-a-sprint-and-carrying-over-work.md) is that slice: it
+adds the gating table and supersedes this note and ADR 0009's.

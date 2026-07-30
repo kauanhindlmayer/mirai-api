@@ -105,8 +105,9 @@ public sealed class SprintsController : ApiController
     /// Completes the team's active sprint, carrying over its incomplete work items.
     /// </summary>
     /// <remarks>
-    /// Every incomplete work item (anything not yet Closed) must be given a
-    /// disposition: rolled forward into a planned sprint or returned to the backlog.
+    /// Every incomplete work item (anything neither Closed nor Removed) must be
+    /// given a disposition: rolled forward into a planned sprint or returned to
+    /// the backlog.
     /// The dispositions are applied, the delivered figures are frozen, and the
     /// sprint becomes Completed and read-only in one atomic action.
     /// </remarks>
