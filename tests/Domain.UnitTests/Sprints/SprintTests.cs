@@ -1,5 +1,6 @@
 using Domain.Sprints;
 using Domain.UnitTests.WorkItems;
+using Domain.WorkItems.Enums;
 using Domain.WorkItems.ValueObjects;
 
 namespace Domain.UnitTests.Sprints;
@@ -211,5 +212,128 @@ public class SprintTests
 
         // Assert
         sprint.CommittedStoryPoints.Should().Be(5);
+    }
+
+    [Fact]
+    public void AddWorkItem_WhenSprintIsCompleted_ShouldReturnError()
+    {
+        // Arrange
+        var sprint = SprintFactory.Create();
+        sprint.Start();
+        sprint.Complete();
+        var workItem = WorkItemFactory.Create();
+
+        // Act
+        var result = sprint.AddWorkItem(workItem);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(SprintErrors.IsCompleted);
+    }
+
+    [Fact]
+    public void IncompleteWorkItems_ShouldExcludeClosedAndRemovedItems()
+    {
+        // Arrange
+        var sprint = SprintFactory.Create();
+        var active = WorkItemFactory.Create();
+        var resolved = WorkItemFactory.Create();
+        resolved.Update(status: WorkItemStatus.Resolved);
+        var closed = WorkItemFactory.Create();
+        closed.Close();
+        var removed = WorkItemFactory.Create();
+        removed.Update(status: WorkItemStatus.Removed);
+        sprint.AddWorkItem(active);
+        sprint.AddWorkItem(resolved);
+        sprint.AddWorkItem(closed);
+        sprint.AddWorkItem(removed);
+
+        // Act
+        var incomplete = sprint.IncompleteWorkItems();
+
+        // Assert
+        incomplete.Should().BeEquivalentTo([active, resolved]);
+    }
+
+    [Fact]
+    public void Complete_ShouldMakeTheSprintCompletedAndRecordWhen()
+    {
+        // Arrange
+        var sprint = SprintFactory.Create();
+        sprint.Start();
+
+        // Act
+        sprint.Complete();
+
+        // Assert
+        sprint.Status.Should().Be(SprintStatus.Completed);
+        sprint.CompletedAtUtc.Should().NotBeNull();
+    }
+
+    [Fact]
+    public void Complete_ShouldFreezeDeliveredFiguresOverClosedCommittedItems()
+    {
+        // Arrange
+        var sprint = SprintFactory.Create();
+        var deliveredEstimated = WorkItemFactory.Create();
+        deliveredEstimated.Update(planning: new Planning { StoryPoints = 5 });
+        var deliveredUnestimated = WorkItemFactory.Create();
+        var unfinished = WorkItemFactory.Create();
+        unfinished.Update(planning: new Planning { StoryPoints = 8 });
+        sprint.AddWorkItem(deliveredEstimated);
+        sprint.AddWorkItem(deliveredUnestimated);
+        sprint.AddWorkItem(unfinished);
+        sprint.Start();
+        deliveredEstimated.Close();
+        deliveredUnestimated.Close();
+
+        // Act
+        sprint.Complete();
+
+        // Assert
+        sprint.CompletedStoryPoints.Should().Be(5);
+        sprint.CompletedWorkItemCount.Should().Be(2);
+    }
+
+    [Fact]
+    public void Complete_ShouldMeasureDeliveryAtCommittedPointsNotCurrentPoints()
+    {
+        // Arrange
+        var sprint = SprintFactory.Create();
+        var workItem = WorkItemFactory.Create();
+        workItem.Update(planning: new Planning { StoryPoints = 5 });
+        sprint.AddWorkItem(workItem);
+        sprint.Start();
+        workItem.Update(planning: new Planning { StoryPoints = 13 });
+        workItem.Close();
+
+        // Act
+        sprint.Complete();
+
+        // Assert
+        sprint.CompletedStoryPoints.Should().Be(5);
+    }
+
+    [Fact]
+    public void Complete_ShouldExcludeWorkAddedAfterStartFromDeliveredFigures()
+    {
+        // Arrange
+        var sprint = SprintFactory.Create();
+        var committed = WorkItemFactory.Create();
+        committed.Update(planning: new Planning { StoryPoints = 3 });
+        sprint.AddWorkItem(committed);
+        sprint.Start();
+        var addedMidSprint = WorkItemFactory.Create();
+        addedMidSprint.Update(planning: new Planning { StoryPoints = 5 });
+        sprint.AddWorkItem(addedMidSprint);
+        committed.Close();
+        addedMidSprint.Close();
+
+        // Act
+        sprint.Complete();
+
+        // Assert
+        sprint.CompletedStoryPoints.Should().Be(3);
+        sprint.CompletedWorkItemCount.Should().Be(1);
     }
 }

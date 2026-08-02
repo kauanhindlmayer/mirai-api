@@ -9,6 +9,8 @@ using Domain.UnitTests.Retrospectives;
 using Domain.UnitTests.Sprints;
 using Domain.UnitTests.Users;
 using Domain.UnitTests.WorkItems;
+using Domain.WorkItems.Enums;
+using Domain.WorkItems.ValueObjects;
 
 namespace Domain.UnitTests.Teams;
 
@@ -555,6 +557,299 @@ public class TeamTests : BaseTest
         // Assert
         result.IsError.Should().BeTrue();
         result.FirstError.Code.Should().Be(SprintErrors.NotPlanned.Code);
+    }
+
+    [Fact]
+    public void CompleteSprint_WhenSprintDoesNotExist_ShouldReturnError()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+
+        // Act
+        var result = team.CompleteSprint(Guid.NewGuid(), []);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().BeEquivalentTo(SprintErrors.NotFound);
+    }
+
+    [Fact]
+    public void CompleteSprint_WhenSprintIsNotActive_ShouldReturnError()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+        var sprint = SprintFactory.Create();
+        team.AddSprint(sprint);
+
+        // Act
+        var result = team.CompleteSprint(sprint.Id, []);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(SprintErrors.NotActive);
+    }
+
+    [Fact]
+    public void CompleteSprint_WhenAnIncompleteItemHasNoDisposition_ShouldReturnError()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+        var sprint = SprintFactory.Create();
+        var workItem = WorkItemFactory.Create();
+        sprint.AddWorkItem(workItem);
+        team.AddSprint(sprint);
+        team.StartSprint(sprint.Id);
+
+        // Act
+        var result = team.CompleteSprint(sprint.Id, []);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(SprintErrors.DispositionsIncomplete);
+    }
+
+    [Fact]
+    public void CompleteSprint_WhenCarryOverTargetIsNotPlanned_ShouldReturnError()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+        var sprint = SprintFactory.Create(
+            name: "Sprint 1",
+            startDate: new DateOnly(2026, 6, 1),
+            endDate: new DateOnly(2026, 6, 14));
+        var workItem = WorkItemFactory.Create();
+        sprint.AddWorkItem(workItem);
+        team.AddSprint(sprint);
+        team.StartSprint(sprint.Id);
+        var dispositions = new List<SprintItemDisposition>
+        {
+            new(workItem.Id, DispositionTarget.Sprint, sprint.Id),
+        };
+
+        // Act
+        var result = team.CompleteSprint(sprint.Id, dispositions);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(SprintErrors.InvalidCarryOverTarget);
+    }
+
+    [Fact]
+    public void CompleteSprint_ShouldRollIncompleteItemForwardIntoTargetSprint()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+        var active = SprintFactory.Create(
+            name: "Sprint 1",
+            startDate: new DateOnly(2026, 6, 1),
+            endDate: new DateOnly(2026, 6, 14));
+        var next = SprintFactory.Create(
+            name: "Sprint 2",
+            startDate: new DateOnly(2026, 6, 15),
+            endDate: new DateOnly(2026, 6, 28));
+        var workItem = WorkItemFactory.Create();
+        active.AddWorkItem(workItem);
+        team.AddSprint(active);
+        team.AddSprint(next);
+        team.StartSprint(active.Id);
+        var dispositions = new List<SprintItemDisposition>
+        {
+            new(workItem.Id, DispositionTarget.Sprint, next.Id),
+        };
+
+        // Act
+        var result = team.CompleteSprint(active.Id, dispositions);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        active.WorkItems.Should().NotContain(workItem);
+        next.WorkItems.Should().Contain(workItem);
+        workItem.SprintId.Should().Be(next.Id);
+    }
+
+    [Fact]
+    public void CompleteSprint_ShouldReturnIncompleteItemToTheBacklog()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+        var sprint = SprintFactory.Create();
+        var workItem = WorkItemFactory.Create();
+        sprint.AddWorkItem(workItem);
+        team.AddSprint(sprint);
+        team.StartSprint(sprint.Id);
+        var dispositions = new List<SprintItemDisposition>
+        {
+            new(workItem.Id, DispositionTarget.Backlog, null),
+        };
+
+        // Act
+        var result = team.CompleteSprint(sprint.Id, dispositions);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        sprint.WorkItems.Should().NotContain(workItem);
+        workItem.SprintId.Should().BeNull();
+    }
+
+    [Fact]
+    public void CompleteSprint_ShouldKeepDeliveredAndRemovedItemsInTheSprint()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+        var sprint = SprintFactory.Create();
+        var delivered = WorkItemFactory.Create();
+        var removed = WorkItemFactory.Create();
+        sprint.AddWorkItem(delivered);
+        sprint.AddWorkItem(removed);
+        team.AddSprint(sprint);
+        team.StartSprint(sprint.Id);
+        delivered.Close();
+        removed.Update(status: WorkItemStatus.Removed);
+
+        // Act
+        var result = team.CompleteSprint(sprint.Id, []);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        sprint.WorkItems.Should().BeEquivalentTo([delivered, removed]);
+    }
+
+    [Fact]
+    public void CompleteSprint_ShouldFreezeDeliveredFiguresOverClosedCommittedItems()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+        var sprint = SprintFactory.Create();
+        var delivered = WorkItemFactory.Create();
+        delivered.Update(planning: new Planning { StoryPoints = 5 });
+        var unfinished = WorkItemFactory.Create();
+        unfinished.Update(planning: new Planning { StoryPoints = 8 });
+        sprint.AddWorkItem(delivered);
+        sprint.AddWorkItem(unfinished);
+        team.AddSprint(sprint);
+        team.StartSprint(sprint.Id);
+        delivered.Close();
+        var dispositions = new List<SprintItemDisposition>
+        {
+            new(unfinished.Id, DispositionTarget.Backlog, null),
+        };
+
+        // Act
+        var result = team.CompleteSprint(sprint.Id, dispositions);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        sprint.CompletedStoryPoints.Should().Be(5);
+        sprint.CompletedWorkItemCount.Should().Be(1);
+        sprint.Status.Should().Be(SprintStatus.Completed);
+    }
+
+    [Fact]
+    public void CompleteSprint_WhenNoNextPlannedSprintExists_ShouldCompleteWithBacklogDispositions()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+        var sprint = SprintFactory.Create();
+        var workItem = WorkItemFactory.Create();
+        sprint.AddWorkItem(workItem);
+        team.AddSprint(sprint);
+        team.StartSprint(sprint.Id);
+        var dispositions = new List<SprintItemDisposition>
+        {
+            new(workItem.Id, DispositionTarget.Backlog, null),
+        };
+
+        // Act
+        var result = team.CompleteSprint(sprint.Id, dispositions);
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        sprint.Status.Should().Be(SprintStatus.Completed);
+        workItem.SprintId.Should().BeNull();
+    }
+
+    [Fact]
+    public void UpdateSprint_WhenSprintIsActive_ShouldLockStartDateButAllowNameAndEndDate()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+        var sprint = SprintFactory.Create(
+            name: "Sprint 1",
+            startDate: new DateOnly(2026, 6, 1),
+            endDate: new DateOnly(2026, 6, 14));
+        team.AddSprint(sprint);
+        team.StartSprint(sprint.Id);
+
+        // Act
+        var result = team.UpdateSprint(
+            sprint.Id,
+            "Sprint 1 (extended)",
+            new DateOnly(2026, 6, 3),
+            new DateOnly(2026, 6, 21));
+
+        // Assert
+        result.IsError.Should().BeFalse();
+        sprint.Name.Should().Be("Sprint 1 (extended)");
+        sprint.StartDate.Should().Be(new DateOnly(2026, 6, 1));
+        sprint.EndDate.Should().Be(new DateOnly(2026, 6, 21));
+    }
+
+    [Fact]
+    public void UpdateSprint_WhenSprintIsCompleted_ShouldReturnError()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+        var sprint = SprintFactory.Create();
+        team.AddSprint(sprint);
+        team.StartSprint(sprint.Id);
+        team.CompleteSprint(sprint.Id, []);
+
+        // Act
+        var result = team.UpdateSprint(
+            sprint.Id,
+            "Sprint 1 (renamed)",
+            sprint.StartDate,
+            sprint.EndDate);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(SprintErrors.IsCompleted);
+    }
+
+    [Fact]
+    public void DeleteSprint_WhenSprintIsActive_ShouldReturnError()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+        var sprint = SprintFactory.Create();
+        team.AddSprint(sprint);
+        team.StartSprint(sprint.Id);
+
+        // Act
+        var result = team.DeleteSprint(sprint.Id);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(SprintErrors.CannotDeleteAfterStart);
+        team.Sprints.Should().Contain(sprint);
+    }
+
+    [Fact]
+    public void DeleteSprint_WhenSprintIsCompleted_ShouldReturnError()
+    {
+        // Arrange
+        var team = TeamFactory.Create();
+        var sprint = SprintFactory.Create();
+        team.AddSprint(sprint);
+        team.StartSprint(sprint.Id);
+        team.CompleteSprint(sprint.Id, []);
+
+        // Act
+        var result = team.DeleteSprint(sprint.Id);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(SprintErrors.CannotDeleteAfterStart);
     }
 
     [Fact]

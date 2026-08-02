@@ -1,6 +1,7 @@
 using Domain.Shared;
 using Domain.Teams;
 using Domain.WorkItems;
+using Domain.WorkItems.Enums;
 using ErrorOr;
 
 namespace Domain.Sprints;
@@ -14,6 +15,9 @@ public sealed class Sprint : Entity
     public DateOnly EndDate { get; private set; }
     public SprintStatus Status { get; private set; } = SprintStatus.Planned;
     public DateTime? StartedAtUtc { get; private set; }
+    public DateTime? CompletedAtUtc { get; private set; }
+    public int? CompletedStoryPoints { get; private set; }
+    public int? CompletedWorkItemCount { get; private set; }
     public ICollection<WorkItem> WorkItems { get; private set; } = [];
     public ICollection<SprintCommitment> Commitments { get; private set; } = [];
 
@@ -40,6 +44,11 @@ public sealed class Sprint : Entity
 
     public ErrorOr<Success> AddWorkItem(WorkItem workItem)
     {
+        if (Status == SprintStatus.Completed)
+        {
+            return SprintErrors.IsCompleted;
+        }
+
         if (WorkItems.Any(wi => wi.Id == workItem.Id))
         {
             return SprintErrors.WorkItemAlreadyInSprint;
@@ -47,6 +56,24 @@ public sealed class Sprint : Entity
 
         WorkItems.Add(workItem);
         return Result.Success;
+    }
+
+    public void RemoveWorkItem(WorkItem workItem)
+    {
+        WorkItems.Remove(workItem);
+    }
+
+    /// <summary>
+    /// The work still in flight when the sprint is being completed. Closed items
+    /// are delivered and Removed items are abandoned - both are terminal and stay
+    /// in the sprint as its record, so neither is offered for carry-over.
+    /// </summary>
+    public IReadOnlyList<WorkItem> IncompleteWorkItems()
+    {
+        return WorkItems
+            .Where(wi => wi.Status != WorkItemStatus.Closed
+                && wi.Status != WorkItemStatus.Removed)
+            .ToList();
     }
 
     public void Update(string name, DateOnly startDate, DateOnly endDate)
@@ -69,6 +96,27 @@ public sealed class Sprint : Entity
         {
             Commitments.Add(new SprintCommitment(Id, workItem));
         }
+    }
+
+    /// <summary>
+    /// Freezes the delivered figures and marks the sprint Completed. Delivered is
+    /// measured over committed items only - work added mid-sprint is scope change,
+    /// not commitment delivery - and at each item's committed points, so later
+    /// re-estimation cannot distort a finished sprint's numbers. Delivered means
+    /// Closed, the project-wide definition velocity also uses.
+    /// </summary>
+    public void Complete()
+    {
+        var committedPointsByItem = Commitments
+            .ToDictionary(c => c.WorkItemId, c => c.CommittedStoryPoints);
+        var deliveredCommitted = WorkItems
+            .Where(wi => wi.Status == WorkItemStatus.Closed
+                && committedPointsByItem.ContainsKey(wi.Id))
+            .ToList();
+        CompletedWorkItemCount = deliveredCommitted.Count;
+        CompletedStoryPoints = deliveredCommitted.Sum(wi => committedPointsByItem[wi.Id] ?? 0);
+        Status = SprintStatus.Completed;
+        CompletedAtUtc = DateTime.UtcNow;
     }
 
     public void ReturnWorkItemsToBacklog()

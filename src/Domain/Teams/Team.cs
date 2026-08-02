@@ -144,13 +144,25 @@ public sealed class Team : AggregateRoot
             return SprintErrors.NotFound;
         }
 
-        var result = EnsureSprintIsDistinct(sprintId, name, startDate, endDate);
+        if (sprint.Status == SprintStatus.Completed)
+        {
+            return SprintErrors.IsCompleted;
+        }
+
+        // An active sprint's start date is locked so the record of when it really
+        // began stays honest; only its name and end date may change. A planned
+        // sprint may still move freely.
+        var effectiveStartDate = sprint.Status == SprintStatus.Active
+            ? sprint.StartDate
+            : startDate;
+
+        var result = EnsureSprintIsDistinct(sprintId, name, effectiveStartDate, endDate);
         if (result.IsError)
         {
             return result.Errors;
         }
 
-        sprint.Update(name, startDate, endDate);
+        sprint.Update(name, effectiveStartDate, endDate);
         return Result.Success;
     }
 
@@ -181,12 +193,63 @@ public sealed class Team : AggregateRoot
         return Result.Success;
     }
 
+    /// <summary>
+    /// Completing the active sprint triages every incomplete item in one atomic
+    /// act: each disposition is validated, then all are applied, then the
+    /// delivered figures are frozen and the sprint becomes Completed - so a
+    /// completed sprint never contains an un-triaged item.
+    /// </summary>
+    public ErrorOr<Success> CompleteSprint(
+        Guid sprintId,
+        IReadOnlyCollection<SprintItemDisposition> dispositions)
+    {
+        var sprint = Sprints.FirstOrDefault(s => s.Id == sprintId);
+        if (sprint is null)
+        {
+            return SprintErrors.NotFound;
+        }
+
+        if (sprint.Status != SprintStatus.Active)
+        {
+            return SprintErrors.NotActive;
+        }
+
+        var incompleteItems = sprint.IncompleteWorkItems();
+        var dispositionByItem = dispositions
+            .GroupBy(d => d.WorkItemId)
+            .ToDictionary(g => g.Key, g => g.First());
+
+        if (incompleteItems.Any(wi => !dispositionByItem.ContainsKey(wi.Id)))
+        {
+            return SprintErrors.DispositionsIncomplete;
+        }
+
+        var validation = EnsureCarryOverTargetsArePlanned(incompleteItems, dispositionByItem);
+        if (validation.IsError)
+        {
+            return validation.Errors;
+        }
+
+        foreach (var workItem in incompleteItems)
+        {
+            ApplyDisposition(sprint, workItem, dispositionByItem[workItem.Id]);
+        }
+
+        sprint.Complete();
+        return Result.Success;
+    }
+
     public ErrorOr<Success> DeleteSprint(Guid sprintId)
     {
         var sprint = Sprints.FirstOrDefault(s => s.Id == sprintId);
         if (sprint is null)
         {
             return SprintErrors.NotFound;
+        }
+
+        if (sprint.Status != SprintStatus.Planned)
+        {
+            return SprintErrors.CannotDeleteAfterStart;
         }
 
         sprint.ReturnWorkItemsToBacklog();
@@ -242,6 +305,49 @@ public sealed class Team : AggregateRoot
         }
 
         return Result.Success;
+    }
+
+    /// <summary>
+    /// Validates every carry-over target before any item is moved, so a completion
+    /// that will fail leaves the aggregate untouched rather than half-applied.
+    /// </summary>
+    private ErrorOr<Success> EnsureCarryOverTargetsArePlanned(
+        IReadOnlyList<WorkItem> incompleteItems,
+        IReadOnlyDictionary<Guid, SprintItemDisposition> dispositionByItem)
+    {
+        foreach (var workItem in incompleteItems)
+        {
+            var disposition = dispositionByItem[workItem.Id];
+            if (disposition.Target != DispositionTarget.Sprint)
+            {
+                continue;
+            }
+
+            var target = Sprints.FirstOrDefault(s => s.Id == disposition.TargetSprintId);
+            if (target is null || target.Status != SprintStatus.Planned)
+            {
+                return SprintErrors.InvalidCarryOverTarget;
+            }
+        }
+
+        return Result.Success;
+    }
+
+    private void ApplyDisposition(
+        Sprint sprint,
+        WorkItem workItem,
+        SprintItemDisposition disposition)
+    {
+        sprint.RemoveWorkItem(workItem);
+        if (disposition.Target == DispositionTarget.Backlog)
+        {
+            workItem.RemoveFromSprint();
+            return;
+        }
+
+        var target = Sprints.First(s => s.Id == disposition.TargetSprintId);
+        target.AddWorkItem(workItem);
+        workItem.AssignToSprint(target.Id);
     }
 
     private bool IsLastAdmin(Guid userId)

@@ -29,8 +29,9 @@ committed scope, no completed state, no velocity.
 When SP-1 adds a sprint lifecycle, delete should almost certainly be restricted
 to sprints that have not started, and completed sprints should become
 undeletable.
-This ADR should be revisited then rather than treated as settling the question
-for a system that has history worth keeping.
+[ADR 0012](0012-completing-a-sprint-and-carrying-over-work.md) does exactly this:
+delete is now allowed only while a sprint is `Planned`, superseding the
+unrestricted delete described above.
 
 The delete path must load the sprint's work items eagerly
 (`GetByIdWithSprintsAndWorkItemsAsync`).

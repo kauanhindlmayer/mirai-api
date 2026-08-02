@@ -1,11 +1,13 @@
 using System.Net.Mime;
 using Application.Sprints.Commands.AddWorkItemToSprint;
+using Application.Sprints.Commands.CompleteSprint;
 using Application.Sprints.Commands.CreateSprint;
 using Application.Sprints.Commands.DeleteSprint;
 using Application.Sprints.Commands.StartSprint;
 using Application.Sprints.Commands.UpdateSprint;
 using Application.Sprints.Queries.ListSprints;
 using Asp.Versioning;
+using Domain.Sprints;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Constants;
@@ -91,6 +93,42 @@ public sealed class SprintsController : ApiController
         CancellationToken cancellationToken)
     {
         var command = new StartSprintCommand(teamId, sprintId);
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        return result.Match(
+            _ => NoContent(),
+            Problem);
+    }
+
+    /// <summary>
+    /// Completes the team's active sprint, carrying over its incomplete work items.
+    /// </summary>
+    /// <remarks>
+    /// Every incomplete work item (anything neither Closed nor Removed) must be
+    /// given a disposition: rolled forward into a planned sprint or returned to
+    /// the backlog.
+    /// The dispositions are applied, the delivered figures are frozen, and the
+    /// sprint becomes Completed and read-only in one atomic action.
+    /// </remarks>
+    /// <param name="teamId">The team's unique identifier.</param>
+    /// <param name="sprintId">The sprint's unique identifier.</param>
+    /// <param name="request">The carry-over dispositions for the sprint's incomplete work items.</param>
+    [HttpPost("{sprintId:guid}/complete")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> CompleteSprint(
+        Guid teamId,
+        Guid sprintId,
+        CompleteSprintRequest request,
+        CancellationToken cancellationToken)
+    {
+        var dispositions = (request.Dispositions ?? [])
+            .Select(d => new SprintItemDisposition(d.WorkItemId, d.Target, d.TargetSprintId))
+            .ToList();
+
+        var command = new CompleteSprintCommand(teamId, sprintId, dispositions);
 
         var result = await _sender.Send(command, cancellationToken);
 
